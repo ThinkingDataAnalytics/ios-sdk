@@ -57,19 +57,13 @@
 + (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url;
 + (ThinkingAnalyticsSDK *)sharedInstance;
 
-//todo
-- (id)performSelector:(SEL)aSelector
-                  key:(NSString *)key
-             andValue:(NSNumber *)andValue;
-- (id)performSelector:(SEL)aSelector
-            paramobjs:(NSMutableDictionary *)parameter;
-- (id)performSelector:(SEL)aSelector
-           parameters:(NSArray *)parameter;
-- (NSArray *)getSelType:(SEL)aSelector;
+typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsNetworkType) {
+    TDNetworkTypeDefault  = 0,
+    TDNetworkTypeOnlyWIFI = 1 << 0,
+    TDNetworkTypeALL      = 1 << 1,
+};
 
-//
-
-- (void)isForcedWifiPush:(BOOL)isForce;
+- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type;
 
 - (void)setSuperProperties:(NSDictionary *)propertyDict;
 - (void)unsetSuperProperty:(NSString *)property;
@@ -98,7 +92,7 @@
 - (NSString *)getDistinctId;
 
 typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
-    ThinkingAnalyticsEventTypeNone      = 0,
+    ThinkingAnalyticsEventTypeNone          = 0,
     ThinkingAnalyticsEventTypeAppStart      = 1 << 0,
     ThinkingAnalyticsEventTypeAppEnd        = 1 << 1,
     ThinkingAnalyticsEventTypeAppClick      = 1 << 2,
