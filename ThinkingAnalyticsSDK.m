@@ -25,7 +25,7 @@
 #import "UIViewController+AutoTrack.h"
 #import "NSObject+TDSwizzle.h"
 
-#define VERSION @"1.0.9"
+#define VERSION @"1.0.11"
 #ifndef    weakify
 #if __has_feature(objc_arc)
 #define weakify(object) autoreleasepool{} __weak __typeof__(object) weak##_##object = object;
@@ -316,7 +316,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
         @strongify(self);
 
         NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-        NSLog(@"ret1:%@",ret);
+//        NSLog(@"ret1:%@",ret);
         if([ret isKindOfClass:[NSDictionary class]] && [[[ret copy] objectForKey:@"code"] isEqual:[NSNumber numberWithInt:0]])
         {
             NSDictionary *dic = [[ret copy] objectForKey:@"data"];
@@ -363,6 +363,13 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
 }
 
 #pragma mark -session delegate
+
+//- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+//didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
+//{
+//    NSLog(@"metrics:%@",metrics);
+//}
+
 -(void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable))completionHandler {
 
     NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
@@ -397,15 +404,19 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
     }
 }
 
-- (void)isForcedWifiPush:(BOOL)isForce
+- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type
 {
-    if(isForce)
+    if(type == TDNetworkTypeDefault)
+    {
+        _networkType = ThinkingNetworkTypeWIFI | ThinkingNetworkType3G | ThinkingNetworkType4G;
+    }
+    else if(type == TDNetworkTypeOnlyWIFI)
     {
         _networkType = ThinkingNetworkTypeWIFI;
     }
-    else
+    else if(type == TDNetworkTypeALL)
     {
-        _networkType = ThinkingNetworkTypeWIFI | ThinkingNetworkType3G | ThinkingNetworkType4G;
+        _networkType = ThinkingNetworkTypeWIFI | ThinkingNetworkType3G | ThinkingNetworkType4G | ThinkingNetworkType2G;
     }
 }
 
@@ -506,6 +517,8 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
 - (void)applicationDidBecomeActive:(NSNotification *)notification {
     TDSDKDebug(@"%@ application did become active", self);
     
+    [self startFlushTimer];
+    
     if (_applicationWillResignActive) {
         _applicationWillResignActive = NO;
         return;
@@ -536,8 +549,6 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
             [self timeEvent:APP_END_EVENT];
         }
     }
-    
-    [self startFlushTimer];
 }
 
 -(void)getConfigFromUserdefault
@@ -1014,7 +1025,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
 
 - (void)login:(NSString *)accountId{
     if (accountId.length == 0) {
-        TDSDKDebug(@"accountId cannot null", uid);
+        TDSDKDebug(@"accountId cannot null", accountId);
         return;
     }
     
@@ -1223,7 +1234,16 @@ withProperties:(NSDictionary *)propertieDict
     
     dispatch_async(self.serialQueue, ^{
         
-        NSString *timeStamp = [_timeFormatter stringFromDate:time];
+        NSString *timeStamp;
+        
+        if(time == nil)
+        {
+            timeStamp = [_timeFormatter stringFromDate:[NSDate date]];
+        }
+        else
+        {
+            timeStamp = [_timeFormatter stringFromDate:time];
+        }
         
         NSString *networkType = [ThinkingAnalyticsSDK getNetWorkStates];
         
@@ -1308,7 +1328,7 @@ withProperties:(NSDictionary *)propertieDict
         
         [self saveClickData:type andEvent:dataDic];
       
-        NSLog(@"dataDic:%@",dataDic);
+//        NSLog(@"dataDic:%@",dataDic);
         
         if ([[self dataQueue] count] >= self.uploadSize) {
             [self _sync:NO];
@@ -1349,6 +1369,7 @@ withProperties:(NSDictionary *)propertieDict
     
     if ([recordArray count] > 0) {
         NSString *postBody;
+        NSString *jsonString;
         @try {
             NSMutableArray *dataArr = [NSMutableArray array];
             for (int i = 0; i < recordArray.count; i++) {
@@ -1367,7 +1388,7 @@ withProperties:(NSDictionary *)propertieDict
                                 };
             
             NSData *jsonData = [NSJSONSerialization dataWithJSONObject:e options:(NSJSONWritingOptions)0 error:nil];
-            NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+            jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
             
             NSData *zippedData = [NSData gzipData:[jsonString dataUsingEncoding:NSUTF8StringEncoding]];
             postBody = [zippedData base64EncodedStringWithOptions:0];
@@ -1391,7 +1412,6 @@ withProperties:(NSDictionary *)propertieDict
         @weakify(self);
         void (^block)(NSData*, NSURLResponse*, NSError*) = ^(NSData *data, NSURLResponse *response, NSError *error) {
             if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
-                flushSucc = NO;
                 TDSDKError(@"Networking error");
                 dispatch_semaphore_signal(flushSem);
                 return;
@@ -1401,17 +1421,11 @@ withProperties:(NSDictionary *)propertieDict
             if([urlResponse statusCode] != 200) {
                 NSString *urlResponseContent = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                 NSString *errMsg = [NSString stringWithFormat:@"%@ flush failure with response '%@'.", self, urlResponseContent];
-                {
-                    TDSDKError(@"%@", errMsg);
-                    if ([urlResponse statusCode] >= 300) {
-                        flushSucc = NO;
-                    }
-                }
+                TDSDKError(@"%@", errMsg);
             } else {
                 NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
                 
-                NSLog(@"ret2:%@",ret);
-                
+                TDSDKDebug(@"url ret:%@",ret);
                 if([ret isKindOfClass:[NSDictionary class]] && [[[ret copy] objectForKey:@"code"] isEqual:[NSNumber numberWithInt:0]])
                 {
                     flushSucc = YES;
@@ -1419,6 +1433,18 @@ withProperties:(NSDictionary *)propertieDict
                     {
                         @strongify(self);
                         [self.dataQueue removeFirstRecords:50];
+                        
+//                        #ifdef TDSDKLogEnable
+//                            @try {
+//                                NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+//                                NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
+//                                NSString *logString=[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding];
+//
+//                                TDSDKDebug(@"data:%@",logString);
+//                            } @catch (NSException *exception) {
+//                                TDSDKDebug(@"%@: %@", self, exception);
+//                            }
+//                        #endif
                     }
                 }
             }
