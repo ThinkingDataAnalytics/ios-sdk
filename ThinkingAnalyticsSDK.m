@@ -25,7 +25,7 @@
 #import "UIViewController+AutoTrack.h"
 #import "NSObject+TDSwizzle.h"
 
-#define VERSION @"1.0.11"
+#define VERSION @"1.0.12"
 #ifndef    weakify
 #if __has_feature(objc_arc)
 #define weakify(object) autoreleasepool{} __weak __typeof__(object) weak##_##object = object;
@@ -251,6 +251,8 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
         self.trackTimer = [NSMutableDictionary dictionary];
         _timeFormatter = [[NSDateFormatter alloc]init];
         _timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+        NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US@calendar=NSGregorianCalendar"];
+        [_timeFormatter setLocale:locale];
 
         _applicationWillResignActive = NO;
         _autoTrack = NO;
