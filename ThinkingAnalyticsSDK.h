@@ -1,28 +1,7 @@
-//
-//  TDAgent.h
-//  TDAnalyticsSDK
-//
-//  Created by thinkingdata on 2017/6/22.
-//  Copyright © 2017年 thinkingdata. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@interface UIView (ThinkingAnalytics)
-- (nullable UIViewController *)viewController;
-
-@property (copy,nonatomic) NSString* thinkingAnalyticsViewID;
-
-@property (nonatomic,assign) BOOL thinkingAnalyticsIgnoreView;
-
-@property (nonatomic,assign) BOOL thinkingAnalyticsAutoTrackAfterSendAction;
-
-@property (strong,nonatomic) NSDictionary* thinkingAnalyticsViewProperties;
-
-@property (nonatomic, weak, nullable) id thinkingAnalyticsDelegate;
-@end
-
+NS_ASSUME_NONNULL_BEGIN
 @protocol TDUIViewAutoTrackDelegate
 
 @optional
@@ -48,19 +27,30 @@
 
 @end
 
-@interface UIImage (ThinkingAnalytics)
-@property (nonatomic,copy) NSString* thinkingAnalyticsImageName;
-@end
-
 @interface ThinkingAnalyticsSDK : NSObject
 
-+ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url;
 + (ThinkingAnalyticsSDK *)sharedInstance;
++ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url;
+
+typedef NS_OPTIONS(NSInteger, TDLoggingLevel) {
+    TDLoggingLevelNone  = 0,
+    TDLoggingLevelError = 1 << 0,
+    TDLoggingLevelInfo  = 1 << 1,
+    TDLoggingLevelDebug = 1 << 2,
+};
 
 typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsNetworkType) {
     TDNetworkTypeDefault  = 0,
     TDNetworkTypeOnlyWIFI = 1 << 0,
     TDNetworkTypeALL      = 1 << 1,
+};
+
+typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
+    ThinkingAnalyticsEventTypeNone          = 0,
+    ThinkingAnalyticsEventTypeAppStart      = 1 << 0,
+    ThinkingAnalyticsEventTypeAppEnd        = 1 << 1,
+    ThinkingAnalyticsEventTypeAppClick      = 1 << 2,
+    ThinkingAnalyticsEventTypeAppViewScreen = 1 << 3,
 };
 
 - (void)setNetworkType:(ThinkingAnalyticsNetworkType)type;
@@ -85,32 +75,33 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsNetworkType) {
 - (void)user_setOnce:(NSDictionary *)property;
 - (void)user_set:(NSDictionary *)property;
 - (void)user_delete;
-
 - (void)timeEvent:(NSString *)event;
 
 - (NSString *)getDeviceId;
 - (NSString *)getDistinctId;
 
-typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
-    ThinkingAnalyticsEventTypeNone          = 0,
-    ThinkingAnalyticsEventTypeAppStart      = 1 << 0,
-    ThinkingAnalyticsEventTypeAppEnd        = 1 << 1,
-    ThinkingAnalyticsEventTypeAppClick      = 1 << 2,
-    ThinkingAnalyticsEventTypeAppViewScreen = 1 << 3,
-};
-
-@property (atomic) BOOL flushBeforeEnterBackground;
 - (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType;
-- (BOOL)isAutoTrackEnabled;
-- (BOOL)isAutoTrackEventTypeIgnored:(ThinkingAnalyticsAutoTrackEventType)eventType;
-- (BOOL)isViewTypeIgnored:(Class)aClass ;
-- (UIViewController *)currentViewController;
-- (BOOL)isViewControllerIgnored:(UIViewController *)viewController;
-- (NSString *)getUIViewControllerTitle:(UIViewController *)controller ;
-- (void)trackViewScreen:(UIViewController *)controller;
-- (void)trackViewScreen:(NSString *)url withProperties:(NSDictionary *)properties;
 - (void)ignoreAutoTrackViewControllers:(NSArray *)controllers;
 - (void)ignoreViewType:(Class)aClass;
-- (BOOL)checkProperties:(NSDictionary*)dic;
+
+- (BOOL)showUpWebView:(id)webView WithRequest:(NSURLRequest *)request;
+- (void)addWebViewUserAgent;
+- (void)setLogLevel:(TDLoggingLevel)level;
 
 @end
+
+@interface UIView (ThinkingAnalytics)
+
+- (nullable UIViewController *)viewController;
+
+@property (copy,nonatomic) NSString* thinkingAnalyticsViewID;
+
+@property (nonatomic,assign) BOOL thinkingAnalyticsIgnoreView;
+
+@property (strong,nonatomic) NSDictionary* thinkingAnalyticsViewProperties;
+
+@property (nonatomic, weak, nullable) id thinkingAnalyticsDelegate;
+
+@end
+
+NS_ASSUME_NONNULL_END

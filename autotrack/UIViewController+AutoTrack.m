@@ -1,23 +1,24 @@
-//
-//  UIViewController+AutoTrack.m
-//  TDAnalyticsSDK
-//
-//  Created by THINKINGDATA on 2018/5/3.
-//  Copyright © 2018年 thinkingdata. All rights reserved.
-//
-
 #import "UIViewController+AutoTrack.h"
-#import "ThinkingAnalyticsSDK.h"
-#import "TDLogger.h"
+#import "ThinkingAnalyticsSDKPrivate.h"
 
 @implementation UIViewController (AutoTrack)
+
 - (void)td_autotrack_viewWillAppear:(BOOL)animated {
     @try {
-        UIViewController *viewController = (UIViewController *)self;
-        [[ThinkingAnalyticsSDK sharedInstance] trackViewScreen: viewController];
+        [[ThinkingAnalyticsSDK sharedInstance] viewControlWillAppear:self];
     } @catch (NSException *exception) {
-        TDSDKError(@"%@ error: %@", self, exception);
+        TDLogError(@"%@ error: %@", self, exception);
     }
     [self td_autotrack_viewWillAppear:animated];
 }
+
+-(void)td_autotrack_viewWillDisappear:(BOOL)animated {
+    @try {
+        [[ThinkingAnalyticsSDK sharedInstance] viewControlWillDisappear:self];
+    } @catch (NSException *exception) {
+        TDLogError(@"%@ error: %@", self, exception);
+    }
+    [self td_autotrack_viewWillDisappear:animated];
+}
+
 @end

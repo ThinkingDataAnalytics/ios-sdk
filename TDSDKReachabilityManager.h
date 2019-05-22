@@ -1,12 +1,3 @@
-//
-//  TDSDKReachabilityManager.h
-//  TDAnalyticsSDK
-//
-//  Created by thinkingdata on 2017/6/22.
-//  Copyright © 2017年 thinkingdata. All rights reserved.
-//
-
-
 #import <Foundation/Foundation.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <netinet/in.h>

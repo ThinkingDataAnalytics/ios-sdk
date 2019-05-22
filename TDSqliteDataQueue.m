@@ -1,18 +1,10 @@
-//
-//  TDSqliteDataQueue.m
-//  TDAnalyticsSDK
-//
-//  Created by thinkingdata on 2017/6/22.
-//  Copyright © 2017年 thinkingdata. All rights reserved.
-//
-
 #import "TDSqliteDataQueue.h"
 #import <sqlite3.h>
 #define MAX_CACHE_SIZE 10000
 
 @implementation TDSqliteDataQueue {
     sqlite3 *_database;
-    NSUInteger _messageCount;
+    NSInteger _messageCount;
 }
 
 - (void) closeDatabase {
@@ -81,7 +73,6 @@
     }
     
     NSMutableArray* contentArray = [[NSMutableArray alloc] init];
-    
     NSString* query = [NSString stringWithFormat:@"SELECT content FROM TDData ORDER BY id ASC LIMIT %lu", (unsigned long)recordSize];
 
     sqlite3_stmt* stmt = NULL;
@@ -89,13 +80,16 @@
     if(rc == SQLITE_OK) {
         while (sqlite3_step(stmt) == SQLITE_ROW) {
             @try {
-                [contentArray addObject:[NSString stringWithUTF8String:(char*)sqlite3_column_text(stmt, 0)]];
+                char* jsonChar = (char*)sqlite3_column_text(stmt, 0);
+                if (!jsonChar) {
+                    return nil;
+                }
+                [contentArray addObject:[NSString stringWithUTF8String:jsonChar]];
             } @catch (NSException *exception) {
             }
         }
         sqlite3_finalize(stmt);
-    }
-    else {
+    } else {
         return nil;
     }
     return [NSArray arrayWithArray:contentArray];
@@ -116,14 +110,14 @@
     return YES;
 }
 
-- (NSUInteger) count {
+- (NSInteger) count {
     return _messageCount;
 }
 
 - (NSInteger) sqliteCount {
     NSString* query = @"select count(*) from TDData";
     sqlite3_stmt* statement = NULL;
-    NSInteger count = -1;
+    NSInteger count = 0;
     int rc = sqlite3_prepare_v2(_database, [query UTF8String], -1, &statement, NULL);
     if(rc == SQLITE_OK) {
         while (sqlite3_step(statement) == SQLITE_ROW) {
@@ -134,23 +128,6 @@
     else {
     }
     return count;
-}
-
-- (BOOL) vacuum {
-#ifdef THINKING_ANALYTICS_ENABLE_VACUUM
-    @try {
-        NSString* query = @"VACUUM";
-        char* errMsg;
-        if (sqlite3_exec(_database, [query UTF8String], NULL, NULL, &errMsg) != SQLITE_OK) {
-            return NO;
-        }
-        return YES;
-    } @catch (NSException *exception) {
-        return NO;
-    }
-#else
-    return YES;
-#endif
 }
 
 @end

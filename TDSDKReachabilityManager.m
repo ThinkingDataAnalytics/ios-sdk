@@ -1,12 +1,3 @@
-//
-//  TDSDKReachabilityManager.m
-//  TDAnalyticsSDK
-//
-//  Created by thinkingdata on 2017/6/22.
-//  Copyright © 2017年 thinkingdata. All rights reserved.
-//
-
-
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 #import <netdb.h>
@@ -18,8 +9,6 @@
 #import "TDSDKReachabilityManager.h"
 
 #pragma mark IPv6 Support
-//Reachability fully support IPv6.  For full details, see ReadMe.md.
-
 
 NSString *kSAReachabilityChangedNotification = @"kSANetworkReachabilityChangedNotification";
 
@@ -84,9 +73,6 @@ NSString *kSAReachabilityChangedNotification = @"kSANetworkReachabilityChangedNo
 //reachabilityForLocalWiFi has been removed from the sample.  See ReadMe.md for more information.
 //+ (instancetype)reachabilityForLocalWiFi
 
-
-
-
 #pragma mark - Network Flag Handling
 
 - (TDReachabilityStatus)networkStatusForFlags:(SCNetworkReachabilityFlags)flags
@@ -134,7 +120,6 @@ NSString *kSAReachabilityChangedNotification = @"kSANetworkReachabilityChangedNo
     return returnValue;
 }
 
-
 - (TDReachabilityStatus)currentReachabilityStatus
 {
     NSAssert(_reachabilityRef != NULL, @"currentNetworkStatus called with NULL SCNetworkReachabilityRef");
@@ -156,6 +141,5 @@ NSString *kSAReachabilityChangedNotification = @"kSANetworkReachabilityChangedNo
         CFRelease(_reachabilityRef);
     }
 }
-
 
 @end

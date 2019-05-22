@@ -1,18 +1,11 @@
-//
-//  TDAnalyticsSDK
-//
-//  Created by THINKINGDATA on 2018/5/3.
-//  Copyright © 2018年 thinkingdata. All rights reserved.
-//
-
 #import "TDSwizzler.h"
 #import <objc/runtime.h>
-#import "TDLogger.h"
+#import "TDLogging.h"
+
+#define MAPTABLE_ID(x) (__bridge id)((void *)x)
 
 #define MIN_ARGS 2
 #define MAX_ARGS 4
-#define MIN_BOOL_ARGS 3
-#define MAX_BOOL_ARGS 3
 
 @interface TDSwizzle : NSObject
 
@@ -60,25 +53,6 @@ static void td_swizzledMethod_3(id self, SEL _cmd, id arg) {
     }
 }
 
-static void td_swizzledMethod_3_bool(id self, SEL _cmd, BOOL arg) {
-    Class klass = [self class];
-    while (klass) {
-        Method aMethod = class_getInstanceMethod(klass, _cmd);
-        TDSwizzle *swizzle = (TDSwizzle *)[swizzles objectForKey:MAPTABLE_ID(aMethod)];
-        if (swizzle) {
-            ((void(*)(id, SEL, BOOL))swizzle.originalMethod)(self, _cmd, arg);
-            
-            NSEnumerator *blocks = [swizzle.blocks objectEnumerator];
-            swizzleBlock block;
-            while((block = [blocks nextObject])) {
-                block(self, _cmd, [NSNumber numberWithBool:arg]);
-            }
-            break;
-        }
-        klass = class_getSuperclass(klass);
-    }
-}
-
 static void td_swizzledMethod_4(id self, SEL _cmd, id arg, id arg2) {
     Method aMethod = class_getInstanceMethod([self class], _cmd);
     TDSwizzle *swizzle = (TDSwizzle *)[swizzles objectForKey:(__bridge id)((void *)aMethod)];
@@ -97,21 +71,12 @@ static void td_swizzledMethod_4(id self, SEL _cmd, id arg, id arg2) {
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 static void (*td_swizzledMethods[MAX_ARGS - MIN_ARGS + 1])() = {td_swizzledMethod_2, td_swizzledMethod_3, td_swizzledMethod_4};
 #pragma clang diagnostic pop
-static void (*td_swizzledMethods_bool[MAX_BOOL_ARGS - MIN_BOOL_ARGS + 1])(id, SEL, BOOL) = {td_swizzledMethod_3_bool};
 
 @implementation TDSwizzler
 
 + (void)load {
     swizzles = [NSMapTable mapTableWithKeyOptions:(NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality)
                                      valueOptions:(NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPointerPersonality)];
-}
-
-+ (void)printSwizzles {
-    NSEnumerator *en = [swizzles objectEnumerator];
-    TDSwizzle *swizzle;
-    while((swizzle = (TDSwizzle *)[en nextObject])) {
-        TDSDKDebug(@"%@", swizzle);
-    }
 }
 
 + (TDSwizzle *)swizzleForMethod:(Method)aMethod {
@@ -146,8 +111,7 @@ static void (*td_swizzledMethods_bool[MAX_BOOL_ARGS - MIN_BOOL_ARGS + 1])(id, SE
                   named:(NSString *)aName {
     Method aMethod = class_getInstanceMethod(aClass, aSelector);
     if (!aMethod) {
-        //        [NSException raise:@"SwizzleException" format:@"Cannot find method for %@ on %@", NSStringFromSelector(aSelector), NSStringFromClass(aClass)];
-        TDSDKDebug(@"SwizzleException:Cannot find method for %@ on %@",NSStringFromSelector(aSelector), NSStringFromClass(aClass));
+        TDLogInfo(@"SwizzleException:Cannot find method for %@ on %@",NSStringFromSelector(aSelector), NSStringFromClass(aClass));
         return;
     }
     
@@ -157,24 +121,6 @@ static void (*td_swizzledMethods_bool[MAX_BOOL_ARGS - MIN_BOOL_ARGS + 1])(id, SE
     }
     
     IMP swizzledMethod = (IMP)td_swizzledMethods[numArgs - 2];
-    [TDSwizzler swizzleSelector:aSelector onClass:aClass withBlock:aBlock andSwizzleMethod:swizzledMethod named:aName];
-}
-
-+ (void)swizzleBoolSelector:(SEL)aSelector
-                    onClass:(Class)aClass
-                  withBlock:(swizzleBlock)aBlock
-                      named:(NSString *)aName {
-    Method aMethod = class_getInstanceMethod(aClass, aSelector);
-    if (!aMethod) {
-        [NSException raise:@"SwizzleBoolException" format:@"Cannot find method for %@ on %@", NSStringFromSelector(aSelector), NSStringFromClass(aClass)];
-    }
-    
-    uint numArgs = method_getNumberOfArguments(aMethod);
-    if (numArgs < MIN_BOOL_ARGS || numArgs > MAX_BOOL_ARGS) {
-        [NSException raise:@"SwizzleBoolException" format:@"Cannot swizzle method with %d args", numArgs];
-    }
-    
-    IMP swizzledMethod = (IMP)td_swizzledMethods_bool[numArgs - 3];
     [TDSwizzler swizzleSelector:aSelector onClass:aClass withBlock:aBlock andSwizzleMethod:swizzledMethod named:aName];
 }
 
@@ -202,7 +148,7 @@ static void (*td_swizzledMethods_bool[MAX_BOOL_ARGS - MIN_BOOL_ARGS + 1])(id, SE
             @try {
                 swizzle = [[TDSwizzle alloc] initWithBlock:aBlock named:aName forClass:aClass selector:aSelector originalMethod:originalMethod];
             } @catch (NSException *exception) {
-                TDSDKError(@"%@ error: %@", self, exception);
+                TDLogError(@"%@ error: %@", self, exception);
             }
             [self setSwizzle:swizzle forMethod:aMethod];
         } else {
