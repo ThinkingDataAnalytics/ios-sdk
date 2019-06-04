@@ -17,7 +17,7 @@
 #import "UIViewController+AutoTrack.h"
 #import "NSObject+TDSwizzle.h"
 
-#define VERSION @"1.1.0"
+#define VERSION @"1.1.2"
 
 static NSString * const APP_START_EVENT = @"ta_app_start";
 static NSString * const APP_END_EVENT = @"ta_app_end";
@@ -121,8 +121,8 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
         self.trackTimer = [NSMutableDictionary dictionary];
         _timeFormatter = [[NSDateFormatter alloc]init];
         _timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
-        NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US@calendar=NSGregorianCalendar"];
-        [_timeFormatter setLocale:locale];
+        _timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        _timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
 
         _applicationWillResignActive = NO;
         _referrerScreenUrl = nil;
@@ -434,9 +434,12 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
     NSString *deviceIdKeychain = [wrapper readDeviceId];
     NSString *installTimesKeychain = [wrapper readInstallTimes];
     BOOL isNotfirst = [[[NSUserDefaults standardUserDefaults] objectForKey:@"thinking_isfirst"] boolValue];
+    if(!isNotfirst) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"thinking_isfirst"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     
-    if(deviceIdKeychain.length == 0 || installTimesKeychain.length == 0)
-    {
+    if(deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
         [wrapper readOldKeychain];
         deviceIdKeychain = [wrapper getDeviceIdOld];
         installTimesKeychain = [wrapper getInstallTimesOld];
@@ -445,39 +448,29 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
     //新客户
     if(deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
         deviceId = defaultDistinctId;
-        uniqueId = defaultDistinctId;
-        
         installTimesKeychain = @"1";
-        [wrapper saveInstallTimes:[NSString stringWithFormat:@"1"]];
-        [wrapper saveDeviceId:deviceId];
-        
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"thinking_isfirst"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
     } else {
         if(!isNotfirst) {
             int setup_int = [installTimesKeychain intValue];
             setup_int++;
             
             installTimesKeychain = [NSString stringWithFormat:@"%d",setup_int];
-            
-            deviceId = deviceIdKeychain;
-            uniqueId = [NSString stringWithFormat:@"%@_%d",deviceIdKeychain,setup_int];
-            
-            [wrapper saveInstallTimes:[NSString stringWithFormat:@"%d",setup_int]];
-            
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"thinking_isfirst"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-        } else {
-            deviceId = deviceIdKeychain;
-            uniqueId = [NSString stringWithFormat:@"%@_%@",deviceIdKeychain,installTimesKeychain];
         }
+        
+        deviceId = deviceIdKeychain;
+    }
+    
+    if([installTimesKeychain isEqualToString:@"1"]) {
+        uniqueId = deviceId;
+    } else {
+        uniqueId = [NSString stringWithFormat:@"%@_%@",deviceId,installTimesKeychain];
     }
     
     [wrapper saveDeviceId:deviceId];
     [wrapper saveInstallTimes:installTimesKeychain];
     
-    self.uniqueId = [uniqueId copy];
-    self.deviceId = [deviceId copy];
+    self.uniqueId = uniqueId;
+    self.deviceId = deviceId;
 }
 
 - (NSDictionary *)getAutomaticData {
@@ -707,6 +700,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
 
 - (void)logout {
     self.accountId = nil;
+    [self saveLoginId];
 }
 
 - (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue {
@@ -838,24 +832,30 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
                                                                      options:NSJSONReadingMutableContainers
                                                                        error:&err];
     id dataArr = [eventDict objectForKey:@"data"];
-    if ([dataArr isKindOfClass:[NSArray class]])
-    {
+    if ([dataArr isKindOfClass:[NSArray class]]) {
         NSDictionary *dataInfo = [dataArr objectAtIndex:0];
-        NSString *type = [dataInfo objectForKey:@"#type"];
-        NSString *event_name = [dataInfo objectForKey:@"#event_name"];
-        NSString *time = [dataInfo objectForKey:@"#time"];
-        NSDictionary *properties = [dataInfo objectForKey:@"properties"];
-        NSMutableDictionary *dic = [properties mutableCopy];
-        [dic removeObjectForKey:@"#account_id"];
-        [dic removeObjectForKey:@"#distinct_id"];
-        [dic removeObjectForKey:@"#device_id"];
-        [dic removeObjectForKey:@"#lib"];
-        [dic removeObjectForKey:@"#lib_version"];
-        [dic removeObjectForKey:@"#screen_height"];
-        [dic removeObjectForKey:@"#screen_width"];
-        
-        NSDate *destDate= [_timeFormatter dateFromString:time];
-        [self click:event_name withProperties:dic withType:type withTime:destDate isCheckProperties:NO];
+        if(dataInfo != nil) {
+            NSString *type = [dataInfo objectForKey:@"#type"];
+            NSString *event_name = [dataInfo objectForKey:@"#event_name"];
+            NSString *time = [dataInfo objectForKey:@"#time"];
+            NSDictionary *properties = [dataInfo objectForKey:@"properties"];
+            NSMutableDictionary *dic = [properties mutableCopy];
+            [dic removeObjectForKey:@"#account_id"];
+            [dic removeObjectForKey:@"#distinct_id"];
+            [dic removeObjectForKey:@"#device_id"];
+            [dic removeObjectForKey:@"#lib"];
+            [dic removeObjectForKey:@"#lib_version"];
+            [dic removeObjectForKey:@"#screen_height"];
+            [dic removeObjectForKey:@"#screen_width"];
+            
+            dispatch_async(self.serialQueue, ^{
+                NSDate *destDate;
+                if([time isKindOfClass:[NSString class]] && time.length > 0) {
+                    destDate = [self->_timeFormatter dateFromString:time];
+                }
+                [self click:event_name withProperties:dic withType:type withTime:destDate isCheckProperties:NO];
+            });
+        }
     }
 }
 
