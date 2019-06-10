@@ -17,7 +17,7 @@
 #import "UIViewController+AutoTrack.h"
 #import "NSObject+TDSwizzle.h"
 
-#define VERSION @"1.1.2"
+#define VERSION @"1.1.3"
 
 static NSString * const APP_START_EVENT = @"ta_app_start";
 static NSString * const APP_END_EVENT = @"ta_app_end";
@@ -476,7 +476,6 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
 - (NSDictionary *)getAutomaticData {
     NSMutableDictionary *p = [NSMutableDictionary dictionary];
     UIDevice *device = [UIDevice currentDevice];
-    [p setValue:[[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"] forKey:@"#app_version"];
     
     [self getDeviceUniqueId];
     [p setValue:self.deviceId forKey:@"#device_id"];
@@ -905,6 +904,8 @@ withProperties:(NSDictionary *)propertieDict
             [dic setObject:networkType forKey:@"#network_type"];
         }
         
+        [dic setValue:[[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"] forKey:@"#app_version"];
+        
         if([type isEqualToString:@"track"]) {
             [dic addEntriesFromDictionary:self.systemProperties];
         }
@@ -1087,15 +1088,15 @@ withProperties:(NSDictionary *)propertieDict
                 NSString *errMsg = [NSString stringWithFormat:@"%@ network failure with response '%@'.", self, urlResponseContent];
                 TDLogError(@"%@", errMsg);
             } else {
-                NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-                if([ret isKindOfClass:[NSDictionary class]] && [[[ret copy] objectForKey:@"code"] isEqual:[NSNumber numberWithInt:0]])
-                {
+//                NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+//                if([ret isKindOfClass:[NSDictionary class]] && [[[ret copy] objectForKey:@"code"] isEqual:[NSNumber numberWithInt:0]])
+//                {
                     flushSucc = YES;
                     NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
                     NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
                     NSString *logingStr=[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding];
                     TDLogDebug(@"fluch success :%@", logingStr);
-                }
+//                }
             }
             
             dispatch_semaphore_signal(flushSem);
