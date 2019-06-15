@@ -1,122 +1,143 @@
 #import "ThinkingAnalyticsSDK.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "TDSqliteDataQueue.h"
-#include <sys/sysctl.h>
 
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 
 #import "TDSDKReachabilityManager.h"
 #import "NSData+TDGzip.h"
-#import <sys/utsname.h>
 
 #import "TDKeychainItemWrapper.h"
 #import <objc/runtime.h>
-#import "TDAutoTrackUtils.h"
 #import "TDSwizzler.h"
 #import "UIViewController+AutoTrack.h"
 #import "NSObject+TDSwizzle.h"
-
-#define VERSION @"1.1.3"
-
-static NSString * const APP_START_EVENT = @"ta_app_start";
-static NSString * const APP_END_EVENT = @"ta_app_end";
-static NSString * const APP_VIEW_SCREEN_EVENT = @"ta_app_view";
-static NSString * const RESUME_FROM_BACKGROUND_PROPERTY = @"#resume_from_background";
-static NSString * const SCREEN_NAME_PROPERTY = @"#screen_name";
-static NSString * const SCREEN_URL_PROPERTY = @"#url";
-static NSString * const SCREEN_REFERRER_URL_PROPERTY = @"#referrer";
+#import "TDNetwork.h"
+#import "TDDeviceInfo.h"
+#import "TDFlushConfig.h"
 
 static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 static const NSUInteger kBatchSize = 50;
-
-static ThinkingAnalyticsSDK *sharedInstance = nil;
+static NSUInteger const TA_PROPERTY_LENGTH_LIMITATION = 2048;
+static NSUInteger const TA_PROPERTY_CRASH_LENGTH_LIMITATION = 8191*2;
 
 @interface ThinkingAnalyticsSDK()<NSURLSessionDelegate>
-{
-}
 
 @property (atomic, copy) NSString *appid;
 @property (atomic, copy) NSString *serverURL;
-@property (atomic, copy) NSString *configureURL;
 @property (atomic, copy) NSString *accountId;
-@property (atomic, copy) NSString *uniqueId;
-@property (atomic, copy) NSString *deviceId;
 @property (atomic, copy) NSString *identifyId;
 
 @property (atomic, strong) NSDictionary *systemProperties;
-@property (atomic, strong) NSDictionary *automaticData;
 @property (nonatomic, strong) NSMutableDictionary *trackTimer;
 
-@property (nonatomic) dispatch_queue_t serialQueue;
-@property (nonatomic) dispatch_queue_t networkQueue;
-@property (nonatomic, strong) NSPredicate *regexKey;
+@property (atomic, strong) NSPredicate *regexKey;
 
 @property (atomic, strong) TDSqliteDataQueue *dataQueue;
+@property (atomic, strong) TDDeviceInfo *deviceInfo;
+@property (atomic, strong) TDFlushConfig *flushConfig;
+@property (atomic, strong) TDNetwork *network;
+
 @property (nonatomic, strong) NSTimer *timer;
 
-@property (nonatomic, strong) NSMutableArray *ignoredViewControllers;
-@property (nonatomic, strong) NSMutableArray *ignoredViewTypeList;
+@property (atomic, strong) NSMutableSet *ignoredViewControllers;
+@property (atomic, strong) NSMutableSet *ignoredViewTypeList;
 
 @property (nonatomic, assign) UIBackgroundTaskIdentifier taskId;
 @property (nonatomic, strong) CTTelephonyNetworkInfo *telephonyInfo;
 
-@property (atomic) BOOL isUploading;
+@property (nonatomic, copy) NSDictionary<NSString *, id> *(^dynamicSuperProperties)(void); 
 
 @end
 
-typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
-    ThinkingNetworkTypeNONE     = 0,
-    ThinkingNetworkType2G       = 1 << 0,
-    ThinkingNetworkType3G       = 1 << 1,
-    ThinkingNetworkType4G       = 1 << 2,
-    ThinkingNetworkTypeWIFI     = 1 << 3,
-    ThinkingNetworkTypeALL      = 0xFF,
-};
-
 @implementation ThinkingAnalyticsSDK{
     NSDateFormatter *_timeFormatter;
-    NSInteger _uploadInterval;
-    NSInteger _uploadSize;
-    ThinkingNetworkType _networkType;
     ThinkingAnalyticsAutoTrackEventType _autoTrackEventType;
     BOOL _applicationWillResignActive;
     BOOL _appRelaunched;
-    NSString *_referrerScreenUrl;
-    NSDictionary *_lastScreenTrackProperties;
     NSString *_userAgent;
 }
 
-+ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[self alloc] initWithAppkey:appId
-                                          withChannel:nil
-                                        withServerURL:[NSString stringWithFormat:@"%@/sync",url]
-                                      andConfigureURL:[NSString stringWithFormat:@"%@/config",url]];
-    });
-    return sharedInstance;
-}
+static ThinkingAnalyticsSDK *sharedInstance = nil;
 
-+ (ThinkingAnalyticsSDK *)sharedInstance {
-    return sharedInstance;
-}
+static NSMutableDictionary *instances;
+static NSString *defaultProjectAppid;
 
-- (instancetype)initWithAppkey:(NSString *)appid
-                   withChannel:(NSString *)channel
-                 withServerURL:(NSString *)serverURL
-               andConfigureURL:(NSString *)configureURL {
-    TDLogInfo(@"Thank you very much for using Thinking Data SDK. We will do our best to provide you with the best service.");
-    TDLogInfo(@"Thinking Data SDK version:%@",VERSION);
+static BOOL isUploading;
+
+static dispatch_queue_t serialQueue;
+static dispatch_queue_t networkQueue;
+
++ (nullable ThinkingAnalyticsSDK *)sharedInstance
+{
+    if (instances.count == 0) {
+        TDLogError(@"sharedInstance called before creating a Thinking instance");
+        return nil;
+    }
     
-    if (self = [self init]) {
-        _networkType = ThinkingNetworkType3G | ThinkingNetworkType4G | ThinkingNetworkTypeWIFI;
+    if (instances.count > 1) {
+//        TDLogDebug(@"sharedInstance called with multiple thinkingsdk instances. Using (the first) token %@", defaultProjectAppid);
+    }
+    
+    return instances[defaultProjectAppid];
+}
+
++ (ThinkingAnalyticsSDK *)sharedInstanceWithAppid:(NSString *)appid
+{
+    if (instances[appid]) {
+        return instances[appid];
+    } else {
+        TDLogError(@"sharedInstanceWithAppid called before creating a Thinking instance");
+        return nil;
+    }
+}
+
++ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url
+{
+    if (instances[appId]) {
+        return instances[appId];
+    } else if(url.length == 0) {
+        return nil;
+    }
+    
+    return [[self alloc] initWithAppkey:appId withServerURL:url];
+}
+
+- (instancetype)init:(NSString *)appID
+{
+    if (self = [super init]) {
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            instances = [NSMutableDictionary dictionary];
+            defaultProjectAppid = appID;
+        });
+    }
+    
+    return self;
+}
+
++ (void)initialize {
+    static dispatch_once_t ThinkingOnceToken;
+    dispatch_once(&ThinkingOnceToken, ^{
+        NSString *queuelabel = [NSString stringWithFormat:@"com.Thinkingdata.%p", (void *)self];
+        serialQueue = dispatch_queue_create([queuelabel UTF8String], DISPATCH_QUEUE_SERIAL);
+        NSString *networkLabel = [queuelabel stringByAppendingString:@".network"];
+        networkQueue = dispatch_queue_create([networkLabel UTF8String], DISPATCH_QUEUE_SERIAL);
+        isUploading = NO;
+    });
+}
+
++ (dispatch_queue_t)serialQueue {
+    return serialQueue;
+}
+
+- (instancetype)initWithAppkey:(NSString *)appid withServerURL:(NSString *)serverURL {
+    if (self = [self init:appid]) {
         _autoTrackEventType = ThinkingAnalyticsEventTypeNone;
         
-        self.serverURL = serverURL;
-        self.configureURL = configureURL;
+        self.serverURL = [NSString stringWithFormat:@"%@/sync",serverURL];
         self.appid = appid;
-        self.isUploading = NO;
         
         self.trackTimer = [NSMutableDictionary dictionary];
         _timeFormatter = [[NSDateFormatter alloc]init];
@@ -125,10 +146,8 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
         _timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
 
         _applicationWillResignActive = NO;
-        _referrerScreenUrl = nil;
-        _ignoredViewControllers = [[NSMutableArray alloc] init];
-        _ignoredViewTypeList = [[NSMutableArray alloc] init];
-        _lastScreenTrackProperties = nil;
+        _ignoredViewControllers = [[NSMutableSet alloc] init];
+        _ignoredViewTypeList = [[NSMutableSet alloc] init];
         
         self.taskId = UIBackgroundTaskInvalid;
         self.telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
@@ -136,98 +155,162 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
         NSString *keyPattern = @"^[a-zA-Z][a-zA-Z\\d_#]{0,49}$";
         self.regexKey = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", keyPattern];
         
-        self.dataQueue = [[TDSqliteDataQueue alloc] initWithPath:[self pathForName:@"data"]];
+        self.dataQueue = [TDSqliteDataQueue sharedInstanceWithAppid:appid];
         if (self.dataQueue == nil) {
             TDLogError(@"SqliteException: init SqliteDataQueue failed");
         }
         
+        self.deviceInfo = [TDDeviceInfo sharedManager];
+        self.flushConfig = [TDFlushConfig sharedManagerWithAppid:appid withServerURL:serverURL];
+        
         [self getConfig];
-        [self updateConfig];
         [self setUpListeners];
         
-        self.automaticData = [self getAutomaticData];
-        NSString *queuelabel = [NSString stringWithFormat:@"com.Thinkingdata.%p", (void *)self];
-        self.serialQueue = dispatch_queue_create([queuelabel UTF8String], DISPATCH_QUEUE_SERIAL);
-        NSString *networkLabel = [queuelabel stringByAppendingString:@".network"];
-        self.networkQueue = dispatch_queue_create([networkLabel UTF8String], DISPATCH_QUEUE_SERIAL);
+        _network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.serverURL] withAutomaticData:_deviceInfo.automaticData];
+        instances[appid] = self;
     }
-    
-    TDLogInfo(@"init ThinkingAnalytics SDK with appid: '%@' ", _appid);
     return self;
 }
 
--(void)getConfig {
-    [self getSysPro];
-    [self getLoginId];
-    [self getIdentifyId];
-    [self getBatchSizeAndInterval];
-}
-
-- (NSString *)getIdentifier {
-    NSString *anonymityId = NULL;
-    
-    if (NSClassFromString(@"UIDevice")) {
-        anonymityId = [[UIDevice currentDevice].identifierForVendor UUIDString];
-    }
-    
-    if (!anonymityId) {
-        anonymityId = [[NSUUID UUID] UUIDString];
-    }
-    
-    return anonymityId;
-}
-
--(void)updateConfig
+- (NSString *)description
 {
-    void (^block)(NSData*, NSURLResponse*, NSError*) = ^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
-            return;
-        }
+    return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - appid: %@ serverUrl:%@>", (void *)self, self.appid, self.serverURL];
+}
 
-        NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-        if ([ret isKindOfClass:[NSDictionary class]] && [[[ret copy] objectForKey:@"code"] isEqual:[NSNumber numberWithInt:0]])
-        {
-            NSDictionary *dic = [[ret copy] objectForKey:@"data"];
-            NSInteger sync_interval = [[[dic copy] objectForKey:@"sync_interval"] unsignedIntegerValue];
-            NSInteger sync_batch_size = [[[dic copy] objectForKey:@"sync_batch_size"] unsignedIntegerValue];
-            if (sync_interval != self.uploadInterval && sync_interval > 0) {
-                self.uploadInterval = sync_interval;
-                [[NSUserDefaults standardUserDefaults]setInteger:sync_interval forKey:@"thinkingdata_uploadInterval"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-            }
-            if (sync_batch_size != self.uploadSize && sync_batch_size > 0) {
-                self.uploadSize = sync_batch_size;
-                [[NSUserDefaults standardUserDefaults]setInteger:sync_batch_size forKey:@"thinkingdata_uploadSize"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-            }
-            TDLogDebug(@"uploadBatchSize:%d Interval:%d", sync_batch_size, sync_interval);
-        }
-        else if( [[[ret copy] objectForKey:@"code"] isEqual:[NSNumber numberWithInt:-2]]) {
-            TDLogError(@"APPID is wrong");
-        }
-        else {
-            TDLogError(@"updateBatchSizeAndInterval failed");
-        }
-    };
+-(void)getConfig {
+    [self unarchiveAccountID];
+    [self unarchiveSuperProperties];
+    [self unarchiveIdentifyId];
     
-    NSString *urlStr = [NSString stringWithFormat:@"%@?appid=%@",self.configureURL,self.appid];
-    NSURL *URL = [NSURL URLWithString:urlStr];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
-    [request setHTTPMethod:@"Get"];
-    NSURLSession * session = [NSURLSession sharedSession];
-    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:block];
-    [task resume];
+    if(self.accountId.length == 0) {
+        [self getLoginId];
+        [self archiveAccountID:self.accountId];
+        [self deleteOldLoginId];
+    }
+}
+
+- (void)deleteOldLoginId {
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"thinkingdata_accountId"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)archiveIdentifyId:(NSString *)identifyId {
+    NSString *filePath = [self identifyIdFilePath];
+    if (![self archiveObject:[identifyId copy] withFilePath:filePath]) {
+        TDLogError(@"%@ unable to archive identifyId", self);
+    }
+}
+
+-(void)unarchiveIdentifyId {
+    NSString *identifyId = (NSString *)[ThinkingAnalyticsSDK unarchiveFromFile:[self identifyIdFilePath] asClass:[NSString class]];
+    self.identifyId = identifyId;
+}
+
+- (void)unarchiveAccountID {
+    NSString *accountID = (NSString *)[ThinkingAnalyticsSDK unarchiveFromFile:[self accountIDFilePath] asClass:[NSString class]];
+    self.accountId = accountID;
+}
+
+- (void)archiveAccountID:(NSString *)accountID {
+    NSString *filePath = [self accountIDFilePath];
+    if (![self archiveObject:[accountID copy] withFilePath:filePath]) {
+        TDLogError(@"%@ unable to archive accountID", self);
+    }
+}
+
+- (void)archiveSuperProperties:(NSDictionary *)superProperties {
+    NSString *filePath = [self superPropertiesFilePath];
+    if (![self archiveObject:[superProperties copy] withFilePath:filePath]) {
+        TDLogError(@"%@ unable to archive superProperties", self);
+    }
+}
+
+- (void)unarchiveSuperProperties {
+    NSDictionary *superProperties = (NSDictionary *)[ThinkingAnalyticsSDK unarchiveFromFile:[self superPropertiesFilePath] asClass:[NSDictionary class]];
+    self.systemProperties = [superProperties copy];
+}
+
+- (BOOL)archiveObject:(id)object withFilePath:(NSString *)filePath
+{
+    @try {
+        if (![NSKeyedArchiver archiveRootObject:object toFile:filePath]) {
+            return NO;
+        }
+    } @catch (NSException* exception) {
+        TDLogError(@"Got exception: %@, reason: %@. You can only send to Thinking values that inherit from NSObject and implement NSCoding.", exception.name, exception.reason);
+        return NO;
+    }
+    
+    [self addSkipBackupAttributeToItemAtPath:filePath];
+    return YES;
+}
+
+- (BOOL)addSkipBackupAttributeToItemAtPath:(NSString *)filePathString
+{
+    NSURL *URL = [NSURL fileURLWithPath: filePathString];
+    assert([[NSFileManager defaultManager] fileExistsAtPath: [URL path]]);
+    
+    NSError *error = nil;
+    BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES]
+                                  forKey: NSURLIsExcludedFromBackupKey error: &error];
+    if (!success) {
+        TDLogError(@"Error excluding %@ from backup %@", [URL lastPathComponent], error);
+    }
+    return success;
+}
+
++ (id)unarchiveFromFile:(NSString *)filePath asClass:(Class)class
+{
+    id unarchivedData = nil;
+    @try {
+        unarchivedData = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
+        // this check is inside the try-catch as the unarchivedData may be a non-NSObject, not responding to `isKindOfClass:` or `respondsToSelector:`
+        if (![unarchivedData isKindOfClass:class]) {
+            unarchivedData = nil;
+        }
+    }
+    @catch (NSException *exception) {
+        TDLogError(@"%@ unable to unarchive data in %@, starting fresh", self, filePath);
+        // Reset un archived data
+        unarchivedData = nil;
+        // Remove the (possibly) corrupt data from the disk
+        NSError *error = NULL;
+        BOOL removed = [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
+        if (!removed) {
+            TDLogDebug(@"%@ unable to remove archived file at %@ - %@", self, filePath, error);
+        }
+    }
+    return unarchivedData;
+}
+
+- (NSString *)superPropertiesFilePath {
+    return [self filePathFor:@"superProperties"];
+}
+
+- (NSString *)accountIDFilePath
+{
+    return [self filePathFor:@"accountID"];
+}
+
+- (NSString *)eventsFilePath
+{
+    return [self filePathFor:@"syncConfig"];
+}
+
+- (NSString *)identifyIdFilePath {
+    return [self filePathFor:@"identifyId"];
+}
+
+- (NSString *)filePathFor:(NSString *)data
+{
+    NSString *filename = [NSString stringWithFormat:@"thinking-%@-%@.plist", self.appid, data];
+    return [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject]
+            stringByAppendingPathComponent:filename];
 }
 
 - (void)setNetworkType:(ThinkingAnalyticsNetworkType)type
 {
-    if (type == TDNetworkTypeDefault) {
-        _networkType = ThinkingNetworkTypeWIFI | ThinkingNetworkType3G | ThinkingNetworkType4G;
-    } else if (type == TDNetworkTypeOnlyWIFI) {
-        _networkType = ThinkingNetworkTypeWIFI;
-    } else if (type == TDNetworkTypeALL) {
-        _networkType = ThinkingNetworkTypeWIFI | ThinkingNetworkType3G | ThinkingNetworkType4G | ThinkingNetworkType2G;
-    }
+    [self.flushConfig setNetworkType:type];
 }
 
 - (void)setUpListeners {
@@ -263,7 +346,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
     TDLogInfo(@"%@ application will enter foreground", self);
     
     _appRelaunched = YES;
-    dispatch_async(self.serialQueue, ^{
+    dispatch_async(serialQueue, ^{
         if (self.taskId != UIBackgroundTaskInvalid) {
             [[ThinkingAnalyticsSDK sharedUIApplication] endBackgroundTask:self.taskId];
             self.taskId = UIBackgroundTaskInvalid;
@@ -292,7 +375,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
     dispatch_group_t bgGroup = dispatch_group_create();
 
     dispatch_group_enter(bgGroup);
-    dispatch_async(self.serialQueue, ^{
+    dispatch_async(serialQueue, ^{
         NSNumber *currentSystemUpTime = @([[NSDate date] timeIntervalSince1970]);
         NSArray *keys = [self.trackTimer allKeys];
         for (NSString *key in keys) {
@@ -317,7 +400,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
     });
     
     if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
-        [self autotrack:APP_END_EVENT properties:nil];
+        [self autotrack:APP_END_EVENT properties:nil withTime:nil];
     }
     
     dispatch_group_enter(bgGroup);
@@ -350,7 +433,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
     }
     _applicationWillResignActive = NO;
     
-    dispatch_async(self.serialQueue, ^{
+    dispatch_async(serialQueue, ^{
         NSNumber *currentSystemUpTime = @([[NSDate date] timeIntervalSince1970]);
         NSArray *keys = [self.trackTimer allKeys];
         for (NSString *key in keys) {
@@ -366,7 +449,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
         if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
             [self autotrack:APP_START_EVENT properties:@{
                                                          RESUME_FROM_BACKGROUND_PROPERTY : @(_appRelaunched)
-                                                         }];
+                                                         } withTime:nil];
         }
         if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
             [self timeEvent:APP_END_EVENT];
@@ -375,179 +458,15 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
     
 }
 
--(void)getBatchSizeAndInterval
-{
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    NSInteger interval = [userDefaults integerForKey:@"thinkingdata_uploadInterval"];
-    if (interval <= 0) {
-        self.uploadInterval = 60;
-        [userDefaults setInteger:60 forKey:@"thinkingdata_uploadInterval"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    } else {
-        self.uploadInterval = interval;
-    }
-    NSInteger size = [userDefaults integerForKey:@"thinkingdata_uploadSize"];
-    if (size <= 0) {
-        self.uploadSize = 100;
-        [userDefaults setInteger:100 forKey:@"thinkingdata_uploadSize"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    } else {
-        self.uploadSize = size;
-    }
-}
-
-- (NSString *)deviceModel {
-    size_t size;
-    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
-    char answer[size];
-    sysctlbyname("hw.machine", answer, &size, NULL, 0);
-    NSString *results = nil;
-    if (size) {
-        results = @(answer);
-    } else {
-        TDLogError(@"Failed fetch hw.machine from sysctl.");
-    }
-    return results;
-}
-
-- (NSString *)getlibVersion {
-    return VERSION;
-}
-
 - (NSString *)getDistinctId{
     if(_identifyId.length == 0)
-        return _uniqueId;
+        return _deviceInfo.uniqueId;
     else
         return _identifyId;
 }
 
 - (NSString *)getDeviceId {
-    return _deviceId;
-}
-
-- (void)getDeviceUniqueId {
-    NSString *defaultDistinctId = [self getIdentifier];
-    NSString *deviceId;
-    NSString *uniqueId;
-    
-    TDKeychainItemWrapper *wrapper = [[TDKeychainItemWrapper alloc] init];
-    NSString *deviceIdKeychain = [wrapper readDeviceId];
-    NSString *installTimesKeychain = [wrapper readInstallTimes];
-    BOOL isNotfirst = [[[NSUserDefaults standardUserDefaults] objectForKey:@"thinking_isfirst"] boolValue];
-    if(!isNotfirst) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"thinking_isfirst"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    
-    if(deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
-        [wrapper readOldKeychain];
-        deviceIdKeychain = [wrapper getDeviceIdOld];
-        installTimesKeychain = [wrapper getInstallTimesOld];
-    }
-    
-    //新客户
-    if(deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
-        deviceId = defaultDistinctId;
-        installTimesKeychain = @"1";
-    } else {
-        if(!isNotfirst) {
-            int setup_int = [installTimesKeychain intValue];
-            setup_int++;
-            
-            installTimesKeychain = [NSString stringWithFormat:@"%d",setup_int];
-        }
-        
-        deviceId = deviceIdKeychain;
-    }
-    
-    if([installTimesKeychain isEqualToString:@"1"]) {
-        uniqueId = deviceId;
-    } else {
-        uniqueId = [NSString stringWithFormat:@"%@_%@",deviceId,installTimesKeychain];
-    }
-    
-    [wrapper saveDeviceId:deviceId];
-    [wrapper saveInstallTimes:installTimesKeychain];
-    
-    self.uniqueId = uniqueId;
-    self.deviceId = deviceId;
-}
-
-- (NSDictionary *)getAutomaticData {
-    NSMutableDictionary *p = [NSMutableDictionary dictionary];
-    UIDevice *device = [UIDevice currentDevice];
-    
-    [self getDeviceUniqueId];
-    [p setValue:self.deviceId forKey:@"#device_id"];
-    CTCarrier *carrier = [_telephonyInfo subscriberCellularProvider];
-    [p setValue:carrier.carrierName forKey:@"#carrier"];
-    CGSize size = [UIScreen mainScreen].bounds.size;
-    [p addEntriesFromDictionary:@{
-                                  @"#lib": @"iOS",
-                                  @"#lib_version": [self getlibVersion],
-                                  @"#manufacturer": @"Apple",
-                                  @"#device_model": [self iphoneType],
-                                  @"#os": [device systemName],
-                                  @"#os_version": [device systemVersion],
-                                  @"#screen_height": @((NSInteger)size.height),
-                                  @"#screen_width": @((NSInteger)size.width)
-                                  }];
-    return [p copy];
-}
-
-//TODO
-- (NSString *)iphoneType {
-    struct utsname systemInfo;
-    uname(&systemInfo);
-    NSString *platform = [NSString stringWithCString:systemInfo.machine encoding:NSASCIIStringEncoding];
-    if ([platform isEqualToString:@"iPhone1,1"]) return @"iPhone 2G";
-    if ([platform isEqualToString:@"iPhone1,2"]) return @"iPhone 3G";
-    if ([platform isEqualToString:@"iPhone2,1"]) return @"iPhone 3GS";
-    if ([platform isEqualToString:@"iPhone3,1"]) return @"iPhone 4";
-    if ([platform isEqualToString:@"iPhone3,2"]) return @"iPhone 4";
-    if ([platform isEqualToString:@"iPhone3,3"]) return @"iPhone 4";
-    if ([platform isEqualToString:@"iPhone4,1"]) return @"iPhone 4S";
-    if ([platform isEqualToString:@"iPhone5,1"]) return @"iPhone 5";
-    if ([platform isEqualToString:@"iPhone5,2"]) return @"iPhone 5";
-    if ([platform isEqualToString:@"iPhone5,3"]) return @"iPhone 5c";
-    if ([platform isEqualToString:@"iPhone5,4"]) return @"iPhone 5c";
-    if ([platform isEqualToString:@"iPhone6,1"]) return @"iPhone 5s";
-    if ([platform isEqualToString:@"iPhone6,2"]) return @"iPhone 5s";
-    if ([platform isEqualToString:@"iPhone7,1"]) return @"iPhone 6 Plus";
-    if ([platform isEqualToString:@"iPhone7,2"]) return @"iPhone 6";
-    if ([platform isEqualToString:@"iPhone8,1"]) return @"iPhone 6s";
-    if ([platform isEqualToString:@"iPhone8,2"]) return @"iPhone 6s Plus";
-    if ([platform isEqualToString:@"iPhone8,4"]) return @"iPhone SE";
-    if ([platform isEqualToString:@"iPhone9,1"]) return @"iPhone 7";
-    if ([platform isEqualToString:@"iPhone9,2"]) return @"iPhone 7 Plus";
-    if ([platform isEqualToString:@"iPod1,1"])   return @"iPod Touch 1G";
-    if ([platform isEqualToString:@"iPod2,1"])   return @"iPod Touch 2G";
-    if ([platform isEqualToString:@"iPod3,1"])   return @"iPod Touch 3G";
-    if ([platform isEqualToString:@"iPod4,1"])   return @"iPod Touch 4G";
-    if ([platform isEqualToString:@"iPod5,1"])   return @"iPod Touch 5G";
-    if ([platform isEqualToString:@"iPad1,1"])   return @"iPad 1G";
-    if ([platform isEqualToString:@"iPad2,1"])   return @"iPad 2";
-    if ([platform isEqualToString:@"iPad2,2"])   return @"iPad 2";
-    if ([platform isEqualToString:@"iPad2,3"])   return @"iPad 2";
-    if ([platform isEqualToString:@"iPad2,4"])   return @"iPad 2";
-    if ([platform isEqualToString:@"iPad2,5"])   return @"iPad Mini 1G";
-    if ([platform isEqualToString:@"iPad2,6"])   return @"iPad Mini 1G";
-    if ([platform isEqualToString:@"iPad2,7"])   return @"iPad Mini 1G";
-    if ([platform isEqualToString:@"iPad3,1"])   return @"iPad 3";
-    if ([platform isEqualToString:@"iPad3,2"])   return @"iPad 3";
-    if ([platform isEqualToString:@"iPad3,3"])   return @"iPad 3";
-    if ([platform isEqualToString:@"iPad3,4"])   return @"iPad 4";
-    if ([platform isEqualToString:@"iPad3,5"])   return @"iPad 4";
-    if ([platform isEqualToString:@"iPad3,6"])   return @"iPad 4";
-    if ([platform isEqualToString:@"iPad4,1"])   return @"iPad Air";
-    if ([platform isEqualToString:@"iPad4,2"])   return @"iPad Air";
-    if ([platform isEqualToString:@"iPad4,3"])   return @"iPad Air";
-    if ([platform isEqualToString:@"iPad4,4"])   return @"iPad Mini 2G";
-    if ([platform isEqualToString:@"iPad4,5"])   return @"iPad Mini 2G";
-    if ([platform isEqualToString:@"iPad4,6"])   return @"iPad Mini 2G";
-    if ([platform isEqualToString:@"i386"])      return @"iPhone Simulator";
-    if ([platform isEqualToString:@"x86_64"])    return @"iPhone Simulator";
-    return platform;
+    return _deviceInfo.deviceId;
 }
 
 - (NSString *)getNetWorkStates {
@@ -592,38 +511,14 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
     return network;
 }
 
-- (void)saveIdentifyId {
-    [[NSUserDefaults standardUserDefaults] setObject:[_identifyId copy] forKey:@"thinkingdata_identifyId"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-- (void)getIdentifyId {
-    @synchronized (_identifyId) {
-        self.identifyId = [[NSUserDefaults standardUserDefaults] objectForKey:@"thinkingdata_identifyId"];
-    }
-}
-
-- (void)saveLoginId {
-    [[NSUserDefaults standardUserDefaults] setObject:[self.accountId copy] forKey:@"thinkingdata_accountId"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
 - (void)getLoginId {
-    @synchronized (_accountId) {
-        self.accountId = [[NSUserDefaults standardUserDefaults] objectForKey:@"thinkingdata_accountId"];
-    }
+    self.accountId = [[NSUserDefaults standardUserDefaults] objectForKey:@"thinkingdata_accountId"];
 }
 
-- (void)saveSysPro {
-    [[NSUserDefaults standardUserDefaults] setObject:[self.systemProperties copy] forKey:@"thinkingdata_systemProperties"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-- (void)getSysPro {
-    self.systemProperties = [[NSUserDefaults standardUserDefaults] objectForKey:@"thinkingdata_systemProperties"];
-    if (self.systemProperties == nil) {
-        self.systemProperties = [NSDictionary dictionary];
-    }
+- (void)registerDynamicSuperProperties:(NSDictionary<NSString *, id> *(^)(void)) dynamicSuperProperties {
+    dispatch_async(serialQueue, ^{
+        self.dynamicSuperProperties = dynamicSuperProperties;
+    });
 }
 
 - (void)setSuperProperties:(NSDictionary *)properties {
@@ -633,16 +528,16 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
         return;
     }
     
-    if (![self checkPropertyTypes:[properties copy] withEventType:nil]) {
+    if (![self checkPropertyTypes:&properties withEventType:nil isCheckKey:YES]) {
         TDLogError(@"%@ propertieDict error.", properties);
         return;
     }
     
-    dispatch_async(self.serialQueue, ^{
+    dispatch_async(serialQueue, ^{
         NSMutableDictionary *tmp = [NSMutableDictionary dictionaryWithDictionary:self.systemProperties];
         [tmp addEntriesFromDictionary:[properties copy]];
         self.systemProperties = [NSDictionary dictionaryWithDictionary:tmp];
-        [self saveSysPro];
+        [self archiveSuperProperties:self.systemProperties];
     });
 }
 
@@ -650,18 +545,18 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
     if(property.length == 0)
         return;
     
-    dispatch_async(self.serialQueue, ^{
+    dispatch_async(serialQueue, ^{
         NSMutableDictionary *tmp = [NSMutableDictionary dictionaryWithDictionary:self.systemProperties];
         tmp[property] = nil;
         self.systemProperties = [NSDictionary dictionaryWithDictionary:tmp];
-        [self saveSysPro];
+        [self archiveSuperProperties:self.systemProperties];
     });
 }
 
 - (void)clearSuperProperties {
-    dispatch_async(self.serialQueue, ^{
+    dispatch_async(serialQueue, ^{
         self.systemProperties = @{};
-        [self saveSysPro];
+        [self archiveSuperProperties:nil];
     });
 }
 
@@ -675,11 +570,11 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
         return;
     }
     
-    dispatch_async(self.serialQueue, ^{
+    dispatch_async(serialQueue, ^{
         @synchronized (self.identifyId) {
             if(self.identifyId != distinctId) {
                 self.identifyId = distinctId;
-                [self saveIdentifyId];
+                [self archiveIdentifyId:distinctId];
             }
         }
     });
@@ -693,13 +588,13 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
     
     if (![accountId isEqualToString:[self accountId]]) {
         self.accountId = accountId;
-        [self saveLoginId];
+        [self archiveAccountID:accountId];
     }
 }
 
 - (void)logout {
     self.accountId = nil;
-    [self saveLoginId];
+    [self archiveAccountID:nil];
 }
 
 - (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue {
@@ -735,7 +630,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
     if (event.length == 0) {
         return;
     }
-    dispatch_async(self.serialQueue, ^{
+    dispatch_async(serialQueue, ^{
         self.trackTimer[event] = @{@"eventBegin" : eventBegin, @"eventAccumulatedDuration" : [NSNumber numberWithDouble:0]};
     });
 }
@@ -756,8 +651,9 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
 }
 
 - (void)autotrack:(NSString *)event
-       properties:(NSDictionary *)propertieDict {
-    [self click:event withProperties:propertieDict withType:@"track" withTime:nil isCheckProperties:NO];
+       properties:(NSDictionary *)propertieDict
+         withTime:(NSDate *)date {
+    [self click:event withProperties:propertieDict withType:@"track" withTime:date isCheckProperties:NO];
 }
 
 - (BOOL)isValidName:(NSString *) name {
@@ -765,15 +661,39 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
         return [self.regexKey evaluateWithObject:name];
     } @catch (NSException *exception) {
         TDLogError(@"%@: %@", self, exception);
-        return NO;
+        return YES;
     }
 }
 
 - (BOOL)checkProperties:(NSDictionary*)dic {
-    return [self checkPropertyTypes:dic withEventType:nil];
+    dic = [dic copy];
+    return [self checkPropertyTypes:&dic withEventType:nil isCheckKey:YES];
 }
 
-- (BOOL)checkPropertyTypes:(NSDictionary *)properties withEventType:(NSString *)eventType {
+- (NSString *)subByteString:(NSString *)string byteLength:(NSInteger )length {
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF8);
+    NSData* data = [string dataUsingEncoding:enc];
+    NSData* subData = [data subdataWithRange:NSMakeRange(0, length)];
+    NSString* txt = [[NSString alloc] initWithData:subData encoding:enc];
+    
+    NSInteger index = 1;
+    while (index <= 3 && !txt) {
+        if (length > index) {
+            subData = [data subdataWithRange:NSMakeRange(0, length - index)];
+            txt = [[NSString alloc] initWithData:subData encoding:enc];
+        }
+        index ++;
+    }
+    
+    if (!txt) {
+        return string;
+    }
+    return txt;
+}
+
+- (BOOL)checkPropertyTypes:(NSDictionary **)propertiesAddress withEventType:(NSString *)eventType isCheckKey:(BOOL)checkKey{
+    NSDictionary *properties = *propertiesAddress;
+    NSMutableDictionary *newProperties;
     for (id k in properties) {
         if (![k isKindOfClass: [NSString class]]) {
             NSString *errMsg = @"property Key should by NSString";
@@ -781,7 +701,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
             return NO;
         }
         
-        if (![self isValidName: k]) {
+        if (![self isValidName: k] && checkKey) {
             NSString *errMsg = [NSString stringWithFormat:@"property name[%@] is not valid", k];
             TDLogError(errMsg);
             return NO;
@@ -793,15 +713,6 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
             NSString * errMsg = [NSString stringWithFormat:@"property values must be NSString, NSNumber got: %@ %@", [properties[k] class], properties[k]];
             TDLogError(errMsg);
             return NO;
-        }
-        
-        if ([properties[k] isKindOfClass:[NSString class]]) {
-            NSUInteger objLength = [((NSString *)properties[k]) lengthOfBytesUsingEncoding:NSUnicodeStringEncoding];
-            if (objLength > 5000) {
-                NSString * errMsg = [NSString stringWithFormat:@"The value is too long: %@", (NSString *)properties[k]];
-                TDLogError(errMsg);
-                return NO;
-            }
         }
         
         if (eventType.length > 0 && [eventType isEqualToString:@"user_add"]) {
@@ -819,6 +730,30 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
                 return NO;
             }
         }
+        
+        if ([properties[k] isKindOfClass:[NSString class]]) {
+            NSString *string = properties[k];
+            NSUInteger objLength = [((NSString *)string)lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+            NSUInteger valueMaxLength = TA_PROPERTY_LENGTH_LIMITATION;
+
+            if([k isEqualToString:TD_EVENT_PROPERTY_ELEMENT_ID_CRASH_REASON]) {
+                valueMaxLength = TA_PROPERTY_CRASH_LENGTH_LIMITATION;
+            }
+            if (objLength > valueMaxLength) {
+                NSString * errMsg = [NSString stringWithFormat:@"The value is too long: %@", (NSString *)properties[k]];
+                TDLogDebug(errMsg);
+                
+                NSMutableString *newObject = [NSMutableString stringWithString:[self subByteString:string byteLength:valueMaxLength - 1]];
+                if (!newProperties) {
+                    newProperties = [NSMutableDictionary dictionaryWithDictionary:properties];
+                }
+                [newProperties setObject:newObject forKey:k];
+            }
+        }
+    }
+    
+    if (newProperties) {
+        *propertiesAddress = [NSDictionary dictionaryWithDictionary:newProperties];
     }
     
     return YES;
@@ -847,7 +782,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
             [dic removeObjectForKey:@"#screen_height"];
             [dic removeObjectForKey:@"#screen_width"];
             
-            dispatch_async(self.serialQueue, ^{
+            dispatch_async(serialQueue, ^{
                 NSDate *destDate;
                 if([time isKindOfClass:[NSString class]] && time.length > 0) {
                     destDate = [self->_timeFormatter dateFromString:time];
@@ -883,14 +818,16 @@ withProperties:(NSDictionary *)propertieDict
         }
     }
      
-    if (propertieDict && check) {
-        if (![self checkPropertyTypes:[propertieDict copy] withEventType:type]) {
+    if (propertieDict) {
+        if (![self checkPropertyTypes:&propertieDict withEventType:type isCheckKey:check]) {
             TDLogError(@"%@ property error.", propertieDict);
             return;
         }
     }
+         
+    __block NSDictionary *dynamicSuperPropertiesDict = self.dynamicSuperProperties ? self.dynamicSuperProperties() : nil;
     
-    dispatch_async(self.serialQueue, ^{
+    dispatch_async(serialQueue, ^{
         NSString *timeStamp;
         if(time == nil) {
             timeStamp = [self->_timeFormatter stringFromDate:[NSDate date]];
@@ -904,10 +841,16 @@ withProperties:(NSDictionary *)propertieDict
             [dic setObject:networkType forKey:@"#network_type"];
         }
         
-        [dic setValue:[[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"] forKey:@"#app_version"];
+        [dic setObject:self->_deviceInfo.appVersion forKey:@"#app_version"];
         
         if([type isEqualToString:@"track"]) {
             [dic addEntriesFromDictionary:self.systemProperties];
+        }
+        
+        if (dynamicSuperPropertiesDict && [dynamicSuperPropertiesDict isKindOfClass:NSDictionary.class]) {
+            if ([self checkPropertyTypes:&dynamicSuperPropertiesDict withEventType:nil isCheckKey:YES]) {
+                [dic addEntriesFromDictionary:dynamicSuperPropertiesDict];
+            }
         }
         
         if (propertieDict) {
@@ -946,8 +889,8 @@ withProperties:(NSDictionary *)propertieDict
         NSString *loginId = self.accountId;
         
         NSString *distinct;
-        if(self.identifyId.length == 0 && self.uniqueId > 0) {
-            distinct = self.uniqueId;
+        if(self.identifyId.length == 0 && self->_deviceInfo.uniqueId > 0) {
+            distinct = self->_deviceInfo.uniqueId;
         } else if(self.identifyId.length > 0) {
             distinct = self.identifyId;
         }
@@ -971,18 +914,20 @@ withProperties:(NSDictionary *)propertieDict
             [dataDic setObject:loginId forKey:@"#account_id"];
         }
         
-        [self saveClickData:type andEvent:dataDic];
+        NSInteger count = [self saveClickData:type andEvent:dataDic];
         TDLogDebug(@"queueing data:%@", dataDic);
+        
+        if (count >= self.flushConfig.uploadSize && !isUploading) { 
+            [self sync];
+        }
     });
-    
-    if ([[self dataQueue] count] >= self.uploadSize && !self.isUploading) {
-        [self sync];
-    }
 }
 
 - (void)sync
 {
-    [self syncWithCompletion:nil];
+    if(isUploading == NO) {
+        [self syncWithCompletion:nil];
+    }
 }
 
 - (void)syncWithCompletion:(void (^)(void))handler
@@ -997,8 +942,8 @@ withProperties:(NSDictionary *)propertieDict
 
 - (void)dispatchOnNetworkQueue:(void (^)(void))dispatchBlock
 {
-    dispatch_async(self.serialQueue, ^{
-        dispatch_async(self.networkQueue, dispatchBlock);
+    dispatch_async(serialQueue, ^{
+        dispatch_async(networkQueue, dispatchBlock);
     });
 }
 
@@ -1019,149 +964,61 @@ withProperties:(NSDictionary *)propertieDict
     return ThinkingNetworkTypeNONE;
 }
 
-- (void)_sync:(BOOL) vacuumAfterFlushing {
+- (void)_sync:(BOOL)vacuumAfterFlushing {
     NSString *networkType = [self getNetWorkStates];
-    if (!([self convertNetworkType:networkType] & _networkType)) {
+    if (!([self convertNetworkType:networkType] & self.flushConfig.networkTypePolicy)) {
         return;
     }
     
     NSArray *recordArray;
-    @synchronized (self) {
-        recordArray = [self.dataQueue getFirstRecords:kBatchSize];
+    @synchronized (instances) {
+        recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:self.appid];
     }
     
-    __block BOOL flushSucc = YES;
+    BOOL flushSucc = YES;
     while (recordArray.count > 0 && flushSucc) {
-        self.isUploading = YES;
-        NSUInteger batchSize = MIN(recordArray.count, kBatchSize);
+        isUploading = YES;
+        NSUInteger sendSize = recordArray.count;
         
-        NSString *postBody;
-        NSString *jsonString;
-        @try {
-            NSMutableArray *dataArr = [NSMutableArray array];
-            for (int i = 0; i < recordArray.count; i++) {
-                NSData *jsonData = [recordArray[i] dataUsingEncoding:NSUTF8StringEncoding];
-                NSError *err;
-                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData
-                                                                    options:NSJSONReadingMutableContainers
-                                                                      error:&err];
-                [dataArr addObject:dic];
-            }
-            
-            NSDictionary *e = @{
-                                @"data": dataArr,
-                                @"automaticData":_automaticData,
-                                @"#app_id": _appid,
-                                };
-            
-            NSData *jsonData = [NSJSONSerialization dataWithJSONObject:e options:(NSJSONWritingOptions)0 error:nil];
-            jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-            
-            NSData *zippedData = [NSData gzipData:[jsonString dataUsingEncoding:NSUTF8StringEncoding]];
-            postBody = [zippedData base64EncodedStringWithOptions:0];
-        } @catch (NSException *exception) {
-            return ;
-        }
-        
-        NSURL *URL = [NSURL URLWithString:self.serverURL];
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
-        [request setHTTPMethod:@"POST"];
-        [request setHTTPBody:[postBody dataUsingEncoding:NSUTF8StringEncoding]];
-        NSString *contentType = [NSString stringWithFormat:@"text/plain"];
-        [request addValue:contentType forHTTPHeaderField:@"Content-Type"];
-        [request setTimeoutInterval:60.0];
-        
-        dispatch_semaphore_t flushSem = dispatch_semaphore_create(0);
-        
-        void (^block)(NSData*, NSURLResponse*, NSError*) = ^(NSData *data, NSURLResponse *response, NSError *error) {
-            if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
-                flushSucc = NO;
-                TDLogError(@"Networking error");
-                dispatch_semaphore_signal(flushSem);
-                return;
-            }
-            
-            NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse*)response;
-            if([urlResponse statusCode] != 200) {
-                flushSucc = NO;
-                NSString *urlResponseContent = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                NSString *errMsg = [NSString stringWithFormat:@"%@ network failure with response '%@'.", self, urlResponseContent];
-                TDLogError(@"%@", errMsg);
-            } else {
-//                NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-//                if([ret isKindOfClass:[NSDictionary class]] && [[[ret copy] objectForKey:@"code"] isEqual:[NSNumber numberWithInt:0]])
-//                {
-                    flushSucc = YES;
-                    NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
-                    NSString *logingStr=[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding];
-                    TDLogDebug(@"fluch success :%@", logingStr);
-//                }
-            }
-            
-            dispatch_semaphore_signal(flushSem);
-        };
-        
-        NSURLSession * session = [NSURLSession sharedSession];
-        NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:block];
-        [task resume];
-        
-        dispatch_semaphore_wait(flushSem, DISPATCH_TIME_FOREVER);
+        flushSucc = [self.network flushEvents:recordArray withAppid:self.appid];
         
         if(flushSucc) {
-            @synchronized (self) {
-                [self.dataQueue removeFirstRecords:batchSize];
+            @synchronized (instances) {
+                [self.dataQueue removeFirstRecords:sendSize withAppid:self.appid];
+                recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:self.appid];
             }
-        }
-    
-        @synchronized (self) {
-            recordArray = [self.dataQueue getFirstRecords:kBatchSize];
+        } else {
+            break;
         }
     }
-    self.isUploading = NO;
+    isUploading = NO;
 }
 
-- (void)saveClickData:(NSString *)type andEvent:(NSDictionary *)e {
+- (NSInteger)saveClickData:(NSString *)type andEvent:(NSDictionary *)e {
     NSMutableDictionary *event = [[NSMutableDictionary alloc] initWithDictionary:e];
-    @synchronized (self) {
-        [self.dataQueue addObejct:event];
+    NSInteger count;
+    @synchronized (instances) {
+        count = [self.dataQueue addObejct:event withAppid:self.appid];
     }
+    return count;
 }
 
-- (NSString *)pathForName:(NSString *)data {
-    NSString *filename = [NSString stringWithFormat:@"TDData-%@.plist", data];
-    NSString *filepath = [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:filename];
-    return filepath;
-}
-
-- (NSInteger)uploadSize {
-    return _uploadSize;
-}
-
-- (void)setUploadSize:(NSInteger)bulkSize {
-    @synchronized (self) {
-        _uploadSize = bulkSize;
-    }
-}
-
--(NSInteger)uploadInterval{
-    return _uploadInterval;
-}
-
-- (void)setUploadInterval:(NSInteger)uploadInterval
++ (void)restartFlushTimer
 {
-    @synchronized (self) {
-        _uploadInterval = uploadInterval;
+    for (NSString *appid in instances) {
+        dispatch_async(serialQueue, ^{
+            ThinkingAnalyticsSDK *instance = [instances objectForKey:appid];
+            [instance startFlushTimer];
+        });
     }
-    [self startFlushTimer];
 }
 
 - (void)startFlushTimer
 {
     [self stopFlushTimer];
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.uploadInterval > 0) {
-            self.timer = [NSTimer scheduledTimerWithTimeInterval:self.uploadInterval
+        if (self.flushConfig.uploadInterval > 0) {
+            self.timer = [NSTimer scheduledTimerWithTimeInterval:self.flushConfig.uploadInterval
                                                           target:self
                                                         selector:@selector(sync)
                                                         userInfo:nil
@@ -1181,20 +1038,25 @@ withProperties:(NSDictionary *)propertieDict
 
 - (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType {
     _autoTrackEventType = eventType;
-
-    if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
-        [self autotrack:APP_START_EVENT properties:@{
-                                                     RESUME_FROM_BACKGROUND_PROPERTY : @(_appRelaunched)
-                                                     }];
+    
+    if(_autoTrackEventType & ThinkingAnalyticsEventTypeAppViewCrash) {
+        [self trackCrash];
     }
-    if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
+
+    if(_autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
+        [self autotrack:APP_START_EVENT properties:@{RESUME_FROM_BACKGROUND_PROPERTY : @(_appRelaunched)} withTime:nil];
+    }
+    
+    if(_autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
         [self timeEvent:APP_END_EVENT];
     }
-    [self _enableAutoTrack];
+    
+    if(_autoTrackEventType & ThinkingAnalyticsEventTypeAppClick || _autoTrackEventType & ThinkingAnalyticsEventTypeAppViewScreen)
+        [self _enableAutoTrack];
 }
 
 - (void)viewControlWillDisappear:(UIViewController*)controller {
-    if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppClick) {
+    if ([ThinkingAnalyticsSDK isAutoTrackEventType:ThinkingAnalyticsEventTypeAppClick]) {
         if (!controller) {
             return;
         }
@@ -1217,18 +1079,17 @@ withProperties:(NSDictionary *)propertieDict
 }
 
 - (void)_enableAutoTrack {
-    if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppViewScreen ||
-        _autoTrackEventType & ThinkingAnalyticsEventTypeAppClick) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         [UIViewController td_swizzleMethod:@selector(viewWillAppear:)
                                 withMethod:@selector(td_autotrack_viewWillAppear:)
                                      error:NULL];
-    }
 
-    if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppClick) {
         [UIViewController td_swizzleMethod:@selector(viewWillDisappear:)
                                 withMethod:@selector(td_autotrack_viewWillDisappear:)
                                      error:NULL];
-    }
+
+    });
 }
 
 - (BOOL)isAutoTrackEventTypeIgnored:(ThinkingAnalyticsAutoTrackEventType)eventType {
@@ -1236,7 +1097,9 @@ withProperties:(NSDictionary *)propertieDict
 }
 
 - (void)ignoreViewType:(Class)aClass {
-    [_ignoredViewTypeList addObject:aClass];
+    dispatch_async(serialQueue, ^{
+        [self->_ignoredViewTypeList addObject:aClass];
+    });
 }
 
 - (BOOL)isViewTypeIgnored:(Class)aClass {
@@ -1254,113 +1117,6 @@ withProperties:(NSDictionary *)propertieDict
         }
     }
     return false;
-}
-
-- (BOOL)isViewControllerStringIgnored:(NSString *)viewControllerString {
-    if (viewControllerString == nil) {
-        return false;
-    }
-    
-    if (_ignoredViewControllers != nil && _ignoredViewControllers.count > 0) {
-        if ([_ignoredViewControllers containsObject:viewControllerString]) {
-            return true;
-        }
-    }
-    return false;
-}
-
-- (void)ignoreAutoTrackEventType:(ThinkingAnalyticsAutoTrackEventType)eventType {
-    _autoTrackEventType = _autoTrackEventType ^ eventType;
-}
-
-- (void)trackViewAppClick:(UIView *)view {
-    [self trackViewAppClick:view withProperties:nil];
-}
-
-- (void)trackViewAppClick:(UIView *)view withProperties:(NSDictionary *)property {
-    @try {
-        if (view == nil) {
-            return;
-        }
-        
-        if ([self isAutoTrackEventTypeIgnored:ThinkingAnalyticsEventTypeAppClick]) {
-            return;
-        }
-        
-        if ([self isViewTypeIgnored:[view class]]) {
-            return;
-        }
-
-        if (view.thinkingAnalyticsIgnoreView) {
-            return;
-        }
-
-        NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
-
-        UIViewController *viewController = [self currentViewController];
-        if (viewController != nil) {
-            if ([[ThinkingAnalyticsSDK sharedInstance] isViewControllerIgnored:viewController]) {
-                return;
-            }
-
-            NSString *screenName = NSStringFromClass([viewController class]);
-            [properties setValue:screenName forKey:@"#screen_name"];
-
-            NSString *controllerTitle = viewController.navigationItem.title;
-            if (controllerTitle.length > 0) {
-                [properties setValue:viewController.navigationItem.title forKey:@"#title"];
-            }
-
-            NSString *elementContent = [self getUIViewControllerTitle:viewController];
-            if (elementContent.length > 0) {
-                elementContent = [elementContent substringWithRange:NSMakeRange(0,[elementContent length] - 1)];
-                [properties setValue:elementContent forKey:@"#title"];
-            }
-        }
-
-        if (view.thinkingAnalyticsViewID.length > 0) {
-            [properties setValue:view.thinkingAnalyticsViewID forKey:@"#element_id"];
-        }
-
-        [properties setValue:NSStringFromClass([view class]) forKey:@"#element_type"];
-
-        NSString *elementContent = [[NSString alloc] init];
-        elementContent = [TDAutoTrackUtils contentFromView:view];
-        if (elementContent.length > 0) {
-            elementContent = [elementContent substringWithRange:NSMakeRange(0,[elementContent length] - 1)];
-            [properties setValue:elementContent forKey:@"#element_content"];
-        }
-
-        if (property != nil) {
-            [properties addEntriesFromDictionary:property];
-        }
-
-        NSDictionary* propDict = view.thinkingAnalyticsViewProperties;
-        if (propDict != nil) {
-            [properties addEntriesFromDictionary:propDict];
-        }
-        
-        [[ThinkingAnalyticsSDK sharedInstance] autotrack:@"ta_app_click" properties:properties];
-        
-    } @catch (NSException *exception) {
-        TDLogError(@"%@: %@", self, exception);
-    }
-}
-
-- (NSString *)getUIViewControllerTitle:(UIViewController *)controller {
-    @try {
-        if (controller == nil) {
-            return nil;
-        }
-        
-        UIView *titleView = controller.navigationItem.titleView;
-        if (titleView != nil) {
-            return [TDAutoTrackUtils contentFromView:titleView];
-        }
-    } @catch (NSException *exception) {
-        TDLogError(@"%@: %@", self, exception);
-    }
-    return nil;
 }
 
 - (BOOL)shouldTrackViewContrller:(Class)aClass {
@@ -1382,24 +1138,272 @@ withProperties:(NSDictionary *)propertieDict
     return ![ignoreClasses containsObject:NSStringFromClass(aClass)];
 }
 
+- (void)trackAppClickWithUITableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    @try {
+        if (!tableView) {
+            return;
+        }
+        
+        UIView *view = (UIView *)tableView;
+        if (!view) {
+            return;
+        }
+        
+        if (view.thinkingAnalyticsIgnoreView) {
+            return;
+        }
+        
+        NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+        [properties setValue:@"UITableView" forKey:TD_EVENT_PROPERTY_ELEMENT_TYPE];
+        
+        if (view.thinkingAnalyticsViewID.length > 0) {
+            [properties setValue:view.thinkingAnalyticsViewID forKey:TD_EVENT_PROPERTY_ELEMENT_ID];
+        }
+        
+        UIViewController *viewController = [tableView viewController];
+        if (viewController == nil ||
+            [viewController isKindOfClass:UINavigationController.class]) {
+            viewController = [self currentViewController];
+        }
+        if (viewController != nil) {
+            NSString *screenName = NSStringFromClass([viewController class]);
+            [properties setValue:screenName forKey:TD_EVENT_PROPERTY_SCREEN_NAME];
+            
+            NSString *controllerTitle = [TDAutoTrackUtils titleFromViewController:viewController];
+            if (controllerTitle) {
+                [properties setValue:controllerTitle forKey:TD_EVENT_PROPERTY_TITLE];
+            }
+        }
+        
+        if (indexPath) {
+            [properties setValue:[NSString stringWithFormat: @"%ld:%ld", (unsigned long)indexPath.section,(unsigned long)indexPath.row] forKey:TD_EVENT_PROPERTY_ELEMENT_POSITION];
+        }
+        
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        NSString *elementContent = [TDAutoTrackUtils contentFromView:cell];
+        if (elementContent.length > 0) {
+            elementContent = [elementContent substringWithRange:NSMakeRange(0,[elementContent length] - 1)];
+            [properties setValue:elementContent forKey:TD_EVENT_PROPERTY_ELEMENT_CONTENT];
+        }
+        
+        NSDictionary* propDict = view.thinkingAnalyticsViewProperties;
+        if (propDict != nil && [self checkProperties:propDict]) {
+            [properties addEntriesFromDictionary:propDict];
+        }
+        
+        NSDictionary *propertyWithAppid;
+        
+        @try {
+            if ([tableView.thinkingAnalyticsDelegate conformsToProtocol:@protocol(TDUIViewAutoTrackDelegate)]) {
+                if ([tableView.thinkingAnalyticsDelegate respondsToSelector:@selector(thinkingAnalytics_tableView:autoTrackPropertiesAtIndexPath:)]) {
+                    NSDictionary *dic = [view.thinkingAnalyticsDelegate thinkingAnalytics_tableView:tableView autoTrackPropertiesAtIndexPath:indexPath];
+                    if([self checkProperties:dic])
+                    {
+                        [properties addEntriesFromDictionary:[view.thinkingAnalyticsDelegate thinkingAnalytics_tableView:tableView autoTrackPropertiesAtIndexPath:indexPath]];
+                    }
+                }
+                
+                if ([tableView.thinkingAnalyticsDelegate respondsToSelector:@selector(thinkingAnalyticsWithAppid_tableView:autoTrackPropertiesAtIndexPath:)]) {
+                    propertyWithAppid = [view.thinkingAnalyticsDelegate thinkingAnalyticsWithAppid_tableView:tableView autoTrackPropertiesAtIndexPath:indexPath];
+                }
+            }
+        } @catch (NSException *exception) {
+            TDLogError(@"%@ error: %@", self, exception);
+        }
+        
+        NSDate *trackDate = [NSDate date];
+        for (NSString *appid in instances) {
+            NSMutableDictionary *trackProperties = [properties mutableCopy];
+            ThinkingAnalyticsSDK *instance = [instances objectForKey:appid];
+            if ([instance isViewTypeIgnored:[UITableView class]]) {
+                continue;
+            }
+        
+            NSDictionary* ignoreViews = view.thinkingAnalyticsIgnoreViewWithAppid;
+            if (ignoreViews != nil && [ignoreViews objectForKey:appid]) {
+                BOOL ignore = [[ignoreViews objectForKey:appid] boolValue];
+                if(ignore)
+                    continue;
+            }
+            
+            if ([instance isViewControllerIgnored:viewController]) {
+                continue;
+            }
+            
+            NSDictionary* viewIDs = view.thinkingAnalyticsViewIDWithAppid;
+            if (viewIDs != nil && [viewIDs objectForKey:appid]) {
+                NSString *viewId = [viewIDs objectForKey:appid];
+                [trackProperties setValue:viewId forKey:TD_EVENT_PROPERTY_ELEMENT_ID];
+            }
+            
+            NSDictionary* viewProperties = view.thinkingAnalyticsViewPropertiesWithAppid;
+            if (viewProperties != nil && [viewProperties objectForKey:appid]) {
+                NSDictionary *properties = [viewProperties objectForKey:appid];
+                if([self checkProperties:properties]) {
+                    [trackProperties addEntriesFromDictionary:properties];
+                }
+            }
+            
+            if(propertyWithAppid) {
+                NSDictionary *autoTrackproperties = [propertyWithAppid objectForKey:appid];
+                if([self checkProperties:autoTrackproperties]) {
+                    [trackProperties addEntriesFromDictionary:autoTrackproperties];
+                }
+            }
+            
+            if (![instance isAutoTrackEventTypeIgnored:ThinkingAnalyticsEventTypeAppClick]) {
+                [instance autotrack:APP_CLICK_EVENT properties:trackProperties withTime:trackDate];
+            }
+        }
+    } @catch (NSException *exception) {
+        TDLogError(@"%@ error: %@", self, exception);
+    }
+}
+
+- (void)trackAppClickWithUICollectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    @try {
+        if (!collectionView) {
+            return;
+        }
+        
+        UIView *view = (UIView *)collectionView;
+        if (!view) {
+            return;
+        }
+        
+        if (view.thinkingAnalyticsIgnoreView) {
+            return;
+        }
+        
+        NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+        [properties setValue:@"UICollectionView" forKey:TD_EVENT_PROPERTY_ELEMENT_TYPE];
+        
+        if (view.thinkingAnalyticsViewID.length > 0) {
+            [properties setValue:view.thinkingAnalyticsViewID forKey:TD_EVENT_PROPERTY_ELEMENT_ID];
+        }
+        
+        UIViewController *viewController = [view viewController];
+        
+        if (viewController == nil ||
+            [viewController isKindOfClass:UINavigationController.class]) {
+            viewController = [self currentViewController];
+        }
+        
+        if (viewController != nil) {
+            NSString *screenName = NSStringFromClass([viewController class]);
+            [properties setValue:screenName forKey:TD_EVENT_PROPERTY_SCREEN_NAME];
+            
+            NSString *controllerTitle = [TDAutoTrackUtils titleFromViewController:viewController];
+            if (controllerTitle) {
+                [properties setValue:controllerTitle forKey:TD_EVENT_PROPERTY_TITLE];
+            }
+        }
+        
+        if (indexPath) {
+            [properties setValue:[NSString stringWithFormat:@"%ld:%ld", (unsigned long)indexPath.section,(unsigned long)indexPath.row] forKey:TD_EVENT_PROPERTY_ELEMENT_POSITION];
+        }
+        
+        UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+        NSString *elementContent = [TDAutoTrackUtils contentFromView:cell];
+        if (elementContent.length > 0) {
+            [properties setValue:elementContent forKey:TD_EVENT_PROPERTY_ELEMENT_CONTENT];
+        }
+        
+        NSDictionary* propDict = view.thinkingAnalyticsViewProperties;
+        if (propDict != nil) {
+            [properties addEntriesFromDictionary:propDict];
+        }
+        
+        NSDictionary *propertyWithAppid;
+        @try {
+            if ([collectionView.thinkingAnalyticsDelegate conformsToProtocol:@protocol(TDUIViewAutoTrackDelegate)]) {
+                if ([collectionView.thinkingAnalyticsDelegate respondsToSelector:@selector(thinkingAnalytics_collectionView:autoTrackPropertiesAtIndexPath:)]) {
+                    [properties addEntriesFromDictionary:[view.thinkingAnalyticsDelegate thinkingAnalytics_collectionView:collectionView autoTrackPropertiesAtIndexPath:indexPath]];
+                }
+                if ([collectionView.thinkingAnalyticsDelegate respondsToSelector:@selector(thinkingAnalyticsWithAppid_collectionView:autoTrackPropertiesAtIndexPath:)]) {
+                    propertyWithAppid = [view.thinkingAnalyticsDelegate thinkingAnalyticsWithAppid_collectionView:collectionView autoTrackPropertiesAtIndexPath:indexPath];
+                }
+            }
+        } @catch (NSException *exception) {
+            TDLogError(@"%@ error: %@", self, exception);
+        }
+        
+        NSDate *trackDate = [NSDate date];
+        for (NSString *appid in instances) {
+            NSMutableDictionary *trackProperties = [properties mutableCopy];
+            ThinkingAnalyticsSDK *instance = [instances objectForKey:appid];
+            if ([instance isViewTypeIgnored:[UICollectionView class]]) {
+                continue;
+            }
+            
+            NSDictionary* ignoreViews = view.thinkingAnalyticsIgnoreViewWithAppid;
+            if (ignoreViews != nil && [ignoreViews objectForKey:appid]) {
+                BOOL ignore = [[ignoreViews objectForKey:appid] boolValue];
+                if(ignore)
+                    continue;
+            }
+            
+            if ([instance isViewControllerIgnored:viewController]) {
+                continue;
+            }
+            
+            NSDictionary* viewIDs = view.thinkingAnalyticsViewIDWithAppid;
+            if (viewIDs != nil && [viewIDs objectForKey:appid]) {
+                NSString *viewId = [viewIDs objectForKey:appid];
+                [trackProperties setValue:viewId forKey:TD_EVENT_PROPERTY_ELEMENT_ID];
+            }
+            
+            NSDictionary* viewProperties = view.thinkingAnalyticsViewPropertiesWithAppid;
+            if (viewProperties != nil && [viewProperties objectForKey:appid]) {
+                NSDictionary *properties = [viewProperties objectForKey:appid];
+                [trackProperties addEntriesFromDictionary:properties];
+            }
+            
+            if(propertyWithAppid) {
+                NSDictionary *autoTrackproperties = [propertyWithAppid objectForKey:appid];
+                if([self checkProperties:autoTrackproperties]) {
+                    [trackProperties addEntriesFromDictionary:autoTrackproperties];
+                }
+            }
+            
+            if (![instance isAutoTrackEventTypeIgnored:ThinkingAnalyticsEventTypeAppClick]) {
+                [instance autotrack:APP_CLICK_EVENT properties:trackProperties withTime:trackDate];
+            }
+        }
+    } @catch (NSException *exception) {
+        TDLogError(@"%@ error: %@", self, exception);
+    }
+}
+
++ (BOOL)isAutoTrackEventType:(ThinkingAnalyticsAutoTrackEventType)type {
+    BOOL isIgnored = YES;
+    for (NSString *appid in instances) {
+        ThinkingAnalyticsSDK *instance = [instances objectForKey:appid];
+        isIgnored = [instance isAutoTrackEventTypeIgnored:type];
+        if(isIgnored == NO)
+            break;
+    }
+    return !isIgnored;
+}
+
 - (void)viewControlWillAppear:(UIViewController *)controller {
-    if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppClick) {
+    if ([ThinkingAnalyticsSDK isAutoTrackEventType:ThinkingAnalyticsEventTypeAppClick]) {
         void (^tableViewBlock)(id, SEL, id, id) = ^(id view, SEL command, UITableView *tableView, NSIndexPath *indexPath) {
-            [TDAutoTrackUtils trackAppClickWithUITableView:tableView didSelectRowAtIndexPath:indexPath];
+            [self trackAppClickWithUITableView:tableView didSelectRowAtIndexPath:indexPath];
         };
         if ([controller respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)]) {
             [TDSwizzler swizzleSelector:@selector(tableView:didSelectRowAtIndexPath:) onClass:controller.class withBlock:tableViewBlock named:[NSString stringWithFormat:@"%@_%@", NSStringFromClass(self.class), @"UITableView_AutoTrack"]];
         }
 
         void (^collectionViewBlock)(id, SEL, id, id) = ^(id view, SEL command, UICollectionView *collectionView, NSIndexPath *indexPath) {
-            [TDAutoTrackUtils trackAppClickWithUICollectionView:collectionView didSelectItemAtIndexPath:indexPath];
+            [self trackAppClickWithUICollectionView:collectionView didSelectItemAtIndexPath:indexPath];
         };
         if ([controller respondsToSelector:@selector(collectionView:didSelectItemAtIndexPath:)]) {
             [TDSwizzler swizzleSelector:@selector(collectionView:didSelectItemAtIndexPath:) onClass:controller.class withBlock:collectionViewBlock named:[NSString stringWithFormat:@"%@_%@", NSStringFromClass(self.class), @"UICollectionView_AutoTrack"]];
         }
     }
     
-    if (!(_autoTrackEventType & ThinkingAnalyticsEventTypeAppViewScreen)) {
+    if (!([ThinkingAnalyticsSDK isAutoTrackEventType:ThinkingAnalyticsEventTypeAppViewScreen])) {
         return;
     }
     
@@ -1416,78 +1420,87 @@ withProperties:(NSDictionary *)propertieDict
         return;
     }
     
-    NSString *screenName = NSStringFromClass(klass);
     if (![self shouldTrackViewContrller:klass]) {
         return;
     }
-    
-    if (_ignoredViewControllers != nil && _ignoredViewControllers.count > 0) {
-        if ([_ignoredViewControllers containsObject:screenName]) {
-            return;
-        }
-    }
 
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
-    [properties setValue:NSStringFromClass(klass) forKey:SCREEN_NAME_PROPERTY];
+    [properties setValue:NSStringFromClass(klass) forKey:TD_EVENT_PROPERTY_SCREEN_NAME];
 
     @try {
-        NSString *controllerTitle = controller.navigationItem.title;
-        if (controllerTitle.length > 0) {
-            [properties setValue:controllerTitle forKey:@"#title"];
-        }
-
-        NSString *elementContent = [self getUIViewControllerTitle:controller];
-        if (elementContent.length > 0) {
-            elementContent = [elementContent substringWithRange:NSMakeRange(0,[elementContent length] - 1)];
-            [properties setValue:elementContent forKey:@"#title"];
+        NSString *controllerTitle = [TDAutoTrackUtils titleFromViewController:controller];
+        if (controllerTitle) {
+            [properties setValue:controllerTitle forKey:TD_EVENT_PROPERTY_TITLE];
         }
     } @catch (NSException *exception) {
         TDLogError(@"%@ failed to get UIViewController's title error: %@", self, exception);
     }
 
+    NSDictionary *autoTrackerAppidDic;
     if ([controller conformsToProtocol:@protocol(TDAutoTracker)]) {
         UIViewController<TDAutoTracker> *autoTrackerController = (UIViewController<TDAutoTracker> *)controller;
-        NSDictionary *dic = [autoTrackerController getTrackProperties];
-        if(dic)
-        {
-            if (![self checkPropertyTypes:[dic copy] withEventType:nil]) {
-                TDLogError(@"%@ property error.", dic);
+        NSDictionary *autoTrackerDic;
+        if([controller respondsToSelector:@selector(getTrackPropertiesWithAppid)])
+            autoTrackerAppidDic = [autoTrackerController getTrackPropertiesWithAppid];
+        if([controller respondsToSelector:@selector(getTrackProperties)])
+            autoTrackerDic = [autoTrackerController getTrackProperties];
+        if(autoTrackerDic) {
+            if (![self checkPropertyTypes:&autoTrackerDic withEventType:nil isCheckKey:YES]) {
+                TDLogError(@"%@ property error.", autoTrackerDic);
                 return;
             }
-        
-            [properties addEntriesFromDictionary:dic];
-            _lastScreenTrackProperties = [autoTrackerController getTrackProperties];
+            [properties addEntriesFromDictionary:autoTrackerDic];
         }
     }
 
+    NSDictionary *screenAutoTrackerAppidDic;
     if ([controller conformsToProtocol:@protocol(TDScreenAutoTracker)]) {
         UIViewController<TDScreenAutoTracker> *screenAutoTrackerController = (UIViewController<TDScreenAutoTracker> *)controller;
-        NSString *currentScreenUrl = [screenAutoTrackerController getScreenUrl];
-
-        [properties setValue:currentScreenUrl forKey:SCREEN_URL_PROPERTY];
-        @synchronized (_referrerScreenUrl) {
-            if (_referrerScreenUrl) {
-                [properties setValue:_referrerScreenUrl forKey:SCREEN_REFERRER_URL_PROPERTY];
-            }
-            _referrerScreenUrl = currentScreenUrl;
+        if([screenAutoTrackerController respondsToSelector:@selector(getScreenUrlWithAppid)])
+            screenAutoTrackerAppidDic = [screenAutoTrackerController getScreenUrlWithAppid];
+        if([screenAutoTrackerController respondsToSelector:@selector(getScreenUrl)]) {
+            [properties setValue:[screenAutoTrackerController getScreenUrl] forKey:TD_EVENT_PROPERTY_URL_PROPERTY];
         }
     }
 
-    [self autotrack:APP_VIEW_SCREEN_EVENT properties:properties];
+    NSDate *trackDate = [NSDate date];
+    for (NSString *appid in instances) {
+        NSMutableDictionary *trackProperties = [properties mutableCopy];
+        ThinkingAnalyticsSDK *instance = [instances objectForKey:appid];
+        if (![instance isAutoTrackEventTypeIgnored:ThinkingAnalyticsEventTypeAppViewScreen]) {
+            if([instance isViewControllerIgnored:controller]) {
+                continue;
+            }
+            
+            if ([instance isViewTypeIgnored:[controller class]]) {
+                continue;
+            }
+            
+            if(autoTrackerAppidDic && [autoTrackerAppidDic objectForKey:appid]) {
+                NSDictionary *dic = [autoTrackerAppidDic objectForKey:appid];
+                if (![self checkPropertyTypes:&dic withEventType:nil isCheckKey:YES]) {
+                    TDLogError(@"%@ property error.", dic);
+                    return;
+                }
+                [trackProperties addEntriesFromDictionary:dic];
+            }
+            if(screenAutoTrackerAppidDic && [screenAutoTrackerAppidDic objectForKey:appid]) {
+                NSString *screenUrl = [screenAutoTrackerAppidDic objectForKey:appid];
+                [trackProperties setValue:screenUrl forKey:TD_EVENT_PROPERTY_URL_PROPERTY];
+            }
+            [instance autotrack:APP_VIEW_SCREEN_EVENT properties:trackProperties withTime:trackDate];
+        }
+    }
 }
 
 - (void)ignoreAutoTrackViewControllers:(NSArray *)controllers {
     if (controllers == nil || controllers.count == 0) {
         return;
     }
-    [_ignoredViewControllers addObjectsFromArray:controllers];
     
-    NSSet *set = [NSSet setWithArray:_ignoredViewControllers];
-    if (set != nil) {
-        _ignoredViewControllers = [NSMutableArray arrayWithArray:[set allObjects]];
-    } else{
-        _ignoredViewControllers = [[NSMutableArray alloc] init];
-    }
+    dispatch_async(serialQueue, ^{
+        [self->_ignoredViewControllers addObjectsFromArray:controllers];
+    });
 }
 
 - (UIViewController *)currentViewController {
@@ -1496,7 +1509,7 @@ withProperties:(NSDictionary *)propertieDict
         @try {
             UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
             if (rootViewController != nil) {
-                currentVC = [self getCurrentVCFrom:rootViewController];
+                currentVC = [self getCurrentVCFrom:rootViewController isRoot:YES];
             }
         } @catch (NSException *exception) {
             TDLogError(@"%@ error: %@", self, exception);
@@ -1507,7 +1520,7 @@ withProperties:(NSDictionary *)propertieDict
             @try {
                 UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
                 if (rootViewController != nil) {
-                    currentVC = [self getCurrentVCFrom:rootViewController];
+                    currentVC = [self getCurrentVCFrom:rootViewController isRoot:YES];
                 }
             } @catch (NSException *exception) {
                 TDLogError(@"%@ error: %@", self, exception);
@@ -1517,17 +1530,17 @@ withProperties:(NSDictionary *)propertieDict
     }
 }
 
-- (UIViewController *)getCurrentVCFrom:(UIViewController *)rootVC {
+- (UIViewController *)getCurrentVCFrom:(UIViewController *)rootVC isRoot:(BOOL)isRoot{
     @try {
         UIViewController *currentVC;
         if ([rootVC presentedViewController]) {
-            rootVC = [self getCurrentVCFrom:rootVC.presentedViewController];
+            rootVC = [self getCurrentVCFrom:rootVC.presentedViewController isRoot:NO];
         }
         
         if ([rootVC isKindOfClass:[UITabBarController class]]) {
-            currentVC = [self getCurrentVCFrom:[(UITabBarController *)rootVC selectedViewController]];
+            currentVC = [self getCurrentVCFrom:[(UITabBarController *)rootVC selectedViewController] isRoot:NO];
         } else if ([rootVC isKindOfClass:[UINavigationController class]]){
-            currentVC = [self getCurrentVCFrom:[(UINavigationController *)rootVC visibleViewController]];
+            currentVC = [self getCurrentVCFrom:[(UINavigationController *)rootVC visibleViewController] isRoot:NO];
         } else {
             if ([rootVC respondsToSelector:NSSelectorFromString(@"contentViewController")]) {
 #pragma clang diagnostic push
@@ -1535,10 +1548,14 @@ withProperties:(NSDictionary *)propertieDict
                 UIViewController *tempViewController = [rootVC performSelector:NSSelectorFromString(@"contentViewController")];
 #pragma clang diagnostic pop
                 if (tempViewController) {
-                    currentVC = [self getCurrentVCFrom:tempViewController];
+                    currentVC = [self getCurrentVCFrom:tempViewController isRoot:NO];
                 }
             } else {
-                currentVC = rootVC;
+                if (rootVC.childViewControllers && rootVC.childViewControllers.count == 1 && isRoot) {
+                    currentVC = [self getCurrentVCFrom:rootVC.childViewControllers[0] isRoot:NO];
+                } else {
+                    currentVC = rootVC;
+                }
             }
         }
         
@@ -1612,9 +1629,13 @@ withProperties:(NSDictionary *)propertieDict
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)setLogLevel:(TDLoggingLevel)level
++ (void)setLogLevel:(TDLoggingLevel)level
 {
     [TDLogging sharedInstance].loggingLevel = level;
+}
+
+-(void)trackCrash {
+    [[ThinkingExceptionHandler sharedHandler] addThinkingInstance:self];
 }
 
 @end
@@ -1665,12 +1686,36 @@ withProperties:(NSDictionary *)propertieDict
     objc_setAssociatedObject(self, @"thinkingAnalyticsIgnoreView", [NSNumber numberWithBool:thinkingAnalyticsIgnoreView], OBJC_ASSOCIATION_ASSIGN);
 }
 
+- (NSDictionary *)thinkingAnalyticsIgnoreViewWithAppid {
+    return objc_getAssociatedObject(self, @"thinkingAnalyticsIgnoreViewWithAppid");
+}
+
+- (void)setThinkingAnalyticsIgnoreViewWithAppid:(NSDictionary *)thinkingAnalyticsViewProperties {
+    objc_setAssociatedObject(self, @"thinkingAnalyticsIgnoreViewWithAppid", thinkingAnalyticsViewProperties, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (NSDictionary *)thinkingAnalyticsViewIDWithAppid {
+    return objc_getAssociatedObject(self, @"thinkingAnalyticsViewIDWithAppid");
+}
+
+- (void)setThinkingAnalyticsViewIDWithAppid:(NSDictionary *)thinkingAnalyticsViewProperties {
+    objc_setAssociatedObject(self, @"thinkingAnalyticsViewIDWithAppid", thinkingAnalyticsViewProperties, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 - (NSDictionary *)thinkingAnalyticsViewProperties {
     return objc_getAssociatedObject(self, @"thinkingAnalyticsViewProperties");
 }
 
 - (void)setThinkingAnalyticsViewProperties:(NSDictionary *)thinkingAnalyticsViewProperties {
     objc_setAssociatedObject(self, @"thinkingAnalyticsViewProperties", thinkingAnalyticsViewProperties, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (NSDictionary *)thinkingAnalyticsViewPropertiesWithAppid {
+    return objc_getAssociatedObject(self, @"thinkingAnalyticsViewPropertiesWithAppid");
+}
+
+- (void)setThinkingAnalyticsViewPropertiesWithAppid:(NSDictionary *)thinkingAnalyticsViewProperties {
+    objc_setAssociatedObject(self, @"thinkingAnalyticsViewPropertiesWithAppid", thinkingAnalyticsViewProperties, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (id)thinkingAnalyticsDelegate {

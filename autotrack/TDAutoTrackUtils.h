@@ -5,9 +5,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TDAutoTrackUtils : NSObject
 
-+ (void)trackAppClickWithUITableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
-+ (void)trackAppClickWithUICollectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath;
 + (NSString *)contentFromView:(UIView *)rootView;
++ (NSString *)titleFromViewController:(UIViewController *)viewController;
 
 @end
 

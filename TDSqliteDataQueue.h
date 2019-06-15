@@ -2,15 +2,10 @@
 
 @interface TDSqliteDataQueue : NSObject
 
-- (id)initWithPath:(NSString*)filePath;
-
-- (void)addObejct:(id)obj;
-
-- (NSArray *) getFirstRecords:(NSUInteger)recordSize;
-
-- (BOOL) removeFirstRecords:(NSUInteger)recordSize;
-
-- (NSInteger) count;
++ (TDSqliteDataQueue *)sharedInstanceWithAppid:(NSString *)appid;
+- (NSInteger)addObejct:(id)obj withAppid:(NSString *)appid;
+- (NSArray *)getFirstRecords:(NSUInteger)recordSize withAppid:(NSString *)appid;
+- (BOOL)removeFirstRecords:(NSUInteger)recordSize withAppid:(NSString *)appid;
 
 @end
 

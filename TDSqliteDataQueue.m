@@ -1,10 +1,12 @@
 #import "TDSqliteDataQueue.h"
+#import "ThinkingAnalyticsSDKPrivate.h"
 #import <sqlite3.h>
+
 #define MAX_CACHE_SIZE 10000
 
 @implementation TDSqliteDataQueue {
     sqlite3 *_database;
-    NSInteger _messageCount;
+    NSInteger _allmessageCount;
 }
 
 - (void) closeDatabase {
@@ -16,64 +18,126 @@
     [self closeDatabase];
 }
 
-- (id)initWithPath:(NSString *)filePath {
++ (TDSqliteDataQueue *)sharedInstanceWithAppid:(NSString *)appid {
+    static TDSqliteDataQueue *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSString *filepath = [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"TDData-data.plist"];
+        sharedInstance = [[self alloc] initWithPath:filepath withAppid:appid];
+    });
+    return sharedInstance;
+}
+
+- (id)initWithPath:(NSString *)filePath withAppid:(NSString *)appid{
     self = [super init];
     if (sqlite3_initialize() != SQLITE_OK) {
         return nil;
     }
     if (sqlite3_open_v2([filePath UTF8String], &_database, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL) == SQLITE_OK ) {
-        NSString *_sql = @"create table if not exists TDData (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT)";
+        NSString *_sql = @"create table if not exists TDData (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT, appid TEXT, creatAt INTEGER)";
         char *errorMsg;
         if (sqlite3_exec(_database, [_sql UTF8String], NULL, NULL, &errorMsg)==SQLITE_OK) {
         } else {
             return nil;
         }
-        _messageCount = [self sqliteCount];
+        
+        _allmessageCount = [self sqliteCount];
+        
+        if(![self isExistColumnInTable:@"appid"] || ![self isExistColumnInTable:@"creatAt"]) {
+            [self addColumn:appid];
+        } else if(_allmessageCount > 0){
+            [self delExpiredData];
+        }
+        
     } else {
         return nil;
     }
     return self;
 }
 
-- (void)addObejct:(id)obj {
+- (void)addColumn:(NSString*)appid {
+    int epochInterval = [[NSDate date] timeIntervalSince1970];
+    NSString *query;
+    if(appid.length > 0 && [appid isKindOfClass: [NSString class]])
+        query = [NSString stringWithFormat:@"alter table TDData add 'appid' TEXT default \"%@\"", appid];
+    else
+        query = [NSString stringWithFormat:@"alter table TDData add 'appid' TEXT"];
+    NSString *query2 = [NSString stringWithFormat:@"alter table TDData add 'creatAt' INTEGER default %d ", epochInterval];
+    char *errMsg;
+    @try {
+        sqlite3_exec(_database, [query UTF8String], NULL, NULL, &errMsg);
+        sqlite3_exec(_database, [query2 UTF8String], NULL, NULL, &errMsg);
+    } @catch (NSException *exception) {
+    }
+}
+
+- (BOOL)isExistColumnInTable:(NSString *)column {
+    sqlite3_stmt *statement = nil;
+    NSString *sql = [NSString stringWithFormat:@"PRAGMA table_info(TDData)"];
+    if (sqlite3_prepare_v2(_database, [sql UTF8String], -1, &statement, NULL) != SQLITE_OK ) {
+        sqlite3_finalize(statement);
+        return NO;
+    }
+    while (sqlite3_step(statement) == SQLITE_ROW) {
+        NSString *columntem = [[NSString alloc] initWithCString:(char *)sqlite3_column_text(statement, 1) encoding:NSUTF8StringEncoding];
+        
+        if ([column isEqualToString:columntem]) {
+            sqlite3_finalize(statement);
+            return YES;
+        }
+    }
+    sqlite3_finalize(statement);
+    return NO;
+}
+
+- (void)delExpiredData {
+    NSTimeInterval oneDay = 24*60*60*1;
+    NSDate* theDate = [[NSDate date] initWithTimeIntervalSinceNow: -oneDay * 10];
+    int totalMilliseconds = [theDate timeIntervalSince1970];
+    [self removeOldRecords:totalMilliseconds];
+}
+
+- (NSInteger)addObejct:(id)obj withAppid:(NSString *)appid {
     NSUInteger maxCacheSize = (NSUInteger)MAX_CACHE_SIZE;
-    if (_messageCount >= maxCacheSize) {
-        BOOL ret = [self removeFirstRecords:100];
+    if (_allmessageCount >= maxCacheSize) {
+        BOOL ret = [self removeFirstRecords:100 withAppid:nil];
         if (ret) {
-            _messageCount = [self sqliteCount];
+            _allmessageCount = [self sqliteCount];
         } else {
-            return;
+            return 0;
         }
     }
     
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:obj options:(NSJSONWritingOptions)0 error:nil];
-    NSString* query = @"INSERT INTO TDData(content) values(?)";
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:obj options:kNilOptions error:nil];
+    NSTimeInterval epochInterval = [[NSDate date] timeIntervalSince1970];
+    NSString* query = @"INSERT INTO TDData(content, appid, creatAt) values(?, ?, ?)";
     sqlite3_stmt *insertStatement;
     int rc;
     rc = sqlite3_prepare_v2(_database, [query UTF8String],-1, &insertStatement, nil);
     if (rc == SQLITE_OK) {
         @try {
             sqlite3_bind_text(insertStatement, 1, [[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(insertStatement, 2, [appid UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_int(insertStatement, 3, epochInterval);
         } @catch (NSException *exception) {
-            return;
+            return 0;
         }
         rc = sqlite3_step(insertStatement);
-        if(rc != SQLITE_DONE) {
-        } else {
+        if(rc == SQLITE_DONE) {
             sqlite3_finalize(insertStatement);
-            _messageCount ++;
+            _allmessageCount ++;
         }
-    } else {
     }
+    return [self sqliteCountForAppid:appid];
 }
 
-- (NSArray *) getFirstRecords:(NSUInteger)recordSize {
-    if (_messageCount == 0) {
+- (NSArray *)getFirstRecords:(NSUInteger)recordSize withAppid:(NSString *)appid {
+    if (_allmessageCount == 0) {
         return @[];
     }
     
     NSMutableArray* contentArray = [[NSMutableArray alloc] init];
-    NSString* query = [NSString stringWithFormat:@"SELECT content FROM TDData ORDER BY id ASC LIMIT %lu", (unsigned long)recordSize];
+    NSString* query = [NSString stringWithFormat:@"SELECT content FROM TDData where appid=\"%@\" ORDER BY id ASC LIMIT %lu", appid, (unsigned long)recordSize];
 
     sqlite3_stmt* stmt = NULL;
     int rc = sqlite3_prepare_v2(_database, [query UTF8String], -1, &stmt, NULL);
@@ -95,9 +159,13 @@
     return [NSArray arrayWithArray:contentArray];
 }
 
-- (BOOL) removeFirstRecords:(NSUInteger)recordSize{
-    NSUInteger removeSize = MIN(recordSize, _messageCount);
-    NSString* query = [NSString stringWithFormat:@"DELETE FROM TDData WHERE id IN (SELECT id FROM TDData ORDER BY id ASC LIMIT %lu);", (unsigned long)removeSize];
+- (BOOL)removeFirstRecords:(NSUInteger)recordSize withAppid:(NSString *)appid {
+    NSString* query;
+    if(appid.length == 0) {
+        query = [NSString stringWithFormat:@"DELETE FROM TDData WHERE id IN (SELECT id FROM TDData ORDER BY id ASC LIMIT %lu);", (unsigned long)recordSize];
+    } else {
+        query = [NSString stringWithFormat:@"DELETE FROM TDData WHERE id IN (SELECT id FROM TDData where appid=\"%@\" ORDER BY id ASC LIMIT %lu);", appid, (unsigned long)recordSize];
+    }
     char* errMsg;
     @try {
         if (sqlite3_exec(_database, [query UTF8String], NULL, NULL, &errMsg) != SQLITE_OK) {
@@ -106,12 +174,22 @@
     } @catch (NSException *exception) {
         return NO;
     }
-    _messageCount = [self sqliteCount];
+    _allmessageCount = [self sqliteCount];
     return YES;
 }
 
-- (NSInteger) count {
-    return _messageCount;
+- (BOOL)removeOldRecords:(int)timestamp {
+    NSString* query = [NSString stringWithFormat:@"DELETE FROM TDData WHERE creatAt<%d;", timestamp];
+    char* errMsg;
+    @try {
+        if (sqlite3_exec(_database, [query UTF8String], NULL, NULL, &errMsg) != SQLITE_OK) {
+            return NO;
+        }
+    } @catch (NSException *exception) {
+        return NO;
+    }
+    _allmessageCount = [self sqliteCount];
+    return YES;
 }
 
 - (NSInteger) sqliteCount {
@@ -126,6 +204,20 @@
         sqlite3_finalize(statement);
     }
     else {
+    }
+    return count;
+}
+
+- (NSInteger)sqliteCountForAppid:(NSString *)appid {
+    NSString* query = [NSString stringWithFormat:@"select count(*) from TDData where appid=\"%@\" ", appid];
+    sqlite3_stmt* statement = NULL;
+    NSInteger count = 0;
+    int rc = sqlite3_prepare_v2(_database, [query UTF8String], -1, &statement, NULL);
+    if(rc == SQLITE_OK) {
+        while (sqlite3_step(statement) == SQLITE_ROW) {
+            count = sqlite3_column_int(statement, 0);
+        }
+        sqlite3_finalize(statement);
     }
     return count;
 }
