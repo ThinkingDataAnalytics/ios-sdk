@@ -70,7 +70,7 @@
             NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
             NSString *logingStr=[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding];
-            TDLogDebug(@"fluch success :%@ appid:%@", logingStr, appid);
+            TDLogDebug(@"fluch success :%@", logingStr);
 //            NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
         } else {
             flushSucc = NO;

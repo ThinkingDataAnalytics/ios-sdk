@@ -192,24 +192,17 @@
     return YES;
 }
 
-- (NSInteger) sqliteCount {
-    NSString* query = @"select count(*) from TDData";
-    sqlite3_stmt* statement = NULL;
-    NSInteger count = 0;
-    int rc = sqlite3_prepare_v2(_database, [query UTF8String], -1, &statement, NULL);
-    if(rc == SQLITE_OK) {
-        while (sqlite3_step(statement) == SQLITE_ROW) {
-            count = sqlite3_column_int(statement, 0);
-        }
-        sqlite3_finalize(statement);
-    }
-    else {
-    }
-    return count;
+- (NSInteger)sqliteCount {
+    return [self sqliteCountForAppid:nil];
 }
 
 - (NSInteger)sqliteCountForAppid:(NSString *)appid {
-    NSString* query = [NSString stringWithFormat:@"select count(*) from TDData where appid=\"%@\" ", appid];
+    NSString* query;
+    if(appid == nil) {
+        query = @"select count(*) from TDData";
+    } else {
+        query = [NSString stringWithFormat:@"select count(*) from TDData where appid=\"%@\" ", appid];
+    }
     sqlite3_stmt* statement = NULL;
     NSInteger count = 0;
     int rc = sqlite3_prepare_v2(_database, [query UTF8String], -1, &statement, NULL);

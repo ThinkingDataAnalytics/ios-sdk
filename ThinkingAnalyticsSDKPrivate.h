@@ -35,6 +35,7 @@ static NSString * const TD_EVENT_PROPERTY_REFERRER_URL_PROPERTY = @"#referrer";
 - (BOOL)isViewTypeIgnored:(Class)aClass;
 + (void)restartFlushTimer;
 + (dispatch_queue_t)serialQueue;
++ (dispatch_queue_t)networkQueue;
 
 @end
 

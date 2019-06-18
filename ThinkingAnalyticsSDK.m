@@ -132,6 +132,10 @@ static dispatch_queue_t networkQueue;
     return serialQueue;
 }
 
++ (dispatch_queue_t)networkQueue {
+    return networkQueue;
+}
+
 - (instancetype)initWithAppkey:(NSString *)appid withServerURL:(NSString *)serverURL {
     if (self = [self init:appid]) {
         _autoTrackEventType = ThinkingAnalyticsEventTypeNone;
@@ -459,10 +463,14 @@ static dispatch_queue_t networkQueue;
 }
 
 - (NSString *)getDistinctId{
-    if(_identifyId.length == 0)
-        return _deviceInfo.uniqueId;
-    else
-        return _identifyId;
+    __block NSString *distinctId = nil;
+    dispatch_sync(serialQueue, ^{
+        if (self->_identifyId.length == 0)
+            distinctId = self->_deviceInfo.uniqueId;
+        else
+            distinctId = self->_identifyId;
+    });
+    return distinctId;
 }
 
 - (NSString *)getDeviceId {
@@ -523,8 +531,7 @@ static dispatch_queue_t networkQueue;
 
 - (void)setSuperProperties:(NSDictionary *)properties {
     properties = [properties copy];
-    if (properties == nil)
-    {
+    if (properties == nil) {
         return;
     }
     
@@ -561,7 +568,11 @@ static dispatch_queue_t networkQueue;
 }
 
 - (NSDictionary *)currentSuperProperties {
-    return [_systemProperties copy];
+    __block NSDictionary *currentSuperProperties = nil;
+    dispatch_sync(serialQueue, ^{
+        currentSuperProperties = [self->_systemProperties copy];
+    });
+    return currentSuperProperties;
 }
 
 - (void)identify:(NSString *)distinctId {
@@ -571,11 +582,9 @@ static dispatch_queue_t networkQueue;
     }
     
     dispatch_async(serialQueue, ^{
-        @synchronized (self.identifyId) {
-            if(self.identifyId != distinctId) {
-                self.identifyId = distinctId;
-                [self archiveIdentifyId:distinctId];
-            }
+        if(self.identifyId != distinctId) {
+            self.identifyId = distinctId;
+            [self archiveIdentifyId:distinctId];
         }
     });
 }
@@ -586,15 +595,19 @@ static dispatch_queue_t networkQueue;
         return;
     }
     
-    if (![accountId isEqualToString:[self accountId]]) {
-        self.accountId = accountId;
-        [self archiveAccountID:accountId];
-    }
+    dispatch_async(serialQueue, ^{
+        if (![accountId isEqualToString:[self accountId]]) {
+            self.accountId = accountId;
+            [self archiveAccountID:accountId];
+        }
+    });
 }
 
 - (void)logout {
-    self.accountId = nil;
-    [self archiveAccountID:nil];
+    dispatch_async(serialQueue, ^{
+        self.accountId = nil;
+        [self archiveAccountID:nil];
+    });
 }
 
 - (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue {
@@ -804,7 +817,6 @@ withProperties:(NSDictionary *)propertieDict
           withType:(NSString *)type
           withTime:(NSDate *)time
  isCheckProperties:(BOOL)check {
-    propertieDict = [propertieDict copy];
     if([type isEqualToString:@"track"]) {
         if (event.length == 0 || ![event isKindOfClass:[NSString class]]) {
             TDLogError(@"track event key is not valid");
@@ -818,13 +830,12 @@ withProperties:(NSDictionary *)propertieDict
         }
     }
      
-    if (propertieDict) {
-        if (![self checkPropertyTypes:&propertieDict withEventType:type isCheckKey:check]) {
-            TDLogError(@"%@ property error.", propertieDict);
-            return;
-        }
+    if (propertieDict && ![self checkPropertyTypes:&propertieDict withEventType:type isCheckKey:check]) {
+        TDLogError(@"%@ property error.", propertieDict);
+        return;
     }
          
+    propertieDict = [propertieDict copy];
     __block NSDictionary *dynamicSuperPropertiesDict = self.dynamicSuperProperties ? self.dynamicSuperProperties() : nil;
     
     dispatch_async(serialQueue, ^{
@@ -841,10 +852,9 @@ withProperties:(NSDictionary *)propertieDict
             [dic setObject:networkType forKey:@"#network_type"];
         }
         
-        [dic setObject:self->_deviceInfo.appVersion forKey:@"#app_version"];
-        
         if([type isEqualToString:@"track"]) {
             [dic addEntriesFromDictionary:self.systemProperties];
+            [dic setObject:self->_deviceInfo.appVersion forKey:@"#app_version"];
         }
         
         if (dynamicSuperPropertiesDict && [dynamicSuperPropertiesDict isKindOfClass:NSDictionary.class]) {
@@ -918,12 +928,12 @@ withProperties:(NSDictionary *)propertieDict
         TDLogDebug(@"queueing data:%@", dataDic);
         
         if (count >= self.flushConfig.uploadSize && !isUploading) { 
-            [self sync];
+            [self flush];
         }
     });
 }
 
-- (void)sync
+- (void)flush
 {
     if(isUploading == NO) {
         [self syncWithCompletion:nil];
@@ -1020,7 +1030,7 @@ withProperties:(NSDictionary *)propertieDict
         if (self.flushConfig.uploadInterval > 0) {
             self.timer = [NSTimer scheduledTimerWithTimeInterval:self.flushConfig.uploadInterval
                                                           target:self
-                                                        selector:@selector(sync)
+                                                        selector:@selector(flush)
                                                         userInfo:nil
                                                          repeats:YES];
         }
@@ -1161,6 +1171,7 @@ withProperties:(NSDictionary *)propertieDict
         }
         
         UIViewController *viewController = [tableView viewController];
+        
         if (viewController == nil ||
             [viewController isKindOfClass:UINavigationController.class]) {
             viewController = [self currentViewController];
@@ -1505,64 +1516,46 @@ withProperties:(NSDictionary *)propertieDict
 
 - (UIViewController *)currentViewController {
     __block UIViewController *currentVC = nil;
-    if ([[NSThread currentThread] isMainThread]) {
-        @try {
-            UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
-            if (rootViewController != nil) {
-                currentVC = [self getCurrentVCFrom:rootViewController isRoot:YES];
-            }
-        } @catch (NSException *exception) {
-            TDLogError(@"%@ error: %@", self, exception);
-        }
-        return currentVC;
+    void (^ block)(void) = ^{
+        UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+        currentVC = [self getCurrentVCFrom:rootViewController isRoot:YES];
+    };
+
+    if (dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL) == dispatch_queue_get_label(dispatch_get_main_queue())) {
+        block();
     } else {
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            @try {
-                UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
-                if (rootViewController != nil) {
-                    currentVC = [self getCurrentVCFrom:rootViewController isRoot:YES];
-                }
-            } @catch (NSException *exception) {
-                TDLogError(@"%@ error: %@", self, exception);
-            }
-        });
-        return currentVC;
+        dispatch_sync(dispatch_get_main_queue(), block);
     }
+    
+    return currentVC;
 }
 
 - (UIViewController *)getCurrentVCFrom:(UIViewController *)rootVC isRoot:(BOOL)isRoot{
-    @try {
-        UIViewController *currentVC;
-        if ([rootVC presentedViewController]) {
-            rootVC = [self getCurrentVCFrom:rootVC.presentedViewController isRoot:NO];
-        }
-        
-        if ([rootVC isKindOfClass:[UITabBarController class]]) {
-            currentVC = [self getCurrentVCFrom:[(UITabBarController *)rootVC selectedViewController] isRoot:NO];
-        } else if ([rootVC isKindOfClass:[UINavigationController class]]){
-            currentVC = [self getCurrentVCFrom:[(UINavigationController *)rootVC visibleViewController] isRoot:NO];
-        } else {
-            if ([rootVC respondsToSelector:NSSelectorFromString(@"contentViewController")]) {
+    UIViewController *currentVC;
+    if ([rootVC presentedViewController]) {
+        rootVC = [self getCurrentVCFrom:rootVC.presentedViewController isRoot:NO];
+    }
+    
+    if ([rootVC isKindOfClass:[UITabBarController class]]) {
+        currentVC = [self getCurrentVCFrom:[(UITabBarController *)rootVC selectedViewController] isRoot:NO];
+    } else if ([rootVC isKindOfClass:[UINavigationController class]]){
+        currentVC = [self getCurrentVCFrom:[(UINavigationController *)rootVC visibleViewController] isRoot:NO];
+    } else {
+        if ([rootVC respondsToSelector:NSSelectorFromString(@"contentViewController")]) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                UIViewController *tempViewController = [rootVC performSelector:NSSelectorFromString(@"contentViewController")];
+            UIViewController *tempViewController = [rootVC performSelector:NSSelectorFromString(@"contentViewController")];
 #pragma clang diagnostic pop
-                if (tempViewController) {
-                    currentVC = [self getCurrentVCFrom:tempViewController isRoot:NO];
-                }
-            } else {
-                if (rootVC.childViewControllers && rootVC.childViewControllers.count == 1 && isRoot) {
-                    currentVC = [self getCurrentVCFrom:rootVC.childViewControllers[0] isRoot:NO];
-                } else {
-                    currentVC = rootVC;
-                }
+            if (tempViewController) {
+                currentVC = [self getCurrentVCFrom:tempViewController isRoot:NO];
             }
+        } else if (rootVC.childViewControllers.count == 1 && isRoot) {
+            currentVC = [self getCurrentVCFrom:rootVC.childViewControllers.firstObject isRoot:NO];
+        } else {
+            currentVC = rootVC;
         }
-        
-        return currentVC;
-    } @catch (NSException *exception) {
-        TDLogError(@"%@ error: %@", self, exception);
     }
+    return currentVC;
 }
 
 - (BOOL)showUpWebView:(id)webView WithRequest:(NSURLRequest *)request {

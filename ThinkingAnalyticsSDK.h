@@ -48,6 +48,9 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 // 设置访客ID
 - (void)identify:(NSString *)distinctId;
 
+// 获取访客ID
+- (NSString *)getDistinctId;
+
 // 设置账号ID
 - (void)login:(NSString *)accountId;
 
@@ -73,6 +76,8 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 - (void)unsetSuperProperty:(NSString *)property;
 // 清除所有公共事件属性
 - (void)clearSuperProperties;
+// 获取公共属性
+- (NSDictionary *)currentSuperProperties;
 
 // 设置动态公共属性
 - (void)registerDynamicSuperProperties:(NSDictionary<NSString *, id> *(^)(void)) dynamicSuperProperties;
@@ -86,9 +91,6 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 // 获取设备ID
 - (NSString *)getDeviceId;
 
-// 获取访客ID
-- (NSString *)getDistinctId;
-
 // 忽略某个页面的自动采集事件
 - (void)ignoreAutoTrackViewControllers:(NSArray *)controllers;
 
@@ -101,6 +103,9 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 
 // 开启Log功能
 + (void)setLogLevel:(TDLoggingLevel)level;
+
+// 上报数据
+- (void)flush;
 
 @end
 
