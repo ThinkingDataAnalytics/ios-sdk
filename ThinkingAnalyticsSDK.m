@@ -818,7 +818,7 @@ withProperties:(NSDictionary *)propertieDict
           withTime:(NSDate *)time
  isCheckProperties:(BOOL)check {
     if([type isEqualToString:@"track"]) {
-        if (event.length == 0 || ![event isKindOfClass:[NSString class]]) {
+        if (![event isKindOfClass:[NSString class]] || event.length == 0) {
             TDLogError(@"track event key is not valid");
             return;
         }
