@@ -21,13 +21,13 @@ NSString * const TDDeviceID = @"com.thinkingddata.analytics.deviceid";
         updateAttributes[(__bridge id)kSecValueData] = encodeData;
         NSMutableDictionary *query = [self keychainQueryWithAccount:key];
         OSStatus statusCode = SecItemUpdate((__bridge CFDictionaryRef)query,(__bridge CFDictionaryRef)updateAttributes);
-        if(statusCode != noErr)
+        if (statusCode != noErr)
             TDLogError(@"Couldn't update the Keychain Item." );
-    }else{
+    } else {
         NSMutableDictionary *attributes = [self keychainQueryWithAccount:key];
         attributes[(__bridge id)kSecValueData] = encodeData;
         OSStatus statusCode = SecItemAdd((__bridge CFDictionaryRef)attributes, nil);
-        if(statusCode != noErr)
+        if (statusCode != noErr)
             TDLogError(@"Couldn't add the Keychain Item.");
     }
 }
@@ -47,14 +47,14 @@ NSString * const TDDeviceID = @"com.thinkingddata.analytics.deviceid";
     attributes[(__bridge id)kSecReturnData] = (__bridge id)(kCFBooleanTrue);
     CFTypeRef data = nil;
     OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)attributes,(CFTypeRef *)&data);
-    if(status != errSecSuccess) {
+    if (status != errSecSuccess) {
         return nil;
     }
     NSData *encodeData = [NSData dataWithData:(__bridge NSData *)data];
-    if(data) {
+    if (data) {
         CFRelease(data);
     }
-    if(encodeData) {
+    if (encodeData) {
         return [[NSString alloc] initWithData:encodeData encoding:NSUTF8StringEncoding];
     }
     
@@ -92,13 +92,13 @@ NSString * const TDDeviceID = @"com.thinkingddata.analytics.deviceid";
 }
 
 - (NSString *)getInstallTimesOld{
-    if(self.oldKeychain)
+    if (self.oldKeychain)
         return [NSString stringWithFormat:@"%@",[self.oldKeychain objectForKey:@"thinking_setup_index"]];
     return nil;
 }
 
 - (NSString *)getDeviceIdOld{
-    if(self.oldKeychain)
+    if (self.oldKeychain)
         return [self.oldKeychain objectForKey:@"thinking_device_id"];
     return nil;
 }

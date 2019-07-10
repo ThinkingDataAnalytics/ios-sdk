@@ -47,16 +47,12 @@
     NSInteger interval = [userDefaults integerForKey:@"thinkingdata_uploadInterval"];
     if (interval <= 0) {
         self.uploadInterval = 60;
-        [userDefaults setInteger:60 forKey:@"thinkingdata_uploadInterval"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
     } else {
         self.uploadInterval = interval;
     }
     NSInteger size = [userDefaults integerForKey:@"thinkingdata_uploadSize"];
     if (size <= 0) {
         self.uploadSize = 100;
-        [userDefaults setInteger:100 forKey:@"thinkingdata_uploadSize"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
     } else {
         self.uploadSize = size;
     }
@@ -68,9 +64,9 @@
             TDLogDebug(@"updateBatchSizeAndInterval network failure:%@",error);
             return;
         }
-        
-        NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-        if ([ret isKindOfClass:[NSDictionary class]] && [[ret objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:0]])
+        NSError *err;
+        NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
+        if (!err && [ret isKindOfClass:[NSDictionary class]] && [ret[@"code"] isEqualToNumber:[NSNumber numberWithInt:0]])
         {
             NSDictionary *dic = [[ret copy] objectForKey:@"data"];
             NSInteger sync_interval = [[[dic copy] objectForKey:@"sync_interval"] unsignedIntegerValue];
@@ -90,10 +86,10 @@
                 [[NSUserDefaults standardUserDefaults] synchronize];
             }
             TDLogDebug(@"uploadBatchSize:%d Interval:%d", sync_batch_size, sync_interval);
-            if(restart) {
+            if (restart) {
                 [ThinkingAnalyticsSDK restartFlushTimer];
             }
-        } else if( [[ret objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:-2]]) {
+        } else if ([[ret objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:-2]]) {
             TDLogError(@"APPID is wrong");
         } else {
             TDLogError(@"updateBatchSizeAndInterval failed");

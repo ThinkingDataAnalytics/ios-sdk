@@ -10,6 +10,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *deviceId;
 @property (nonatomic, copy) NSString *appVersion;
 @property (nonatomic, strong) NSDictionary *automaticData;
+@property (nonatomic) BOOL isFirstOpen;
 
 @end
 

@@ -5,7 +5,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface TDNetwork : NSObject
 
 @property (nonatomic, strong) NSURL *serverURL;
-@property (nonatomic, strong) NSOperationQueue *operationQueue;
 @property (atomic, strong) NSDictionary *automaticData;
 
 - (instancetype)initWithServerURL:(NSURL *)serverURL withAutomaticData:(NSDictionary *)automaticData;

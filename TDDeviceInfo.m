@@ -7,7 +7,7 @@
 #import "TDKeychainItemWrapper.h"
 #import <sys/utsname.h>
 
-#define VERSION @"1.2.0"
+#define VERSION @"2.0.0"
 
 @implementation TDDeviceInfo
 
@@ -121,22 +121,25 @@
     NSString *deviceIdKeychain = [wrapper readDeviceId];
     NSString *installTimesKeychain = [wrapper readInstallTimes];
     BOOL isNotfirst = [[[NSUserDefaults standardUserDefaults] objectForKey:@"thinking_isfirst"] boolValue];
-    if(!isNotfirst) {
+    if (!isNotfirst) {
+        _isFirstOpen = YES;
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"thinking_isfirst"];
         [[NSUserDefaults standardUserDefaults] synchronize];
+    } else {
+        _isFirstOpen = NO;
     }
     
-    if(deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
+    if (deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
         [wrapper readOldKeychain];
         deviceIdKeychain = [wrapper getDeviceIdOld];
         installTimesKeychain = [wrapper getInstallTimesOld];
     }
     
-    if(deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
+    if (deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
         deviceId = defaultDistinctId;
         installTimesKeychain = @"1";
     } else {
-        if(!isNotfirst) {
+        if (!isNotfirst) {
             int setup_int = [installTimesKeychain intValue];
             setup_int++;
             
@@ -146,7 +149,7 @@
         deviceId = deviceIdKeychain;
     }
     
-    if([installTimesKeychain isEqualToString:@"1"]) {
+    if ([installTimesKeychain isEqualToString:@"1"]) {
         uniqueId = deviceId;
     } else {
         uniqueId = [NSString stringWithFormat:@"%@_%@",deviceId,installTimesKeychain];

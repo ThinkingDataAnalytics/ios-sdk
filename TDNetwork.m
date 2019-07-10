@@ -1,6 +1,7 @@
 #import "TDNetwork.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "NSData+TDGzip.h"
+#import "TDJSONUtil.h"
 
 @implementation TDNetwork
 
@@ -28,32 +29,14 @@
 - (BOOL)flushEvents:(NSArray<NSString *> *)recordArray withAppid:(NSString *)appid {
     __block BOOL flushSucc = YES;
     
-    NSString *jsonString;
-    @try {
-        NSMutableArray *dataArr = [NSMutableArray array];
-        for (int i = 0; i < recordArray.count; i++) {
-            NSData *jsonData = [recordArray[i] dataUsingEncoding:NSUTF8StringEncoding];
-            NSError *err;
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData
-                                                                options:NSJSONReadingMutableContainers
-                                                                  error:&err];
-            [dataArr addObject:dic];
-        }
-
-        NSDictionary *e = @{
-                            @"data": dataArr,
-                            @"automaticData": self.automaticData,
-                            @"#app_id": appid,
-                            };
-
-        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:e options:kNilOptions error:nil];
-        jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-
-    } @catch (NSException *exception) {
-        return NO;
-    }
+    NSDictionary *flushDic = @{
+                    @"data": recordArray,
+                    @"automaticData": self.automaticData,
+                    @"#app_id": appid,
+                    };
     
-    NSMutableURLRequest *request = [self buildFlushRequestWithJSONString:jsonString];
+    NSString *jsonString = [TDJSONUtil JSONStringForObject:flushDic];
+    NSMutableURLRequest *request = [self buildRequestWithJSONString:jsonString];
     dispatch_semaphore_t flushSem = dispatch_semaphore_create(0);
 
     void (^block)(NSData*, NSURLResponse*, NSError*) = ^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -65,13 +48,9 @@
         }
 
         NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse*)response;
-        if([urlResponse statusCode] == 200) {
+        if ([urlResponse statusCode] == 200) {
             flushSucc = YES;
-            NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
-            NSString *logingStr=[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding];
-            TDLogDebug(@"fluch success :%@", logingStr);
-//            NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            TDLogDebug(@"fluch success :%@", flushDic);
         } else {
             flushSucc = NO;
             NSString *urlResponseContent = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -82,7 +61,6 @@
         dispatch_semaphore_signal(flushSem);
     };
 
-//    NSURLSession * session = [NSURLSession sharedSession];
     NSURLSessionDataTask *task = [[TDNetwork sharedURLSession] dataTaskWithRequest:request completionHandler:block];
     [task resume];
 
@@ -90,7 +68,7 @@
     return flushSucc;
 }
 
-- (NSMutableURLRequest *)buildFlushRequestWithJSONString:(NSString *)jsonString {
+- (NSMutableURLRequest *)buildRequestWithJSONString:(NSString *)jsonString {
     NSData *zippedData = [NSData gzipData:[jsonString dataUsingEncoding:NSUTF8StringEncoding]];
     NSString *postBody = [zippedData base64EncodedStringWithOptions:0];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.serverURL];

@@ -1,13 +1,14 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "TDConfig.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
 @interface ThinkingAnalyticsSDK : NSObject
 
 // 获取实例
 + (nullable ThinkingAnalyticsSDK *)sharedInstance;
 + (ThinkingAnalyticsSDK *)sharedInstanceWithAppid:(NSString *)appid;
++ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url withConfig:(TDConfig*)config;
 
 // 初始化方法
 + (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url;
@@ -34,7 +35,8 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
     ThinkingAnalyticsEventTypeAppEnd        = 1 << 1,   // APP进入后台事件
     ThinkingAnalyticsEventTypeAppClick      = 1 << 2,   // APP浏览页面事件
     ThinkingAnalyticsEventTypeAppViewScreen = 1 << 3,   // APP点击控件事件
-    ThinkingAnalyticsEventTypeAppViewCrash  = 1 << 4    // APP崩溃信息
+    ThinkingAnalyticsEventTypeAppViewCrash  = 1 << 4,   // APP崩溃信息
+    ThinkingAnalyticsEventTypeAppInstall    = 1 << 5    // APP首次打开
 };
 
 // 自定义事件埋点
@@ -111,8 +113,6 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 
 @interface UIView (ThinkingAnalytics)
 
-- (nullable UIViewController *)viewController;
-
 // 设置控件元素ID
 @property (copy,nonatomic) NSString* thinkingAnalyticsViewID;
 @property (strong,nonatomic) NSDictionary* thinkingAnalyticsViewIDWithAppid;
@@ -133,13 +133,13 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 
 // UITableView 事件属性
 @optional
--(NSDictionary *) thinkingAnalytics_tableView:(UITableView *)tableView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
--(NSDictionary *) thinkingAnalyticsWithAppid_tableView:(UITableView *)tableView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
+- (NSDictionary *) thinkingAnalytics_tableView:(UITableView *)tableView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
+- (NSDictionary *) thinkingAnalyticsWithAppid_tableView:(UITableView *)tableView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
 
 // UICollectionView 事件属性
 @optional
--(NSDictionary *) thinkingAnalytics_collectionView:(UICollectionView *)collectionView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
--(NSDictionary *) thinkingAnalyticsWithAppid_collectionView:(UICollectionView *)collectionView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
+- (NSDictionary *) thinkingAnalytics_collectionView:(UICollectionView *)collectionView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
+- (NSDictionary *) thinkingAnalyticsWithAppid_collectionView:(UICollectionView *)collectionView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
@@ -147,18 +147,17 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 
 // 自定义页面浏览事件的属性
 @optional
--(NSDictionary *)getTrackProperties;
--(NSDictionary *)getTrackPropertiesWithAppid;
+- (NSDictionary *)getTrackProperties;
+- (NSDictionary *)getTrackPropertiesWithAppid;
 
 @end
 
-
-@protocol TDScreenAutoTracker<TDAutoTracker>
+@protocol TDScreenAutoTracker <TDAutoTracker>
 
 // 自定义页面浏览事件的属性
 @optional
--(NSString *) getScreenUrl;
--(NSDictionary *) getScreenUrlWithAppid;
+- (NSString *) getScreenUrl;
+- (NSDictionary *) getScreenUrlWithAppid;
 
 @end
 

@@ -184,7 +184,7 @@ static TDAbstractLogger *sharedInstance;
 }
 
 - (void)logMessage:(TDLogMessage *)logMessage {
-    if(@available(iOS 10.0, *)) {
+    if (@available(iOS 10.0, *)) {
         NSString * message = logMessage->_message;
         if (message != nil) {
             const char *msg = [message UTF8String];

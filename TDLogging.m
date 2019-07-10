@@ -21,7 +21,7 @@
 
 - (void)logCallingFunction:(TDLoggingLevel)type format:(id)messageFormat, ...
 {
-    if(messageFormat) {
+    if (messageFormat) {
         va_list formatList;
         va_start(formatList, messageFormat);
         NSString *formattedMessage = [[NSString alloc] initWithFormat:messageFormat arguments:formatList];
