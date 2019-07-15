@@ -7,7 +7,13 @@
 #import "TDKeychainItemWrapper.h"
 #import <sys/utsname.h>
 
-#define VERSION @"2.0.0"
+#define VERSION @"2.0.1"
+
+@interface TDDeviceInfo()
+
+@property (nonatomic, strong) CTTelephonyNetworkInfo *telephonyInfo;
+
+@end
 
 @implementation TDDeviceInfo
 
@@ -40,8 +46,8 @@
     NSMutableDictionary *p = [NSMutableDictionary dictionary];
     UIDevice *device = [UIDevice currentDevice];
     [p setValue:_deviceId forKey:@"#device_id"];
-    CTTelephonyNetworkInfo *telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
-    CTCarrier *carrier = [telephonyInfo subscriberCellularProvider];
+    _telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
+    CTCarrier *carrier = [_telephonyInfo subscriberCellularProvider];
     [p setValue:carrier.carrierName forKey:@"#carrier"];
     CGSize size = [UIScreen mainScreen].bounds.size;
     [p addEntriesFromDictionary:@{

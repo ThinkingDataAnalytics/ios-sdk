@@ -1139,11 +1139,13 @@ withProperties:(NSDictionary *)propertieDict
 }
 
 - (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType {
-    [_autoTrackManager trackWithAppid:self.appid withOption:eventType];
     _autoTrackEventType = eventType;
+    if (_deviceInfo.isFirstOpen && (_autoTrackEventType & ThinkingAnalyticsEventTypeAppInstall)) {
+        [self autotrack:APP_INSTALL_EVENT properties:nil withTime:nil];
+    }
     
-    if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppViewCrash) {
-        [self trackCrash];
+    if (!self.relaunchInBackGround && (_autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd)) {
+        [self timeEvent:APP_END_EVENT];
     }
 
     if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
@@ -1151,12 +1153,10 @@ withProperties:(NSDictionary *)propertieDict
         [self autotrack:eventName properties:@{RESUME_FROM_BACKGROUND_PROPERTY : @(_appRelaunched)} withTime:nil];
     }
     
-    if (_deviceInfo.isFirstOpen && (_autoTrackEventType & ThinkingAnalyticsEventTypeAppInstall)) {
-        [self autotrack:APP_INSTALL_EVENT properties:nil withTime:nil];
-    }
+    [_autoTrackManager trackWithAppid:self.appid withOption:eventType];
     
-    if (!self.relaunchInBackGround && (_autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd)) {
-        [self timeEvent:APP_END_EVENT];
+    if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppViewCrash) {
+        [self trackCrash];
     }
 }
 

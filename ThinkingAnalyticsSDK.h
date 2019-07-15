@@ -8,10 +8,10 @@ NS_ASSUME_NONNULL_BEGIN
 // 获取实例
 + (nullable ThinkingAnalyticsSDK *)sharedInstance;
 + (ThinkingAnalyticsSDK *)sharedInstanceWithAppid:(NSString *)appid;
-+ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url withConfig:(TDConfig*)config;
 
 // 初始化方法
 + (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url;
++ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url withConfig:(TDConfig*)config;
 
 // Log级别
 typedef NS_OPTIONS(NSInteger, TDLoggingLevel) {
