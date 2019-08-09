@@ -1,0 +1,71 @@
+
+**v2.0.1** (2019/07/15)
+
+修复：
+
+	-  修改 自动埋点的 顺序
+
+
+**v2.0.0** (2019/07/10)
+
+新增：
+
+	-  每条上报信息都添加#uuid
+	-  安装app首次打开自动埋点ta_app_install 事件（使用方法 enableAutoTrack 添加 ThinkingAnalyticsEventTypeAppInstall）
+	-  新增后台自启事件，默认不埋点 （打开方法
+		TDConfig *config = [[TDConfig alloc] init];
+		config.trackRelaunchedInBackgroundEvents = YES;
+		ThinkingAnalyticsSDK *thinking2 = [ThinkingAnalyticsSDK startWithAppId:@"APPID" withUrl:@"URL" withConfig:config];
+	-  后台自启埋点会添加属性#relaunched_in_background
+	-  打开ThinkingAnalyticsEventTypeAppStart 开关时 会有 ta_app_bg_start 自动埋点事件
+	-  新增APPCLICK 添加 UIControl 类的自动埋点 包括控件 UISegmentedControl UISwitch UIStepper UISlider UIButton UIPageControl UITabBarButton _UIButtonBarButton 等
+
+
+**v1.2.0** (2019/06/15)
+
+新功能：
+
+	-  支持添加动态属性
+	-  支持收集崩溃信息
+	-  支持多appid
+	-  新增 获取公共属性 接口
+	-  新增 上报数据 接口
+
+
+**v1.1.3** (2019/06/10)
+
+修复：
+
+	-  调整#app_version：automatic里的#app_version 去掉，放在properties 里
+
+
+**v1.1.2** (2019/06/04)
+
+修复：
+
+	-  修复ios10 h5 bug
+	-  修复 distinctID 新版本显示了_1的bug
+
+
+**v1.1.1** (2019/05/03)
+
+新功能： 
+
+	-  支持bitcode
+    -  支持h5打通
+
+
+**v1.0.12** (2018/12/07)
+
+修复：
+
+	-  修复了部分不使用公历的国家的时间出现异常的问题
+
+
+**v1.0.11** (2018/11/22)
+
+新功能： 
+
+	-  添加了setNetworkType接口，可设置在那些网络环境下允许上报
+	-  删除了接口isWifiForcedPush接口
+
