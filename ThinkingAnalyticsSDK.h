@@ -69,7 +69,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 - (void)user_add:(NSDictionary *)property;
 - (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue;
 
-// 删除用户属性
+// 删除用户 该操作不可逆 需慎重使用
 - (void)user_delete;
 
 // 设置公共事件属性
