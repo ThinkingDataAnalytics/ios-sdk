@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 初始化方法
 + (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url;
-+ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url withConfig:(TDConfig*)config;
++ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url withConfig:(nullable TDConfig*)config;
 
 // Log级别
 typedef NS_OPTIONS(NSInteger, TDLoggingLevel) {

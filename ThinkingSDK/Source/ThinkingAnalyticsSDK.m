@@ -98,7 +98,7 @@ static dispatch_queue_t networkQueue;
 + (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url withConfig:(TDConfig*)config {
     if (instances[appId]) {
         return instances[appId];
-    } else if (url.length == 0) {
+    } else if ([url isKindOfClass:[NSString class]] && url.length == 0) {
         return nil;
     }
     
@@ -1215,7 +1215,7 @@ withProperties:(NSDictionary *)propertieDict
     
     Class wkWebViewClass = NSClassFromString(@"WKWebView");
     if ([urlStr rangeOfString:TA_JS_TRACK_SCHEME].length > 0) {
-        if (queryKey.length == 0 || queryValue.length == 0)
+        if (([queryKey isKindOfClass:[NSString class]] && queryKey.length == 0) || ([queryValue isKindOfClass:[NSString class]] && queryValue.length == 0))
             return YES;
         if ([webView isKindOfClass:[UIWebView class]] || (wkWebViewClass && [webView isKindOfClass:wkWebViewClass])) {
             NSString* uploadData = [queryValue stringByRemovingPercentEncoding];

@@ -80,12 +80,8 @@ NSString * const TDDeviceID = @"com.thinkingddata.analytics.deviceid";
         
         if (keychainErr == noErr) {
             NSData *xmlData = (__bridge_transfer NSData *) cfXmlData;
-            NSString *errorDesc = nil;
             NSPropertyListFormat fmt;
-            NSDictionary *resultsInfo = (NSDictionary *) [NSPropertyListSerialization propertyListFromData:xmlData
-                                                                                           mutabilityOption:NSPropertyListMutableContainersAndLeaves
-                                                                                                     format:&fmt
-                                                                                           errorDescription:&errorDesc];
+            NSDictionary *resultsInfo = [NSPropertyListSerialization propertyListWithData:xmlData options:NSPropertyListMutableContainersAndLeaves format:&fmt error:nil];
             self.oldKeychain = resultsInfo;
         }
     }

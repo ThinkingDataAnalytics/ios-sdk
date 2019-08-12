@@ -11,21 +11,6 @@
 
 static void *const GlobalLoggingQueueIdentityKey = (void *)&GlobalLoggingQueueIdentityKey;
 
-@interface TDLoggerNode : NSObject
-{
-    @public
-    id <TDLogger> _logger;
-    dispatch_queue_t _loggerQueue;
-}
-
-@property (nonatomic, readonly) id <TDLogger> logger;
-@property (nonatomic, readonly) dispatch_queue_t loggerQueue;
-
-+ (TDLoggerNode *)nodeWithLogger:(id <TDLogger>)logger
-                     loggerQueue:(dispatch_queue_t)loggerQueue;
-
-@end
-
 @interface TDOSLog ()
 {
     id <TDLogger> _logger;
@@ -173,7 +158,10 @@ static TDAbstractLogger *sharedInstance;
 }
 
 - (os_log_t)getLogger {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability"
     return os_log_create("com.thinkingddata.analytics.log", "THINKING");
+#pragma clang diagnostic pop
 }
 
 - (os_log_t)logger {
