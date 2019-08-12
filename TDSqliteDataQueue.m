@@ -94,8 +94,8 @@
 - (void)delExpiredData {
     NSTimeInterval oneDay = 24*60*60*1;
     NSDate* theDate = [[NSDate date] initWithTimeIntervalSinceNow: -oneDay * 10];
-    int totalMilliseconds = [theDate timeIntervalSince1970];
-    [self removeOldRecords:totalMilliseconds];
+    int expirationDate = [theDate timeIntervalSince1970];
+    [self removeOldRecords:expirationDate];
 }
 
 - (NSInteger)addObejct:(id)obj withAppid:(NSString *)appid {

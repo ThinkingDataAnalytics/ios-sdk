@@ -330,7 +330,7 @@
         if ([obj isKindOfClass:[UIView class]]) {
             for(UIView *subView in [(UIView *)obj subviews]) {
                 text = [TDAutoTrackManager getText:subView];
-                if (text.length > 0) {
+                if ([text isKindOfClass:[NSString class]] && text.length > 0) {
                     break;
                 }
             }

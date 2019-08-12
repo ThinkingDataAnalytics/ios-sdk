@@ -627,13 +627,13 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     });
 }
 
-- (void)unsetSuperProperty:(NSString *)property {
-    if (property.length == 0)
+- (void)unsetSuperProperty:(NSString *)propertyKey {
+    if ([propertyKey isKindOfClass:[NSString class]] && propertyKey.length == 0)
         return;
     
     dispatch_async(serialQueue, ^{
         NSMutableDictionary *tmp = [NSMutableDictionary dictionaryWithDictionary:self.systemProperties];
-        tmp[property] = nil;
+        tmp[propertyKey] = nil;
         self.systemProperties = [NSDictionary dictionaryWithDictionary:tmp];
         [self archiveSuperProperties:self.systemProperties];
     });
@@ -655,7 +655,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)identify:(NSString *)distinctId {
-    if (distinctId.length == 0) {
+    if ([distinctId isKindOfClass:[NSString class]] && distinctId.length == 0) {
         TDLogError(@"identify cannot null");
         return;
     }
@@ -669,8 +669,8 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)login:(NSString *)accountId {
-    if (accountId.length == 0) {
-        TDLogError(@"accountId cannot null", accountId);
+    if (![accountId isKindOfClass:[NSString class]] || accountId.length == 0) {
+        TDLogError(@"accountId invald", accountId);
         return;
     }
     
@@ -711,17 +711,13 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)timeEvent:(NSString *)event {
-    if (![self isValidName: event]) {
+    if (![event isKindOfClass:[NSString class]] || event.length == 0 || ![self isValidName: event]) {
         NSString *errMsg = [NSString stringWithFormat:@"timeEvent parameter[%@] is not valid", event];
         TDLogError(errMsg);
         return ;
     }
     
     NSNumber *eventBegin = @([[NSDate date] timeIntervalSince1970]);
-    
-    if (event.length == 0) {
-        return;
-    }
     dispatch_async(serialQueue, ^{
         self.trackTimer[event] = @{@"eventBegin" : eventBegin, @"eventAccumulatedDuration" : [NSNumber numberWithDouble:0]};
     });
