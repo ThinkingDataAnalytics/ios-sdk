@@ -10,7 +10,6 @@
 		F34CAAD222C5B26C00A8FF82 /* WKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */; };
 		F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */; };
 		F34CAB0122C730D400A8FF82 /* AutoCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAB0022C730D400A8FF82 /* AutoCollectionViewController.m */; };
-		F36673B122E041B900B63F81 /* thinkingdata.js in Resources */ = {isa = PBXBuildFile; fileRef = F36673B022E041B900B63F81 /* thinkingdata.js */; };
 		F37AE90222C49007005D64F8 /* WEBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F37AE90122C49007005D64F8 /* WEBViewController.m */; };
 		F37AE90622C493A9005D64F8 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = F37AE90422C493A9005D64F8 /* index.html */; };
 		F380B2AA22C0E8BB00955FC5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2A922C0E8BB00955FC5 /* AppDelegate.m */; };
@@ -25,6 +24,7 @@
 		F380B3C922C23FA500955FC5 /* AutoTrackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */; };
 		F3BA58A12301388D00D6D7DE /* ThinkingSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */; };
 		F3BA58A22301388D00D6D7DE /* ThinkingSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F3F45D9F2301785600218049 /* thinkingdata.min.js in Resources */ = {isa = PBXBuildFile; fileRef = F3F45D9E2301785600218049 /* thinkingdata.min.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,7 +65,6 @@
 		F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoTableViewController.m; sourceTree = "<group>"; };
 		F34CAAFF22C730D400A8FF82 /* AutoCollectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoCollectionViewController.h; sourceTree = "<group>"; };
 		F34CAB0022C730D400A8FF82 /* AutoCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoCollectionViewController.m; sourceTree = "<group>"; };
-		F36673B022E041B900B63F81 /* thinkingdata.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = thinkingdata.js; sourceTree = "<group>"; };
 		F37AE90022C49007005D64F8 /* WEBViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WEBViewController.h; sourceTree = "<group>"; };
 		F37AE90122C49007005D64F8 /* WEBViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WEBViewController.m; sourceTree = "<group>"; };
 		F37AE90422C493A9005D64F8 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
@@ -93,6 +92,7 @@
 		F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoTrackViewController.m; sourceTree = "<group>"; };
 		F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ThinkingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3BE260022FBCB8C00F46506 /* ThinkingSDKDEMO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ThinkingSDKDEMO.entitlements; sourceTree = "<group>"; };
+		F3F45D9E2301785600218049 /* thinkingdata.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = thinkingdata.min.js; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,7 +148,7 @@
 		F37AE90322C49367005D64F8 /* html */ = {
 			isa = PBXGroup;
 			children = (
-				F36673B022E041B900B63F81 /* thinkingdata.js */,
+				F3F45D9E2301785600218049 /* thinkingdata.min.js */,
 				F37AE90422C493A9005D64F8 /* index.html */,
 			);
 			path = html;
@@ -335,7 +335,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F37AE90622C493A9005D64F8 /* index.html in Resources */,
-				F36673B122E041B900B63F81 /* thinkingdata.js in Resources */,
+				F3F45D9F2301785600218049 /* thinkingdata.min.js in Resources */,
 				F380B2B222C0E8BC00955FC5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
