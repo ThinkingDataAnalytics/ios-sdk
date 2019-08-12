@@ -1,0 +1,14 @@
+
+SDK 初始化方法 查看 ThinkingSDKDEMO/ThinkingSDKDEMO/AppDelegate.m 文件
+API 调用方法 查看 ThinkingSDKDEMO/ThinkingSDKAPI.m 文件
+
+H5 打通 UIWebView 查看 WebView/WEBViewController.m  
+H5 打通 WKWebView 查看 WebView/WKWebViewController.m
+
+UIViewController 的自动埋点 查看 AutoTrack/AutoTrackViewController.m
+UITableView 的自动埋点 查看 AutoTrack/AutoTableViewController.m
+UICollectionView 的自动埋点 查看 AutoTrack/AutoCollectionViewController.m
+
+详细使用文档 
+https://doc.thinkingdata.cn/tdamanual/installation/ios_sdk_installation.html
+

@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    </head>
+    <body>
+        <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+        <script type="text/javascript">
+            !function (e) { if (!window.ThinkingDataAnalyticalTool) { var n = e.sdkUrl, t = e.name, a = window, r = document, i = "script", l = null, s = null; a.ThinkingDataAnalyticalTool = t, a[t] = function (e) { return function () { (a[t]._q = a[t]._q || []).push([e, arguments]) } }; for (var c = ["track", "quick", "login", "identify", "logout", "trackLink", "userSet", "userSetOnce", "userAdd", "userDel", "setPageProperty"], o = 0; o < c.length; o++)a[t][c[o]] = a[t].call(null, c[o]); a[t].param = e, l = r.createElement(i), s = r.getElementsByTagName(i)[0], l.async = 1, l.src = n, s.parentNode.insertBefore(l, s) } }({
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        appId: "b2a61feb9e56472c90c5bcb320dfb4ef",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        name: "tg",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        sdkUrl: "thinkingdata.js",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        serverUrl: "https://sdk.tga.thinkinggame.cn/sync_js",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        //send_method: 'ajax'
+                                                    useAppTrack: true, });
+
+           tg.quick('autoTrack');
+           
+            function trackAction()
+            {
+                tg.track('h5test');
+            }
+
+            function  loginAction()
+            {
+                tg.login('h5login');
+            }
+
+            function logoutAction()
+            {
+                tg.logout();
+            }
+
+            function  usersetAction() {
+                tg.userSet({email: 'xxx@xx'});
+            }
+        
+            function  userSetOnceAction() {
+                tg.userSetOnce({email: 'xxx@xx'});
+            }
+        
+            function  userAddAction() {
+                tg.userAdd({level: 4});
+            }
+        
+            function  userDelAction() {
+                tg.userDel();
+            }
+
+            function  setPagePropertyAction() {
+                tg.setPageProperty({phone: '423'});
+            }
+
+        </script>
+
+        <p>Hello world! This is HTML5 Demo.</p>
+        <button type="submit" id="track" onclick="trackAction()"> track </button>
+        <button type="submit" id="login" onclick="loginAction()"> loginAction </button>
+        <button type="submit" id="logout" onclick="logoutAction()"> logoutAction </button>
+        <button type="submit" id="userset" onclick="usersetAction()"> usersetAction </button>
+        <button type="submit" id="userSetOnce" onclick="userSetOnceAction()"> userSetOnceAction </button>
+        <button type="submit" id="userAdd" onclick="userAddAction()"> userAddAction </button>
+        <button type="submit" id="userDel" onclick="userDelAction()"> userDelAction </button>
+        <button type="submit" id="setPageProperty" onclick="setPagePropertyAction()"> setPagePropertyAction </button>
+
+    </body>
+</html>

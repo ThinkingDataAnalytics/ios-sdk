@@ -4,4 +4,7 @@
    <FileRef
       location = "group:ThinkingSDK.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Example/ThinkingSDKDEMO.xcodeproj">
+   </FileRef>
 </Workspace>

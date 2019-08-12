@@ -1,0 +1,684 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F34CAAD222C5B26C00A8FF82 /* WKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */; };
+		F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */; };
+		F34CAB0122C730D400A8FF82 /* AutoCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAB0022C730D400A8FF82 /* AutoCollectionViewController.m */; };
+		F36673B122E041B900B63F81 /* thinkingdata.js in Resources */ = {isa = PBXBuildFile; fileRef = F36673B022E041B900B63F81 /* thinkingdata.js */; };
+		F37AE90222C49007005D64F8 /* WEBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F37AE90122C49007005D64F8 /* WEBViewController.m */; };
+		F37AE90622C493A9005D64F8 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = F37AE90422C493A9005D64F8 /* index.html */; };
+		F380B2AA22C0E8BB00955FC5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2A922C0E8BB00955FC5 /* AppDelegate.m */; };
+		F380B2B222C0E8BC00955FC5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F380B2B122C0E8BC00955FC5 /* Assets.xcassets */; };
+		F380B2B822C0E8BC00955FC5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2B722C0E8BC00955FC5 /* main.m */; };
+		F380B2C222C0E8BC00955FC5 /* ThinkingSDKDEMOTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2C122C0E8BC00955FC5 /* ThinkingSDKDEMOTests.m */; };
+		F380B2CD22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2CC22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.m */; };
+		F380B2DF22C0E99D00955FC5 /* AppDelegate+TDUI.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2DE22C0E99D00955FC5 /* AppDelegate+TDUI.m */; };
+		F380B2E222C0EA0100955FC5 /* TrackAPIVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2E122C0EA0100955FC5 /* TrackAPIVC.m */; };
+		F380B2E522C0EAC400955FC5 /* APIEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2E422C0EAC400955FC5 /* APIEntry.m */; };
+		F380B31B22C0EF5900955FC5 /* ThinkingSDKAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B31A22C0EF5900955FC5 /* ThinkingSDKAPI.m */; };
+		F380B3C922C23FA500955FC5 /* AutoTrackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */; };
+		F3BA58A12301388D00D6D7DE /* ThinkingSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */; };
+		F3BA58A22301388D00D6D7DE /* ThinkingSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F380B2BE22C0E8BC00955FC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F380B29D22C0E8BB00955FC5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F380B2A422C0E8BB00955FC5;
+			remoteInfo = ThinkingSDKDEMO;
+		};
+		F380B2C922C0E8BC00955FC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F380B29D22C0E8BB00955FC5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F380B2A422C0E8BB00955FC5;
+			remoteInfo = ThinkingSDKDEMO;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F3BA58A32301388D00D6D7DE /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F3BA58A22301388D00D6D7DE /* ThinkingSDK.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		F34CAAD022C5B26C00A8FF82 /* WKWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WKWebViewController.h; sourceTree = "<group>"; };
+		F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WKWebViewController.m; sourceTree = "<group>"; };
+		F34CAAD322C5B90F00A8FF82 /* AutoTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoTableViewController.h; sourceTree = "<group>"; };
+		F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoTableViewController.m; sourceTree = "<group>"; };
+		F34CAAFF22C730D400A8FF82 /* AutoCollectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoCollectionViewController.h; sourceTree = "<group>"; };
+		F34CAB0022C730D400A8FF82 /* AutoCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoCollectionViewController.m; sourceTree = "<group>"; };
+		F36673B022E041B900B63F81 /* thinkingdata.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = thinkingdata.js; sourceTree = "<group>"; };
+		F37AE90022C49007005D64F8 /* WEBViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WEBViewController.h; sourceTree = "<group>"; };
+		F37AE90122C49007005D64F8 /* WEBViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WEBViewController.m; sourceTree = "<group>"; };
+		F37AE90422C493A9005D64F8 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
+		F380B2A522C0E8BB00955FC5 /* ThinkingSDKDEMO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThinkingSDKDEMO.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F380B2A822C0E8BB00955FC5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		F380B2A922C0E8BB00955FC5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		F380B2B122C0E8BC00955FC5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F380B2B622C0E8BC00955FC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F380B2B722C0E8BC00955FC5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		F380B2BD22C0E8BC00955FC5 /* ThinkingSDKDEMOTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ThinkingSDKDEMOTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F380B2C122C0E8BC00955FC5 /* ThinkingSDKDEMOTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThinkingSDKDEMOTests.m; sourceTree = "<group>"; };
+		F380B2C322C0E8BC00955FC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F380B2C822C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ThinkingSDKDEMOUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F380B2CC22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThinkingSDKDEMOUITests.m; sourceTree = "<group>"; };
+		F380B2CE22C0E8BC00955FC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F380B2DD22C0E99D00955FC5 /* AppDelegate+TDUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+TDUI.h"; sourceTree = "<group>"; };
+		F380B2DE22C0E99D00955FC5 /* AppDelegate+TDUI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+TDUI.m"; sourceTree = "<group>"; };
+		F380B2E022C0EA0100955FC5 /* TrackAPIVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrackAPIVC.h; sourceTree = "<group>"; };
+		F380B2E122C0EA0100955FC5 /* TrackAPIVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrackAPIVC.m; sourceTree = "<group>"; };
+		F380B2E322C0EAC400955FC5 /* APIEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APIEntry.h; sourceTree = "<group>"; };
+		F380B2E422C0EAC400955FC5 /* APIEntry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APIEntry.m; sourceTree = "<group>"; };
+		F380B31922C0EF5900955FC5 /* ThinkingSDKAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThinkingSDKAPI.h; sourceTree = "<group>"; };
+		F380B31A22C0EF5900955FC5 /* ThinkingSDKAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThinkingSDKAPI.m; sourceTree = "<group>"; };
+		F380B3C722C23FA500955FC5 /* AutoTrackViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoTrackViewController.h; sourceTree = "<group>"; };
+		F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoTrackViewController.m; sourceTree = "<group>"; };
+		F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ThinkingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3BE260022FBCB8C00F46506 /* ThinkingSDKDEMO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ThinkingSDKDEMO.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F380B2A222C0E8BB00955FC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3BA58A12301388D00D6D7DE /* ThinkingSDK.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F380B2BA22C0E8BC00955FC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F380B2C522C0E8BC00955FC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F34CAAD622C5B91500A8FF82 /* AutoTrack */ = {
+			isa = PBXGroup;
+			children = (
+				F380B3C722C23FA500955FC5 /* AutoTrackViewController.h */,
+				F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */,
+				F34CAAD322C5B90F00A8FF82 /* AutoTableViewController.h */,
+				F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */,
+				F34CAAFF22C730D400A8FF82 /* AutoCollectionViewController.h */,
+				F34CAB0022C730D400A8FF82 /* AutoCollectionViewController.m */,
+			);
+			path = AutoTrack;
+			sourceTree = "<group>";
+		};
+		F34CAAD722C5B92200A8FF82 /* WebView */ = {
+			isa = PBXGroup;
+			children = (
+				F37AE90022C49007005D64F8 /* WEBViewController.h */,
+				F37AE90122C49007005D64F8 /* WEBViewController.m */,
+				F34CAAD022C5B26C00A8FF82 /* WKWebViewController.h */,
+				F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */,
+			);
+			path = WebView;
+			sourceTree = "<group>";
+		};
+		F37AE90322C49367005D64F8 /* html */ = {
+			isa = PBXGroup;
+			children = (
+				F36673B022E041B900B63F81 /* thinkingdata.js */,
+				F37AE90422C493A9005D64F8 /* index.html */,
+			);
+			path = html;
+			sourceTree = "<group>";
+		};
+		F380B29C22C0E8BB00955FC5 = {
+			isa = PBXGroup;
+			children = (
+				F380B2A722C0E8BB00955FC5 /* ThinkingSDKDEMO */,
+				F380B2C022C0E8BC00955FC5 /* ThinkingSDKDEMOTests */,
+				F380B2CB22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests */,
+				F380B2A622C0E8BB00955FC5 /* Products */,
+				F3BA589F2301388D00D6D7DE /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		F380B2A622C0E8BB00955FC5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F380B2A522C0E8BB00955FC5 /* ThinkingSDKDEMO.app */,
+				F380B2BD22C0E8BC00955FC5 /* ThinkingSDKDEMOTests.xctest */,
+				F380B2C822C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F380B2A722C0E8BB00955FC5 /* ThinkingSDKDEMO */ = {
+			isa = PBXGroup;
+			children = (
+				F3BE260022FBCB8C00F46506 /* ThinkingSDKDEMO.entitlements */,
+				F380B2A822C0E8BB00955FC5 /* AppDelegate.h */,
+				F380B2A922C0E8BB00955FC5 /* AppDelegate.m */,
+				F380B31922C0EF5900955FC5 /* ThinkingSDKAPI.h */,
+				F380B31A22C0EF5900955FC5 /* ThinkingSDKAPI.m */,
+				F380B2DD22C0E99D00955FC5 /* AppDelegate+TDUI.h */,
+				F380B2DE22C0E99D00955FC5 /* AppDelegate+TDUI.m */,
+				F380B2E322C0EAC400955FC5 /* APIEntry.h */,
+				F380B2E422C0EAC400955FC5 /* APIEntry.m */,
+				F380B2E022C0EA0100955FC5 /* TrackAPIVC.h */,
+				F380B2E122C0EA0100955FC5 /* TrackAPIVC.m */,
+				F34CAAD622C5B91500A8FF82 /* AutoTrack */,
+				F34CAAD722C5B92200A8FF82 /* WebView */,
+				F37AE90322C49367005D64F8 /* html */,
+				F380B2B122C0E8BC00955FC5 /* Assets.xcassets */,
+				F380B2B622C0E8BC00955FC5 /* Info.plist */,
+				F380B2B722C0E8BC00955FC5 /* main.m */,
+			);
+			path = ThinkingSDKDEMO;
+			sourceTree = "<group>";
+		};
+		F380B2C022C0E8BC00955FC5 /* ThinkingSDKDEMOTests */ = {
+			isa = PBXGroup;
+			children = (
+				F380B2C122C0E8BC00955FC5 /* ThinkingSDKDEMOTests.m */,
+				F380B2C322C0E8BC00955FC5 /* Info.plist */,
+			);
+			path = ThinkingSDKDEMOTests;
+			sourceTree = "<group>";
+		};
+		F380B2CB22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests */ = {
+			isa = PBXGroup;
+			children = (
+				F380B2CC22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.m */,
+				F380B2CE22C0E8BC00955FC5 /* Info.plist */,
+			);
+			path = ThinkingSDKDEMOUITests;
+			sourceTree = "<group>";
+		};
+		F3BA589F2301388D00D6D7DE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F380B2A422C0E8BB00955FC5 /* ThinkingSDKDEMO */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F380B2D122C0E8BC00955FC5 /* Build configuration list for PBXNativeTarget "ThinkingSDKDEMO" */;
+			buildPhases = (
+				F380B2A122C0E8BB00955FC5 /* Sources */,
+				F380B2A222C0E8BB00955FC5 /* Frameworks */,
+				F380B2A322C0E8BB00955FC5 /* Resources */,
+				F3BA58A32301388D00D6D7DE /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ThinkingSDKDEMO;
+			productName = ThinkingSDKDEMO;
+			productReference = F380B2A522C0E8BB00955FC5 /* ThinkingSDKDEMO.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F380B2BC22C0E8BC00955FC5 /* ThinkingSDKDEMOTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F380B2D422C0E8BC00955FC5 /* Build configuration list for PBXNativeTarget "ThinkingSDKDEMOTests" */;
+			buildPhases = (
+				F380B2B922C0E8BC00955FC5 /* Sources */,
+				F380B2BA22C0E8BC00955FC5 /* Frameworks */,
+				F380B2BB22C0E8BC00955FC5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F380B2BF22C0E8BC00955FC5 /* PBXTargetDependency */,
+			);
+			name = ThinkingSDKDEMOTests;
+			productName = ThinkingSDKDEMOTests;
+			productReference = F380B2BD22C0E8BC00955FC5 /* ThinkingSDKDEMOTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F380B2C722C0E8BC00955FC5 /* ThinkingSDKDEMOUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F380B2D722C0E8BC00955FC5 /* Build configuration list for PBXNativeTarget "ThinkingSDKDEMOUITests" */;
+			buildPhases = (
+				F380B2C422C0E8BC00955FC5 /* Sources */,
+				F380B2C522C0E8BC00955FC5 /* Frameworks */,
+				F380B2C622C0E8BC00955FC5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F380B2CA22C0E8BC00955FC5 /* PBXTargetDependency */,
+			);
+			name = ThinkingSDKDEMOUITests;
+			productName = ThinkingSDKDEMOUITests;
+			productReference = F380B2C822C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F380B29D22C0E8BB00955FC5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = thinking;
+				TargetAttributes = {
+					F380B2A422C0E8BB00955FC5 = {
+						CreatedOnToolsVersion = 10.1;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
+					};
+					F380B2BC22C0E8BC00955FC5 = {
+						CreatedOnToolsVersion = 10.1;
+						TestTargetID = F380B2A422C0E8BB00955FC5;
+					};
+					F380B2C722C0E8BC00955FC5 = {
+						CreatedOnToolsVersion = 10.1;
+						TestTargetID = F380B2A422C0E8BB00955FC5;
+					};
+				};
+			};
+			buildConfigurationList = F380B2A022C0E8BB00955FC5 /* Build configuration list for PBXProject "ThinkingSDKDEMO" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F380B29C22C0E8BB00955FC5;
+			productRefGroup = F380B2A622C0E8BB00955FC5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F380B2A422C0E8BB00955FC5 /* ThinkingSDKDEMO */,
+				F380B2BC22C0E8BC00955FC5 /* ThinkingSDKDEMOTests */,
+				F380B2C722C0E8BC00955FC5 /* ThinkingSDKDEMOUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F380B2A322C0E8BB00955FC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F37AE90622C493A9005D64F8 /* index.html in Resources */,
+				F36673B122E041B900B63F81 /* thinkingdata.js in Resources */,
+				F380B2B222C0E8BC00955FC5 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F380B2BB22C0E8BC00955FC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F380B2C622C0E8BC00955FC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F380B2A122C0E8BB00955FC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */,
+				F37AE90222C49007005D64F8 /* WEBViewController.m in Sources */,
+				F380B2E522C0EAC400955FC5 /* APIEntry.m in Sources */,
+				F380B2E222C0EA0100955FC5 /* TrackAPIVC.m in Sources */,
+				F34CAAD222C5B26C00A8FF82 /* WKWebViewController.m in Sources */,
+				F380B3C922C23FA500955FC5 /* AutoTrackViewController.m in Sources */,
+				F380B31B22C0EF5900955FC5 /* ThinkingSDKAPI.m in Sources */,
+				F380B2B822C0E8BC00955FC5 /* main.m in Sources */,
+				F34CAB0122C730D400A8FF82 /* AutoCollectionViewController.m in Sources */,
+				F380B2AA22C0E8BB00955FC5 /* AppDelegate.m in Sources */,
+				F380B2DF22C0E99D00955FC5 /* AppDelegate+TDUI.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F380B2B922C0E8BC00955FC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F380B2C222C0E8BC00955FC5 /* ThinkingSDKDEMOTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F380B2C422C0E8BC00955FC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F380B2CD22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F380B2BF22C0E8BC00955FC5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F380B2A422C0E8BB00955FC5 /* ThinkingSDKDEMO */;
+			targetProxy = F380B2BE22C0E8BC00955FC5 /* PBXContainerItemProxy */;
+		};
+		F380B2CA22C0E8BC00955FC5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F380B2A422C0E8BB00955FC5 /* ThinkingSDKDEMO */;
+			targetProxy = F380B2C922C0E8BC00955FC5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F380B2CF22C0E8BC00955FC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		F380B2D022C0E8BC00955FC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F380B2D222C0E8BC00955FC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ThinkingSDKDEMO/ThinkingSDKDEMO.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LF3XB637JR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThinkingSDKDEMO",
+				);
+				INFOPLIST_FILE = ThinkingSDKDEMO/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.thinking.ThinkingSDKDEMO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F380B2D322C0E8BC00955FC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ThinkingSDKDEMO/ThinkingSDKDEMO.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LF3XB637JR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThinkingSDKDEMO",
+				);
+				INFOPLIST_FILE = ThinkingSDKDEMO/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.thinking.ThinkingSDKDEMO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F380B2D522C0E8BC00955FC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LF3XB637JR;
+				INFOPLIST_FILE = ThinkingSDKDEMOTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.thinking.ThinkingSDKDEMOTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ThinkingSDKDEMO.app/ThinkingSDKDEMO";
+			};
+			name = Debug;
+		};
+		F380B2D622C0E8BC00955FC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LF3XB637JR;
+				INFOPLIST_FILE = ThinkingSDKDEMOTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.thinking.ThinkingSDKDEMOTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ThinkingSDKDEMO.app/ThinkingSDKDEMO";
+			};
+			name = Release;
+		};
+		F380B2D822C0E8BC00955FC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LF3XB637JR;
+				INFOPLIST_FILE = ThinkingSDKDEMOUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.thinking.ThinkingSDKDEMOUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ThinkingSDKDEMO;
+			};
+			name = Debug;
+		};
+		F380B2D922C0E8BC00955FC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LF3XB637JR;
+				INFOPLIST_FILE = ThinkingSDKDEMOUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.thinking.ThinkingSDKDEMOUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ThinkingSDKDEMO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F380B2A022C0E8BB00955FC5 /* Build configuration list for PBXProject "ThinkingSDKDEMO" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F380B2CF22C0E8BC00955FC5 /* Debug */,
+				F380B2D022C0E8BC00955FC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F380B2D122C0E8BC00955FC5 /* Build configuration list for PBXNativeTarget "ThinkingSDKDEMO" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F380B2D222C0E8BC00955FC5 /* Debug */,
+				F380B2D322C0E8BC00955FC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F380B2D422C0E8BC00955FC5 /* Build configuration list for PBXNativeTarget "ThinkingSDKDEMOTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F380B2D522C0E8BC00955FC5 /* Debug */,
+				F380B2D622C0E8BC00955FC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F380B2D722C0E8BC00955FC5 /* Build configuration list for PBXNativeTarget "ThinkingSDKDEMOUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F380B2D822C0E8BC00955FC5 /* Debug */,
+				F380B2D922C0E8BC00955FC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F380B29D22C0E8BB00955FC5 /* Project object */;
+}
