@@ -27,7 +27,7 @@
 
 - (void)test01doSave {
     id mockThinkingInstance = OCMPartialMock([ThinkingAnalyticsSDK sharedInstance]);
-    OCMExpect([mockThinkingInstance saveClickData:[OCMArg any]]);
+    OCMExpect([mockThinkingInstance saveClickData:[OCMArg isNotNil]]);
     [mockThinkingInstance track:@"test"];
     dispatch_sync([ThinkingAnalyticsSDK serialQueue], ^{
         dispatch_sync([ThinkingAnalyticsSDK networkQueue], ^{ return; });

@@ -18,6 +18,10 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 #import "ThinkingExceptionHandler.h"
 
+#if !__has_feature(objc_arc)
+#error The ThinkingSDK library must be compiled with ARC enabled
+#endif
+
 static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 static const NSUInteger kBatchSize = 50;
 static NSUInteger const TA_PROPERTY_LENGTH_LIMITATION = 2048;
@@ -182,7 +186,7 @@ static dispatch_queue_t networkQueue;
         self.flushConfig = [TDFlushConfig sharedManagerWithAppid:appid withServerURL:serverURL];
         self.autoTrackManager = [TDAutoTrackManager sharedManager];
         
-        [self getConfig];
+        [self retrievePersistedData];
         
         _isTrackRelaunchInBackGroundEvents = config.trackRelaunchedInBackgroundEvents;
         _network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.serverURL] withAutomaticData:_deviceInfo.automaticData];
@@ -206,7 +210,30 @@ static dispatch_queue_t networkQueue;
     return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - appid: %@ serverUrl:%@>", (void *)self, self.appid, self.serverURL];
 }
 
--(void)getConfig {
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    if (_reachability != NULL) {
+        if (!SCNetworkReachabilitySetCallback(_reachability, NULL, NULL)) {
+        }
+        if (!SCNetworkReachabilitySetDispatchQueue(_reachability, NULL)) {
+        }
+        CFRelease(_reachability);
+        _reachability = NULL;
+    }
+}
+
++ (UIApplication *)sharedUIApplication
+{
+    if ([[UIApplication class] respondsToSelector:@selector(sharedApplication)]) {
+        return [[UIApplication class] performSelector:@selector(sharedApplication)];
+    }
+    return nil;
+}
+
+#pragma mark - Persistence
+- (void)retrievePersistedData {
     [self unarchiveAccountID];
     [self unarchiveSuperProperties];
     [self unarchiveIdentifyId];
@@ -218,6 +245,7 @@ static dispatch_queue_t networkQueue;
     }
 }
 
+// 兼容老版本
 - (void)deleteOldLoginId {
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"thinkingdata_accountId"];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -230,7 +258,7 @@ static dispatch_queue_t networkQueue;
     }
 }
 
--(void)unarchiveIdentifyId {
+- (void)unarchiveIdentifyId {
     NSString *identifyId = (NSString *)[ThinkingAnalyticsSDK unarchiveFromFile:[self identifyIdFilePath] asClass:[NSString class]];
     self.identifyId = identifyId;
 }
@@ -337,64 +365,24 @@ static dispatch_queue_t networkQueue;
             stringByAppendingPathComponent:filename];
 }
 
-- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type
-{
-    [self.flushConfig setNetworkType:type];
-}
-
-static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void *info)
-{
-    ThinkingAnalyticsSDK *thinking = (__bridge ThinkingAnalyticsSDK *)info;
-    if (thinking && [thinking isKindOfClass:[ThinkingAnalyticsSDK class]]) {
-        [thinking reachabilityChanged:flags];
+- (NSInteger)saveClickData:(NSDictionary *)data {
+    NSMutableDictionary *event = [[NSMutableDictionary alloc] initWithDictionary:data];
+    NSInteger count;
+    @synchronized (instances) {
+        count = [self.dataQueue addObejct:event withAppid:self.appid];
     }
+    return count;
 }
 
-- (void)reachabilityChanged:(SCNetworkReachabilityFlags)flags
-{
-    _isWifi = (flags & kSCNetworkReachabilityFlagsReachable) && !(flags & kSCNetworkReachabilityFlagsIsWWAN);
-}
-
-- (NSString *)currentRadio
-{
-    NSString *newtworkType = @"NULL";;
-    NSString *currentRadioAccessTechnology = _telephonyInfo.currentRadioAccessTechnology;
-    
-    if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyLTE]) {
-        newtworkType = @"4G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyeHRPD]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORevB]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORevA]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORev0]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMA1x]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyHSUPA]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyHSDPA]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyWCDMA]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyEdge]) {
-        newtworkType = @"2G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyGPRS]) {
-        newtworkType = @"2G";
-    } else if (currentRadioAccessTechnology) {
-        newtworkType = @"UNKNOWN";
-    }
-    return newtworkType;
-}
-
-- (void)setCurrentRadio
-{
+- (void)deleteAll {
     dispatch_async(serialQueue, ^{
-        self->_radio = [self currentRadio];
+        @synchronized (instances) {
+            [self.dataQueue deleteAll:self.appid];
+        }
     });
 }
 
+#pragma mark - UIApplication Events
 - (void)setUpListeners {
     if ((_reachability = SCNetworkReachabilityCreateWithName(NULL, "thinkingdata.cn")) != NULL) {
         SCNetworkReachabilityContext context = {0, (__bridge void*)self, NULL, NULL, NULL};
@@ -438,21 +426,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                            selector:@selector(applicationWillTerminateNotification:)
                                name:UIApplicationWillTerminateNotification
                              object:nil];
-    
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
-    if (_reachability != NULL) {
-        if (!SCNetworkReachabilitySetCallback(_reachability, NULL, NULL)) {
-        }
-        if (!SCNetworkReachabilitySetDispatchQueue(_reachability, NULL)) {
-        }
-        CFRelease(_reachability);
-        _reachability = NULL;
-    }
 }
 
 - (void)applicationWillTerminateNotification:(NSNotification *)notification {
@@ -472,14 +445,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             self.taskId = UIBackgroundTaskInvalid;
         }
     });
-}
-
-+ (UIApplication *)sharedUIApplication
-{
-    if ([[UIApplication class] respondsToSelector:@selector(sharedApplication)]) {
-        return [[UIApplication class] performSelector:@selector(sharedApplication)];
-    }
-    return nil;
 }
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
@@ -577,6 +542,111 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 }
 
+- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type
+{
+    [self.flushConfig setNetworkType:type];
+}
+
+- (ThinkingNetworkType)convertNetworkType:(NSString *)networkType {
+    if ([@"NULL" isEqualToString:networkType]) {
+        return ThinkingNetworkTypeNONE;
+    } else if ([@"WIFI" isEqualToString:networkType]) {
+        return ThinkingNetworkTypeWIFI;
+    } else if ([@"2G" isEqualToString:networkType]) {
+        return ThinkingNetworkType2G;
+    } else if ([@"3G" isEqualToString:networkType]) {
+        return ThinkingNetworkType3G;
+    } else if ([@"4G" isEqualToString:networkType]) {
+        return ThinkingNetworkType4G;
+    } else if ([@"UNKNOWN" isEqualToString:networkType]) {
+        return ThinkingNetworkType4G;
+    }
+    return ThinkingNetworkTypeNONE;
+}
+
+static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void *info)
+{
+    ThinkingAnalyticsSDK *thinking = (__bridge ThinkingAnalyticsSDK *)info;
+    if (thinking && [thinking isKindOfClass:[ThinkingAnalyticsSDK class]]) {
+        [thinking reachabilityChanged:flags];
+    }
+}
+
+- (void)reachabilityChanged:(SCNetworkReachabilityFlags)flags
+{
+    _isWifi = (flags & kSCNetworkReachabilityFlagsReachable) && !(flags & kSCNetworkReachabilityFlagsIsWWAN);
+}
+
+- (NSString *)currentRadio
+{
+    NSString *newtworkType = @"NULL";;
+    NSString *currentRadioAccessTechnology = _telephonyInfo.currentRadioAccessTechnology;
+    
+    if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyLTE]) {
+        newtworkType = @"4G";
+    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyeHRPD]) {
+        newtworkType = @"3G";
+    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORevB]) {
+        newtworkType = @"3G";
+    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORevA]) {
+        newtworkType = @"3G";
+    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORev0]) {
+        newtworkType = @"3G";
+    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMA1x]) {
+        newtworkType = @"3G";
+    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyHSUPA]) {
+        newtworkType = @"3G";
+    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyHSDPA]) {
+        newtworkType = @"3G";
+    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyWCDMA]) {
+        newtworkType = @"3G";
+    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyEdge]) {
+        newtworkType = @"2G";
+    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyGPRS]) {
+        newtworkType = @"2G";
+    } else if (currentRadioAccessTechnology) {
+        newtworkType = @"UNKNOWN";
+    }
+    return newtworkType;
+}
+
+- (NSString *)getNetWorkStates {
+    if (_isWifi) {
+        return @"WIFI";
+    } else {
+        return _radio;
+    }
+}
+
+- (void)setCurrentRadio
+{
+    dispatch_async(serialQueue, ^{
+        self->_radio = [self currentRadio];
+    });
+}
+
+#pragma mark - Tracking
+- (void)track:(NSString *)event {
+    [self click:event withProperties:nil withType:@"track"];
+}
+
+- (void)track:(NSString *)event
+   properties:(NSDictionary *)propertieDict {
+    [self click:event withProperties:propertieDict withType:@"track"];
+}
+
+- (void)track:(NSString *)event
+   properties:(NSDictionary *)propertieDict
+         time:(NSDate *)time {
+    [self click:event withProperties:propertieDict withType:@"track" withTime:time isCheckProperties:YES];
+}
+
+- (void)autotrack:(NSString *)event
+       properties:(NSDictionary *)propertieDict
+         withTime:(NSDate *)date {
+    [self click:event withProperties:propertieDict withType:@"track" withTime:date isCheckProperties:NO];
+}
+
 - (NSString *)getDistinctId{
     __block NSString *distinctId = nil;
     dispatch_sync(serialQueue, ^{
@@ -590,14 +660,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 - (NSString *)getDeviceId {
     return _deviceInfo.deviceId;
-}
-
-- (NSString *)getNetWorkStates {
-    if (_isWifi) {
-        return @"WIFI";
-    } else {
-        return _radio;
-    }
 }
 
 - (void)getLoginId {
@@ -723,27 +785,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     dispatch_async(serialQueue, ^{
         self.trackTimer[event] = @{@"eventBegin" : eventBegin, @"eventAccumulatedDuration" : [NSNumber numberWithDouble:0]};
     });
-}
-
-- (void)track:(NSString *)event {
-    [self click:event withProperties:nil withType:@"track"];
-}
-
-- (void)track:(NSString *)event
-   properties:(NSDictionary *)propertieDict {
-    [self click:event withProperties:propertieDict withType:@"track"];
-}
-
-- (void)track:(NSString *)event
-   properties:(NSDictionary *)propertieDict
-         time:(NSDate *)time {
-    [self click:event withProperties:propertieDict withType:@"track" withTime:time isCheckProperties:YES];
-}
-
-- (void)autotrack:(NSString *)event
-       properties:(NSDictionary *)propertieDict
-         withTime:(NSDate *)date {
-    [self click:event withProperties:propertieDict withType:@"track" withTime:date isCheckProperties:NO];
 }
 
 - (BOOL)isValidName:(NSString *) name {
@@ -1035,38 +1076,6 @@ withProperties:(NSDictionary *)propertieDict
     }];
 }
 
-- (void)dispatchOnNetworkQueue:(void (^)(void))dispatchBlock
-{
-    dispatch_async(serialQueue, ^{
-        dispatch_async(networkQueue, dispatchBlock);
-    });
-}
-
-- (ThinkingNetworkType)convertNetworkType:(NSString *)networkType {
-    if ([@"NULL" isEqualToString:networkType]) {
-        return ThinkingNetworkTypeNONE;
-    } else if ([@"WIFI" isEqualToString:networkType]) {
-        return ThinkingNetworkTypeWIFI;
-    } else if ([@"2G" isEqualToString:networkType]) {
-        return ThinkingNetworkType2G;
-    } else if ([@"3G" isEqualToString:networkType]) {
-        return ThinkingNetworkType3G;
-    } else if ([@"4G" isEqualToString:networkType]) {
-        return ThinkingNetworkType4G;
-    } else if ([@"UNKNOWN" isEqualToString:networkType]) {
-        return ThinkingNetworkType4G;
-    }
-    return ThinkingNetworkTypeNONE;
-}
-
-- (void)deleteAll {
-    dispatch_async(serialQueue, ^{
-        @synchronized (instances) {
-            [self.dataQueue deleteAll:self.appid];
-        }
-    });
-}
-
 - (void)_sync:(BOOL)vacuumAfterFlushing {
     NSString *networkType = [self getNetWorkStates];
     if (!([self convertNetworkType:networkType] & self.flushConfig.networkTypePolicy)) {
@@ -1094,15 +1103,14 @@ withProperties:(NSDictionary *)propertieDict
     }
 }
 
-- (NSInteger)saveClickData:(NSDictionary *)data {
-    NSMutableDictionary *event = [[NSMutableDictionary alloc] initWithDictionary:data];
-    NSInteger count;
-    @synchronized (instances) {
-        count = [self.dataQueue addObejct:event withAppid:self.appid];
-    }
-    return count;
+- (void)dispatchOnNetworkQueue:(void (^)(void))dispatchBlock
+{
+    dispatch_async(serialQueue, ^{
+        dispatch_async(networkQueue, dispatchBlock);
+    });
 }
 
+#pragma mark - Flush control
 + (void)restartFlushTimer
 {
     for (NSString *appid in instances) {
@@ -1136,6 +1144,7 @@ withProperties:(NSDictionary *)propertieDict
     });
 }
 
+#pragma mark - Autotracking
 - (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType {
     _autoTrackEventType = eventType;
     if (_deviceInfo.isFirstOpen && (_autoTrackEventType & ThinkingAnalyticsEventTypeAppInstall)) {
@@ -1195,6 +1204,7 @@ withProperties:(NSDictionary *)propertieDict
     });
 }
 
+#pragma mark - H5 tracking
 - (BOOL)showUpWebView:(id)webView WithRequest:(NSURLRequest *)request {
     if (webView == nil || request == nil || ![request isKindOfClass:NSURLRequest.class]) {
         TDLogInfo(@"showUpWebView request error");
@@ -1252,11 +1262,13 @@ withProperties:(NSDictionary *)propertieDict
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+#pragma mark - Logging
 + (void)setLogLevel:(TDLoggingLevel)level
 {
     [TDLogging sharedInstance].loggingLevel = level;
 }
 
+#pragma mark - Crash tracking
 -(void)trackCrash {
     [[ThinkingExceptionHandler sharedHandler] addThinkingInstance:self];
 }
