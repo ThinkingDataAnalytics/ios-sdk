@@ -205,13 +205,11 @@ static dispatch_queue_t networkQueue;
     return self;
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
     return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - appid: %@ serverUrl:%@>", (void *)self, self.appid, self.serverURL];
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     if (_reachability != NULL) {
@@ -224,8 +222,7 @@ static dispatch_queue_t networkQueue;
     }
 }
 
-+ (UIApplication *)sharedUIApplication
-{
++ (UIApplication *)sharedUIApplication {
     if ([[UIApplication class] respondsToSelector:@selector(sharedApplication)]) {
         return [[UIApplication class] performSelector:@selector(sharedApplication)];
     }
@@ -238,17 +235,12 @@ static dispatch_queue_t networkQueue;
     [self unarchiveSuperProperties];
     [self unarchiveIdentifyId];
     
+    // 兼容老版本
     if (self.accountId.length == 0) {
-        [self getLoginId];
+        [self unarchiveOldLoginId];
         [self archiveAccountID:self.accountId];
         [self deleteOldLoginId];
     }
-}
-
-// 兼容老版本
-- (void)deleteOldLoginId {
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"thinkingdata_accountId"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)archiveIdentifyId:(NSString *)identifyId {
@@ -287,8 +279,7 @@ static dispatch_queue_t networkQueue;
     self.superPropertie = [superProperties copy];
 }
 
-- (BOOL)archiveObject:(id)object withFilePath:(NSString *)filePath
-{
+- (BOOL)archiveObject:(id)object withFilePath:(NSString *)filePath {
     @try {
         if (![NSKeyedArchiver archiveRootObject:object toFile:filePath]) {
             return NO;
@@ -302,8 +293,7 @@ static dispatch_queue_t networkQueue;
     return YES;
 }
 
-- (BOOL)addSkipBackupAttributeToItemAtPath:(NSString *)filePathString
-{
+- (BOOL)addSkipBackupAttributeToItemAtPath:(NSString *)filePathString {
     NSURL *URL = [NSURL fileURLWithPath: filePathString];
     assert([[NSFileManager defaultManager] fileExistsAtPath: [URL path]]);
     
@@ -316,21 +306,17 @@ static dispatch_queue_t networkQueue;
     return success;
 }
 
-+ (id)unarchiveFromFile:(NSString *)filePath asClass:(Class)class
-{
++ (id)unarchiveFromFile:(NSString *)filePath asClass:(Class)class {
     id unarchivedData = nil;
     @try {
         unarchivedData = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
-        // this check is inside the try-catch as the unarchivedData may be a non-NSObject, not responding to `isKindOfClass:` or `respondsToSelector:`
         if (![unarchivedData isKindOfClass:class]) {
             unarchivedData = nil;
         }
     }
     @catch (NSException *exception) {
         TDLogError(@"%@ unable to unarchive data in %@, starting fresh", self, filePath);
-        // Reset un archived data
         unarchivedData = nil;
-        // Remove the (possibly) corrupt data from the disk
         NSError *error = NULL;
         BOOL removed = [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
         if (!removed) {
@@ -344,25 +330,29 @@ static dispatch_queue_t networkQueue;
     return [self filePathFor:@"superProperties"];
 }
 
-- (NSString *)accountIDFilePath
-{
+- (NSString *)accountIDFilePath {
     return [self filePathFor:@"accountID"];
-}
-
-- (NSString *)eventsFilePath
-{
-    return [self filePathFor:@"syncConfig"];
 }
 
 - (NSString *)identifyIdFilePath {
     return [self filePathFor:@"identifyId"];
 }
 
-- (NSString *)filePathFor:(NSString *)data
-{
+- (NSString *)filePathFor:(NSString *)data {
     NSString *filename = [NSString stringWithFormat:@"thinking-%@-%@.plist", self.appid, data];
     return [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject]
             stringByAppendingPathComponent:filename];
+}
+
+// 兼容老版本
+- (void)unarchiveOldLoginId {
+    self.accountId = [[NSUserDefaults standardUserDefaults] objectForKey:@"thinkingdata_accountId"];
+}
+
+// 兼容老版本
+- (void)deleteOldLoginId {
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"thinkingdata_accountId"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (NSInteger)saveClickData:(NSDictionary *)data {
@@ -542,8 +532,7 @@ static dispatch_queue_t networkQueue;
     }
 }
 
-- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type
-{
+- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type {
     [self.flushConfig setNetworkType:type];
 }
 
@@ -564,21 +553,18 @@ static dispatch_queue_t networkQueue;
     return ThinkingNetworkTypeNONE;
 }
 
-static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void *info)
-{
+static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void *info) {
     ThinkingAnalyticsSDK *thinking = (__bridge ThinkingAnalyticsSDK *)info;
     if (thinking && [thinking isKindOfClass:[ThinkingAnalyticsSDK class]]) {
         [thinking reachabilityChanged:flags];
     }
 }
 
-- (void)reachabilityChanged:(SCNetworkReachabilityFlags)flags
-{
+- (void)reachabilityChanged:(SCNetworkReachabilityFlags)flags {
     _isWifi = (flags & kSCNetworkReachabilityFlagsReachable) && !(flags & kSCNetworkReachabilityFlagsIsWWAN);
 }
 
-- (NSString *)currentRadio
-{
+- (NSString *)currentRadio {
     NSString *newtworkType = @"NULL";;
     NSString *currentRadioAccessTechnology = _telephonyInfo.currentRadioAccessTechnology;
     
@@ -618,8 +604,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 }
 
-- (void)setCurrentRadio
-{
+- (void)setCurrentRadio {
     dispatch_async(serialQueue, ^{
         self->_radio = [self currentRadio];
     });
@@ -660,10 +645,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 - (NSString *)getDeviceId {
     return _deviceInfo.deviceId;
-}
-
-- (void)getLoginId {
-    self.accountId = [[NSUserDefaults standardUserDefaults] objectForKey:@"thinkingdata_accountId"];
 }
 
 - (void)registerDynamicSuperProperties:(NSDictionary<NSString *, id> *(^)(void)) dynamicSuperProperties {
@@ -787,7 +768,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     });
 }
 
-- (BOOL)isValidName:(NSString *) name {
+- (BOOL)isValidName:(NSString *)name {
     @try {
         return [self.regexKey evaluateWithObject:name];
     } @catch (NSException *exception) {
@@ -804,35 +785,34 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     return [self checkProperties:dic withEventType:nil isCheckKey:YES];
 }
 
-- (NSString *)subByteString:(NSString *)string byteLength:(NSInteger)length {
-    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF8);
-    NSData* data = [string dataUsingEncoding:enc];
-    NSData* subData = [data subdataWithRange:NSMakeRange(0, length)];
-    NSString* txt = [[NSString alloc] initWithData:subData encoding:enc];
+- (NSString *)subByteString:(NSString *)originalString byteLength:(NSInteger)length {
+    NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF8);
+    NSData* subData = [[originalString dataUsingEncoding:encoding] subdataWithRange:NSMakeRange(0, length)];
+    NSString* limitString = [[NSString alloc] initWithData:subData encoding:encoding];
     
     NSInteger index = 1;
-    while (index <= 3 && !txt) {
+    while (index <= 3 && !limitString) {
         if (length > index) {
             subData = [data subdataWithRange:NSMakeRange(0, length - index)];
-            txt = [[NSString alloc] initWithData:subData encoding:enc];
+            limitString = [[NSString alloc] initWithData:subData encoding:encoding];
         }
         index ++;
     }
     
-    if (!txt) {
-        return string;
+    if (!limitString) {
+        return originalString;
     }
-    return txt;
+    return limitString;
 }
 
-- (BOOL)checkProperties:(NSDictionary **)propertiesAddress withEventType:(NSString *)eventType isCheckKey:(BOOL)checkKey{
+- (BOOL)checkProperties:(NSDictionary **)propertiesAddress withEventType:(NSString *)eventType isCheckKey:(BOOL)checkKey {
     NSDictionary *properties = *propertiesAddress;
     if (![properties isKindOfClass:[NSDictionary class]]) {
         return NO;
     }
     NSMutableDictionary *newProperties;
     for (id k in properties) {
-        if (![k isKindOfClass: [NSString class]]) {
+        if (![k isKindOfClass:[NSString class]]) {
             NSString *errMsg = @"property Key should by NSString";
             TDLogError(errMsg);
             return NO;
@@ -1061,13 +1041,11 @@ withProperties:(NSDictionary *)propertieDict
     });
 }
 
-- (void)flush
-{
+- (void)flush {
     [self syncWithCompletion:nil];
 }
 
-- (void)syncWithCompletion:(void (^)(void))handler
-{
+- (void)syncWithCompletion:(void (^)(void))handler {
     [self dispatchOnNetworkQueue:^{
         [self _sync:NO];
         if (handler) {
@@ -1103,16 +1081,14 @@ withProperties:(NSDictionary *)propertieDict
     }
 }
 
-- (void)dispatchOnNetworkQueue:(void (^)(void))dispatchBlock
-{
+- (void)dispatchOnNetworkQueue:(void (^)(void))dispatchBlock {
     dispatch_async(serialQueue, ^{
         dispatch_async(networkQueue, dispatchBlock);
     });
 }
 
 #pragma mark - Flush control
-+ (void)restartFlushTimer
-{
++ (void)restartFlushTimer {
     for (NSString *appid in instances) {
         dispatch_async(serialQueue, ^{
             ThinkingAnalyticsSDK *instance = [instances objectForKey:appid];
@@ -1121,8 +1097,7 @@ withProperties:(NSDictionary *)propertieDict
     }
 }
 
-- (void)startFlushTimer
-{
+- (void)startFlushTimer {
     [self stopFlushTimer];
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.flushConfig.uploadInterval > 0) {
@@ -1263,8 +1238,7 @@ withProperties:(NSDictionary *)propertieDict
 }
 
 #pragma mark - Logging
-+ (void)setLogLevel:(TDLoggingLevel)level
-{
++ (void)setLogLevel:(TDLoggingLevel)level {
     [TDLogging sharedInstance].loggingLevel = level;
 }
 
