@@ -22,22 +22,26 @@
     self.window.rootViewController = [self createRootViewController];
     [self.window makeKeyAndVisible];
     
-//    ThinkingAnalyticsSDK *thinkingSDK = [ThinkingAnalyticsSDK startWithAppId:@"APPID" withUrl:@"URL"];
+    // 初始化
+    [ThinkingAnalyticsSDK startWithAppId:@"YOUR_APPID" withUrl:@"YOUR_SERVER_URL"];
     
-    TDConfig *config = [[TDConfig alloc] init];
-    config.trackRelaunchedInBackgroundEvents = YES;
-    ThinkingAnalyticsSDK *thinkingSDK =  [ThinkingAnalyticsSDK startWithAppId:@"APP" withUrl:@"https://sdk.tga.thinkinggame.cn:9080" withConfig:config];
+    // 配置后台自启事件的初始化方法
+//    TDConfig *config = [[TDConfig alloc] init];
+//    config.trackRelaunchedInBackgroundEvents = YES;
+//    [ThinkingAnalyticsSDK startWithAppId:@"APP" withUrl:@"https://sdk.tga.thinkinggame.cn:9443" withConfig:config];
     
-    [thinkingSDK enableAutoTrack:
-     ThinkingAnalyticsEventTypeAppStart |
-     ThinkingAnalyticsEventTypeAppEnd |
-     ThinkingAnalyticsEventTypeAppViewScreen |
-     ThinkingAnalyticsEventTypeAppClick |
-     ThinkingAnalyticsEventTypeAppInstall //|
-//     ThinkingAnalyticsEventTypeAppViewCrash
-     ];
+    // 自动埋点
+//    [thinkingSDK enableAutoTrack:
+//     ThinkingAnalyticsEventTypeAppStart |
+//     ThinkingAnalyticsEventTypeAppEnd |
+//     ThinkingAnalyticsEventTypeAppViewScreen |
+//     ThinkingAnalyticsEventTypeAppClick |
+//     ThinkingAnalyticsEventTypeAppInstall //|
+////     ThinkingAnalyticsEventTypeAppViewCrash
+//     ];
+    
+    // 开启Log
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-    
     
     // H5 需要打通时  需要配置
     [[ThinkingAnalyticsSDK sharedInstance] addWebViewUserAgent];

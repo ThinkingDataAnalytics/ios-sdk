@@ -51,11 +51,11 @@
         if ([urlResponse statusCode] == 200) {
             flushSucc = YES;
             TDLogDebug(@"fluch success :%@", flushDic);
+            TDLogDebug(@"fluch ret :%@", [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil]);
         } else {
             flushSucc = NO;
-            NSString *urlResponseContent = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            NSString *errMsg = [NSString stringWithFormat:@"%@ network failure with response '%@'.", self, urlResponseContent];
-            TDLogError(@"%@", errMsg);
+            NSString *urlResponse = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            TDLogError(@"%@", [NSString stringWithFormat:@"%@ network failure with response '%@'.", self, urlResponse]);
         }
 
         dispatch_semaphore_signal(flushSem);
