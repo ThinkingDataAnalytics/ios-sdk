@@ -28,7 +28,7 @@ static NSUInteger const TA_PROPERTY_CRASH_LENGTH_LIMITATION = 8191*2;
 @property (atomic, copy) NSString *accountId;
 @property (atomic, copy) NSString *identifyId;
 
-@property (atomic, strong) NSDictionary *systemProperties;
+@property (atomic, strong) NSDictionary *superPropertie;
 @property (nonatomic, strong) NSMutableDictionary *trackTimer;
 
 @property (atomic, strong) NSPredicate *regexKey;
@@ -254,7 +254,7 @@ static dispatch_queue_t networkQueue;
 
 - (void)unarchiveSuperProperties {
     NSDictionary *superProperties = (NSDictionary *)[ThinkingAnalyticsSDK unarchiveFromFile:[self superPropertiesFilePath] asClass:[NSDictionary class]];
-    self.systemProperties = [superProperties copy];
+    self.superPropertie = [superProperties copy];
 }
 
 - (BOOL)archiveObject:(id)object withFilePath:(NSString *)filePath
@@ -620,10 +620,10 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
     
     dispatch_async(serialQueue, ^{
-        NSMutableDictionary *tmp = [NSMutableDictionary dictionaryWithDictionary:self.systemProperties];
+        NSMutableDictionary *tmp = [NSMutableDictionary dictionaryWithDictionary:self.superPropertie];
         [tmp addEntriesFromDictionary:[properties copy]];
-        self.systemProperties = [NSDictionary dictionaryWithDictionary:tmp];
-        [self archiveSuperProperties:self.systemProperties];
+        self.superPropertie = [NSDictionary dictionaryWithDictionary:tmp];
+        [self archiveSuperProperties:self.superPropertie];
     });
 }
 
@@ -632,16 +632,16 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         return;
     
     dispatch_async(serialQueue, ^{
-        NSMutableDictionary *tmp = [NSMutableDictionary dictionaryWithDictionary:self.systemProperties];
+        NSMutableDictionary *tmp = [NSMutableDictionary dictionaryWithDictionary:self.superPropertie];
         tmp[propertyKey] = nil;
-        self.systemProperties = [NSDictionary dictionaryWithDictionary:tmp];
-        [self archiveSuperProperties:self.systemProperties];
+        self.superPropertie = [NSDictionary dictionaryWithDictionary:tmp];
+        [self archiveSuperProperties:self.superPropertie];
     });
 }
 
 - (void)clearSuperProperties {
     dispatch_async(serialQueue, ^{
-        self.systemProperties = @{};
+        self.superPropertie = @{};
         [self archiveSuperProperties:nil];
     });
 }
@@ -649,7 +649,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 - (NSDictionary *)currentSuperProperties {
     __block NSDictionary *currentSuperProperties = nil;
     dispatch_sync(serialQueue, ^{
-        currentSuperProperties = [self->_systemProperties copy];
+        currentSuperProperties = [self->_superPropertie copy];
     });
     return currentSuperProperties;
 }
@@ -939,7 +939,7 @@ withProperties:(NSDictionary *)propertieDict
         }
         
         if ([type isEqualToString:@"track"]) {
-            [propertyDic addEntriesFromDictionary:self.systemProperties];
+            [propertyDic addEntriesFromDictionary:self.superPropertie];
             propertyDic[@"#app_version"] = self->_deviceInfo.appVersion;
             if (self.relaunchInBackGround) {
                 propertyDic[@"#relaunched_in_background"] = @YES;

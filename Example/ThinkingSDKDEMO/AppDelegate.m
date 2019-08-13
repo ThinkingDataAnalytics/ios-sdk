@@ -26,7 +26,7 @@
     
     TDConfig *config = [[TDConfig alloc] init];
     config.trackRelaunchedInBackgroundEvents = YES;
-    ThinkingAnalyticsSDK *thinkingSDK =  [ThinkingAnalyticsSDK startWithAppId:@"b8976e6cf8fb4f1b8aa761cecbb423da" withUrl:@"http://sdk.tga.thinkinggame.cn:9080" withConfig:config];
+    ThinkingAnalyticsSDK *thinkingSDK =  [ThinkingAnalyticsSDK startWithAppId:@"APP" withUrl:@"https://sdk.tga.thinkinggame.cn:9080" withConfig:config];
     
     [thinkingSDK enableAutoTrack:
      ThinkingAnalyticsEventTypeAppStart |

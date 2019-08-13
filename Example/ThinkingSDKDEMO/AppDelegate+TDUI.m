@@ -136,7 +136,7 @@
       }]];
     
     [commands addObject:
-     [APIEntry commandWithName:@"Cleat SuperProperty"
+     [APIEntry commandWithName:@"Clear SuperProperty"
                  accessoryType:UITableViewCellAccessoryNone
                          block:^(UIViewController* controller)
       {

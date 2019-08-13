@@ -43,7 +43,7 @@
     [app.tables.cells.staticTexts[@"Logout"] tap];
     [app.tables.cells.staticTexts[@"Set SuperProperty"] tap];
     [app.tables.cells.staticTexts[@"Del SuperProperty"] tap];
-    [app.tables.cells.staticTexts[@"Cleat SuperProperty"] tap];
+    [app.tables.cells.staticTexts[@"Clear SuperProperty"] tap];
     [app.tables.cells.staticTexts[@"Time Event"] tap];
     [app.tables.cells.staticTexts[@"Time Event End"] tap];
     [app.tables.cells.staticTexts[@"Identify"] tap];
