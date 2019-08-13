@@ -1,8 +1,8 @@
-
-#import "ThinkingAnalyticsSDKPrivate.h"
+#import "ThinkingExceptionHandler.h"
 
 #include <libkern/OSAtomic.h>
 #include <stdatomic.h>
+#import "TDLogging.h"
 
 static NSString * const UncaughtExceptionHandlerSignalExceptionName = @"UncaughtExceptionHandlerSignalExceptionName";
 static NSString * const UncaughtExceptionHandlerSignalKey = @"UncaughtExceptionHandlerSignalKey";

@@ -23,8 +23,8 @@
 		F3D19060230137600043D595 /* NSData+TDGzip.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19039230137600043D595 /* NSData+TDGzip.m */; };
 		F3D19061230137600043D595 /* ThinkingAnalyticsSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D1903A230137600043D595 /* ThinkingAnalyticsSDK.m */; };
 		F3D19062230137600043D595 /* TDLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D1903B230137600043D595 /* TDLogging.m */; };
-		F3D19063230137600043D595 /* TDConfigPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D1903C230137600043D595 /* TDConfigPrivate.h */; };
-		F3D19064230137600043D595 /* ThinkingAnalyticsSDKPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D1903D230137600043D595 /* ThinkingAnalyticsSDKPrivate.h */; };
+		F3D19063230137600043D595 /* TDConfigPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D1903C230137600043D595 /* TDConfigPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		F3D19064230137600043D595 /* ThinkingAnalyticsSDKPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D1903D230137600043D595 /* ThinkingAnalyticsSDKPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		F3D19065230137600043D595 /* TDAutoTrackManager.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D1903F230137600043D595 /* TDAutoTrackManager.h */; };
 		F3D19066230137600043D595 /* NSObject+TDSwizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19040230137600043D595 /* NSObject+TDSwizzle.h */; };
 		F3D19067230137600043D595 /* UIViewController+AutoTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19041230137600043D595 /* UIViewController+AutoTrack.m */; };
@@ -226,12 +226,13 @@
 				F3D19059230137600043D595 /* TDJSONUtil.h in Headers */,
 				F3D19072230137610043D595 /* TDConfig.h in Headers */,
 				F3D1907A230137610043D595 /* ThinkingAnalyticsSDK.h in Headers */,
+				F3D19064230137600043D595 /* ThinkingAnalyticsSDKPrivate.h in Headers */,
+				F3D19063230137600043D595 /* TDConfigPrivate.h in Headers */,
 				F3D1905F230137600043D595 /* TDNetwork.h in Headers */,
 				F3D1907B230137610043D595 /* NSData+TDGzip.h in Headers */,
 				F3D1905C230137600043D595 /* TDSDKReachabilityManager.h in Headers */,
 				F3D19077230137610043D595 /* ThinkingExceptionHandler.h in Headers */,
 				F3D1905B230137600043D595 /* TDFlushConfig.h in Headers */,
-				F3D19064230137600043D595 /* ThinkingAnalyticsSDKPrivate.h in Headers */,
 				F3D1906E230137610043D595 /* UIApplication+AutoTrack.h in Headers */,
 				F3D19068230137600043D595 /* TDSwizzler.h in Headers */,
 				F3D19073230137610043D595 /* TDDeviceInfo.h in Headers */,
@@ -243,7 +244,6 @@
 				F3D19025230136B30043D595 /* ThinkingSDK.h in Headers */,
 				F3D19070230137610043D595 /* TDOSLog.h in Headers */,
 				F3D19056230137600043D595 /* TDKeychainItemWrapper.h in Headers */,
-				F3D19063230137600043D595 /* TDConfigPrivate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

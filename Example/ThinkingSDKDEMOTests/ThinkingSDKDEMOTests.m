@@ -8,6 +8,8 @@
 
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
+#import <ThinkingSDK/ThinkingSDK.h>
+#import <ThinkingSDK/ThinkingAnalyticsSDKPrivate.h>
 
 @interface ThinkingSDKDEMOTests : XCTestCase
 
@@ -23,9 +25,14 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+- (void)test01doSave {
+    id mockThinkingInstance = OCMPartialMock([ThinkingAnalyticsSDK sharedInstance]);
+    OCMExpect([mockThinkingInstance saveClickData:[OCMArg any]]);
+    [mockThinkingInstance track:@"test"];
+    dispatch_sync([ThinkingAnalyticsSDK serialQueue], ^{
+        dispatch_sync([ThinkingAnalyticsSDK networkQueue], ^{ return; });
+    });
+    OCMVerifyAll(mockThinkingInstance);
 }
 
 - (void)testPerformanceExample {

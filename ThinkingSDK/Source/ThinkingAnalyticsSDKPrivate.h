@@ -1,7 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ThinkingAnalyticsSDK.h"
-#import "TDLogging.h"
-#import "ThinkingExceptionHandler.h"
+#import <ThinkingSDK/ThinkingAnalyticsSDK.h>
 
 static NSString * const APP_START_EVENT = @"ta_app_start";
 static NSString * const APP_START_BACKGROUND_EVENT = @"ta_app_bg_start";
@@ -45,6 +43,8 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 + (dispatch_queue_t)networkQueue;
 - (void)deleteAll;
 + (UIApplication *)sharedUIApplication;
+
+- (NSInteger)saveClickData:(NSDictionary *)data;
 
 @end
 

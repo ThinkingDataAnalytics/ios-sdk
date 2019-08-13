@@ -1,4 +1,5 @@
 #import "TDFlushConfig.h"
+#import "TDLogging.h"
 
 @interface TDFlushConfig ()
 

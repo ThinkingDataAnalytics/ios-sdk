@@ -12,9 +12,11 @@
 #import "TDDeviceInfo.h"
 #import "TDFlushConfig.h"
 #import "TDConfigPrivate.h"
+#import "TDLogging.h"
 
 #import "TDAutoTrackManager.h"
 #import <SystemConfiguration/SystemConfiguration.h>
+#import "ThinkingExceptionHandler.h"
 
 static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 static const NSUInteger kBatchSize = 50;

@@ -2,6 +2,7 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "NSData+TDGzip.h"
 #import "TDJSONUtil.h"
+#import "TDLogging.h"
 
 @implementation TDNetwork
 
