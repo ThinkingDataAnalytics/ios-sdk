@@ -1,4 +1,3 @@
-
 #import "UIApplication+AutoTrack.h"
 #import "TDAutoTrackManager.h"
 

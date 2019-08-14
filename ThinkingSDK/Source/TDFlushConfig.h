@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ThinkingAnalyticsSDKPrivate.h"
+#import "ThinkingAnalyticsSDK.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

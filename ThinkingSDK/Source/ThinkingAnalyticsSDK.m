@@ -1,22 +1,17 @@
 #import "ThinkingAnalyticsSDK.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
-#import "TDSqliteDataQueue.h"
-
-#import <CoreTelephony/CTCarrier.h>
-#import <CoreTelephony/CTTelephonyNetworkInfo.h>
-
-#import "NSData+TDGzip.h"
 
 #import <objc/runtime.h>
+
+#import "TDLogging.h"
+#import "ThinkingExceptionHandler.h"
+
 #import "TDNetwork.h"
 #import "TDDeviceInfo.h"
 #import "TDFlushConfig.h"
 #import "TDConfigPrivate.h"
-#import "TDLogging.h"
-
+#import "TDSqliteDataQueue.h"
 #import "TDAutoTrackManager.h"
-#import <SystemConfiguration/SystemConfiguration.h>
-#import "ThinkingExceptionHandler.h"
 
 #if !__has_feature(objc_arc)
 #error The ThinkingSDK library must be compiled with ARC enabled
@@ -27,46 +22,24 @@ static const NSUInteger kBatchSize = 50;
 static NSUInteger const TA_PROPERTY_LENGTH_LIMITATION = 2048;
 static NSUInteger const TA_PROPERTY_CRASH_LENGTH_LIMITATION = 8191*2;
 
-@interface ThinkingAnalyticsSDK()<NSURLSessionDelegate>
+@interface ThinkingAnalyticsSDK()
 
-@property (atomic, copy) NSString *appid;
-@property (atomic, copy) NSString *serverURL;
-@property (atomic, copy) NSString *accountId;
-@property (atomic, copy) NSString *identifyId;
-
-@property (atomic, strong) NSDictionary *superPropertie;
-@property (nonatomic, strong) NSMutableDictionary *trackTimer;
-
-@property (atomic, strong) NSPredicate *regexKey;
-
-@property (atomic, strong) TDSqliteDataQueue *dataQueue;
+@property (atomic, strong) TDNetwork *network;
 @property (atomic, strong) TDDeviceInfo *deviceInfo;
 @property (atomic, strong) TDFlushConfig *flushConfig;
-@property (atomic, strong) TDNetwork *network;
+@property (atomic, strong) TDSqliteDataQueue *dataQueue;
 @property (atomic, strong) TDAutoTrackManager *autoTrackManager;
-@property (nonatomic, strong) NSTimer *timer;
-
-@property (atomic, strong) NSMutableSet *ignoredViewControllers;
-@property (atomic, strong) NSMutableSet *ignoredViewTypeList;
-
-@property (nonatomic, assign) UIBackgroundTaskIdentifier taskId;
-@property (nonatomic, strong) CTTelephonyNetworkInfo *telephonyInfo;
-@property (nonatomic, assign) SCNetworkReachabilityRef reachability;
-
-@property (nonatomic, assign) BOOL relaunchInBackGround;
-@property (nonatomic, copy) NSDictionary<NSString *, id> *(^dynamicSuperProperties)(void); 
 
 @end
 
 @implementation ThinkingAnalyticsSDK{
     NSDateFormatter *_timeFormatter;
     ThinkingAnalyticsAutoTrackEventType _autoTrackEventType;
+    BOOL _isTrackRelaunchInBackGroundEvents;
     BOOL _applicationWillResignActive;
     BOOL _appRelaunched;
     BOOL _isWifi;
-    BOOL _isTrackRelaunchInBackGroundEvents;
     NSString *_radio;
-    NSString *_userAgent;
 }
 
 static ThinkingAnalyticsSDK *sharedInstance = nil;
@@ -787,13 +760,14 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 - (NSString *)subByteString:(NSString *)originalString byteLength:(NSInteger)length {
     NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF8);
-    NSData* subData = [[originalString dataUsingEncoding:encoding] subdataWithRange:NSMakeRange(0, length)];
+    NSData* originalData = [originalString dataUsingEncoding:encoding];
+    NSData* subData = [originalData subdataWithRange:NSMakeRange(0, length)];
     NSString* limitString = [[NSString alloc] initWithData:subData encoding:encoding];
     
     NSInteger index = 1;
     while (index <= 3 && !limitString) {
         if (length > index) {
-            subData = [data subdataWithRange:NSMakeRange(0, length - index)];
+            subData = [originalData subdataWithRange:NSMakeRange(0, length - index)];
             limitString = [[NSString alloc] initWithData:subData encoding:encoding];
         }
         index ++;
@@ -811,60 +785,59 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         return NO;
     }
     NSMutableDictionary *newProperties;
-    for (id k in properties) {
-        if (![k isKindOfClass:[NSString class]]) {
+    for (id key in properties) {
+        if (![key isKindOfClass:[NSString class]]) {
             NSString *errMsg = @"property Key should by NSString";
             TDLogError(errMsg);
             return NO;
         }
         
-        if (![self isValidName: k] && checkKey) {
-            NSString *errMsg = [NSString stringWithFormat:@"property name[%@] is not valid", k];
+        if (![self isValidName: key] && checkKey) {
+            NSString *errMsg = [NSString stringWithFormat:@"property name[%@] is not valid", key];
             TDLogError(errMsg);
             return NO;
         }
 
-        if (![properties[k] isKindOfClass:[NSString class]] &&
-            ![properties[k] isKindOfClass:[NSNumber class]] &&
-            ![properties[k] isKindOfClass:[NSDate class]]) {
-            NSString * errMsg = [NSString stringWithFormat:@"property values must be NSString, NSNumber got: %@ %@", [properties[k] class], properties[k]];
+        if (![properties[key] isKindOfClass:[NSString class]] &&
+            ![properties[key] isKindOfClass:[NSNumber class]] &&
+            ![properties[key] isKindOfClass:[NSDate class]]) {
+            NSString * errMsg = [NSString stringWithFormat:@"property values must be NSString, NSNumber got: %@ %@", [properties[key] class], properties[key]];
             TDLogError(errMsg);
             return NO;
         }
         
         if (eventType.length > 0 && [eventType isEqualToString:@"user_add"]) {
-            if (![properties[k] isKindOfClass:[NSNumber class]]) {
-                NSString *errMsg = [NSString stringWithFormat:@"user_add value must be NSNumber. got: %@ %@", [properties[k] class], properties[k]];
+            if (![properties[key] isKindOfClass:[NSNumber class]]) {
+                NSString *errMsg = [NSString stringWithFormat:@"user_add value must be NSNumber. got: %@ %@", [properties[key] class], properties[key]];
                 TDLogError(errMsg);
                 return NO;
             }
         }
        
-        if ([properties[k] isKindOfClass:[NSNumber class]]) {
-            if ([properties[k] doubleValue] > 9999999999999.999 || [properties[k] doubleValue] < -9999999999999.999)
-            {
+        if ([properties[key] isKindOfClass:[NSNumber class]]) {
+            if ([properties[key] doubleValue] > 9999999999999.999 || [properties[key] doubleValue] < -9999999999999.999) {
                 TDLogError(@"number value is not valid.");
                 return NO;
             }
         }
         
-        if ([properties[k] isKindOfClass:[NSString class]]) {
-            NSString *string = properties[k];
+        if ([properties[key] isKindOfClass:[NSString class]]) {
+            NSString *string = properties[key];
             NSUInteger objLength = [((NSString *)string)lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
             NSUInteger valueMaxLength = TA_PROPERTY_LENGTH_LIMITATION;
 
-            if ([k isEqualToString:TD_EVENT_PROPERTY_ELEMENT_ID_CRASH_REASON]) {
+            if ([key isEqualToString:TD_EVENT_PROPERTY_ELEMENT_ID_CRASH_REASON]) {
                 valueMaxLength = TA_PROPERTY_CRASH_LENGTH_LIMITATION;
             }
             if (objLength > valueMaxLength) {
-                NSString * errMsg = [NSString stringWithFormat:@"The value is too long: %@", (NSString *)properties[k]];
+                NSString * errMsg = [NSString stringWithFormat:@"The value is too long: %@", (NSString *)properties[key]];
                 TDLogDebug(errMsg);
                 
                 NSMutableString *newObject = [NSMutableString stringWithString:[self subByteString:string byteLength:valueMaxLength - 1]];
                 if (!newProperties) {
                     newProperties = [NSMutableDictionary dictionaryWithDictionary:properties];
                 }
-                [newProperties setObject:newObject forKey:k];
+                [newProperties setObject:newObject forKey:key];
             }
         }
     }
@@ -1214,12 +1187,11 @@ withProperties:(NSDictionary *)propertieDict
 }
 
 - (NSString *)getUserAgent {
-    __block NSString *currentUA = _userAgent;
+    __block NSString *currentUA;
     if (currentUA  == nil)  {
         td_dispatch_main_sync_safe(^{
             UIWebView* webView = [[UIWebView alloc] initWithFrame:CGRectZero];
             currentUA = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
-            self->_userAgent = currentUA;
         });
     }
     return currentUA;
@@ -1230,7 +1202,6 @@ withProperties:(NSDictionary *)propertieDict
     if ([userAgent rangeOfString:@"td-sdk-ios"].location == NSNotFound) {
         userAgent = [userAgent stringByAppendingString:@" /td-sdk-ios"];
     }
-    _userAgent = userAgent;
     
     NSDictionary *dictionnary = [[NSDictionary alloc] initWithObjectsAndKeys:userAgent, @"UserAgent", nil];
     [[NSUserDefaults standardUserDefaults] registerDefaults:dictionnary];

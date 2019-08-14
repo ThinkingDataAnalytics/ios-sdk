@@ -1,5 +1,6 @@
 #import "TDFlushConfig.h"
 #import "TDLogging.h"
+#import "ThinkingAnalyticsSDKPrivate.h"
 
 @interface TDFlushConfig ()
 
@@ -31,8 +32,7 @@
     return self;
 }
 
-- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type
-{
+- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type {
     if (type == TDNetworkTypeDefault) {
         _networkTypePolicy = ThinkingNetworkTypeWIFI | ThinkingNetworkType3G | ThinkingNetworkType4G;
     } else if (type == TDNetworkTypeOnlyWIFI) {
@@ -42,8 +42,7 @@
     }
 }
 
--(void)getBatchSizeAndInterval
-{
+- (void)getBatchSizeAndInterval {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSInteger interval = [userDefaults integerForKey:@"thinkingdata_uploadInterval"];
     if (interval <= 0) {
@@ -86,22 +85,20 @@
                 [[NSUserDefaults standardUserDefaults] setInteger:sync_batch_size forKey:@"thinkingdata_uploadSize"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
             }
-            TDLogDebug(@"uploadBatchSize:%d Interval:%d", sync_batch_size, sync_interval);
+            TDLogDebug(@"upload batchSize:%d Interval:%d", sync_batch_size, sync_interval);
             if (restart) {
                 [ThinkingAnalyticsSDK restartFlushTimer];
             }
         } else if ([[ret objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:-2]]) {
-            TDLogError(@"APPID is wrong");
+            TDLogError(@"APPID is wrong. now config is BatchSize:%d Interval:%d", self->_uploadSize, self->_uploadInterval);
         } else {
-            TDLogError(@"updateBatchSizeAndInterval failed");
+            TDLogError(@"update batchSize interval failed. now config is BatchSize:%d Interval:%d", self->_uploadSize, self->_uploadInterval);
         }
-        TDLogDebug(@"BatchSize:%d Interval:%d", self->_uploadSize, self->_uploadInterval);
     };
     NSString *urlStr = [NSString stringWithFormat:@"%@?appid=%@", self.configureURL, self.appid];
-    NSURL *URL = [NSURL URLWithString:urlStr];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr]];
     [request setHTTPMethod:@"Get"];
-    NSURLSession * session = [NSURLSession sharedSession];
+    NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:block];
     [task resume];
 }

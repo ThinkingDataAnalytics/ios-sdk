@@ -6,6 +6,7 @@
 #import "NSObject+TDSwizzle.h"
 #import "TDJSONUtil.h"
 #import "UIApplication+AutoTrack.h"
+#import "ThinkingAnalyticsSDKPrivate.h"
 
 #ifndef TD_LOCK
 #define TD_LOCK(lock) dispatch_semaphore_wait(lock, DISPATCH_TIME_FOREVER);
@@ -307,7 +308,7 @@
             [titles addObject:title ?: @""];
         }
         if (titles.count > 0) {
-            text = [titles componentsJoinedByString:@","];//[TDJSONUtil JSONStringForObject:titles];
+            text = [titles componentsJoinedByString:@","];
         }
     } else if ([obj isKindOfClass:[UIDatePicker class]]) {
         UIDatePicker *picker = (UIDatePicker *)obj;

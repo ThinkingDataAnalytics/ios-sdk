@@ -106,7 +106,7 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
 
 - (void) td_handleUncaughtException:(NSException *)exception {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
-    NSString *crashStr ;
+    NSString *crashStr;
     @try {
         if ([exception callStackSymbols]) {
             crashStr = [NSString stringWithFormat:@"Exception Reason:%@\nException Stack:%@", [exception reason], [exception callStackSymbols]];
@@ -123,14 +123,11 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
                 [instance autotrack:APP_END_EVENT properties:nil withTime:trackDate];
             }
         }
-        
     } @catch(NSException *exception) {
         TDLogError(@"%@ error: %@", self, exception);
     }
     
-    dispatch_sync([ThinkingAnalyticsSDK serialQueue], ^{
-        
-    });
+    dispatch_sync([ThinkingAnalyticsSDK serialQueue], ^{});
     
     NSSetUncaughtExceptionHandler(NULL);
     signal(SIGABRT, SIG_DFL);
