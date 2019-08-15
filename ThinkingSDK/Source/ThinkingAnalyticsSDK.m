@@ -164,14 +164,12 @@ static dispatch_queue_t networkQueue;
         _isTrackRelaunchInBackGroundEvents = config.trackRelaunchedInBackgroundEvents;
         _network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.serverURL] withAutomaticData:_deviceInfo.automaticData];
         
-        dispatch_block_t mainThreadBlock = ^(){
-            UIApplicationState applicationState = UIApplication.sharedApplication.applicationState;
+        td_dispatch_main_sync_safe(^{
+            UIApplicationState applicationState = [UIApplication sharedApplication].applicationState;
             if (applicationState == UIApplicationStateBackground) {
                 self->_relaunchInBackGround = YES;
             }
-        };
-        
-        td_dispatch_main_sync_safe(mainThreadBlock);
+        });
         
         instances[appid] = self;
     }
@@ -193,6 +191,8 @@ static dispatch_queue_t networkQueue;
         CFRelease(_reachability);
         _reachability = NULL;
     }
+    
+    [self stopFlushTimer];
 }
 
 + (UIApplication *)sharedUIApplication {
@@ -202,11 +202,26 @@ static dispatch_queue_t networkQueue;
     return nil;
 }
 
+#pragma mark - EnableTracking
+- (void)enableTracking:(BOOL)enabled {
+    self.isEnabled = enabled;
+    [self archiveIsEnabled:self.isEnabled];
+}
+
+- (BOOL)hasDisabled {
+    return !_isEnabled;
+}
+
 #pragma mark - Persistence
 - (void)retrievePersistedData {
     [self unarchiveAccountID];
     [self unarchiveSuperProperties];
-    [self unarchiveIdentifyId];
+    [self unarchiveIdentifyID];
+    [self unarchiveIsEnabled];
+    
+    if(self.identifyId.length == 0) {
+        self.identifyId = self.deviceInfo.uniqueId;
+    }
     
     // 兼容老版本
     if (self.accountId.length == 0) {
@@ -223,7 +238,7 @@ static dispatch_queue_t networkQueue;
     }
 }
 
-- (void)unarchiveIdentifyId {
+- (void)unarchiveIdentifyID {
     NSString *identifyId = (NSString *)[ThinkingAnalyticsSDK unarchiveFromFile:[self identifyIdFilePath] asClass:[NSString class]];
     self.identifyId = identifyId;
 }
@@ -250,6 +265,21 @@ static dispatch_queue_t networkQueue;
 - (void)unarchiveSuperProperties {
     NSDictionary *superProperties = (NSDictionary *)[ThinkingAnalyticsSDK unarchiveFromFile:[self superPropertiesFilePath] asClass:[NSDictionary class]];
     self.superPropertie = [superProperties copy];
+}
+
+- (void)archiveIsEnabled:(BOOL)isEnabled {
+    NSString *filePath = [self enabledFilePath];
+    if (![self archiveObject:[NSNumber numberWithBool:self.isEnabled] withFilePath:filePath]) {
+        TDLogError(@"%@ unable to archive isEnabled", self);
+    }
+}
+
+- (void)unarchiveIsEnabled {
+    NSNumber *isEnabled = (NSNumber *)[ThinkingAnalyticsSDK unarchiveFromFile:[self enabledFilePath] asClass:[NSNumber class]];
+    if(isEnabled == nil)
+        self.isEnabled = YES;
+    else
+        self.isEnabled = [isEnabled boolValue];
 }
 
 - (BOOL)archiveObject:(id)object withFilePath:(NSString *)filePath {
@@ -300,18 +330,22 @@ static dispatch_queue_t networkQueue;
 }
 
 - (NSString *)superPropertiesFilePath {
-    return [self filePathFor:@"superProperties"];
+    return [self persistenceFilePath:@"superProperties"];
 }
 
 - (NSString *)accountIDFilePath {
-    return [self filePathFor:@"accountID"];
+    return [self persistenceFilePath:@"accountID"];
 }
 
 - (NSString *)identifyIdFilePath {
-    return [self filePathFor:@"identifyId"];
+    return [self persistenceFilePath:@"identifyId"];
 }
 
-- (NSString *)filePathFor:(NSString *)data {
+- (NSString *)enabledFilePath {
+    return [self persistenceFilePath:@"isEnabled"];
+}
+
+- (NSString *)persistenceFilePath:(NSString *)data {
     NSString *filename = [NSString stringWithFormat:@"thinking-%@-%@.plist", self.appid, data];
     return [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject]
             stringByAppendingPathComponent:filename];
@@ -393,8 +427,7 @@ static dispatch_queue_t networkQueue;
 
 - (void)applicationWillTerminateNotification:(NSNotification *)notification {
     TDLogDebug(@"%@ applicationWillTerminateNotification", self);
-    dispatch_sync(serialQueue, ^{
-    });
+    dispatch_sync(serialQueue, ^{});
 }
 
 - (void)applicationWillEnterForeground:(NSNotification *)notification {
@@ -506,6 +539,9 @@ static dispatch_queue_t networkQueue;
 }
 
 - (void)setNetworkType:(ThinkingAnalyticsNetworkType)type {
+    if([self hasDisabled])
+        return;
+        
     [self.flushConfig setNetworkType:type];
 }
 
@@ -585,33 +621,30 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 #pragma mark - Tracking
 - (void)track:(NSString *)event {
-    [self click:event withProperties:nil withType:@"track"];
+    [self track:event withProperties:nil withType:@"track"];
 }
 
 - (void)track:(NSString *)event
    properties:(NSDictionary *)propertieDict {
-    [self click:event withProperties:propertieDict withType:@"track"];
+    [self track:event withProperties:propertieDict withType:@"track"];
 }
 
 - (void)track:(NSString *)event
    properties:(NSDictionary *)propertieDict
          time:(NSDate *)time {
-    [self click:event withProperties:propertieDict withType:@"track" withTime:time isCheckProperties:YES];
+    [self track:event withProperties:propertieDict withType:@"track" withTime:time isCheckProperties:YES];
 }
 
 - (void)autotrack:(NSString *)event
        properties:(NSDictionary *)propertieDict
          withTime:(NSDate *)date {
-    [self click:event withProperties:propertieDict withType:@"track" withTime:date isCheckProperties:NO];
+    [self track:event withProperties:propertieDict withType:@"track" withTime:date isCheckProperties:NO];
 }
 
 - (NSString *)getDistinctId{
     __block NSString *distinctId = nil;
     dispatch_sync(serialQueue, ^{
-        if (self->_identifyId.length == 0)
-            distinctId = self->_deviceInfo.uniqueId;
-        else
-            distinctId = self->_identifyId;
+        distinctId = self->_identifyId;
     });
     return distinctId;
 }
@@ -621,12 +654,18 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)registerDynamicSuperProperties:(NSDictionary<NSString *, id> *(^)(void)) dynamicSuperProperties {
+    if([self hasDisabled])
+        return;
+        
     dispatch_async(serialQueue, ^{
         self.dynamicSuperProperties = dynamicSuperProperties;
     });
 }
 
 - (void)setSuperProperties:(NSDictionary *)properties {
+    if([self hasDisabled])
+        return;
+        
     properties = [properties copy];
     if (properties == nil) {
         return;
@@ -646,6 +685,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)unsetSuperProperty:(NSString *)propertyKey {
+    if([self hasDisabled])
+        return;
+        
     if ([propertyKey isKindOfClass:[NSString class]] && propertyKey.length == 0)
         return;
     
@@ -658,6 +700,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)clearSuperProperties {
+    if([self hasDisabled])
+        return;
+        
     dispatch_async(serialQueue, ^{
         self.superPropertie = @{};
         [self archiveSuperProperties:nil];
@@ -673,6 +718,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)identify:(NSString *)distinctId {
+    if([self hasDisabled])
+        return;
+        
     if ([distinctId isKindOfClass:[NSString class]] && distinctId.length == 0) {
         TDLogError(@"identify cannot null");
         return;
@@ -687,6 +735,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)login:(NSString *)accountId {
+    if([self hasDisabled])
+        return;
+        
     if (![accountId isKindOfClass:[NSString class]] || accountId.length == 0) {
         TDLogError(@"accountId invald", accountId);
         return;
@@ -701,6 +752,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)logout {
+    if([self hasDisabled])
+        return;
+    
     dispatch_async(serialQueue, ^{
         self.accountId = nil;
         [self archiveAccountID:nil];
@@ -708,27 +762,45 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue {
+    if([self hasDisabled])
+        return;
+        
     NSDictionary *dic = @{[propertyName copy]:[propertyValue copy]};
-    [self click:nil withProperties:dic withType:@"user_add"];
+    [self track:nil withProperties:dic withType:@"user_add"];
 }
 
 - (void)user_add:(NSDictionary *)property {
-    [self click:nil withProperties:property withType:@"user_add"];
+    if([self hasDisabled])
+        return;
+        
+    [self track:nil withProperties:property withType:@"user_add"];
 }
 
 - (void)user_setOnce:(NSDictionary *)property {
-    [self click:nil withProperties:property withType:@"user_setOnce"];
+    if([self hasDisabled])
+        return;
+        
+    [self track:nil withProperties:property withType:@"user_setOnce"];
 }
 
 - (void)user_set:(NSDictionary *)property {
-    [self click:nil withProperties:property withType:@"user_set"];
+    if([self hasDisabled])
+        return;
+        
+    [self track:nil withProperties:property withType:@"user_set"];
 }
 
 - (void)user_delete {
-    [self click:nil withProperties:@{} withType:@"user_del"];
+    if([self hasDisabled])
+        return;
+        
+    [self track:nil withProperties:@{} withType:@"user_del"];
 }
 
 - (void)timeEvent:(NSString *)event {
+    if([self hasDisabled])
+        return;
+        
     if (![event isKindOfClass:[NSString class]] || event.length == 0 || ![self isValidName: event]) {
         NSString *errMsg = [NSString stringWithFormat:@"timeEvent parameter[%@] is not valid", event];
         TDLogError(errMsg);
@@ -877,24 +949,26 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                 if ([time isKindOfClass:[NSString class]] && time.length > 0) {
                     destDate = [self->_timeFormatter dateFromString:time];
                 }
-                [self click:event_name withProperties:dic withType:type withTime:destDate isCheckProperties:NO];
+                [self track:event_name withProperties:dic withType:type withTime:destDate isCheckProperties:NO];
             });
         }
     }
 }
 
-- (void)click:(NSString *)event
+- (void)track:(NSString *)event
 withProperties:(NSDictionary *)propertieDict
      withType:(NSString *)type {
-    [self click:event withProperties:propertieDict withType:type withTime:[NSDate date] isCheckProperties:YES];
+    [self track:event withProperties:propertieDict withType:type withTime:[NSDate date] isCheckProperties:YES];
 }
 
-     - (void)click:(NSString *)event
+     - (void)track:(NSString *)event
     withProperties:(NSDictionary *)propertieDict
           withType:(NSString *)type
           withTime:(NSDate *)time
  isCheckProperties:(BOOL)check {
-       
+    if([self hasDisabled])
+        return;
+         
     if (_relaunchInBackGround && !_isTrackRelaunchInBackGroundEvents) {
         return;
     }
@@ -980,20 +1054,13 @@ withProperties:(NSDictionary *)propertieDict
         
         NSString *loginId = self.accountId;
         
-        NSString *distinct;
-        if (self.identifyId.length == 0 && self->_deviceInfo.uniqueId > 0) {
-            distinct = self->_deviceInfo.uniqueId;
-        } else if (self.identifyId.length > 0) {
-            distinct = self.identifyId;
-        }
-        
         NSMutableDictionary *dataDic = [NSMutableDictionary dictionary];
         dataDic[@"#time"] = timeStamp;
         dataDic[@"#type"] = type;
         dataDic[@"#uuid"] = [[NSUUID UUID] UUIDString];
         
-        if (distinct.length > 0) {
-            dataDic[@"#distinct_id"] = distinct;
+        if (self.identifyId.length > 0) {
+            dataDic[@"#distinct_id"] = self.identifyId;
         }
         if (propertyDic.allKeys.count > 0) {
             dataDic[@"properties"] = propertyDic;
@@ -1094,6 +1161,9 @@ withProperties:(NSDictionary *)propertieDict
 
 #pragma mark - Autotracking
 - (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType {
+    if([self hasDisabled])
+        return;
+        
     _autoTrackEventType = eventType;
     if (_deviceInfo.isFirstOpen && (_autoTrackEventType & ThinkingAnalyticsEventTypeAppInstall)) {
         [self autotrack:APP_INSTALL_EVENT properties:nil withTime:nil];
@@ -1116,6 +1186,9 @@ withProperties:(NSDictionary *)propertieDict
 }
 
 - (void)ignoreViewType:(Class)aClass {
+    if([self hasDisabled])
+        return;
+        
     dispatch_async(serialQueue, ^{
         [self->_ignoredViewTypeList addObject:aClass];
     });
@@ -1143,6 +1216,9 @@ withProperties:(NSDictionary *)propertieDict
 }
 
 - (void)ignoreAutoTrackViewControllers:(NSArray *)controllers {
+    if([self hasDisabled])
+        return;
+        
     if (controllers == nil || controllers.count == 0) {
         return;
     }
@@ -1175,8 +1251,12 @@ withProperties:(NSDictionary *)propertieDict
     
     Class wkWebViewClass = NSClassFromString(@"WKWebView");
     if ([urlStr rangeOfString:TA_JS_TRACK_SCHEME].length > 0) {
+        if([self hasDisabled])
+            return YES;
+        
         if (([queryKey isKindOfClass:[NSString class]] && queryKey.length == 0) || ([queryValue isKindOfClass:[NSString class]] && queryValue.length == 0))
             return YES;
+        
         if ([webView isKindOfClass:[UIWebView class]] || (wkWebViewClass && [webView isKindOfClass:wkWebViewClass])) {
             NSString* uploadData = [queryValue stringByRemovingPercentEncoding];
             if (uploadData.length > 0)
@@ -1198,6 +1278,9 @@ withProperties:(NSDictionary *)propertieDict
 }
 
 - (void)addWebViewUserAgent {
+    if([self hasDisabled])
+        return;
+        
     NSString *userAgent = [self getUserAgent];
     if ([userAgent rangeOfString:@"td-sdk-ios"].location == NSNotFound) {
         userAgent = [userAgent stringByAppendingString:@" /td-sdk-ios"];

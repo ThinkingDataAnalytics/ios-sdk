@@ -167,6 +167,22 @@
           [ThinkingSDKAPI testIdentify];
       }]];
     
+    [commands addObject:
+     [APIEntry commandWithName:@"Enable"
+                 accessoryType:UITableViewCellAccessoryNone
+                         block:^(UIViewController* controller)
+      {
+          [ThinkingSDKAPI testEnable];
+      }]];
+    
+    [commands addObject:
+     [APIEntry commandWithName:@"DisEnable"
+                 accessoryType:UITableViewCellAccessoryNone
+                         block:^(UIViewController* controller)
+      {
+          [ThinkingSDKAPI testDisEnable];
+      }]];
+    
      [commands addObject:
       [APIEntry commandWithName:@"More (AutoTrack)"
                 accessoryType:UITableViewCellAccessoryNone

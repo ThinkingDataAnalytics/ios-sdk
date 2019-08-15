@@ -36,6 +36,7 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 @property (atomic, strong) NSMutableSet *ignoredViewTypeList;
 @property (atomic, strong) NSMutableSet *ignoredViewControllers;
 @property (nonatomic, assign) BOOL relaunchInBackGround;
+@property (nonatomic, assign) BOOL isEnabled;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) NSMutableDictionary *trackTimer;
 @property (nonatomic, assign) UIBackgroundTaskIdentifier taskId;

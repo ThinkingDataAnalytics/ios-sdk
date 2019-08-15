@@ -109,6 +109,9 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 // 上报数据
 - (void)flush;
 
+// 关闭上报
+- (void)enableTracking:(BOOL)enabled;
+
 @end
 
 @interface UIView (ThinkingAnalytics)

@@ -27,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)testTimedEvent;
 + (void)testTrackEventEnd;
 + (void)testIdentify;
++ (void)testEnable;
++ (void)testDisEnable;
 
 @end
 

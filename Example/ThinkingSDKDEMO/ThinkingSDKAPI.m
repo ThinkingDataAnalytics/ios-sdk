@@ -76,6 +76,14 @@
     [[ThinkingAnalyticsSDK sharedInstance] identify:@"testIdentify1"];
 }
 
++ (void)testEnable {
+    [[ThinkingAnalyticsSDK sharedInstance] enableTracking:YES];
+}
+
++ (void)testDisEnable {
+    [[ThinkingAnalyticsSDK sharedInstance] enableTracking:NO];
+}
+
 // H5 打通 jsSDK 需要配置 useAppTrack: true,
 // UIWebView 具体查看 WEBViewController.m 文件
 + (void)testAgent {
