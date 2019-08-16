@@ -15,6 +15,7 @@
 #import "AutoTrackViewController.h"
 #import "AutoTableViewController.h"
 #import "AutoCollectionViewController.h"
+#import "NTPViewController.h"
 
 @implementation AppDelegate (TDUI)
 
@@ -242,6 +243,15 @@
                          block:^(UIViewController* controller)
       {
           AutoCollectionViewController *autoCollectionVC = [[AutoCollectionViewController alloc] init];
+          [controller.navigationController pushViewController:autoCollectionVC animated:YES];
+      }]];
+    
+    [commands addObject:
+     [APIEntry commandWithName:@"校准时间"
+                 accessoryType:UITableViewCellAccessoryNone
+                         block:^(UIViewController* controller)
+      {
+          NTPViewController *autoCollectionVC = [[NTPViewController alloc] init];
           [controller.navigationController pushViewController:autoCollectionVC animated:YES];
       }]];
     return commands;

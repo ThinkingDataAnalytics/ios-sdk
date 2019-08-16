@@ -7,13 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F349CA6E2306C0E100EC1106 /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */; };
+		F349CA722306C30B00EC1106 /* CocoaAsyncSocket.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F34CAAD222C5B26C00A8FF82 /* WKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */; };
 		F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */; };
 		F34CAB0122C730D400A8FF82 /* AutoCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAB0022C730D400A8FF82 /* AutoCollectionViewController.m */; };
+		F34D3DAF2306C973006FEDCC /* NTPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34D3DAA2306C973006FEDCC /* NTPViewController.m */; };
+		F34D3DB02306C973006FEDCC /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = F34D3DAD2306C973006FEDCC /* NetAssociation.m */; };
 		F37AE90222C49007005D64F8 /* WEBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F37AE90122C49007005D64F8 /* WEBViewController.m */; };
 		F37AE90622C493A9005D64F8 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = F37AE90422C493A9005D64F8 /* index.html */; };
 		F380B2AA22C0E8BB00955FC5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2A922C0E8BB00955FC5 /* AppDelegate.m */; };
-		F380B2B222C0E8BC00955FC5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F380B2B122C0E8BC00955FC5 /* Assets.xcassets */; };
 		F380B2B822C0E8BC00955FC5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2B722C0E8BC00955FC5 /* main.m */; };
 		F380B2C222C0E8BC00955FC5 /* ThinkingSDKDEMOTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2C122C0E8BC00955FC5 /* ThinkingSDKDEMOTests.m */; };
 		F380B2CD22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2CC22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.m */; };
@@ -47,6 +50,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		F349CA712306C30600EC1106 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				F349CA722306C30B00EC1106 /* CocoaAsyncSocket.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F383E1212302697C00E08658 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -71,19 +84,23 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CocoaAsyncSocket.framework; sourceTree = "<group>"; };
 		F34CAAD022C5B26C00A8FF82 /* WKWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WKWebViewController.h; sourceTree = "<group>"; };
 		F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WKWebViewController.m; sourceTree = "<group>"; };
 		F34CAAD322C5B90F00A8FF82 /* AutoTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoTableViewController.h; sourceTree = "<group>"; };
 		F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoTableViewController.m; sourceTree = "<group>"; };
 		F34CAAFF22C730D400A8FF82 /* AutoCollectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoCollectionViewController.h; sourceTree = "<group>"; };
 		F34CAB0022C730D400A8FF82 /* AutoCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoCollectionViewController.m; sourceTree = "<group>"; };
+		F34D3DAA2306C973006FEDCC /* NTPViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTPViewController.m; sourceTree = "<group>"; };
+		F34D3DAC2306C973006FEDCC /* NetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetAssociation.h; sourceTree = "<group>"; };
+		F34D3DAD2306C973006FEDCC /* NetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetAssociation.m; sourceTree = "<group>"; };
+		F34D3DAE2306C973006FEDCC /* NTPViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTPViewController.h; sourceTree = "<group>"; };
 		F37AE90022C49007005D64F8 /* WEBViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WEBViewController.h; sourceTree = "<group>"; };
 		F37AE90122C49007005D64F8 /* WEBViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WEBViewController.m; sourceTree = "<group>"; };
 		F37AE90422C493A9005D64F8 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 		F380B2A522C0E8BB00955FC5 /* ThinkingSDKDEMO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThinkingSDKDEMO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F380B2A822C0E8BB00955FC5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F380B2A922C0E8BB00955FC5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		F380B2B122C0E8BC00955FC5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F380B2B622C0E8BC00955FC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F380B2B722C0E8BC00955FC5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F380B2BD22C0E8BC00955FC5 /* ThinkingSDKDEMOTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ThinkingSDKDEMOTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -113,6 +130,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F349CA6E2306C0E100EC1106 /* CocoaAsyncSocket.framework in Frameworks */,
 				F3BA58A12301388D00D6D7DE /* ThinkingSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -159,6 +177,25 @@
 			path = WebView;
 			sourceTree = "<group>";
 		};
+		F34D3DA92306C973006FEDCC /* NTP */ = {
+			isa = PBXGroup;
+			children = (
+				F34D3DAB2306C973006FEDCC /* ios-ntp-lib */,
+				F34D3DAE2306C973006FEDCC /* NTPViewController.h */,
+				F34D3DAA2306C973006FEDCC /* NTPViewController.m */,
+			);
+			path = NTP;
+			sourceTree = "<group>";
+		};
+		F34D3DAB2306C973006FEDCC /* ios-ntp-lib */ = {
+			isa = PBXGroup;
+			children = (
+				F34D3DAC2306C973006FEDCC /* NetAssociation.h */,
+				F34D3DAD2306C973006FEDCC /* NetAssociation.m */,
+			);
+			path = "ios-ntp-lib";
+			sourceTree = "<group>";
+		};
 		F37AE90322C49367005D64F8 /* html */ = {
 			isa = PBXGroup;
 			children = (
@@ -203,10 +240,10 @@
 				F380B2E422C0EAC400955FC5 /* APIEntry.m */,
 				F380B2E022C0EA0100955FC5 /* TrackAPIVC.h */,
 				F380B2E122C0EA0100955FC5 /* TrackAPIVC.m */,
+				F34D3DA92306C973006FEDCC /* NTP */,
 				F34CAAD622C5B91500A8FF82 /* AutoTrack */,
 				F34CAAD722C5B92200A8FF82 /* WebView */,
 				F37AE90322C49367005D64F8 /* html */,
-				F380B2B122C0E8BC00955FC5 /* Assets.xcassets */,
 				F380B2B622C0E8BC00955FC5 /* Info.plist */,
 				F380B2B722C0E8BC00955FC5 /* main.m */,
 			);
@@ -234,6 +271,7 @@
 		F3BA589F2301388D00D6D7DE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */,
 				F383E11F230268B600E08658 /* OCMock.framework */,
 				F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */,
 			);
@@ -251,6 +289,7 @@
 				F380B2A222C0E8BB00955FC5 /* Frameworks */,
 				F380B2A322C0E8BB00955FC5 /* Resources */,
 				F3BA58A32301388D00D6D7DE /* Embed Frameworks */,
+				F349CA712306C30600EC1106 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -352,7 +391,6 @@
 			files = (
 				F37AE90622C493A9005D64F8 /* index.html in Resources */,
 				F3F45D9F2301785600218049 /* thinkingdata.min.js in Resources */,
-				F380B2B222C0E8BC00955FC5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,6 +426,8 @@
 				F34CAB0122C730D400A8FF82 /* AutoCollectionViewController.m in Sources */,
 				F380B2AA22C0E8BB00955FC5 /* AppDelegate.m in Sources */,
 				F380B2DF22C0E99D00955FC5 /* AppDelegate+TDUI.m in Sources */,
+				F34D3DAF2306C973006FEDCC /* NTPViewController.m in Sources */,
+				F34D3DB02306C973006FEDCC /* NetAssociation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -538,13 +578,13 @@
 		F380B2D222C0E8BC00955FC5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ThinkingSDKDEMO/ThinkingSDKDEMO.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LF3XB637JR;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = ThinkingSDKDEMO/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -561,13 +601,13 @@
 		F380B2D322C0E8BC00955FC5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ThinkingSDKDEMO/ThinkingSDKDEMO.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LF3XB637JR;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = ThinkingSDKDEMO/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
