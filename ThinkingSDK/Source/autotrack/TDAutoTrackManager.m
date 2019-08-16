@@ -249,7 +249,6 @@
     });
 }
 
-
 + (NSString *)getPosition:(UIView *)view {
     NSString *position = nil;
     
@@ -415,7 +414,6 @@
                     propertyWithAppid = [view.thinkingAnalyticsDelegate thinkingAnalyticsWithAppid_tableView:tableView autoTrackPropertiesAtIndexPath:indexPath];
                 }
             }
-            
         } else if ([view isKindOfClass:[UICollectionView class]]) {
             UICollectionView *collectionView = (UICollectionView *)view;
             contentView = [collectionView cellForItemAtIndexPath:indexPath];

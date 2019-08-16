@@ -16,7 +16,6 @@
 		F3D19059230137600043D595 /* TDJSONUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19032230137600043D595 /* TDJSONUtil.h */; };
 		F3D1905A230137600043D595 /* TDOSLog.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19033230137600043D595 /* TDOSLog.m */; };
 		F3D1905B230137600043D595 /* TDFlushConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19034230137600043D595 /* TDFlushConfig.h */; };
-		F3D1905C230137600043D595 /* TDSDKReachabilityManager.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19035230137600043D595 /* TDSDKReachabilityManager.h */; };
 		F3D1905D230137600043D595 /* ThinkingExceptionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19036230137600043D595 /* ThinkingExceptionHandler.m */; };
 		F3D1905E230137600043D595 /* TDSqliteDataQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19037230137600043D595 /* TDSqliteDataQueue.m */; };
 		F3D1905F230137600043D595 /* TDNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19038230137600043D595 /* TDNetwork.h */; };
@@ -44,7 +43,6 @@
 		F3D19075230137610043D595 /* TDNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D1904F230137600043D595 /* TDNetwork.m */; };
 		F3D19076230137610043D595 /* TDSqliteDataQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19050230137600043D595 /* TDSqliteDataQueue.h */; };
 		F3D19077230137610043D595 /* ThinkingExceptionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19051230137600043D595 /* ThinkingExceptionHandler.h */; };
-		F3D19078230137610043D595 /* TDSDKReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19052230137600043D595 /* TDSDKReachabilityManager.m */; };
 		F3D19079230137610043D595 /* TDLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19053230137600043D595 /* TDLogging.h */; };
 		F3D1907A230137610043D595 /* ThinkingAnalyticsSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19054230137600043D595 /* ThinkingAnalyticsSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F3D1907B230137610043D595 /* NSData+TDGzip.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19055230137600043D595 /* NSData+TDGzip.h */; };
@@ -73,7 +71,6 @@
 		F3D19032230137600043D595 /* TDJSONUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDJSONUtil.h; sourceTree = "<group>"; };
 		F3D19033230137600043D595 /* TDOSLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDOSLog.m; sourceTree = "<group>"; };
 		F3D19034230137600043D595 /* TDFlushConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDFlushConfig.h; sourceTree = "<group>"; };
-		F3D19035230137600043D595 /* TDSDKReachabilityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDSDKReachabilityManager.h; sourceTree = "<group>"; };
 		F3D19036230137600043D595 /* ThinkingExceptionHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThinkingExceptionHandler.m; sourceTree = "<group>"; };
 		F3D19037230137600043D595 /* TDSqliteDataQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDSqliteDataQueue.m; sourceTree = "<group>"; };
 		F3D19038230137600043D595 /* TDNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDNetwork.h; sourceTree = "<group>"; };
@@ -101,7 +98,6 @@
 		F3D1904F230137600043D595 /* TDNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDNetwork.m; sourceTree = "<group>"; };
 		F3D19050230137600043D595 /* TDSqliteDataQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDSqliteDataQueue.h; sourceTree = "<group>"; };
 		F3D19051230137600043D595 /* ThinkingExceptionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThinkingExceptionHandler.h; sourceTree = "<group>"; };
-		F3D19052230137600043D595 /* TDSDKReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDSDKReachabilityManager.m; sourceTree = "<group>"; };
 		F3D19053230137600043D595 /* TDLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDLogging.h; sourceTree = "<group>"; };
 		F3D19054230137600043D595 /* ThinkingAnalyticsSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThinkingAnalyticsSDK.h; sourceTree = "<group>"; };
 		F3D19055230137600043D595 /* NSData+TDGzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+TDGzip.h"; sourceTree = "<group>"; };
@@ -180,8 +176,6 @@
 				F3D19033230137600043D595 /* TDOSLog.m */,
 				F3D19034230137600043D595 /* TDFlushConfig.h */,
 				F3D19049230137600043D595 /* TDFlushConfig.m */,
-				F3D19035230137600043D595 /* TDSDKReachabilityManager.h */,
-				F3D19052230137600043D595 /* TDSDKReachabilityManager.m */,
 				F3D19050230137600043D595 /* TDSqliteDataQueue.h */,
 				F3D19037230137600043D595 /* TDSqliteDataQueue.m */,
 				F3D19038230137600043D595 /* TDNetwork.h */,
@@ -230,7 +224,6 @@
 				F3D19063230137600043D595 /* TDConfigPrivate.h in Headers */,
 				F3D1905F230137600043D595 /* TDNetwork.h in Headers */,
 				F3D1907B230137610043D595 /* NSData+TDGzip.h in Headers */,
-				F3D1905C230137600043D595 /* TDSDKReachabilityManager.h in Headers */,
 				F3D19077230137610043D595 /* ThinkingExceptionHandler.h in Headers */,
 				F3D1905B230137600043D595 /* TDFlushConfig.h in Headers */,
 				F3D1906E230137610043D595 /* UIApplication+AutoTrack.h in Headers */,
@@ -358,7 +351,6 @@
 				F3D19071230137610043D595 /* TDJSONUtil.m in Sources */,
 				F3D19062230137600043D595 /* TDLogging.m in Sources */,
 				F3D19067230137600043D595 /* UIViewController+AutoTrack.m in Sources */,
-				F3D19078230137610043D595 /* TDSDKReachabilityManager.m in Sources */,
 				F3D1905E230137600043D595 /* TDSqliteDataQueue.m in Sources */,
 				F3D19058230137600043D595 /* TDConfig.m in Sources */,
 			);
