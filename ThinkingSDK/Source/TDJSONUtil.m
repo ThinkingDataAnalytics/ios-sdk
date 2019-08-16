@@ -33,9 +33,8 @@
     } else if ([object isKindOfClass:[NSNumber class]]) {
         if ([object stringValue] && [[object stringValue] rangeOfString:@"."].location != NSNotFound) {
             return [NSDecimalNumber decimalNumberWithDecimal:((NSNumber *)object).decimalValue];
-        } else {
-            return object;
         }
+        return object;
     } else if ([object isKindOfClass:[NSArray class]]) {
         NSMutableArray<id> *array = [[NSMutableArray alloc] init];
         for (id obj in (NSArray *)object) {
@@ -80,9 +79,8 @@
         return ((NSNumber *)object).stringValue;
     } else if ([object isKindOfClass:[NSURL class]]) {
         return ((NSURL *)object).absoluteString;
-    } else {
-        return nil;
     }
+    return nil;
 }
 
 @end

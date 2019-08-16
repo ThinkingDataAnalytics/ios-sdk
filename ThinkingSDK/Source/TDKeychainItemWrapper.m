@@ -21,14 +21,16 @@ NSString * const TDDeviceID = @"com.thinkingddata.analytics.deviceid";
         updateAttributes[(__bridge id)kSecValueData] = encodeData;
         NSMutableDictionary *query = [self keychainQueryWithAccount:key];
         OSStatus statusCode = SecItemUpdate((__bridge CFDictionaryRef)query,(__bridge CFDictionaryRef)updateAttributes);
-        if (statusCode != noErr)
+        if (statusCode != noErr) {
             TDLogError(@"Couldn't update the Keychain Item." );
+        }
     } else {
         NSMutableDictionary *attributes = [self keychainQueryWithAccount:key];
         attributes[(__bridge id)kSecValueData] = encodeData;
         OSStatus statusCode = SecItemAdd((__bridge CFDictionaryRef)attributes, nil);
-        if (statusCode != noErr)
+        if (statusCode != noErr) {
             TDLogError(@"Couldn't add the Keychain Item.");
+        }
     }
 }
 
