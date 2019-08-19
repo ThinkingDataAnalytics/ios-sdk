@@ -110,6 +110,14 @@
     ThinkingAnalyticsSDK *thinkingSDK1 = [ThinkingAnalyticsSDK startWithAppId:appid1 withUrl:@"kURL1"];
     ThinkingAnalyticsSDK *thinkingSDK2 = [ThinkingAnalyticsSDK startWithAppId:appid2 withUrl:@"kURL2"];
     
+    NSString *distinctId1 = [thinkingSDK1 getDistinctId];
+    NSString *distinctId2 = [thinkingSDK2 getDistinctId];
+    NSString *device1 = [thinkingSDK1 getDeviceId];
+    NSString *device2 = [thinkingSDK2 getDeviceId];
+    
+    XCTAssertEqual(distinctId1, distinctId2);
+    XCTAssertEqual(device1, device2);
+    
     id _mockThinking1 = OCMPartialMock(thinkingSDK1);
     id _mockThinking2 = OCMPartialMock(thinkingSDK2);
     
@@ -149,11 +157,25 @@
     });
 }
 
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
+- (void)test06CheckPropertyies {
+    NSDictionary *properties = @{@"key":@"value"};
+    BOOL ret = [self.mockThinkingInstance checkProperties:&properties withEventType:nil isCheckKey:NO];
+    NSDictionary *expectDic = @{@"key":@"value"};
+    XCTAssertEqualObjects(properties, expectDic);
+    XCTAssertTrue(ret);
+    
+    ret = [self.mockThinkingInstance checkProperties:&properties withEventType:@"user_add" isCheckKey:NO];
+    XCTAssertFalse(ret);
+    
+    properties = @{@"key":@{@"key2":@"value"}};
+    ret = [self.mockThinkingInstance checkProperties:&properties withEventType:nil isCheckKey:NO];
+    XCTAssertFalse(ret);
+    
+    NSString *aString = @"test";
+    properties = @{@"key": [aString dataUsingEncoding: NSUTF8StringEncoding]};
+    ret = [self.mockThinkingInstance checkProperties:&properties withEventType:nil isCheckKey:NO];
+    XCTAssertFalse(ret);
+    
 }
 
 @end

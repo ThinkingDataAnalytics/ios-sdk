@@ -37,6 +37,7 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 @property (atomic, strong) NSMutableSet *ignoredViewControllers;
 @property (nonatomic, assign) BOOL relaunchInBackGround;
 @property (nonatomic, assign) BOOL isEnabled;
+@property (nonatomic, assign) BOOL isOptOut;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) NSMutableDictionary *trackTimer;
 @property (nonatomic, assign) UIBackgroundTaskIdentifier taskId;
@@ -58,6 +59,7 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 + (dispatch_queue_t)networkQueue;
 + (UIApplication *)sharedUIApplication;
 - (NSInteger)saveClickData:(NSDictionary *)data;
+- (BOOL)checkProperties:(NSDictionary **)propertiesAddress withEventType:(NSString *)eventType isCheckKey:(BOOL)checkKey;
 
 @end
 

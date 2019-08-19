@@ -184,6 +184,22 @@
           [ThinkingSDKAPI testDisEnable];
       }]];
     
+    [commands addObject:
+     [APIEntry commandWithName:@"optOutTracking"
+                 accessoryType:UITableViewCellAccessoryNone
+                         block:^(UIViewController* controller)
+      {
+          [ThinkingSDKAPI optOutTracking];
+      }]];
+    
+    [commands addObject:
+     [APIEntry commandWithName:@"optInTracking"
+                 accessoryType:UITableViewCellAccessoryNone
+                         block:^(UIViewController* controller)
+      {
+          [ThinkingSDKAPI optInTracking];
+      }]];
+    
      [commands addObject:
       [APIEntry commandWithName:@"More (AutoTrack)"
                 accessoryType:UITableViewCellAccessoryNone

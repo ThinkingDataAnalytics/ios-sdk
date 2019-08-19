@@ -209,7 +209,34 @@ static dispatch_queue_t networkQueue;
 }
 
 - (BOOL)hasDisabled {
-    return !_isEnabled;
+    return !_isEnabled || _isOptOut;
+}
+
+- (void)optOutTracking {
+    TDLogDebug(@"%@ optOutTracking...", self);
+    dispatch_async(serialQueue, ^{
+        @synchronized (instances) {
+            [self.dataQueue deleteAll:self.appid];
+        }
+        
+        [self.trackTimer removeAllObjects];
+        self.superPropertie = [NSDictionary new];
+        self.identifyId = self.deviceInfo.uniqueId;
+        self.accountId = nil;
+        
+        [self archiveAccountID:nil];
+        [self archiveIdentifyId:nil];
+        [self archiveSuperProperties:nil];
+        
+        self.isOptOut = YES;
+        [self archiveOptOut:YES];
+    });
+}
+
+- (void)optInTracking {
+    TDLogDebug(@"%@ optInTracking...", self);
+    self.isOptOut = NO;
+    [self archiveOptOut:NO];
 }
 
 #pragma mark - Persistence
@@ -218,6 +245,7 @@ static dispatch_queue_t networkQueue;
     [self unarchiveSuperProperties];
     [self unarchiveIdentifyID];
     [self unarchiveIsEnabled];
+    [self unarchiveOptOut];
     
     if(self.identifyId.length == 0) {
         self.identifyId = self.deviceInfo.uniqueId;
@@ -265,6 +293,18 @@ static dispatch_queue_t networkQueue;
 - (void)unarchiveSuperProperties {
     NSDictionary *superProperties = (NSDictionary *)[ThinkingAnalyticsSDK unarchiveFromFile:[self superPropertiesFilePath] asClass:[NSDictionary class]];
     self.superPropertie = [superProperties copy];
+}
+
+- (void)archiveOptOut:(BOOL)optOut {
+    NSString *filePath = [self optOutFilePath];
+    if (![self archiveObject:[NSNumber numberWithBool:self.isOptOut] withFilePath:filePath]) {
+        TDLogError(@"%@ unable to archive isOptOut", self);
+    }
+}
+
+- (void)unarchiveOptOut {
+    NSNumber *optOut = (NSNumber *)[ThinkingAnalyticsSDK unarchiveFromFile:[self optOutFilePath] asClass:[NSNumber class]];
+    self.isOptOut = [optOut boolValue];
 }
 
 - (void)archiveIsEnabled:(BOOL)isEnabled {
@@ -343,6 +383,10 @@ static dispatch_queue_t networkQueue;
 
 - (NSString *)enabledFilePath {
     return [self persistenceFilePath:@"isEnabled"];
+}
+
+- (NSString *)optOutFilePath {
+    return [self persistenceFilePath:@"optOut"];
 }
 
 - (NSString *)persistenceFilePath:(NSString *)data {
@@ -856,7 +900,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if (![properties isKindOfClass:[NSDictionary class]]) {
         return NO;
     }
-    NSMutableDictionary *newProperties;
+    NSMutableDictionary *newProperties = [NSMutableDictionary dictionaryWithDictionary:properties];
     for (id key in properties) {
         if (![key isKindOfClass:[NSString class]]) {
             NSString *errMsg = @"property Key should by NSString";
@@ -906,9 +950,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                 TDLogDebug(errMsg);
                 
                 NSMutableString *newObject = [NSMutableString stringWithString:[self subByteString:string byteLength:valueMaxLength - 1]];
-                if (!newProperties) {
-                    newProperties = [NSMutableDictionary dictionaryWithDictionary:properties];
-                }
                 [newProperties setObject:newObject forKey:key];
             }
         }

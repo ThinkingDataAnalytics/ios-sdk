@@ -84,6 +84,14 @@
     [[ThinkingAnalyticsSDK sharedInstance] enableTracking:NO];
 }
 
++ (void)optOutTracking {
+    [[ThinkingAnalyticsSDK sharedInstance] optOutTracking];
+}
+
++ (void)optInTracking {
+    [[ThinkingAnalyticsSDK sharedInstance] optInTracking];
+}
+
 // H5 打通 jsSDK 需要配置 useAppTrack: true,
 // UIWebView 具体查看 WEBViewController.m 文件
 + (void)testAgent {

@@ -109,8 +109,14 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 // 上报数据
 - (void)flush;
 
-// 关闭上报
+// 暂停/恢复上报
 - (void)enableTracking:(BOOL)enabled;
+
+// 停止上报 数据将清空
+- (void)optOutTracking;
+
+// 允许上报
+- (void)optInTracking;
 
 @end
 

@@ -29,6 +29,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)testIdentify;
 + (void)testEnable;
 + (void)testDisEnable;
++ (void)optOutTracking;
++ (void)optInTracking;
 
 @end
 
