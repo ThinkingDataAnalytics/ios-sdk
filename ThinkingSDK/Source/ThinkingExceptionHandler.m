@@ -104,7 +104,7 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
     }
 }
 
-- (void) td_handleUncaughtException:(NSException *)exception {
+- (void)td_handleUncaughtException:(NSException *)exception {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
     NSString *crashStr;
     @try {
@@ -136,7 +136,7 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
     signal(SIGFPE, SIG_DFL);
     signal(SIGBUS, SIG_DFL);
 
-    TDLogInfo(@"Encountered an uncaught exception. All ThinkingAnalytics instances were archived.");
+    TDLogInfo(@"Encountered an uncaught exception.");
 }
 
 - (void)addThinkingInstance:(ThinkingAnalyticsSDK *)instance {

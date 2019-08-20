@@ -76,6 +76,10 @@
     [[ThinkingAnalyticsSDK sharedInstance] identify:@"testIdentify1"];
 }
 
++ (void)testFlush {
+    [[ThinkingAnalyticsSDK sharedInstance] flush];
+}
+
 + (void)testEnable {
     [[ThinkingAnalyticsSDK sharedInstance] enableTracking:YES];
 }

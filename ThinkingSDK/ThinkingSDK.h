@@ -1,10 +1,3 @@
-//
-//  ThinkingSDK.h
-//  ThinkingSDK
-//
-//  Created by syj on 2019/8/12.
-//  Copyright © 2019 thinkingdata. All rights reserved.
-//
 
 #import <UIKit/UIKit.h>
 #import <ThinkingSDK/ThinkingAnalyticsSDK.h>

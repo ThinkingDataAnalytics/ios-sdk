@@ -15,7 +15,6 @@ static NSString * const APP_INSTALL_EVENT = @"ta_app_install";
 static NSString * const RESUME_FROM_BACKGROUND_PROPERTY = @"#resume_from_background";
 static NSString * const TD_EVENT_PROPERTY_ELEMENT_ID_CRASH_REASON = @"#app_crashed_reason";
 
-
 #ifndef td_dispatch_main_sync_safe
 #define td_dispatch_main_sync_safe(block)\
 if (dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL) == dispatch_queue_get_label(dispatch_get_main_queue())) {\
@@ -31,24 +30,19 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 @property (atomic, copy) NSString *serverURL;
 @property (atomic, copy) NSString *accountId;
 @property (atomic, copy) NSString *identifyId;
-@property (atomic, strong) NSPredicate *regexKey;
 @property (atomic, strong) NSDictionary *superPropertie;
 @property (atomic, strong) NSMutableSet *ignoredViewTypeList;
 @property (atomic, strong) NSMutableSet *ignoredViewControllers;
 @property (nonatomic, assign) BOOL relaunchInBackGround;
-@property (nonatomic, assign) BOOL isEnabled;
-@property (nonatomic, assign) BOOL isOptOut;
 @property (nonatomic, strong) NSTimer *timer;
+@property (nonatomic, strong) NSPredicate *regexKey;
 @property (nonatomic, strong) NSMutableDictionary *trackTimer;
 @property (nonatomic, assign) UIBackgroundTaskIdentifier taskId;
 @property (nonatomic, assign) SCNetworkReachabilityRef reachability;
 @property (nonatomic, strong) CTTelephonyNetworkInfo *telephonyInfo;
 @property (nonatomic, copy) NSDictionary<NSString *, id> *(^dynamicSuperProperties)(void);
 
-- (void)autotrack:(NSString *)event
-       properties:(NSDictionary *)propertieDict
-         withTime:(NSDate *)date;
-- (void)deleteAll;
+- (void)autotrack:(NSString *)event properties:(NSDictionary *)propertieDict withTime:(NSDate *)date;
 + (void)restartFlushTimer;
 - (BOOL)checkAutoTrackProperties:(NSDictionary**)dic;
 + (BOOL)checkAutoTrackProperties:(NSDictionary**)dic;
@@ -59,7 +53,6 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 + (dispatch_queue_t)networkQueue;
 + (UIApplication *)sharedUIApplication;
 - (NSInteger)saveClickData:(NSDictionary *)data;
-- (BOOL)checkProperties:(NSDictionary **)propertiesAddress withEventType:(NSString *)eventType isCheckKey:(BOOL)checkKey;
 
 @end
 

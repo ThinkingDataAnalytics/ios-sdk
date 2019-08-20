@@ -42,7 +42,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 // 自定义事件埋点
 - (void)track:(NSString *)event;
 - (void)track:(NSString *)event properties:(NSDictionary *)propertieDict;
-- (void)track:(NSString *)event properties:(NSDictionary *)propertieDict time:(NSDate *)time;
+- (void)track:(NSString *)event properties:(nullable NSDictionary *)propertieDict time:(NSDate *)time;
 
 // 记录事件时长
 - (void)timeEvent:(NSString *)event;
@@ -82,7 +82,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 - (NSDictionary *)currentSuperProperties;
 
 // 设置动态公共属性
-- (void)registerDynamicSuperProperties:(NSDictionary<NSString *, id> *(^)(void)) dynamicSuperProperties;
+- (void)registerDynamicSuperProperties:(NSDictionary<NSString *, id> *(^)(void))dynamicSuperProperties;
 
 // 设置上传的网络条件，默认情况下，SDK 将会网络条件为在 3G、4G 及 Wifi 时上传数据
 - (void)setNetworkType:(ThinkingAnalyticsNetworkType)type;
@@ -112,11 +112,14 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 // 暂停/恢复上报
 - (void)enableTracking:(BOOL)enabled;
 
+@property (atomic, assign) BOOL isEnabled;
+
 // 停止上报 数据将清空
 - (void)optOutTracking;
-
 // 允许上报
 - (void)optInTracking;
+
+@property (atomic, assign) BOOL isOptOut;
 
 @end
 

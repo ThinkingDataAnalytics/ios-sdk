@@ -10,6 +10,7 @@
 #import <OCMock/OCMock.h>
 #import <ThinkingSDK/ThinkingSDK.h>
 #import <ThinkingSDK/ThinkingAnalyticsSDKPrivate.h>
+#import <objc/message.h>
 
 @interface ThinkingSDKDEMOTests : XCTestCase
 
@@ -137,7 +138,6 @@
         [invocation getArgument: &dataDic atIndex: 2];
         count2 ++;
         XCTAssertEqualObjects(dataDic[@"#event_name"], @"test2");
-        NSLog(@"count2:%d", count2);
     };
     OCMStub([_mockThinking2 saveClickData:[OCMArg any]]).andDo(saveClickDataInvocation2);
     
@@ -157,25 +157,113 @@
     });
 }
 
+- (BOOL)doCheckProperties:(ThinkingAnalyticsSDK*)thinking properties:(NSDictionary **)properties withEventType:(NSString *)type isCheckKey:(BOOL)isCheckKey {
+    BOOL (*custom_msgSend_checkProperties)(id, SEL, NSDictionary **, NSString *, BOOL) = (BOOL(*)(id, SEL, NSDictionary **, NSString *, BOOL))objc_msgSend;
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+    return custom_msgSend_checkProperties(thinking, @selector(checkProperties:withEventType:isCheckKey:), properties, type, isCheckKey);
+#pragma clang diagnostic pop
+}
+
 - (void)test06CheckPropertyies {
+    ThinkingAnalyticsSDK *thinkingSDK1 = [ThinkingAnalyticsSDK startWithAppId:@"appid" withUrl:@"url"];
+    
     NSDictionary *properties = @{@"key":@"value"};
-    BOOL ret = [self.mockThinkingInstance checkProperties:&properties withEventType:nil isCheckKey:NO];
+    BOOL ret = [self doCheckProperties:thinkingSDK1 properties:&properties withEventType:nil isCheckKey:NO];
     NSDictionary *expectDic = @{@"key":@"value"};
     XCTAssertEqualObjects(properties, expectDic);
     XCTAssertTrue(ret);
     
-    ret = [self.mockThinkingInstance checkProperties:&properties withEventType:@"user_add" isCheckKey:NO];
+    ret = [self doCheckProperties:thinkingSDK1 properties:&properties withEventType:@"user_add" isCheckKey:NO];
     XCTAssertFalse(ret);
-    
+
     properties = @{@"key":@{@"key2":@"value"}};
-    ret = [self.mockThinkingInstance checkProperties:&properties withEventType:nil isCheckKey:NO];
+    ret = [self doCheckProperties:thinkingSDK1 properties:&properties withEventType:nil isCheckKey:NO];
     XCTAssertFalse(ret);
-    
+
     NSString *aString = @"test";
     properties = @{@"key": [aString dataUsingEncoding: NSUTF8StringEncoding]};
-    ret = [self.mockThinkingInstance checkProperties:&properties withEventType:nil isCheckKey:NO];
+    ret = [self doCheckProperties:thinkingSDK1 properties:&properties withEventType:nil isCheckKey:NO];
     XCTAssertFalse(ret);
+}
+
+- (void)test07LoginTrack {
+    NSMutableArray *dataArrays = [NSMutableArray array];
+    void (^saveClickDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+        __weak NSDictionary *dataDic;
+        [invocation getArgument: &dataDic atIndex: 2];
+        
+        XCTAssertNotNil(dataDic);
+        [dataArrays addObject:dataDic];
+        
+        NSInteger count = dataArrays.count;
+        switch (count) {
+            case 1:
+                XCTAssertEqualObjects([dataDic objectForKey:@"#account_id"], @"logintest");
+                break;
+            case 2:
+                XCTAssertEqualObjects([dataDic objectForKey:@"#account_id"], @"logintest2");
+                break;
+            case 3:
+                XCTAssertNil([dataDic objectForKey:@"#account_id"]);
+                break;
+            default:
+                break;
+        }
+        NSLog(@"dataDic:%@",dataDic);
+    };
+    OCMStub([_mockThinkingInstance saveClickData:[OCMArg any]]).andDo(saveClickDataInvocation);
+
+    [self.mockThinkingInstance login:@"logintest"];
+    [self.mockThinkingInstance track:@"test"];
     
+    [self.mockThinkingInstance login:@"logintest2"];
+    [self.mockThinkingInstance track:@"test"];
+    
+    [self.mockThinkingInstance logout];
+    [self.mockThinkingInstance track:@"test"];
+    
+    [self waitForThinkingQueues];
+}
+
+- (void)test08Enable {
+    [_mockThinkingInstance enableTracking:NO];
+    [_mockThinkingInstance track:@"test"];
+    OCMReject([_mockThinkingInstance saveClickData:[OCMArg any]]);
+    [self waitForThinkingQueues];
+    OCMVerifyAll(_mockThinkingInstance);
+}
+
+- (void)test09Enable {
+    [_mockThinkingInstance enableTracking:YES];
+    [_mockThinkingInstance track:@"test"];
+    OCMExpect([_mockThinkingInstance saveClickData:[OCMArg any]]);
+    [self waitForThinkingQueues];
+    OCMVerifyAll(_mockThinkingInstance);
+}
+
+- (void)test10OptOut {
+    [_mockThinkingInstance track:@"test"];
+    [_mockThinkingInstance setSuperProperties:@{@"key": @"value"}];
+    [_mockThinkingInstance optOutTracking];
+    [_mockThinkingInstance track:@"test"];
+    NSDictionary *superProperties = [_mockThinkingInstance currentSuperProperties];
+    OCMReject([_mockThinkingInstance saveClickData:[OCMArg any]]);
+    XCTAssertEqualObjects(superProperties, @{});
+    [self waitForThinkingQueues];
+    OCMVerifyAll(_mockThinkingInstance);
+}
+
+- (void)test11OptIn {
+    [_mockThinkingInstance optInTracking];
+    [_mockThinkingInstance track:@"test"];
+    [_mockThinkingInstance setSuperProperties:@{@"key2": @"value2"}];
+    OCMExpect([_mockThinkingInstance saveClickData:[OCMArg any]]);
+    NSDictionary *superProperties = [_mockThinkingInstance currentSuperProperties];
+    XCTAssertEqualObjects(superProperties, @{@"key2": @"value2"});
+    [self waitForThinkingQueues];
+    OCMVerifyAll(_mockThinkingInstance);
 }
 
 @end
