@@ -15,7 +15,6 @@
 		F3D19058230137600043D595 /* TDConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19031230137600043D595 /* TDConfig.m */; };
 		F3D19059230137600043D595 /* TDJSONUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19032230137600043D595 /* TDJSONUtil.h */; };
 		F3D1905A230137600043D595 /* TDOSLog.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19033230137600043D595 /* TDOSLog.m */; };
-		F3D1905B230137600043D595 /* TDFlushConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19034230137600043D595 /* TDFlushConfig.h */; };
 		F3D1905D230137600043D595 /* ThinkingExceptionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19036230137600043D595 /* ThinkingExceptionHandler.m */; };
 		F3D1905E230137600043D595 /* TDSqliteDataQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19037230137600043D595 /* TDSqliteDataQueue.m */; };
 		F3D1905F230137600043D595 /* TDNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19038230137600043D595 /* TDNetwork.h */; };
@@ -34,7 +33,6 @@
 		F3D1906C230137610043D595 /* NSObject+TDSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19046230137600043D595 /* NSObject+TDSwizzle.m */; };
 		F3D1906D230137610043D595 /* TDSwizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19047230137600043D595 /* TDSwizzler.m */; };
 		F3D1906E230137610043D595 /* UIApplication+AutoTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19048230137600043D595 /* UIApplication+AutoTrack.h */; };
-		F3D1906F230137610043D595 /* TDFlushConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19049230137600043D595 /* TDFlushConfig.m */; };
 		F3D19070230137610043D595 /* TDOSLog.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D1904A230137600043D595 /* TDOSLog.h */; };
 		F3D19071230137610043D595 /* TDJSONUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D1904B230137600043D595 /* TDJSONUtil.m */; };
 		F3D19072230137610043D595 /* TDConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D1904C230137600043D595 /* TDConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -70,7 +68,6 @@
 		F3D19031230137600043D595 /* TDConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDConfig.m; sourceTree = "<group>"; };
 		F3D19032230137600043D595 /* TDJSONUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDJSONUtil.h; sourceTree = "<group>"; };
 		F3D19033230137600043D595 /* TDOSLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDOSLog.m; sourceTree = "<group>"; };
-		F3D19034230137600043D595 /* TDFlushConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDFlushConfig.h; sourceTree = "<group>"; };
 		F3D19036230137600043D595 /* ThinkingExceptionHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThinkingExceptionHandler.m; sourceTree = "<group>"; };
 		F3D19037230137600043D595 /* TDSqliteDataQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDSqliteDataQueue.m; sourceTree = "<group>"; };
 		F3D19038230137600043D595 /* TDNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDNetwork.h; sourceTree = "<group>"; };
@@ -89,7 +86,6 @@
 		F3D19046230137600043D595 /* NSObject+TDSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+TDSwizzle.m"; sourceTree = "<group>"; };
 		F3D19047230137600043D595 /* TDSwizzler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDSwizzler.m; sourceTree = "<group>"; };
 		F3D19048230137600043D595 /* UIApplication+AutoTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIApplication+AutoTrack.h"; sourceTree = "<group>"; };
-		F3D19049230137600043D595 /* TDFlushConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDFlushConfig.m; sourceTree = "<group>"; };
 		F3D1904A230137600043D595 /* TDOSLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDOSLog.h; sourceTree = "<group>"; };
 		F3D1904B230137600043D595 /* TDJSONUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDJSONUtil.m; sourceTree = "<group>"; };
 		F3D1904C230137600043D595 /* TDConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDConfig.h; sourceTree = "<group>"; };
@@ -171,8 +167,6 @@
 				F3D1904B230137600043D595 /* TDJSONUtil.m */,
 				F3D1904A230137600043D595 /* TDOSLog.h */,
 				F3D19033230137600043D595 /* TDOSLog.m */,
-				F3D19034230137600043D595 /* TDFlushConfig.h */,
-				F3D19049230137600043D595 /* TDFlushConfig.m */,
 				F3D19050230137600043D595 /* TDSqliteDataQueue.h */,
 				F3D19037230137600043D595 /* TDSqliteDataQueue.m */,
 				F3D19038230137600043D595 /* TDNetwork.h */,
@@ -225,7 +219,6 @@
 				F3D1905F230137600043D595 /* TDNetwork.h in Headers */,
 				F3D1907B230137610043D595 /* NSData+TDGzip.h in Headers */,
 				F3D19077230137610043D595 /* ThinkingExceptionHandler.h in Headers */,
-				F3D1905B230137600043D595 /* TDFlushConfig.h in Headers */,
 				F3D1906E230137610043D595 /* UIApplication+AutoTrack.h in Headers */,
 				F3D19068230137600043D595 /* TDSwizzler.h in Headers */,
 				F3D19073230137610043D595 /* TDDeviceInfo.h in Headers */,
@@ -336,7 +329,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F3D1906F230137610043D595 /* TDFlushConfig.m in Sources */,
 				F3D19057230137600043D595 /* TDDeviceInfo.m in Sources */,
 				F3D1906A230137600043D595 /* TDAutoTrackManager.m in Sources */,
 				F3D1906D230137610043D595 /* TDSwizzler.m in Sources */,

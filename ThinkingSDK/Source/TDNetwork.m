@@ -18,11 +18,10 @@
     return sharedSession;
 }
 
-- (instancetype)initWithServerURL:(NSURL *)serverURL withAutomaticData:(NSDictionary *)automaticData {
+- (instancetype)initWithServerURL:(NSURL *)serverURL {
     self = [super init];
     if (self) {
         self.serverURL = serverURL;
-        self.automaticData = automaticData;
     }
     return self;
 }

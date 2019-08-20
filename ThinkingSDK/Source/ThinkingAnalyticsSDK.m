@@ -8,7 +8,6 @@
 
 #import "TDNetwork.h"
 #import "TDDeviceInfo.h"
-#import "TDFlushConfig.h"
 #import "TDConfigPrivate.h"
 #import "TDSqliteDataQueue.h"
 #import "TDAutoTrackManager.h"
@@ -26,7 +25,6 @@ static NSUInteger const TA_PROPERTY_CRASH_LENGTH_LIMITATION = 8191*2;
 
 @property (atomic, strong) TDNetwork *network;
 @property (atomic, strong) TDDeviceInfo *deviceInfo;
-@property (atomic, strong) TDFlushConfig *flushConfig;
 @property (atomic, strong) TDSqliteDataQueue *dataQueue;
 @property (atomic, strong) TDAutoTrackManager *autoTrackManager;
 @property (nonatomic, copy, nonnull) TDConfig *config;
@@ -153,12 +151,12 @@ static dispatch_queue_t networkQueue;
         [self setUpListeners];
         
         self.deviceInfo = [TDDeviceInfo sharedManager];
-//        self.flushConfig = [TDFlushConfig sharedManagerWithAppid:appid withServerURL:serverURL];
         self.autoTrackManager = [TDAutoTrackManager sharedManager];
         
         [self retrievePersistedData];
         
-        _network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.serverURL] withAutomaticData:_deviceInfo.automaticData];
+        _network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.serverURL]];
+        _network.automaticData = _deviceInfo.automaticData;
         
         td_dispatch_main_sync_safe(^{
             UIApplicationState applicationState = [UIApplication sharedApplication].applicationState;

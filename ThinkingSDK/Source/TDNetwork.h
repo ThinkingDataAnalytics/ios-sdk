@@ -9,7 +9,7 @@ typedef void (^TDFlushConfigBlock)(NSDictionary *result, NSError * _Nullable err
 @property (nonatomic, strong) NSURL *serverURL;
 @property (atomic, strong) NSDictionary *automaticData;
 
-- (instancetype)initWithServerURL:(NSURL *)serverURL withAutomaticData:(NSDictionary *)automaticData;
+- (instancetype)initWithServerURL:(NSURL *)serverURL;
 - (BOOL)flushEvents:(NSArray<NSString *> *)events withAppid:(NSString *)appid;
 - (void)fetchFlushConfig:(NSString *)appid handler:(TDFlushConfigBlock)handler;
 

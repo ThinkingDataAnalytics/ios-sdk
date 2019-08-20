@@ -30,7 +30,7 @@ static TDConfig * _defaultTDConfig;
 }
 
 - (void)updateConfig {
-    TDNetwork *network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.configureURL] withAutomaticData:nil];
+    TDNetwork *network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.configureURL]];
     [network fetchFlushConfig:self.appid handler:^(NSDictionary * _Nonnull result, NSError * _Nullable error) {
         if(!error) {
             NSInteger uploadInterval = [[[result copy] objectForKey:@"sync_interval"] integerValue];
