@@ -2,6 +2,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef void (^TDFlushConfigBlock)(NSDictionary *result, NSError * _Nullable error);
+
 @interface TDNetwork : NSObject
 
 @property (nonatomic, strong) NSURL *serverURL;
@@ -9,6 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithServerURL:(NSURL *)serverURL withAutomaticData:(NSDictionary *)automaticData;
 - (BOOL)flushEvents:(NSArray<NSString *> *)events withAppid:(NSString *)appid;
+- (void)fetchFlushConfig:(NSString *)appid handler:(TDFlushConfigBlock)handler;
 
 @end
 

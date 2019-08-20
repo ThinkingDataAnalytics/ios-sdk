@@ -82,4 +82,54 @@
     return request;
 }
 
+- (void)fetchFlushConfig:(NSString *)appid handler:(TDFlushConfigBlock)handler {
+    void (^block)(NSData*, NSURLResponse*, NSError*) = ^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
+            TDLogDebug(@"updateBatchSizeAndInterval network failure:%@",error);
+            handler(nil, error);
+            return;
+        }
+        NSError *err;
+        NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
+        if (!err && [ret isKindOfClass:[NSDictionary class]] && [ret[@"code"] isEqualToNumber:[NSNumber numberWithInt:0]])
+        {
+            NSDictionary *dic = [[ret copy] objectForKey:@"data"];
+            NSInteger sync_interval = [[[dic copy] objectForKey:@"sync_interval"] unsignedIntegerValue];
+            NSInteger sync_batch_size = [[[dic copy] objectForKey:@"sync_batch_size"] unsignedIntegerValue];
+            handler(dic, error);
+           //@{@"sync_interval":sync_interval, @"sync_batch_size":sync_batch_size};
+//            BOOL restart = NO;
+//            if ((sync_interval != self->_uploadInterval && sync_interval > 0) || (sync_batch_size != self->_uploadSize && sync_batch_size > 0)) {
+//                restart = YES;
+//            }
+//            if (sync_interval != self->_uploadInterval && sync_interval > 0) {
+//                self->_uploadInterval = sync_interval;
+//                [[NSUserDefaults standardUserDefaults] setInteger:sync_interval forKey:@"thinkingdata_uploadInterval"];
+//                [[NSUserDefaults standardUserDefaults] synchronize];
+//            }
+//            if (sync_batch_size != self->_uploadSize && sync_batch_size > 0) {
+//                self->_uploadSize = sync_batch_size;
+//                [[NSUserDefaults standardUserDefaults] setInteger:sync_batch_size forKey:@"thinkingdata_uploadSize"];
+//                [[NSUserDefaults standardUserDefaults] synchronize];
+//            }
+//            TDLogDebug(@"upload batchSize:%d Interval:%d", sync_batch_size, sync_interval);
+//            if (restart) {
+//                [ThinkingAnalyticsSDK restartFlushTimer];
+//            }
+        }
+//        else if ([[ret objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:-2]]) {
+//            TDLogError(@"APPID is wrong. now config is BatchSize:%d Interval:%d", self->_uploadSize, self->_uploadInterval);
+//        } else {
+//            TDLogError(@"update batchSize interval failed. now config is BatchSize:%d Interval:%d", self->_uploadSize, self->_uploadInterval);
+//        }
+//         dispatch_semaphore_signal(flushSem);
+    };
+    NSString *urlStr = [NSString stringWithFormat:@"%@?appid=%@", self.serverURL, appid];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr]];
+    [request setHTTPMethod:@"Get"];
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:block];
+    [task resume];
+}
+
 @end

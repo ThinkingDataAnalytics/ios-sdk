@@ -29,13 +29,12 @@ static NSUInteger const TA_PROPERTY_CRASH_LENGTH_LIMITATION = 8191*2;
 @property (atomic, strong) TDFlushConfig *flushConfig;
 @property (atomic, strong) TDSqliteDataQueue *dataQueue;
 @property (atomic, strong) TDAutoTrackManager *autoTrackManager;
+@property (nonatomic, copy, nonnull) TDConfig *config;
 
 @end
 
 @implementation ThinkingAnalyticsSDK{
     NSDateFormatter *_timeFormatter;
-    ThinkingAnalyticsAutoTrackEventType _autoTrackEventType;
-    BOOL _isTrackRelaunchInBackGroundEvents;
     BOOL _applicationWillResignActive;
     BOOL _appRelaunched;
     BOOL _isWifi;
@@ -55,10 +54,6 @@ static dispatch_queue_t networkQueue;
     if (instances.count == 0) {
         TDLogError(@"sharedInstance called before creating a Thinking instance");
         return nil;
-    }
-    
-    if (instances.count > 1) {
-//        TDLogDebug(@"sharedInstance called with multiple thinkingsdk instances. Using (the first) token %@", defaultProjectAppid);
     }
     
     return instances[defaultProjectAppid];
@@ -122,15 +117,17 @@ static dispatch_queue_t networkQueue;
 
 - (instancetype)initWithAppkey:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config{
     if (self = [self init:appid]) {
+        self.serverURL = [NSString stringWithFormat:@"%@/sync",serverURL];
+        self.appid = appid;
         
         if (!config) {
             config = TDConfig.defaultTDConfig;
         }
         
-        _autoTrackEventType = ThinkingAnalyticsEventTypeNone;
-        
-        self.serverURL = [NSString stringWithFormat:@"%@/sync",serverURL];
-        self.appid = appid;
+        _config = [config copy];
+        _config.appid = appid;
+        _config.configureURL = [NSString stringWithFormat:@"%@/config",serverURL];
+        [_config updateConfig];
         
         self.trackTimer = [NSMutableDictionary dictionary];
         _timeFormatter = [[NSDateFormatter alloc]init];
@@ -156,12 +153,11 @@ static dispatch_queue_t networkQueue;
         [self setUpListeners];
         
         self.deviceInfo = [TDDeviceInfo sharedManager];
-        self.flushConfig = [TDFlushConfig sharedManagerWithAppid:appid withServerURL:serverURL];
+//        self.flushConfig = [TDFlushConfig sharedManagerWithAppid:appid withServerURL:serverURL];
         self.autoTrackManager = [TDAutoTrackManager sharedManager];
         
         [self retrievePersistedData];
         
-        _isTrackRelaunchInBackGroundEvents = config.trackRelaunchedInBackgroundEvents;
         _network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.serverURL] withAutomaticData:_deviceInfo.automaticData];
         
         td_dispatch_main_sync_safe(^{
@@ -524,7 +520,7 @@ static dispatch_queue_t networkQueue;
         dispatch_group_leave(bgGroup);
     });
     
-    if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
+    if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
         [self autotrack:APP_END_EVENT properties:nil withTime:nil];
     }
     
@@ -571,12 +567,12 @@ static dispatch_queue_t networkQueue;
     });
     
     if (_appRelaunched) {
-        if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
+        if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
             [self autotrack:APP_START_EVENT properties:@{
                                                          RESUME_FROM_BACKGROUND_PROPERTY : @(_appRelaunched)
                                                          } withTime:nil];
         }
-        if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
+        if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
             [self timeEvent:APP_END_EVENT];
         }
     }
@@ -586,7 +582,7 @@ static dispatch_queue_t networkQueue;
     if([self hasDisabled])
         return;
         
-    [self.flushConfig setNetworkType:type];
+    [self.config setNetworkType:type];
 }
 
 - (ThinkingNetworkType)convertNetworkType:(NSString *)networkType {
@@ -1007,10 +1003,11 @@ withProperties:(NSDictionary *)propertieDict
           withType:(NSString *)type
           withTime:(NSDate *)time
  isCheckProperties:(BOOL)check {
+         
     if([self hasDisabled])
         return;
          
-    if (_relaunchInBackGround && !_isTrackRelaunchInBackGroundEvents) {
+    if (_relaunchInBackGround && !_config.trackRelaunchedInBackgroundEvents) {
         return;
     }
          
@@ -1114,9 +1111,9 @@ withProperties:(NSDictionary *)propertieDict
         }
         
         NSInteger count = [self saveClickData:dataDic];
-        TDLogDebug(@"queueing data:%@",dataDic);
+        TDLogDebug(@"queueing data:%@", dataDic);
         
-        if (count >= self.flushConfig.uploadSize) {
+        if (count >= self.config.uploadSize) {
             [self flush];
         }
     });
@@ -1137,7 +1134,7 @@ withProperties:(NSDictionary *)propertieDict
 
 - (void)_sync:(BOOL)vacuumAfterFlushing {
     NSString *networkType = [self getNetWorkStates];
-    if (!([self convertNetworkType:networkType] & self.flushConfig.networkTypePolicy)) {
+    if (!([self convertNetworkType:networkType] & self.config.networkTypePolicy)) {
         return;
     }
     
@@ -1181,8 +1178,8 @@ withProperties:(NSDictionary *)propertieDict
 - (void)startFlushTimer {
     [self stopFlushTimer];
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.flushConfig.uploadInterval > 0) {
-            self.timer = [NSTimer scheduledTimerWithTimeInterval:self.flushConfig.uploadInterval
+        if (self.config.uploadInterval > 0) {
+            self.timer = [NSTimer scheduledTimerWithTimeInterval:self.config.uploadInterval
                                                           target:self
                                                         selector:@selector(flush)
                                                         userInfo:nil
@@ -1204,24 +1201,24 @@ withProperties:(NSDictionary *)propertieDict
 - (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType {
     if([self hasDisabled])
         return;
-        
-    _autoTrackEventType = eventType;
-    if (_deviceInfo.isFirstOpen && (_autoTrackEventType & ThinkingAnalyticsEventTypeAppInstall)) {
+    
+    _config.autoTrackEventType = eventType;
+    if (_deviceInfo.isFirstOpen && (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppInstall)) {
         [self autotrack:APP_INSTALL_EVENT properties:nil withTime:nil];
     }
     
-    if (!self.relaunchInBackGround && (_autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd)) {
+    if (!self.relaunchInBackGround && (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd)) {
         [self timeEvent:APP_END_EVENT];
     }
 
-    if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
+    if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
         NSString *eventName = self.relaunchInBackGround ? APP_START_BACKGROUND_EVENT : APP_START_EVENT;
         [self autotrack:eventName properties:@{RESUME_FROM_BACKGROUND_PROPERTY : @(_appRelaunched)} withTime:nil];
     }
     
     [_autoTrackManager trackWithAppid:self.appid withOption:eventType];
     
-    if (_autoTrackEventType & ThinkingAnalyticsEventTypeAppViewCrash) {
+    if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppViewCrash) {
         [self trackCrash];
     }
 }
@@ -1253,7 +1250,7 @@ withProperties:(NSDictionary *)propertieDict
 }
 
 - (BOOL)isAutoTrackEventTypeIgnored:(ThinkingAnalyticsAutoTrackEventType)eventType {
-    return !(_autoTrackEventType & eventType);
+    return !(_config.autoTrackEventType & eventType);
 }
 
 - (void)ignoreAutoTrackViewControllers:(NSArray *)controllers {
