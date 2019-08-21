@@ -124,7 +124,7 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
 
     [socket sendData:[self createPacket] toHost:_server port:123 withTimeout:2.0 tag:0];
 
-    if(![socket beginReceiving:&error]) {
+    if (![socket beginReceiving:&error]) {
         return;
     }
 }

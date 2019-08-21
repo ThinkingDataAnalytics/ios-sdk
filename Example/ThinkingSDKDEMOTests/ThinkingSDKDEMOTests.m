@@ -75,7 +75,7 @@
         XCTAssertEqualObjects(dataDic[@"#type"], @"track");
         XCTAssertNotNil(properties[@"#app_version"]);
         XCTAssertTrue([properties[@"#app_version"] isKindOfClass:[NSString class]]);
-        if(properties[@"#network_type"]) {
+        if (properties[@"#network_type"]) {
             NSArray *network = @[@"WIFI", @"UNKNOWN", @"2G", @"3G", @"4G", @"NULL"];
             XCTAssertTrue([network containsObject:properties[@"#network_type"]]);
         }

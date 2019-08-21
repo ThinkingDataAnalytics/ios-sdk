@@ -36,6 +36,7 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 @property (nonatomic, assign) BOOL relaunchInBackGround;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) NSPredicate *regexKey;
+@property (nonatomic, strong) NSPredicate *regexAutoTrackKey;
 @property (nonatomic, strong) NSMutableDictionary *trackTimer;
 @property (nonatomic, assign) UIBackgroundTaskIdentifier taskId;
 @property (nonatomic, assign) SCNetworkReachabilityRef reachability;

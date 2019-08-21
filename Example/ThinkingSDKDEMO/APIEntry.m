@@ -23,7 +23,7 @@
       accessoryType:(UITableViewCellAccessoryType) accessoryType
               block:(void (^)(UIViewController* controller)) block
 {
-    if((self = [super init]))
+    if ((self = [super init]))
     {
         self.name = name;
         self.accessoryType = accessoryType;

@@ -21,6 +21,17 @@ static const NSUInteger kBatchSize = 50;
 static NSUInteger const TA_PROPERTY_LENGTH_LIMITATION = 2048;
 static NSUInteger const TA_PROPERTY_CRASH_LENGTH_LIMITATION = 8191*2;
 
+@interface TDEventModule : NSObject
+
+@property (nonatomic, copy) NSString *eventName;
+@property (nonatomic, copy) NSString *eventType;
+@property (nonatomic, strong) NSDate *eventTime;
+@property (nonatomic, assign) BOOL autotrack;
+@property (nonatomic, assign) BOOL persist;
+@property (nonatomic, strong) NSDictionary *properties;
+
+@end
+
 @interface ThinkingAnalyticsSDK()
 
 @property (atomic, strong) TDNetwork *network;
@@ -140,8 +151,10 @@ static dispatch_queue_t networkQueue;
         self.taskId = UIBackgroundTaskInvalid;
         self.telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
         
-        NSString *keyPattern = @"^[a-zA-Z][a-zA-Z\\d_#]{0,49}$";
+        NSString *keyPattern = @"^[a-zA-Z][a-zA-Z\\d_]{0,49}$";
         self.regexKey = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", keyPattern];
+        NSString *keyAutoTrackPattern = @"^([a-zA-Z][a-zA-Z\\d_]{0,49}|\\#(resume_from_background|app_crashed_reason|screen_name|title|url|element_id|element_type|element_content|element_position))$";
+        self.regexAutoTrackKey = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", keyAutoTrackPattern];
         
         self.dataQueue = [TDSqliteDataQueue sharedInstanceWithAppid:appid];
         if (self.dataQueue == nil) {
@@ -178,10 +191,8 @@ static dispatch_queue_t networkQueue;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     if (_reachability != NULL) {
-        if (!SCNetworkReachabilitySetCallback(_reachability, NULL, NULL)) {
-        }
-        if (!SCNetworkReachabilitySetDispatchQueue(_reachability, NULL)) {
-        }
+        SCNetworkReachabilitySetCallback(_reachability, NULL, NULL);
+        SCNetworkReachabilitySetDispatchQueue(_reachability, NULL);
         CFRelease(_reachability);
         _reachability = NULL;
     }
@@ -238,10 +249,10 @@ static dispatch_queue_t networkQueue;
     [self unarchiveAccountID];
     [self unarchiveSuperProperties];
     [self unarchiveIdentifyID];
-    [self unarchiveIsEnabled];
+    [self unarchiveEnabled];
     [self unarchiveOptOut];
     
-    if(self.identifyId.length == 0) {
+    if (self.identifyId.length == 0) {
         self.identifyId = self.deviceInfo.uniqueId;
     }
     
@@ -308,12 +319,12 @@ static dispatch_queue_t networkQueue;
     }
 }
 
-- (void)unarchiveIsEnabled {
-    NSNumber *isEnabled = (NSNumber *)[ThinkingAnalyticsSDK unarchiveFromFile:[self enabledFilePath] asClass:[NSNumber class]];
-    if(isEnabled == nil)
+- (void)unarchiveEnabled {
+    NSNumber *enabled = (NSNumber *)[ThinkingAnalyticsSDK unarchiveFromFile:[self enabledFilePath] asClass:[NSNumber class]];
+    if (enabled == nil)
         self.isEnabled = YES;
     else
-        self.isEnabled = [isEnabled boolValue];
+        self.isEnabled = [enabled boolValue];
 }
 
 - (BOOL)archiveObject:(id)object withFilePath:(NSString *)filePath {
@@ -331,12 +342,12 @@ static dispatch_queue_t networkQueue;
 }
 
 - (BOOL)addSkipBackupAttributeToItemAtPath:(NSString *)filePathString {
-    NSURL *URL = [NSURL fileURLWithPath: filePathString];
-    assert([[NSFileManager defaultManager] fileExistsAtPath: [URL path]]);
+    NSURL *URL = [NSURL fileURLWithPath:filePathString];
+    assert([[NSFileManager defaultManager] fileExistsAtPath:[URL path]]);
     
     NSError *error = nil;
-    BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES]
-                                  forKey: NSURLIsExcludedFromBackupKey error: &error];
+    BOOL success = [URL setResourceValue:[NSNumber numberWithBool:YES]
+                                  forKey:NSURLIsExcludedFromBackupKey error:&error];
     if (!success) {
         TDLogError(@"Error excluding %@ from backup %@", [URL lastPathComponent], error);
     }
@@ -567,7 +578,7 @@ static dispatch_queue_t networkQueue;
     if (_appRelaunched) {
         if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
             [self autotrack:APP_START_EVENT properties:@{
-                                                         RESUME_FROM_BACKGROUND_PROPERTY : @(_appRelaunched)
+                                                         RESUME_FROM_BACKGROUND_PROPERTY:@(_appRelaunched)
                                                          } withTime:nil];
         }
         if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
@@ -577,7 +588,7 @@ static dispatch_queue_t networkQueue;
 }
 
 - (void)setNetworkType:(ThinkingAnalyticsNetworkType)type {
-    if([self hasDisabled])
+    if ([self hasDisabled])
         return;
         
     [self.config setNetworkType:type];
@@ -659,24 +670,104 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 #pragma mark - Tracking
 - (void)track:(NSString *)event {
-    [self track:event withProperties:nil withType:@"track"];
+    [self track:event withProperties:nil withTime:nil withType:@"track"];
 }
 
-- (void)track:(NSString *)event
-   properties:(NSDictionary *)propertieDict {
-    [self track:event withProperties:propertieDict withType:@"track"];
+- (void)track:(NSString *)event properties:(NSDictionary *)propertieDict {
+    [self track:event withProperties:propertieDict withTime:nil withType:@"track"];
 }
 
-- (void)track:(NSString *)event
-   properties:(NSDictionary *)propertieDict
-         time:(NSDate *)time {
-    [self track:event withProperties:propertieDict withType:@"track" withTime:time isCheckProperties:YES];
+- (void)track:(NSString *)event properties:(NSDictionary *)propertieDict time:(NSDate *)time {
+    [self track:event withProperties:propertieDict withTime:time withType:@"track"];
+//    [self track:event withProperties:propertieDict withType:@"track" withTime:time isCheckProperties:YES];
 }
 
-- (void)autotrack:(NSString *)event
-       properties:(NSDictionary *)propertieDict
-         withTime:(NSDate *)date {
-    [self track:event withProperties:propertieDict withType:@"track" withTime:date isCheckProperties:NO];
+- (void)track:(NSString *)event withProperties:(NSDictionary *)propertieDict withTime:(NSDate *)time withType:(NSString *)type {
+//    [self track:event withProperties:propertieDict withType:type withTime:[NSDate date] isCheckProperties:YES];
+    NSMutableDictionary *properties = [NSMutableDictionary dictionary];
+    if([type isEqualToString:@"track"]) {
+        [properties addEntriesFromDictionary:self.superPropertie];
+        NSDictionary *dynamicSuperPropertiesDict = [self.dynamicSuperProperties copy];
+        if (dynamicSuperPropertiesDict && [dynamicSuperPropertiesDict isKindOfClass:[NSDictionary class]]) {
+            [properties addEntriesFromDictionary:dynamicSuperPropertiesDict];
+        }
+    }
+    if (propertieDict && [propertieDict isKindOfClass:[NSDictionary class]]) {
+        [properties addEntriesFromDictionary:propertieDict];
+    }
+    TDEventModule *eventData = [[TDEventModule alloc] init];
+    eventData.eventName = event;
+    eventData.properties = [properties copy];
+    eventData.eventType = type;
+    eventData.autotrack = NO;
+    eventData.persist = YES;
+    if (time) {
+        eventData.eventTime = time;
+    } else {
+        eventData.eventTime = [NSDate date];
+    }
+    [self tdInternalTrack:eventData];
+}
+
+- (void)autotrack:(NSString *)event properties:(NSDictionary *)propertieDict withTime:(NSDate *)time {
+//    [self track:event withProperties:propertieDict withType:@"track" withTime:date isCheckProperties:NO];
+    NSMutableDictionary *properties = [NSMutableDictionary dictionary];
+    [properties addEntriesFromDictionary:self.superPropertie];
+    NSDictionary *dynamicSuperPropertiesDict = [self.dynamicSuperProperties copy];
+    if (dynamicSuperPropertiesDict && [dynamicSuperPropertiesDict isKindOfClass:[NSDictionary class]]) {
+        [properties addEntriesFromDictionary:dynamicSuperPropertiesDict];
+    }
+    if (propertieDict && [propertieDict isKindOfClass:[NSDictionary class]]) {
+        [properties addEntriesFromDictionary:propertieDict];
+    }
+    TDEventModule *eventData = [[TDEventModule alloc] init];
+    eventData.eventName = event;
+    eventData.properties = [properties copy];
+    eventData.eventType = @"track";
+    eventData.autotrack = YES;
+    eventData.persist = YES;
+    if (time) {
+        eventData.eventTime = time;
+    } else {
+        eventData.eventTime = [NSDate date];
+    }
+    [self tdInternalTrack:eventData];
+}
+
+- (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue {
+    if ([self hasDisabled])
+        return;
+    
+    if(propertyName && propertyValue)
+        [self track:nil withProperties:@{propertyName:propertyValue} withTime:nil withType:@"user_add"];
+}
+
+- (void)user_add:(NSDictionary *)property {
+    if ([self hasDisabled])
+        return;
+    
+    [self track:nil withProperties:property withTime:nil withType:@"user_add"];
+}
+
+- (void)user_setOnce:(NSDictionary *)property {
+    if ([self hasDisabled])
+        return;
+    
+    [self track:nil withProperties:property withTime:nil withType:@"user_setOnce"];
+}
+
+- (void)user_set:(NSDictionary *)property {
+    if ([self hasDisabled])
+        return;
+    
+    [self track:nil withProperties:property withTime:nil withType:@"user_set"];
+}
+
+- (void)user_delete {
+    if ([self hasDisabled])
+        return;
+    
+    [self track:nil withProperties:nil withTime:nil withType:@"user_del"];
 }
 
 - (NSString *)getDistinctId{
@@ -692,7 +783,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)registerDynamicSuperProperties:(NSDictionary<NSString *, id> *(^)(void)) dynamicSuperProperties {
-    if([self hasDisabled])
+    if ([self hasDisabled])
         return;
         
     dispatch_async(serialQueue, ^{
@@ -701,13 +792,13 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)setSuperProperties:(NSDictionary *)properties {
-    if([self hasDisabled])
+    if ([self hasDisabled])
         return;
-        
-    properties = [properties copy];
+    
     if (properties == nil) {
         return;
     }
+    properties = [properties copy];
     
     if (![self checkAutoTrackProperties:&properties]) {
         TDLogError(@"%@ propertieDict error.", properties);
@@ -723,7 +814,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)unsetSuperProperty:(NSString *)propertyKey {
-    if([self hasDisabled])
+    if ([self hasDisabled])
         return;
         
     if ([propertyKey isKindOfClass:[NSString class]] && propertyKey.length == 0)
@@ -738,7 +829,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)clearSuperProperties {
-    if([self hasDisabled])
+    if ([self hasDisabled])
         return;
         
     dispatch_async(serialQueue, ^{
@@ -756,7 +847,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)identify:(NSString *)distinctId {
-    if([self hasDisabled])
+    if ([self hasDisabled])
         return;
         
     if ([distinctId isKindOfClass:[NSString class]] && distinctId.length == 0) {
@@ -773,7 +864,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)login:(NSString *)accountId {
-    if([self hasDisabled])
+    if ([self hasDisabled])
         return;
         
     if (![accountId isKindOfClass:[NSString class]] || accountId.length == 0) {
@@ -790,7 +881,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)logout {
-    if([self hasDisabled])
+    if ([self hasDisabled])
         return;
     
     dispatch_async(serialQueue, ^{
@@ -799,47 +890,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     });
 }
 
-- (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue {
-    if([self hasDisabled])
-        return;
-        
-    NSDictionary *dic = @{[propertyName copy]:[propertyValue copy]};
-    [self track:nil withProperties:dic withType:@"user_add"];
-}
-
-- (void)user_add:(NSDictionary *)property {
-    if([self hasDisabled])
-        return;
-        
-    [self track:nil withProperties:property withType:@"user_add"];
-}
-
-- (void)user_setOnce:(NSDictionary *)property {
-    if([self hasDisabled])
-        return;
-        
-    [self track:nil withProperties:property withType:@"user_setOnce"];
-}
-
-- (void)user_set:(NSDictionary *)property {
-    if([self hasDisabled])
-        return;
-        
-    [self track:nil withProperties:property withType:@"user_set"];
-}
-
-- (void)user_delete {
-    if([self hasDisabled])
-        return;
-        
-    [self track:nil withProperties:@{} withType:@"user_del"];
-}
-
 - (void)timeEvent:(NSString *)event {
-    if([self hasDisabled])
+    if ([self hasDisabled])
         return;
         
-    if (![event isKindOfClass:[NSString class]] || event.length == 0 || ![self isValidName: event]) {
+    if (![event isKindOfClass:[NSString class]] || event.length == 0 || ![self isValidName:event isAutoTrack:NO]) {
         NSString *errMsg = [NSString stringWithFormat:@"timeEvent parameter[%@] is not valid", event];
         TDLogError(errMsg);
         return ;
@@ -847,13 +902,16 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     
     NSNumber *eventBegin = @([[NSDate date] timeIntervalSince1970]);
     dispatch_async(serialQueue, ^{
-        self.trackTimer[event] = @{@"eventBegin" : eventBegin, @"eventAccumulatedDuration" : [NSNumber numberWithDouble:0]};
+        self.trackTimer[event] = @{@"eventBegin":eventBegin, @"eventAccumulatedDuration":[NSNumber numberWithDouble:0]};
     });
 }
 
-- (BOOL)isValidName:(NSString *)name {
+- (BOOL)isValidName:(NSString *)name isAutoTrack:(BOOL)isAutoTrack {
     @try {
-        return [self.regexKey evaluateWithObject:name];
+        if(!isAutoTrack)
+            return [self.regexKey evaluateWithObject:name];
+        else
+            return [self.regexAutoTrackKey evaluateWithObject:name];
     } @catch (NSException *exception) {
         TDLogError(@"%@: %@", self, exception);
         return YES;
@@ -863,7 +921,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 + (BOOL)checkAutoTrackProperties:(NSDictionary**)dic {
     return [[self sharedInstance] checkProperties:dic withEventType:nil isCheckKey:YES];
 }
-
+//todo
 - (BOOL)checkAutoTrackProperties:(NSDictionary**)dic {
     return [self checkProperties:dic withEventType:nil isCheckKey:YES];
 }
@@ -889,12 +947,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     return limitString;
 }
 
-- (BOOL)checkProperties:(NSDictionary **)propertiesAddress withEventType:(NSString *)eventType isCheckKey:(BOOL)checkKey {
-    NSDictionary *properties = *propertiesAddress;
+- (BOOL)checkEventProperties:(NSDictionary *)properties withEventType:(NSString *)eventType haveAutoTrackEvents:(BOOL)haveAutoTrackEvents {
     if (![properties isKindOfClass:[NSDictionary class]]) {
         return NO;
     }
-    NSMutableDictionary *newProperties = [NSMutableDictionary dictionaryWithDictionary:properties];
+    
     for (id key in properties) {
         if (![key isKindOfClass:[NSString class]]) {
             NSString *errMsg = @"property Key should by NSString";
@@ -902,12 +959,12 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             return NO;
         }
         
-        if (![self isValidName: key] && checkKey) {
+        if (![self isValidName:key isAutoTrack:haveAutoTrackEvents]) {
             NSString *errMsg = [NSString stringWithFormat:@"property name[%@] is not valid", key];
             TDLogError(errMsg);
             return NO;
         }
-
+        
         if (![properties[key] isKindOfClass:[NSString class]] &&
             ![properties[key] isKindOfClass:[NSNumber class]] &&
             ![properties[key] isKindOfClass:[NSDate class]]) {
@@ -923,35 +980,80 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                 return NO;
             }
         }
-       
+        
         if ([properties[key] isKindOfClass:[NSNumber class]]) {
             if ([properties[key] doubleValue] > 9999999999999.999 || [properties[key] doubleValue] < -9999999999999.999) {
                 TDLogError(@"number value is not valid.");
                 return NO;
             }
         }
-        
-        if ([properties[key] isKindOfClass:[NSString class]]) {
-            NSString *string = properties[key];
-            NSUInteger objLength = [((NSString *)string)lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-            NSUInteger valueMaxLength = TA_PROPERTY_LENGTH_LIMITATION;
+    }
+    return YES;
+}
 
-            if ([key isEqualToString:TD_EVENT_PROPERTY_ELEMENT_ID_CRASH_REASON]) {
-                valueMaxLength = TA_PROPERTY_CRASH_LENGTH_LIMITATION;
-            }
-            if (objLength > valueMaxLength) {
-                NSString * errMsg = [NSString stringWithFormat:@"The value is too long: %@", (NSString *)properties[key]];
-                TDLogDebug(errMsg);
-                
-                NSMutableString *newObject = [NSMutableString stringWithString:[self subByteString:string byteLength:valueMaxLength - 1]];
-                [newProperties setObject:newObject forKey:key];
-            }
-        }
-    }
-    
-    if (newProperties) {
-        *propertiesAddress = [NSDictionary dictionaryWithDictionary:newProperties];
-    }
+- (BOOL)checkProperties:(NSDictionary **)propertiesAddress withEventType:(NSString *)eventType isCheckKey:(BOOL)checkKey {
+//    NSDictionary *properties = *propertiesAddress;
+//    if (![properties isKindOfClass:[NSDictionary class]]) {
+//        return NO;
+//    }
+//    NSMutableDictionary *newProperties = [NSMutableDictionary dictionaryWithDictionary:properties];
+//    for (id key in properties) {
+//        if (![key isKindOfClass:[NSString class]]) {
+//            NSString *errMsg = @"property Key should by NSString";
+//            TDLogError(errMsg);
+//            return NO;
+//        }
+//
+//        if (![self isValidName: key] && checkKey) {
+//            NSString *errMsg = [NSString stringWithFormat:@"property name[%@] is not valid", key];
+//            TDLogError(errMsg);
+//            return NO;
+//        }
+//
+//        if (![properties[key] isKindOfClass:[NSString class]] &&
+//            ![properties[key] isKindOfClass:[NSNumber class]] &&
+//            ![properties[key] isKindOfClass:[NSDate class]]) {
+//            NSString * errMsg = [NSString stringWithFormat:@"property values must be NSString, NSNumber got: %@ %@", [properties[key] class], properties[key]];
+//            TDLogError(errMsg);
+//            return NO;
+//        }
+//
+//        if (eventType.length > 0 && [eventType isEqualToString:@"user_add"]) {
+//            if (![properties[key] isKindOfClass:[NSNumber class]]) {
+//                NSString *errMsg = [NSString stringWithFormat:@"user_add value must be NSNumber. got: %@ %@", [properties[key] class], properties[key]];
+//                TDLogError(errMsg);
+//                return NO;
+//            }
+//        }
+//
+//        if ([properties[key] isKindOfClass:[NSNumber class]]) {
+//            if ([properties[key] doubleValue] > 9999999999999.999 || [properties[key] doubleValue] < -9999999999999.999) {
+//                TDLogError(@"number value is not valid.");
+//                return NO;
+//            }
+//        }
+//
+//        if ([properties[key] isKindOfClass:[NSString class]]) {
+//            NSString *string = properties[key];
+//            NSUInteger objLength = [((NSString *)string)lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+//            NSUInteger valueMaxLength = TA_PROPERTY_LENGTH_LIMITATION;
+//
+//            if ([key isEqualToString:TD_EVENT_PROPERTY_ELEMENT_ID_CRASH_REASON]) {
+//                valueMaxLength = TA_PROPERTY_CRASH_LENGTH_LIMITATION;
+//            }
+//            if (objLength > valueMaxLength) {
+//                NSString * errMsg = [NSString stringWithFormat:@"The value is too long: %@", (NSString *)properties[key]];
+//                TDLogDebug(errMsg);
+//
+//                NSMutableString *newObject = [NSMutableString stringWithString:[self subByteString:string byteLength:valueMaxLength - 1]];
+//                [newProperties setObject:newObject forKey:key];
+//            }
+//        }
+//    }
+//
+//    if (newProperties) {
+//        *propertiesAddress = [NSDictionary dictionaryWithDictionary:newProperties];
+//    }
     
     return YES;
 }
@@ -990,91 +1092,62 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 }
 
-- (void)track:(NSString *)event
-withProperties:(NSDictionary *)propertieDict
-     withType:(NSString *)type {
-    [self track:event withProperties:propertieDict withType:type withTime:[NSDate date] isCheckProperties:YES];
-}
-
-     - (void)track:(NSString *)event
-    withProperties:(NSDictionary *)propertieDict
-          withType:(NSString *)type
-          withTime:(NSDate *)time
- isCheckProperties:(BOOL)check {
-         
-    if([self hasDisabled])
+- (void)tdInternalTrack:(TDEventModule *)eventData {
+    if ([self hasDisabled])
         return;
-         
+    
     if (_relaunchInBackGround && !_config.trackRelaunchedInBackgroundEvents) {
         return;
     }
-         
-    if ([type isEqualToString:@"track"]) {
-        if (![event isKindOfClass:[NSString class]] || event.length == 0) {
+    
+    if ([eventData.eventType isEqualToString:@"track"]) {
+        if (![eventData.eventName isKindOfClass:[NSString class]] || eventData.eventName.length == 0) {
             TDLogError(@"track event key is not valid");
             return;
         }
         
-        if (![self isValidName: event]) {
-            NSString *errMsg = [NSString stringWithFormat:@"property name[%@] is not valid", event];
+        if (![self isValidName:eventData.eventName isAutoTrack:NO]) {
+            NSString *errMsg = [NSString stringWithFormat:@"property name[%@] is not valid", eventData.eventName];
             TDLogError(@"%@", errMsg);
             return;
         }
     }
-     
-    if (propertieDict && ![self checkProperties:&propertieDict withEventType:type isCheckKey:check]) {
-        TDLogError(@"%@ property error.", propertieDict);
+    
+    if (eventData.properties && ![self checkEventProperties:eventData.properties withEventType:eventData.eventType haveAutoTrackEvents:eventData.autotrack]) {
+        TDLogError(@"%@ property error.", eventData.properties);
         return;
     }
-         
-    propertieDict = [propertieDict copy];
-    __block NSDictionary *dynamicSuperPropertiesDict = self.dynamicSuperProperties ? self.dynamicSuperProperties() : nil;
     
     dispatch_async(serialQueue, ^{
+        NSDictionary *propertiesDict = eventData.properties;
+        propertiesDict = [self processParameters:propertiesDict];
+        NSMutableDictionary<NSString *, id> *properties = [NSMutableDictionary dictionaryWithDictionary:propertiesDict];
+        
         NSString *timeStamp;
-        if (time == nil) {
+        if (eventData.eventTime == nil) {
             timeStamp = [self->_timeFormatter stringFromDate:[NSDate date]];
         } else {
-            timeStamp = [self->_timeFormatter stringFromDate:time];
+            timeStamp = [self->_timeFormatter stringFromDate:eventData.eventTime];
         }
         
         NSString *networkType = [self getNetWorkStates];
-        NSMutableDictionary *propertyDic = [NSMutableDictionary dictionary];
-        if ([propertyDic objectForKey:@"#network_type"] == nil && [type isEqualToString:@"track"]) {
-            propertyDic[@"#network_type"] = networkType;
+        if ([properties objectForKey:@"#network_type"] == nil && [eventData.eventType isEqualToString:@"track"]) {
+            properties[@"#network_type"] = networkType;
         }
         
-        if ([type isEqualToString:@"track"]) {
-            [propertyDic addEntriesFromDictionary:self.superPropertie];
-            propertyDic[@"#app_version"] = self->_deviceInfo.appVersion;
+        if ([eventData.eventType isEqualToString:@"track"]) {
+            properties[@"#app_version"] = self->_deviceInfo.appVersion;
             if (self.relaunchInBackGround) {
-                propertyDic[@"#relaunched_in_background"] = @YES;
-            }
-        }
-
-        if ([self checkAutoTrackProperties:&dynamicSuperPropertiesDict]) {
-            [propertyDic addEntriesFromDictionary:dynamicSuperPropertiesDict];
-        }
-        
-        if (propertieDict) {
-            NSArray *keys = propertieDict.allKeys;
-            for (id key in keys) {
-                NSObject *obj = propertieDict[key];
-                if ([obj isKindOfClass:[NSDate class]]) {
-                    NSString *dateStr = [self->_timeFormatter stringFromDate:(NSDate *)obj];
-                    [propertyDic setObject:dateStr forKey:key];
-                } else {
-                    [propertyDic setObject:obj forKey:key];
-                }
+                properties[@"#relaunched_in_background"] = @YES;
             }
         }
         
-        NSDictionary *eventTimer = self.trackTimer[event];
+        NSDictionary *eventTimer = self.trackTimer[eventData.eventName];
         if (eventTimer) {
-            [self.trackTimer removeObjectForKey:event];
+            [self.trackTimer removeObjectForKey:eventData.eventName];
             NSNumber *eventBegin = [eventTimer valueForKey:@"eventBegin"];
             NSNumber *eventAccumulatedDuration = [eventTimer objectForKey:@"eventAccumulatedDuration"];
-          
+            
             double eventDuration;
             NSNumber *currentSystemUpTime = @([[NSDate date] timeIntervalSince1970]);
             if (eventAccumulatedDuration) {
@@ -1084,37 +1157,198 @@ withProperties:(NSDictionary *)propertieDict
             }
             
             if (eventDuration > 0) {
-                propertyDic[@"#duration"] = @([[NSString stringWithFormat:@"%.3f", eventDuration] floatValue]);
+                properties[@"#duration"] = @([[NSString stringWithFormat:@"%.3f", eventDuration] floatValue]);
             }
         }
         
-        NSString *loginId = self.accountId;
-        
         NSMutableDictionary *dataDic = [NSMutableDictionary dictionary];
         dataDic[@"#time"] = timeStamp;
-        dataDic[@"#type"] = type;
+        dataDic[@"#type"] = eventData.eventType;
         dataDic[@"#uuid"] = [[NSUUID UUID] UUIDString];
         
-        if (self.identifyId.length > 0) {
+        if (self.identifyId) {
             dataDic[@"#distinct_id"] = self.identifyId;
         }
-        if (propertyDic.allKeys.count > 0) {
-            dataDic[@"properties"] = propertyDic;
+        if (properties) {
+            dataDic[@"properties"] = [NSDictionary dictionaryWithDictionary:properties];
         }
-        if (event) {
-            dataDic[@"#event_name"] = event;
+        if (eventData.eventName) {
+            dataDic[@"#event_name"] = eventData.eventName;
         }
-        if (loginId.length) {
-            dataDic[@"#account_id"] = loginId;
+        if (self.accountId) {
+            dataDic[@"#account_id"] = self.accountId;
         }
         
-        NSInteger count = [self saveClickData:dataDic];
-        TDLogDebug(@"queueing data:%@", dataDic);
-        
-        if (count >= self.config.uploadSize) {
-            [self flush];
+        if (eventData.persist) {
+            NSInteger count = [self saveClickData:dataDic];
+            TDLogDebug(@"queueing data:%@", dataDic);
+            
+            if (count >= self.config.uploadSize) {
+                [self flush];
+            }
+        } else {
+            [self dispatchOnNetworkQueue:^{
+                BOOL flushSucc = [self.network flushEvents:@[dataDic] withAppid:self.appid];
+                NSLog(@"flushSucc:%d", flushSucc);
+            }];
         }
     });
+}
+
+- (NSDictionary<NSString *,id> *)processParameters:(NSDictionary<NSString *,id> *)properties {
+    if (properties) {
+        NSMutableDictionary<NSString *, id> *propertiesDic = [NSMutableDictionary dictionaryWithDictionary:properties];
+        
+        for (NSString *key in [properties keyEnumerator]) {
+            if ([properties[key] isKindOfClass:[NSString class]]) {
+                NSString *string = properties[key];
+                NSUInteger objLength = [((NSString *)string)lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+                NSUInteger valueMaxLength = TA_PROPERTY_LENGTH_LIMITATION;
+                
+                if ([key isEqualToString:TD_EVENT_PROPERTY_ELEMENT_ID_CRASH_REASON]) {
+                    valueMaxLength = TA_PROPERTY_CRASH_LENGTH_LIMITATION;
+                }
+                if (objLength > valueMaxLength) {
+                    NSString * errMsg = [NSString stringWithFormat:@"The value is too long: %@", (NSString *)properties[key]];
+                    TDLogDebug(errMsg);
+                    
+                    NSMutableString *fixedStr = [NSMutableString stringWithString:[self subByteString:string byteLength:valueMaxLength - 1]];
+                    propertiesDic[key] = fixedStr;
+                }
+            } else if ([properties[key] isKindOfClass:[NSDate class]]) {
+                NSString *dateStr = [_timeFormatter stringFromDate:(NSDate *)properties[key]];
+                NSLog(@"datestr:%@", dateStr);
+                propertiesDic[key] = dateStr;
+            }
+        }
+        
+        return [propertiesDic copy];
+    }
+    
+    return nil;
+}
+
+     - (void)track:(NSString *)event
+    withProperties:(NSDictionary *)propertieDict
+          withType:(NSString *)type
+          withTime:(NSDate *)time
+ isCheckProperties:(BOOL)check {
+         
+         NSLog(@"syj:%@ %ld %d", self.appid, (long)_config.uploadSize, _config.uploadInterval);
+         
+//    if ([self hasDisabled])
+//        return;
+//
+//    if (_relaunchInBackGround && !_config.trackRelaunchedInBackgroundEvents) {
+//        return;
+//    }
+//
+//    if ([type isEqualToString:@"track"]) {
+//        if (![event isKindOfClass:[NSString class]] || event.length == 0) {
+//            TDLogError(@"track event key is not valid");
+//            return;
+//        }
+//
+//        if (![self isValidName: event]) {
+//            NSString *errMsg = [NSString stringWithFormat:@"property name[%@] is not valid", event];
+//            TDLogError(@"%@", errMsg);
+//            return;
+//        }
+//    }
+//
+//    if (propertieDict && ![self checkProperties:&propertieDict withEventType:type isCheckKey:check]) {
+//        TDLogError(@"%@ property error.", propertieDict);
+//        return;
+//    }
+//
+//    propertieDict = [propertieDict copy];
+//    __block NSDictionary *dynamicSuperPropertiesDict = self.dynamicSuperProperties ? self.dynamicSuperProperties() : nil;
+//
+//    dispatch_async(serialQueue, ^{
+//        NSString *timeStamp;
+//        if (time == nil) {
+//            timeStamp = [self->_timeFormatter stringFromDate:[NSDate date]];
+//        } else {
+//            timeStamp = [self->_timeFormatter stringFromDate:time];
+//        }
+//
+//        NSString *networkType = [self getNetWorkStates];
+//        NSMutableDictionary *propertyDic = [NSMutableDictionary dictionary];
+//        if ([propertyDic objectForKey:@"#network_type"] == nil && [type isEqualToString:@"track"]) {
+//            propertyDic[@"#network_type"] = networkType;
+//        }
+//
+//        if ([type isEqualToString:@"track"]) {
+//            [propertyDic addEntriesFromDictionary:self.superPropertie];
+//            propertyDic[@"#app_version"] = self->_deviceInfo.appVersion;
+//            if (self.relaunchInBackGround) {
+//                propertyDic[@"#relaunched_in_background"] = @YES;
+//            }
+//        }
+//
+//        if ([self checkAutoTrackProperties:&dynamicSuperPropertiesDict]) {
+//            [propertyDic addEntriesFromDictionary:dynamicSuperPropertiesDict];
+//        }
+//
+//        if (propertieDict) {
+//            NSArray *keys = propertieDict.allKeys;
+//            for (id key in keys) {
+//                NSObject *obj = propertieDict[key];
+//                if ([obj isKindOfClass:[NSDate class]]) {
+//                    NSString *dateStr = [self->_timeFormatter stringFromDate:(NSDate *)obj];
+//                    [propertyDic setObject:dateStr forKey:key];
+//                } else {
+//                    [propertyDic setObject:obj forKey:key];
+//                }
+//            }
+//        }
+//
+//        NSDictionary *eventTimer = self.trackTimer[event];
+//        if (eventTimer) {
+//            [self.trackTimer removeObjectForKey:event];
+//            NSNumber *eventBegin = [eventTimer valueForKey:@"eventBegin"];
+//            NSNumber *eventAccumulatedDuration = [eventTimer objectForKey:@"eventAccumulatedDuration"];
+//
+//            double eventDuration;
+//            NSNumber *currentSystemUpTime = @([[NSDate date] timeIntervalSince1970]);
+//            if (eventAccumulatedDuration) {
+//                eventDuration = [currentSystemUpTime doubleValue] - [eventBegin doubleValue] + [eventAccumulatedDuration doubleValue];
+//            } else {
+//                eventDuration = [currentSystemUpTime doubleValue] - [eventBegin doubleValue];
+//            }
+//
+//            if (eventDuration > 0) {
+//                propertyDic[@"#duration"] = @([[NSString stringWithFormat:@"%.3f", eventDuration] floatValue]);
+//            }
+//        }
+//
+//        NSString *loginId = self.accountId;
+//
+//        NSMutableDictionary *dataDic = [NSMutableDictionary dictionary];
+//        dataDic[@"#time"] = timeStamp;
+//        dataDic[@"#type"] = type;
+//        dataDic[@"#uuid"] = [[NSUUID UUID] UUIDString];
+//
+//        if (self.identifyId.length > 0) {
+//            dataDic[@"#distinct_id"] = self.identifyId;
+//        }
+//        if (propertyDic.allKeys.count > 0) {
+//            dataDic[@"properties"] = propertyDic;
+//        }
+//        if (event) {
+//            dataDic[@"#event_name"] = event;
+//        }
+//        if (loginId.length) {
+//            dataDic[@"#account_id"] = loginId;
+//        }
+//
+//        NSInteger count = [self saveClickData:dataDic];
+//        TDLogDebug(@"queueing data:%@", dataDic);
+//
+//        if (count >= self.config.uploadSize) {
+//            [self flush];
+//        }
+//    });
 }
 
 - (void)flush {
@@ -1197,7 +1431,7 @@ withProperties:(NSDictionary *)propertieDict
 
 #pragma mark - Autotracking
 - (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType {
-    if([self hasDisabled])
+    if ([self hasDisabled])
         return;
     
     _config.autoTrackEventType = eventType;
@@ -1210,8 +1444,8 @@ withProperties:(NSDictionary *)propertieDict
     }
 
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
-        NSString *eventName = self.relaunchInBackGround ? APP_START_BACKGROUND_EVENT : APP_START_EVENT;
-        [self autotrack:eventName properties:@{RESUME_FROM_BACKGROUND_PROPERTY : @(_appRelaunched)} withTime:nil];
+        NSString *eventName = self.relaunchInBackGround?APP_START_BACKGROUND_EVENT:APP_START_EVENT;
+        [self autotrack:eventName properties:@{RESUME_FROM_BACKGROUND_PROPERTY:@(_appRelaunched)} withTime:nil];
     }
     
     [_autoTrackManager trackWithAppid:self.appid withOption:eventType];
@@ -1222,7 +1456,7 @@ withProperties:(NSDictionary *)propertieDict
 }
 
 - (void)ignoreViewType:(Class)aClass {
-    if([self hasDisabled])
+    if ([self hasDisabled])
         return;
         
     dispatch_async(serialQueue, ^{
@@ -1252,7 +1486,7 @@ withProperties:(NSDictionary *)propertieDict
 }
 
 - (void)ignoreAutoTrackViewControllers:(NSArray *)controllers {
-    if([self hasDisabled])
+    if ([self hasDisabled])
         return;
         
     if (controllers == nil || controllers.count == 0) {
@@ -1287,7 +1521,7 @@ withProperties:(NSDictionary *)propertieDict
     
     Class wkWebViewClass = NSClassFromString(@"WKWebView");
     if ([urlStr rangeOfString:TA_JS_TRACK_SCHEME].length > 0) {
-        if([self hasDisabled])
+        if ([self hasDisabled])
             return YES;
         
         if (([queryKey isKindOfClass:[NSString class]] && queryKey.length == 0) || ([queryValue isKindOfClass:[NSString class]] && queryValue.length == 0))
@@ -1314,7 +1548,7 @@ withProperties:(NSDictionary *)propertieDict
 }
 
 - (void)addWebViewUserAgent {
-    if([self hasDisabled])
+    if ([self hasDisabled])
         return;
         
     NSString *userAgent = [self getUserAgent];
@@ -1336,6 +1570,10 @@ withProperties:(NSDictionary *)propertieDict
 -(void)trackCrash {
     [[ThinkingExceptionHandler sharedHandler] addThinkingInstance:self];
 }
+
+@end
+
+@implementation TDEventModule
 
 @end
 

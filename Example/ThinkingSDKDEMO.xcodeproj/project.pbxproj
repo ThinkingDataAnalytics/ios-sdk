@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F349CA6E2306C0E100EC1106 /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */; };
-		F349CA722306C30B00EC1106 /* CocoaAsyncSocket.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F34CAAD222C5B26C00A8FF82 /* WKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */; };
 		F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */; };
 		F34CAB0122C730D400A8FF82 /* AutoCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAB0022C730D400A8FF82 /* AutoCollectionViewController.m */; };
@@ -29,6 +27,8 @@
 		F383E1222302698500E08658 /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F383E11F230268B600E08658 /* OCMock.framework */; };
 		F3BA58A12301388D00D6D7DE /* ThinkingSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */; };
 		F3BA58A22301388D00D6D7DE /* ThinkingSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F3C86D30230CF2B200FBD07E /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */; };
+		F3C86D31230CF2B200FBD07E /* CocoaAsyncSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F3F45D9F2301785600218049 /* thinkingdata.min.js in Resources */ = {isa = PBXBuildFile; fileRef = F3F45D9E2301785600218049 /* thinkingdata.min.js */; };
 /* End PBXBuildFile section */
 
@@ -50,16 +50,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		F349CA712306C30600EC1106 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 16;
-			files = (
-				F349CA722306C30B00EC1106 /* CocoaAsyncSocket.framework in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		F383E1212302697C00E08658 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -76,6 +66,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				F3C86D31230CF2B200FBD07E /* CocoaAsyncSocket.framework in Embed Frameworks */,
 				F3BA58A22301388D00D6D7DE /* ThinkingSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -130,7 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F349CA6E2306C0E100EC1106 /* CocoaAsyncSocket.framework in Frameworks */,
+				F3C86D30230CF2B200FBD07E /* CocoaAsyncSocket.framework in Frameworks */,
 				F3BA58A12301388D00D6D7DE /* ThinkingSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -289,7 +280,6 @@
 				F380B2A222C0E8BB00955FC5 /* Frameworks */,
 				F380B2A322C0E8BB00955FC5 /* Resources */,
 				F3BA58A32301388D00D6D7DE /* Embed Frameworks */,
-				F349CA712306C30600EC1106 /* CopyFiles */,
 			);
 			buildRules = (
 			);

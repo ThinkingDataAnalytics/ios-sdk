@@ -24,7 +24,7 @@
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
-    if((self = [super initWithStyle:style]))
+    if ((self = [super initWithStyle:style]))
     {
         self.apis = [NSMutableArray array];
     }
@@ -39,7 +39,7 @@
 
 - (void)reloadTitle
 {
-    if(self.getTitleBlock != nil)
+    if (self.getTitleBlock != nil)
     {
         self.title = self.getTitleBlock(self);
     }
@@ -62,7 +62,7 @@
     static NSString* CellIdentifier = @"Cell";
     UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
-    if(cell == nil)
+    if (cell == nil)
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                       reuseIdentifier:CellIdentifier];

@@ -32,17 +32,17 @@ static TDConfig * _defaultTDConfig;
 - (void)updateConfig {
     TDNetwork *network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.configureURL]];
     [network fetchFlushConfig:self.appid handler:^(NSDictionary * _Nonnull result, NSError * _Nullable error) {
-        if(!error) {
+        if (!error) {
             NSInteger uploadInterval = [[[result copy] objectForKey:@"sync_interval"] integerValue];
             NSInteger uploadSize = [[[result copy] objectForKey:@"sync_batch_size"] integerValue];
-            if(uploadInterval != self->_uploadInterval || uploadSize != self->_uploadSize) {
-                if(uploadInterval > 0) {
+            if (uploadInterval != self->_uploadInterval || uploadSize != self->_uploadSize) {
+                if (uploadInterval > 0) {
                     self->_uploadInterval = uploadInterval;
                     [[NSUserDefaults standardUserDefaults] setInteger:uploadInterval forKey:TA_USER_UPLOADINTERVAL];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     [ThinkingAnalyticsSDK restartFlushTimer];
                 }
-                if(uploadSize > 0) {
+                if (uploadSize > 0) {
                     self->_uploadSize = uploadSize;
                     [[NSUserDefaults standardUserDefaults] setInteger:uploadSize forKey:TA_USER_UPLOADSIZE];
                     [[NSUserDefaults standardUserDefaults] synchronize];
