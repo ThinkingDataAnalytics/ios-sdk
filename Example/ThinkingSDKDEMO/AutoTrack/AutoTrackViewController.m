@@ -8,8 +8,9 @@
 
 #import "AutoTrackViewController.h"
 #import <ThinkingSDK/ThinkingAnalyticsSDK.h>
+#import "AutoTrackSecViewController.h"
 
-@interface AutoTrackViewController ()
+@interface AutoTrackViewController () <TDScreenAutoTracker>
 
 @end
 
@@ -31,6 +32,17 @@
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 100, 300, 30)];
     label.text = @"UIViewController 自动埋点";
     [self.view addSubview:label];
+    
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(50, 200, 300, 30)];
+    button.backgroundColor = [UIColor lightGrayColor];
+    [button setTitle:@"进入二级页面" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(showView) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:button];
+}
+
+- (void)showView {
+    AutoTrackSecViewController *vc = [[AutoTrackSecViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:NO];
 }
 
 @end

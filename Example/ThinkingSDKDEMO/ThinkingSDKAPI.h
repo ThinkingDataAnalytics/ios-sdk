@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)testLogin;
 + (void)testLogout;
 + (void)testSetsuper;
-+ (void)testDelsuper;
++ (void)testUnsetsuper;
 + (void)testClearsuper;
 + (void)testTimedEvent;
 + (void)testTrackEventEnd;
@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)testEnable;
 + (void)testDisEnable;
 + (void)optOutTracking;
++ (void)optOutTrackingAndDeleteUser;
 + (void)optInTracking;
 + (void)testFlush;
 

@@ -16,7 +16,6 @@
         else if ([event isKindOfClass:[UIEvent class]] && event.type == UIEventTypeTouches && [[[event allTouches] anyObject] phase] == UITouchPhaseEnded) {
             [[TDAutoTrackManager sharedManager] trackEventView:from];
         }
-       
     }
     
     return [self td_sendAction:action to:to from:from forEvent:event];

@@ -29,6 +29,7 @@
 		F3BA58A22301388D00D6D7DE /* ThinkingSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F3C86D30230CF2B200FBD07E /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */; };
 		F3C86D31230CF2B200FBD07E /* CocoaAsyncSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F3ECE9F4230D55FD00670FBD /* AutoTrackSecViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F3ECE9F3230D55FD00670FBD /* AutoTrackSecViewController.m */; };
 		F3F45D9F2301785600218049 /* thinkingdata.min.js in Resources */ = {isa = PBXBuildFile; fileRef = F3F45D9E2301785600218049 /* thinkingdata.min.js */; };
 /* End PBXBuildFile section */
 
@@ -113,6 +114,8 @@
 		F383E11F230268B600E08658 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = ThinkingSDKDEMO/OCMock.framework; sourceTree = "<group>"; };
 		F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ThinkingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3BE260022FBCB8C00F46506 /* ThinkingSDKDEMO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ThinkingSDKDEMO.entitlements; sourceTree = "<group>"; };
+		F3ECE9F2230D55FD00670FBD /* AutoTrackSecViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoTrackSecViewController.h; sourceTree = "<group>"; };
+		F3ECE9F3230D55FD00670FBD /* AutoTrackSecViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoTrackSecViewController.m; sourceTree = "<group>"; };
 		F3F45D9E2301785600218049 /* thinkingdata.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = thinkingdata.min.js; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -149,6 +152,8 @@
 			children = (
 				F380B3C722C23FA500955FC5 /* AutoTrackViewController.h */,
 				F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */,
+				F3ECE9F2230D55FD00670FBD /* AutoTrackSecViewController.h */,
+				F3ECE9F3230D55FD00670FBD /* AutoTrackSecViewController.m */,
 				F34CAAD322C5B90F00A8FF82 /* AutoTableViewController.h */,
 				F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */,
 				F34CAAFF22C730D400A8FF82 /* AutoCollectionViewController.h */,
@@ -408,6 +413,7 @@
 				F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */,
 				F37AE90222C49007005D64F8 /* WEBViewController.m in Sources */,
 				F380B2E522C0EAC400955FC5 /* APIEntry.m in Sources */,
+				F3ECE9F4230D55FD00670FBD /* AutoTrackSecViewController.m in Sources */,
 				F380B2E222C0EA0100955FC5 /* TrackAPIVC.m in Sources */,
 				F34CAAD222C5B26C00A8FF82 /* WKWebViewController.m in Sources */,
 				F380B3C922C23FA500955FC5 /* AutoTrackViewController.m in Sources */,
@@ -621,6 +627,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
 				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../ThinkingSDK/Source";
 				INFOPLIST_FILE = ThinkingSDKDEMOTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -644,6 +651,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
 				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../ThinkingSDK/Source";
 				INFOPLIST_FILE = ThinkingSDKDEMOTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

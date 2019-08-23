@@ -114,13 +114,13 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
             crashStr = [NSString stringWithFormat:@"%@ %@", [exception reason], [NSThread callStackSymbols]];
         }
         crashStr = [crashStr stringByReplacingOccurrencesOfString:@"\n" withString:@"<br>"];
-        [properties setValue:crashStr forKey:TD_EVENT_PROPERTY_ELEMENT_ID_CRASH_REASON];
+        [properties setValue:crashStr forKey:TD_CRASH_REASON];
 
         NSDate *trackDate = [NSDate date];
         for (ThinkingAnalyticsSDK *instance in self.thinkingAnalyticsSDKInstances) {
-            [instance autotrack:APP_CRASH_EVENT properties:properties withTime:trackDate];
+            [instance autotrack:TD_APP_CRASH_EVENT properties:properties withTime:trackDate];
             if (![instance isAutoTrackEventTypeIgnored:ThinkingAnalyticsEventTypeAppEnd]) {
-                [instance autotrack:APP_END_EVENT properties:nil withTime:trackDate];
+                [instance autotrack:TD_APP_END_EVENT properties:nil withTime:trackDate];
             }
         }
     } @catch(NSException *exception) {

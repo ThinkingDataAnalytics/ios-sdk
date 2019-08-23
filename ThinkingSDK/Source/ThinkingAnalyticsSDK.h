@@ -112,14 +112,16 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 // 暂停/恢复上报
 - (void)enableTracking:(BOOL)enabled;
 
-@property (atomic, assign) BOOL isEnabled;
+@property (nonatomic, readonly) BOOL isEnabled;
 
 // 停止上报 数据将清空
 - (void)optOutTracking;
+- (void)optOutTrackingAndDeleteUser;
+
 // 允许上报
 - (void)optInTracking;
 
-@property (atomic, assign) BOOL isOptOut;
+@property (nonatomic, readonly) BOOL isOptOut;
 
 @end
 

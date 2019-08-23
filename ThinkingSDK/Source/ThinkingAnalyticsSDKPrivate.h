@@ -5,15 +5,33 @@
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
-static NSString * const APP_START_EVENT = @"ta_app_start";
-static NSString * const APP_START_BACKGROUND_EVENT = @"ta_app_bg_start";
-static NSString * const APP_END_EVENT = @"ta_app_end";
-static NSString * const APP_VIEW_SCREEN_EVENT = @"ta_app_view";
-static NSString * const APP_CLICK_EVENT = @"ta_app_click";
-static NSString * const APP_CRASH_EVENT = @"ta_app_crash";
-static NSString * const APP_INSTALL_EVENT = @"ta_app_install";
-static NSString * const RESUME_FROM_BACKGROUND_PROPERTY = @"#resume_from_background";
-static NSString * const TD_EVENT_PROPERTY_ELEMENT_ID_CRASH_REASON = @"#app_crashed_reason";
+static NSString * const TD_APP_START_EVENT                  = @"ta_app_start";
+static NSString * const TD_APP_START_BACKGROUND_EVENT       = @"ta_app_bg_start";
+static NSString * const TD_APP_END_EVENT                    = @"ta_app_end";
+static NSString * const TD_APP_VIEW_EVENT                   = @"ta_app_view";
+static NSString * const TD_APP_CLICK_EVENT                  = @"ta_app_click";
+static NSString * const TD_APP_CRASH_EVENT                  = @"ta_app_crash";
+static NSString * const TD_APP_INSTALL_EVENT                = @"ta_app_install";
+
+static NSString * const TD_CRASH_REASON                     = @"#app_crashed_reason";
+static NSString * const TD_RESUME_FROM_BACKGROUND           = @"#resume_from_background";
+
+static NSString * const TD_EVENT_TYPE_TRACK                 = @"click";
+static NSString * const TD_EVENT_TYPE_USER_DEL              = @"user_del";
+static NSString * const TD_EVENT_TYPE_USER_ADD              = @"user_add";
+static NSString * const TD_EVENT_TYPE_USER_SET              = @"user_set";
+static NSString * const TD_EVENT_TYPE_USER_SETONCE          = @"user_setOnce";
+
+static NSString * const TD_EVENT_START                      = @"eventStart";
+static NSString * const TD_EVENT_DURATION                   = @"eventDuration";
+
+static char TD_AUTOTRACK_VIEW_ID;
+static char TD_AUTOTRACK_VIEW_ID_APPID;
+static char TD_AUTOTRACK_VIEW_IGNORE;
+static char TD_AUTOTRACK_VIEW_IGNORE_APPID;
+static char TD_AUTOTRACK_VIEW_PROPERTIES;
+static char TD_AUTOTRACK_VIEW_PROPERTIES_APPID;
+static char TD_AUTOTRACK_VIEW_DELEGATE;
 
 #ifndef td_dispatch_main_sync_safe
 #define td_dispatch_main_sync_safe(block)\
@@ -30,10 +48,12 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 @property (atomic, copy) NSString *serverURL;
 @property (atomic, copy) NSString *accountId;
 @property (atomic, copy) NSString *identifyId;
-@property (atomic, strong) NSDictionary *superPropertie;
+@property (atomic, strong) NSDictionary *superProperty;
 @property (atomic, strong) NSMutableSet *ignoredViewTypeList;
 @property (atomic, strong) NSMutableSet *ignoredViewControllers;
 @property (nonatomic, assign) BOOL relaunchInBackGround;
+@property (nonatomic, assign) BOOL isEnabled;
+@property (nonatomic, assign) BOOL isOptOut;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) NSPredicate *regexKey;
 @property (nonatomic, strong) NSPredicate *regexAutoTrackKey;
@@ -45,8 +65,6 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 
 - (void)autotrack:(NSString *)event properties:(NSDictionary *)propertieDict withTime:(NSDate *)date;
 + (void)restartFlushTimer;
-- (BOOL)checkAutoTrackProperties:(NSDictionary**)dic;
-+ (BOOL)checkAutoTrackProperties:(NSDictionary**)dic;
 - (BOOL)isViewControllerIgnored:(UIViewController *)viewController;
 - (BOOL)isAutoTrackEventTypeIgnored:(ThinkingAnalyticsAutoTrackEventType)eventType;
 - (BOOL)isViewTypeIgnored:(Class)aClass;
@@ -54,6 +72,7 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 + (dispatch_queue_t)networkQueue;
 + (UIApplication *)sharedUIApplication;
 - (NSInteger)saveClickData:(NSDictionary *)data;
+- (void)flushImmediately:(NSDictionary*)dataDic;
 
 @end
 

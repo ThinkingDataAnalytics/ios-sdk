@@ -2,6 +2,7 @@
 
 static NSString * const TD_EVENT_PROPERTY_TITLE = @"#title";
 static NSString * const TD_EVENT_PROPERTY_URL_PROPERTY = @"#url";
+static NSString * const TD_EVENT_PROPERTY_REFERRER_URL = @"#referrer";
 static NSString * const TD_EVENT_PROPERTY_SCREEN_NAME = @"#screen_name";
 static NSString * const TD_EVENT_PROPERTY_ELEMENT_ID = @"#element_id";
 static NSString * const TD_EVENT_PROPERTY_ELEMENT_TYPE = @"#element_type";

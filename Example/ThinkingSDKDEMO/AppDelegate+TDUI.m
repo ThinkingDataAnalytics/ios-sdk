@@ -129,11 +129,11 @@
       }]];
     
     [commands addObject:
-     [APIEntry commandWithName:@"Del SuperProperty"
+     [APIEntry commandWithName:@"Unset SuperProperty"
                  accessoryType:UITableViewCellAccessoryNone
                          block:^(UIViewController* controller)
       {
-          [ThinkingSDKAPI testDelsuper];
+          [ThinkingSDKAPI testUnsetsuper];
       }]];
     
     [commands addObject:
@@ -190,6 +190,14 @@
                          block:^(UIViewController* controller)
       {
           [ThinkingSDKAPI optOutTracking];
+      }]];
+    
+    [commands addObject:
+     [APIEntry commandWithName:@"optOutTrackingAndDeleteUser"
+                 accessoryType:UITableViewCellAccessoryNone
+                         block:^(UIViewController* controller)
+      {
+          [ThinkingSDKAPI optOutTrackingAndDeleteUser];
       }]];
     
     [commands addObject:

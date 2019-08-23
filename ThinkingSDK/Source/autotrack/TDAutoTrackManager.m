@@ -20,6 +20,7 @@
 
 @property (strong, atomic) NSMutableDictionary<NSString*, id> *autoTrackOptions;
 @property (strong, nonatomic, nonnull) dispatch_semaphore_t trackOptionLock;
+@property (copy, atomic) NSString* referrerViewControllerUrl;
 
 @end
 
@@ -66,7 +67,7 @@
 }
 
 - (void)viewControlWillAppear:(UIViewController *)controller {
-    [self trackViewScreen:controller];
+    [self trackViewController:controller];
 }
 
 - (UIViewController *)viewControllerForView:(UIView *)view
@@ -88,7 +89,7 @@
     return nil;
 }
 
-- (void)trackViewScreen:(UIViewController *)controller {
+- (void)trackViewController:(UIViewController *)controller {
     if (![self shouldTrackViewContrller:[controller class]]) {
         return;
     }
@@ -110,7 +111,7 @@
         if ([controller respondsToSelector:@selector(getTrackProperties)])
             autoTrackerDic = [autoTrackerController getTrackProperties];
         
-        if ([ThinkingAnalyticsSDK checkAutoTrackProperties:&autoTrackerDic]) {
+        if ([autoTrackerDic isKindOfClass:[NSDictionary class]]) {
             [properties addEntriesFromDictionary:autoTrackerDic];
         }
     }
@@ -121,7 +122,10 @@
         if ([screenAutoTrackerController respondsToSelector:@selector(getScreenUrlWithAppid)])
             screenAutoTrackerAppidDic = [screenAutoTrackerController getScreenUrlWithAppid];
         if ([screenAutoTrackerController respondsToSelector:@selector(getScreenUrl)]) {
-            [properties setValue:[screenAutoTrackerController getScreenUrl] forKey:TD_EVENT_PROPERTY_URL_PROPERTY];
+            NSString *currentUrl = [screenAutoTrackerController getScreenUrl];
+            [properties setValue:currentUrl forKey:TD_EVENT_PROPERTY_URL_PROPERTY];
+            [properties setValue:_referrerViewControllerUrl forKey:TD_EVENT_PROPERTY_REFERRER_URL];
+            _referrerViewControllerUrl = currentUrl;
         }
     }
     
@@ -142,7 +146,7 @@
 
             if (autoTrackerAppidDic && [autoTrackerAppidDic objectForKey:appid]) {
                 NSDictionary *dic = [autoTrackerAppidDic objectForKey:appid];
-                if ([ThinkingAnalyticsSDK checkAutoTrackProperties:&dic]) {
+                if ([dic isKindOfClass:[NSDictionary class]]) {
                    [trackProperties addEntriesFromDictionary:dic];
                 }
             }
@@ -150,7 +154,7 @@
                 NSString *screenUrl = [screenAutoTrackerAppidDic objectForKey:appid];
                 [trackProperties setValue:screenUrl forKey:TD_EVENT_PROPERTY_URL_PROPERTY];
             }
-            [instance autotrack:APP_VIEW_SCREEN_EVENT properties:trackProperties withTime:trackDate];
+            [instance autotrack:TD_APP_VIEW_EVENT properties:trackProperties withTime:trackDate];
         }
     }
 }
@@ -251,7 +255,6 @@
 
 + (NSString *)getPosition:(UIView *)view {
     NSString *position = nil;
-    
     if ([view isKindOfClass:[UIView class]] && view.thinkingAnalyticsIgnoreView) {
         return nil;
     }
@@ -275,7 +278,6 @@
 
 + (NSString *)getText:(NSObject *)obj {
     NSString *text = nil;
- 
     if ([obj isKindOfClass:[UIView class]] && [(UIView *)obj thinkingAnalyticsIgnoreView]) {
         return nil;
     }
@@ -386,7 +388,7 @@
     }
     
     NSDictionary* propDict = view.thinkingAnalyticsViewProperties;
-    if ([ThinkingAnalyticsSDK checkAutoTrackProperties:&propDict]) {
+    if ([propDict isKindOfClass:[NSDictionary class]]) {
         [properties addEntriesFromDictionary:propDict];
     }
     
@@ -405,7 +407,7 @@
             if ([tableView.thinkingAnalyticsDelegate conformsToProtocol:@protocol(TDUIViewAutoTrackDelegate)]) {
                 if ([tableView.thinkingAnalyticsDelegate respondsToSelector:@selector(thinkingAnalytics_tableView:autoTrackPropertiesAtIndexPath:)]) {
                     NSDictionary *dic = [view.thinkingAnalyticsDelegate thinkingAnalytics_tableView:tableView autoTrackPropertiesAtIndexPath:indexPath];
-                    if ([ThinkingAnalyticsSDK checkAutoTrackProperties:&dic]){
+                    if ([dic isKindOfClass:[NSDictionary class]]){
                         [properties addEntriesFromDictionary:dic];
                     }
                 }
@@ -426,7 +428,7 @@
             if ([collectionView.thinkingAnalyticsDelegate conformsToProtocol:@protocol(TDUIViewAutoTrackDelegate)]) {
                 if ([collectionView.thinkingAnalyticsDelegate respondsToSelector:@selector(thinkingAnalytics_collectionView:autoTrackPropertiesAtIndexPath:)]) {
                     NSDictionary *dic = [view.thinkingAnalyticsDelegate thinkingAnalytics_collectionView:collectionView autoTrackPropertiesAtIndexPath:indexPath];
-                    if ([ThinkingAnalyticsSDK checkAutoTrackProperties:&dic]) {
+                    if ([dic isKindOfClass:[NSDictionary class]]) {
                         [properties addEntriesFromDictionary:dic];
                     }
                 }
@@ -473,19 +475,19 @@
             NSDictionary* viewProperties = view.thinkingAnalyticsViewPropertiesWithAppid;
             if (viewProperties != nil && [viewProperties objectForKey:appid]) {
                 NSDictionary *properties = [viewProperties objectForKey:appid];
-                if ([ThinkingAnalyticsSDK checkAutoTrackProperties:&properties]) {
+                if ([properties isKindOfClass:[NSDictionary class]]) {
                     [trackProperties addEntriesFromDictionary:properties];
                 }
             }
             
             if (propertyWithAppid) {
                 NSDictionary *autoTrackproperties = [propertyWithAppid objectForKey:appid];
-                if ([ThinkingAnalyticsSDK checkAutoTrackProperties:&autoTrackproperties]) {
+                if ([autoTrackproperties isKindOfClass:[NSDictionary class]]) {
                     [trackProperties addEntriesFromDictionary:autoTrackproperties];
                 }
             }
             
-            [instance autotrack:APP_CLICK_EVENT properties:trackProperties withTime:trackDate];
+            [instance autotrack:TD_APP_CLICK_EVENT properties:trackProperties withTime:trackDate];
         }
     }
 }

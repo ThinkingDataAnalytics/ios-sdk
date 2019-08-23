@@ -54,8 +54,9 @@
     [[ThinkingAnalyticsSDK sharedInstance] setSuperProperties:@{@"superkey":@"supervalue1",@"superkey2":@"supervalue3"}];
 }
 
-+ (void)testDelsuper {
++ (void)testUnsetsuper {
     [[ThinkingAnalyticsSDK sharedInstance] unsetSuperProperty:@"superkey"];
+    [[ThinkingAnalyticsSDK sharedInstance] unsetSuperProperty:@""];
 }
 
 + (void)testClearsuper {
@@ -90,6 +91,10 @@
 
 + (void)optOutTracking {
     [[ThinkingAnalyticsSDK sharedInstance] optOutTracking];
+}
+
++ (void)optOutTrackingAndDeleteUser {
+    [[ThinkingAnalyticsSDK sharedInstance] optOutTrackingAndDeleteUser];
 }
 
 + (void)optInTracking {
