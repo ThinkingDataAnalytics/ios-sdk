@@ -16,6 +16,7 @@
 #import "AutoTableViewController.h"
 #import "AutoCollectionViewController.h"
 #import "NTPViewController.h"
+#import <ThinkingSDK/LightThinkingAnalyticsSDK.h>
 
 @implementation AppDelegate (TDUI)
 
@@ -209,7 +210,7 @@
       }]];
     
      [commands addObject:
-      [APIEntry commandWithName:@"More (AutoTrack)"
+      [APIEntry commandWithName:@"More (AutoTrack,h5,轻实例...)"
                 accessoryType:UITableViewCellAccessoryNone
                         block:^(UIViewController* controller)
      {
@@ -268,6 +269,15 @@
       {
           AutoCollectionViewController *autoCollectionVC = [[AutoCollectionViewController alloc] init];
           [controller.navigationController pushViewController:autoCollectionVC animated:YES];
+      }]];
+    
+    [commands addObject:
+     [APIEntry commandWithName:@"轻实例"
+                 accessoryType:UITableViewCellAccessoryNone
+                         block:^(UIViewController* controller)
+      {
+          LightThinkingAnalyticsSDK *light = [[ThinkingAnalyticsSDK sharedInstance] createLightInstance];
+          [light track:@"lighttest"];
       }]];
     
     [commands addObject:

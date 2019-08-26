@@ -38,7 +38,7 @@
 
 - (void)test01doSave {
     [_mockThinkingInstance track:@"test"];
-    OCMExpect([_mockThinkingInstance saveClickData:[OCMArg isNotNil]]);
+    OCMExpect([_mockThinkingInstance saveEventsData:[OCMArg isNotNil]]);
     
     [self waitForThinkingQueues];
     OCMVerifyAll(_mockThinkingInstance);
@@ -46,7 +46,7 @@
 
 - (void)test02doFlush {
     [_mockThinkingInstance setExpectationOrderMatters:YES];
-    OCMExpect([_mockThinkingInstance saveClickData:[OCMArg isNotNil]]);
+    OCMExpect([_mockThinkingInstance saveEventsData:[OCMArg isNotNil]]);
     OCMExpect([_mockThinkingInstance flush]);
     for (int i = 0; i < 100; i++) {
         [_mockThinkingInstance track:@"test"];
@@ -102,7 +102,7 @@
         XCTAssertEqualObjects(timeStr, @"2012-06-24 11:28:10.000");
         XCTAssertTrue([[dataDic allKeys] count] == 6);
     };
-    OCMStub([_mockThinkingInstance saveClickData:[OCMArg any]]).andDo(saveClickDataInvocation);
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
@@ -152,7 +152,7 @@
         XCTAssertEqualObjects(dataDic[@"#event_name"], @"test");
         NSLog(@"count:%d", count);
     };
-    OCMStub([_mockThinking1 saveClickData:[OCMArg any]]).andDo(saveClickDataInvocation);
+    OCMStub([_mockThinking1 saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
     
     static int count2 = 0;
     void (^saveClickDataInvocation2)(NSInvocation *) = ^(NSInvocation *invocation) {
@@ -161,7 +161,7 @@
         count2 ++;
         XCTAssertEqualObjects(dataDic[@"#event_name"], @"test2");
     };
-    OCMStub([_mockThinking2 saveClickData:[OCMArg any]]).andDo(saveClickDataInvocation2);
+    OCMStub([_mockThinking2 saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation2);
     
     dispatch_queue_t queue = dispatch_queue_create("test", DISPATCH_QUEUE_CONCURRENT);
     for (int i = 0; i < 100 ; i++) {
@@ -259,7 +259,7 @@
         }
         NSLog(@"dataDic:%@",dataDic);
     };
-    OCMStub([_mockThinkingInstance saveClickData:[OCMArg any]]).andDo(saveClickDataInvocation);
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
 
     [self.mockThinkingInstance login:@"logintest"];
     [self.mockThinkingInstance track:@"test"];
@@ -276,7 +276,7 @@
 - (void)test08Enable {
     [_mockThinkingInstance enableTracking:NO];
     [_mockThinkingInstance track:@"test"];
-    OCMReject([_mockThinkingInstance saveClickData:[OCMArg any]]);
+    OCMReject([_mockThinkingInstance saveEventsData:[OCMArg any]]);
     [self waitForThinkingQueues];
     OCMVerifyAll(_mockThinkingInstance);
 }
@@ -284,7 +284,7 @@
 - (void)test09DisEnable {
     [self waitForThinkingQueues];
     [_mockThinkingInstance enableTracking:YES];
-    OCMExpect([_mockThinkingInstance saveClickData:[OCMArg any]]);
+    OCMExpect([_mockThinkingInstance saveEventsData:[OCMArg any]]);
     [_mockThinkingInstance track:@"test"];
     [self waitForThinkingQueues];
     OCMVerifyAll(_mockThinkingInstance);
@@ -299,7 +299,7 @@
     [self waitForThinkingQueues];
     NSDictionary *superProperties = [_mockThinkingInstance currentSuperProperties];
     NSLog(@"superProperties:%@", superProperties);
-    OCMReject([_mockThinkingInstance saveClickData:[OCMArg any]]);
+    OCMReject([_mockThinkingInstance saveEventsData:[OCMArg any]]);
     XCTAssertEqualObjects(superProperties, @{});
     OCMVerifyAll(_mockThinkingInstance);
 }
@@ -322,7 +322,7 @@
     [_mockThinkingInstance optInTracking];
     [_mockThinkingInstance track:@"test"];
     [_mockThinkingInstance setSuperProperties:@{@"key2": @"value2"}];
-    OCMExpect([_mockThinkingInstance saveClickData:[OCMArg any]]);
+    OCMExpect([_mockThinkingInstance saveEventsData:[OCMArg any]]);
     NSDictionary *superProperties = [_mockThinkingInstance currentSuperProperties];
     XCTAssertEqualObjects(superProperties, @{@"key2": @"value2"});
     [self waitForThinkingQueues];
@@ -352,7 +352,7 @@
         }
         NSLog(@"dataDic:%@",dataDic);
     };
-    OCMStub([_mockThinkingInstance saveClickData:[OCMArg any]]).andDo(saveClickDataInvocation);
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
     
     NSString *distinct1 = [_mockThinkingInstance getDistinctId];
     NSLog(@"distinct1:%@", distinct1);
@@ -439,7 +439,7 @@
                 break;
         }
     };
-    OCMStub([_mockThinkingInstance saveClickData:[OCMArg any]]).andDo(saveClickDataInvocation);
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
     
     [_mockThinkingInstance clearSuperProperties];
     [_mockThinkingInstance setSuperProperties:@{@"supKey":@"supValue"}];
@@ -487,7 +487,7 @@
         
         callTimes ++;
     };
-    OCMStub([_mockThinkingInstance saveClickData:[OCMArg any]]).andDo(saveClickDataInvocation);
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
     
     static NSString *testStr = @"testStr0";
     [_mockThinkingInstance registerDynamicSuperProperties:^NSDictionary * _Nonnull{

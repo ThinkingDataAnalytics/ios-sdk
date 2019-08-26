@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F385AB80230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = F385AB7E230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F385AB81230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = F385AB7F230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.m */; };
 		F3D1901E230136B30043D595 /* ThinkingSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3D19014230136B30043D595 /* ThinkingSDK.framework */; };
 		F3D19023230136B30043D595 /* ThinkingSDKTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19022230136B30043D595 /* ThinkingSDKTests.m */; };
 		F3D19025230136B30043D595 /* ThinkingSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19017230136B30043D595 /* ThinkingSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -57,6 +59,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F385AB7E230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightThinkingAnalyticsSDK.h; sourceTree = "<group>"; };
+		F385AB7F230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightThinkingAnalyticsSDK.m; sourceTree = "<group>"; };
 		F3D19014230136B30043D595 /* ThinkingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ThinkingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3D19017230136B30043D595 /* ThinkingSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThinkingSDK.h; sourceTree = "<group>"; };
 		F3D19018230136B30043D595 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -174,6 +178,8 @@
 				F3D1903C230137600043D595 /* TDConfigPrivate.h */,
 				F3D1904C230137600043D595 /* TDConfig.h */,
 				F3D19031230137600043D595 /* TDConfig.m */,
+				F385AB7E230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.h */,
+				F385AB7F230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.m */,
 				F3D1903D230137600043D595 /* ThinkingAnalyticsSDKPrivate.h */,
 				F3D19054230137600043D595 /* ThinkingAnalyticsSDK.h */,
 				F3D1903A230137600043D595 /* ThinkingAnalyticsSDK.m */,
@@ -214,6 +220,7 @@
 				F3D19059230137600043D595 /* TDJSONUtil.h in Headers */,
 				F3D19072230137610043D595 /* TDConfig.h in Headers */,
 				F3D1907A230137610043D595 /* ThinkingAnalyticsSDK.h in Headers */,
+				F385AB80230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.h in Headers */,
 				F3D19064230137600043D595 /* ThinkingAnalyticsSDKPrivate.h in Headers */,
 				F3D19063230137600043D595 /* TDConfigPrivate.h in Headers */,
 				F3D1905F230137600043D595 /* TDNetwork.h in Headers */,
@@ -329,6 +336,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F385AB81230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.m in Sources */,
 				F3D19057230137600043D595 /* TDDeviceInfo.m in Sources */,
 				F3D1906A230137600043D595 /* TDAutoTrackManager.m in Sources */,
 				F3D1906D230137610043D595 /* TDSwizzler.m in Sources */,

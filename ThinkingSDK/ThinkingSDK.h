@@ -1,6 +1,7 @@
 
 #import <UIKit/UIKit.h>
 #import <ThinkingSDK/ThinkingAnalyticsSDK.h>
+#import <ThinkingSDK/LightThinkingAnalyticsSDK.h>
 
 //! Project version number for ThinkingSDK.
 FOUNDATION_EXPORT double ThinkingSDKVersionNumber;

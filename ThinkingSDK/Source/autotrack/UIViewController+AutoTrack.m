@@ -1,5 +1,4 @@
 #import "UIViewController+AutoTrack.h"
-#import "ThinkingAnalyticsSDKPrivate.h" 
 #import "TDAutoTrackManager.h"
 #import "TDLogging.h"
 

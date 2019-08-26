@@ -11,6 +11,7 @@
 #import "TDConfigPrivate.h"
 #import "TDSqliteDataQueue.h"
 #import "TDAutoTrackManager.h"
+#import "LightThinkingAnalyticsSDK.h"
 
 #if !__has_feature(objc_arc)
 #error The ThinkingSDK library must be compiled with ARC enabled
@@ -47,14 +48,14 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
     NSDateFormatter *_timeFormatter;
     BOOL _applicationWillResignActive;
     BOOL _appRelaunched;
-    BOOL _isWifi;
-    NSString *_radio;
 }
 
 static ThinkingAnalyticsSDK *sharedInstance = nil;
 
 static NSMutableDictionary *instances;
 static NSString *defaultProjectAppid;
+static BOOL isWifi;
+static NSString *radioInfo;
 
 static dispatch_queue_t serialQueue;
 static dispatch_queue_t networkQueue;
@@ -125,6 +126,32 @@ static dispatch_queue_t networkQueue;
     return networkQueue;
 }
 
+- (instancetype)initLight:(NSString *)appid {
+    if (self = [self init]) {
+        _appid = appid;
+        _isEnabled = YES;
+        
+        self.trackTimer = [NSMutableDictionary dictionary];
+        _timeFormatter = [[NSDateFormatter alloc] init];
+        _timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+        _timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        _timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+        
+        self.telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
+        
+        NSString *keyPattern = @"^[a-zA-Z][a-zA-Z\\d_]{0,49}$";
+        self.regexKey = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", keyPattern];
+        
+        self.dataQueue = [TDSqliteDataQueue sharedInstanceWithAppid:appid];
+        if (self.dataQueue == nil) {
+            TDLogError(@"SqliteException: init SqliteDataQueue failed");
+        }
+        
+        self.deviceInfo = [TDDeviceInfo sharedManager];
+    }
+    return self;
+}
+
 - (instancetype)initWithAppkey:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config{
     if (self = [self init:appid]) {
         self.serverURL = [NSString stringWithFormat:@"%@/sync",serverURL];
@@ -140,7 +167,7 @@ static dispatch_queue_t networkQueue;
         [_config updateConfig];
         
         self.trackTimer = [NSMutableDictionary dictionary];
-        _timeFormatter = [[NSDateFormatter alloc]init];
+        _timeFormatter = [[NSDateFormatter alloc] init];
         _timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
         _timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         _timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
@@ -162,7 +189,8 @@ static dispatch_queue_t networkQueue;
             TDLogError(@"SqliteException: init SqliteDataQueue failed");
         }
         
-        [self setUpListeners];
+        [self setApplicationListeners];
+        [self setNetRadioListeners];
         
         self.deviceInfo = [TDDeviceInfo sharedManager];
         self.autoTrackManager = [TDAutoTrackManager sharedManager];
@@ -188,19 +216,6 @@ static dispatch_queue_t networkQueue;
     return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - appid: %@ serverUrl:%@>", (void *)self, self.appid, self.serverURL];
 }
 
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
-    if (_reachability != NULL) {
-        SCNetworkReachabilitySetCallback(_reachability, NULL, NULL);
-        SCNetworkReachabilitySetDispatchQueue(_reachability, NULL);
-        CFRelease(_reachability);
-        _reachability = NULL;
-    }
-    
-    [self stopFlushTimer];
-}
-
 + (UIApplication *)sharedUIApplication {
     if ([[UIApplication class] respondsToSelector:@selector(sharedApplication)]) {
         return [[UIApplication class] performSelector:@selector(sharedApplication)];
@@ -211,7 +226,10 @@ static dispatch_queue_t networkQueue;
 #pragma mark - EnableTracking
 - (void)enableTracking:(BOOL)enabled {
     self.isEnabled = enabled;
-    [self archiveIsEnabled:self.isEnabled];
+    
+    dispatch_async(serialQueue, ^{
+        [self archiveIsEnabled:self.isEnabled];
+    });
 }
 
 - (BOOL)hasDisabled {
@@ -220,21 +238,32 @@ static dispatch_queue_t networkQueue;
 
 - (void)optOutTracking {
     TDLogDebug(@"%@ optOutTracking...", self);
+    self.isOptOut = YES;
+    
+    @synchronized (self.trackTimer) {
+        [self.trackTimer removeAllObjects];
+    }
+    
+    @synchronized (self.superProperty) {
+        self.superProperty = [NSDictionary new];
+    }
+    
+    @synchronized (self.identifyId) {
+        self.identifyId = self.deviceInfo.uniqueId;
+    }
+    
+    @synchronized (self.accountId) {
+        self.accountId = nil;
+    }
+    
     dispatch_async(serialQueue, ^{
         @synchronized (instances) {
             [self.dataQueue deleteAll:self.appid];
         }
         
-        [self.trackTimer removeAllObjects];
-        self.superProperty = [NSDictionary new];
-        self.identifyId = self.deviceInfo.uniqueId;
-        self.accountId = nil;
-        
         [self archiveAccountID:nil];
         [self archiveIdentifyId:nil];
         [self archiveSuperProperties:nil];
-        
-        self.isOptOut = YES;
         [self archiveOptOut:YES];
     });
 }
@@ -251,6 +280,12 @@ static dispatch_queue_t networkQueue;
     TDLogDebug(@"%@ optInTracking...", self);
     self.isOptOut = NO;
     [self archiveOptOut:NO];
+}
+
+#pragma mark - LightInstance
+- (LightThinkingAnalyticsSDK *)createLightInstance {
+    LightThinkingAnalyticsSDK *lightInstance = [[LightThinkingAnalyticsSDK alloc] initWithAPPID:defaultProjectAppid];
+    return lightInstance;
 }
 
 #pragma mark - Persistence
@@ -420,7 +455,7 @@ static dispatch_queue_t networkQueue;
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (NSInteger)saveClickData:(NSDictionary *)data {
+- (NSInteger)saveEventsData:(NSDictionary *)data {
     NSMutableDictionary *event = [[NSMutableDictionary alloc] initWithDictionary:data];
     NSInteger count;
     @synchronized (instances) {
@@ -438,24 +473,8 @@ static dispatch_queue_t networkQueue;
 }
 
 #pragma mark - UIApplication Events
-- (void)setUpListeners {
-    if ((_reachability = SCNetworkReachabilityCreateWithName(NULL, "thinkingdata.cn")) != NULL) {
-        SCNetworkReachabilityContext context = {0, (__bridge void*)self, NULL, NULL, NULL};
-        if (SCNetworkReachabilitySetCallback(_reachability, ThinkingReachabilityCallback, &context)) {
-            if (!SCNetworkReachabilitySetDispatchQueue(_reachability, serialQueue)) {
-                SCNetworkReachabilitySetCallback(_reachability, NULL, NULL);
-            }
-        }
-    }
-    
-    [self setCurrentRadio];
-    
+- (void)setApplicationListeners {
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    
-    [notificationCenter addObserver:self
-                           selector:@selector(setCurrentRadio)
-                               name:CTRadioAccessTechnologyDidChangeNotification
-                             object:nil];
     
     [notificationCenter addObserver:self
                            selector:@selector(applicationWillEnterForeground:)
@@ -480,6 +499,26 @@ static dispatch_queue_t networkQueue;
     [notificationCenter addObserver:self
                            selector:@selector(applicationWillTerminateNotification:)
                                name:UIApplicationWillTerminateNotification
+                             object:nil];
+}
+
+- (void)setNetRadioListeners {
+    if ((_reachability = SCNetworkReachabilityCreateWithName(NULL, "thinkingdata.cn")) != NULL) {
+        SCNetworkReachabilityContext context = {0, (__bridge void*)self, NULL, NULL, NULL};
+        if (SCNetworkReachabilitySetCallback(_reachability, ThinkingReachabilityCallback, &context)) {
+            if (!SCNetworkReachabilitySetDispatchQueue(_reachability, serialQueue)) {
+                SCNetworkReachabilitySetCallback(_reachability, NULL, NULL);
+            }
+        }
+    }
+    
+    [self setCurrentRadio];
+    
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    
+    [notificationCenter addObserver:self
+                           selector:@selector(setCurrentRadio)
+                               name:CTRadioAccessTechnologyDidChangeNotification
                              object:nil];
 }
 
@@ -524,7 +563,7 @@ static dispatch_queue_t networkQueue;
             NSMutableDictionary *eventTimer = [[NSMutableDictionary alloc] initWithDictionary:self.trackTimer[key]];
             if (eventTimer) {
                 NSNumber *eventBegin = [eventTimer valueForKey:TD_EVENT_START];
-                NSNumber *eventDuration = [eventTimer objectForKey:TD_EVENT_DURATION];
+                NSNumber *eventDuration = [eventTimer valueForKey:TD_EVENT_DURATION];
                 double usedTime;
                 if (eventDuration) {
                     usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue] + [eventDuration doubleValue];
@@ -532,6 +571,9 @@ static dispatch_queue_t networkQueue;
                     usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue];
                 }
                 [eventTimer setObject:[NSNumber numberWithDouble:usedTime] forKey:TD_EVENT_DURATION];
+                @synchronized (self.trackTimer) {
+                    self.trackTimer[key] = eventTimer;
+                }
             }
         }
         dispatch_group_leave(bgGroup);
@@ -578,7 +620,9 @@ static dispatch_queue_t networkQueue;
             NSMutableDictionary *eventTimer = [[NSMutableDictionary alloc] initWithDictionary:self.trackTimer[key]];
             if (eventTimer) {
                 [eventTimer setValue:currentTime forKey:TD_EVENT_START];
-                self.trackTimer[key] = eventTimer;
+                @synchronized (self.trackTimer) {
+                    self.trackTimer[key] = eventTimer;
+                }
             }
         }
     });
@@ -625,7 +669,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)reachabilityChanged:(SCNetworkReachabilityFlags)flags {
-    _isWifi = (flags & kSCNetworkReachabilityFlagsReachable) && !(flags & kSCNetworkReachabilityFlagsIsWWAN);
+    isWifi = (flags & kSCNetworkReachabilityFlagsReachable) && !(flags & kSCNetworkReachabilityFlagsIsWWAN);
 }
 
 - (NSString *)currentRadio {
@@ -660,17 +704,17 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     return newtworkType;
 }
 
-- (NSString *)getNetWorkStates {
-    if (_isWifi) {
++ (NSString *)getNetWorkStates {
+    if (isWifi) {
         return @"WIFI";
     } else {
-        return _radio;
+        return radioInfo;
     }
 }
 
 - (void)setCurrentRadio {
     dispatch_async(serialQueue, ^{
-        self->_radio = [self currentRadio];
+        radioInfo = [self currentRadio];
     });
 }
 
@@ -793,7 +837,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     __block NSString *distinctId = nil;
     dispatch_sync(serialQueue, ^{
         distinctId = self->_identifyId;
-        NSLog(@"self->_identifyId:%@", self->_identifyId);//todo
     });
     return distinctId;
 }
@@ -823,7 +866,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         return;
     }
     
-    @synchronized (self) {
+    @synchronized (self.superProperty) {
         NSMutableDictionary *tmp = [NSMutableDictionary dictionaryWithDictionary:self.superProperty];
         [tmp addEntriesFromDictionary:[properties copy]];
         self.superProperty = [NSDictionary dictionaryWithDictionary:tmp];
@@ -841,7 +884,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if (![propertyKey isKindOfClass:[NSString class]] || propertyKey.length == 0)
         return;
     
-    @synchronized (self) {
+    @synchronized (self.superProperty) {
         NSMutableDictionary *tmp = [NSMutableDictionary dictionaryWithDictionary:self.superProperty];
         tmp[propertyKey] = nil;
         self.superProperty = [NSDictionary dictionaryWithDictionary:tmp];
@@ -855,7 +898,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if ([self hasDisabled])
         return;
     
-    @synchronized (self) {
+    @synchronized (self.superProperty) {
         self.superProperty = @{};
     }
     
@@ -865,7 +908,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (NSDictionary *)currentSuperProperties {
-    NSLog(@"currentSuperProperties:%@", self.superProperty);
     return [self.superProperty copy];
 }
 
@@ -878,11 +920,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         return;
     }
     
+    @synchronized (self.identifyId) {
+       self.identifyId = distinctId;
+    }
     dispatch_async(serialQueue, ^{
-        if (self.identifyId != distinctId) {
-            self.identifyId = distinctId;
-            [self archiveIdentifyId:distinctId];
-        }
+       [self archiveIdentifyId:distinctId];
     });
 }
 
@@ -895,11 +937,12 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         return;
     }
     
+    @synchronized (self.accountId) {
+        self.accountId = accountId;
+    }
+        
     dispatch_async(serialQueue, ^{
-        if (![accountId isEqualToString:[self accountId]]) {
-            self.accountId = accountId;
-            [self archiveAccountID:accountId];
-        }
+        [self archiveAccountID:accountId];
     });
 }
 
@@ -907,8 +950,10 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if ([self hasDisabled])
         return;
     
-    dispatch_async(serialQueue, ^{
+    @synchronized (self.accountId) {
         self.accountId = nil;
+    }
+    dispatch_async(serialQueue, ^{
         [self archiveAccountID:nil];
     });
 }
@@ -924,9 +969,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
     
     NSNumber *eventBegin = @([[NSDate date] timeIntervalSince1970]);
-    dispatch_async(serialQueue, ^{
+    @synchronized (self.trackTimer) {
         self.trackTimer[event] = @{TD_EVENT_START:eventBegin, TD_EVENT_DURATION:[NSNumber numberWithDouble:0]};
-    });
+    };
 }
 
 - (BOOL)isValidName:(NSString *)name isAutoTrack:(BOOL)isAutoTrack {
@@ -1052,74 +1097,78 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if (_relaunchInBackGround && !_config.trackRelaunchedInBackgroundEvents) {
         return;
     }
-    dispatch_async(serialQueue, ^{
-        NSDictionary *propertiesDict = eventData.properties;
-        NSMutableDictionary<NSString *, id> *properties = [NSMutableDictionary dictionaryWithDictionary:propertiesDict];
-        
-        NSString *timeStamp;
-        if (eventData.eventTime == nil) {
-            timeStamp = [self->_timeFormatter stringFromDate:[NSDate date]];
-        } else {
-            timeStamp = [self->_timeFormatter stringFromDate:eventData.eventTime];
+    
+    NSDictionary *propertiesDict = eventData.properties;
+    NSMutableDictionary<NSString *, id> *properties = [NSMutableDictionary dictionaryWithDictionary:propertiesDict];
+    
+    NSString *timeStamp;
+    if (eventData.eventTime == nil) {
+        timeStamp = [self->_timeFormatter stringFromDate:[NSDate date]];
+    } else {
+        timeStamp = [self->_timeFormatter stringFromDate:eventData.eventTime];
+    }
+    
+    if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK]) {
+        properties[@"#app_version"] = self->_deviceInfo.appVersion;
+        properties[@"#network_type"] = [[self class] getNetWorkStates];
+        if (self.relaunchInBackGround) {
+            properties[@"#relaunched_in_background"] = @YES;
         }
-        
-        if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK]) {
-            properties[@"#app_version"] = self->_deviceInfo.appVersion;
-            properties[@"#network_type"] = [self getNetWorkStates];
-            if (self.relaunchInBackGround) {
-                properties[@"#relaunched_in_background"] = @YES;
-            }
-        }
-        
-        NSDictionary *eventTimer = self.trackTimer[eventData.eventName];
-        if (eventTimer) {
+    }
+    
+    NSDictionary *eventTimer = self.trackTimer[eventData.eventName];
+    if (eventTimer) {
+        @synchronized (self.trackTimer) {
             [self.trackTimer removeObjectForKey:eventData.eventName];
-            
-            NSNumber *eventBegin = [eventTimer valueForKey:TD_EVENT_START];
-            NSNumber *eventDuration = [eventTimer objectForKey:TD_EVENT_DURATION];
-            
-            double usedTime;
-            NSNumber *currentSystemUpTime = @([[NSDate date] timeIntervalSince1970]);
-            if (eventDuration) {
-                usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue] + [eventDuration doubleValue];
-            } else {
-                usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue];
-            }
-            
-            if (usedTime > 0) {
-                properties[@"#duration"] = @([[NSString stringWithFormat:@"%.3f", usedTime] floatValue]);
-            }
         }
         
-        NSMutableDictionary *dataDic = [NSMutableDictionary dictionary];
-        dataDic[@"#time"] = timeStamp;
-        dataDic[@"#type"] = eventData.eventType;
-        dataDic[@"#uuid"] = [[NSUUID UUID] UUIDString];
+        NSNumber *eventBegin = [eventTimer valueForKey:TD_EVENT_START];
+        NSNumber *eventDuration = [eventTimer valueForKey:TD_EVENT_DURATION];
         
-        if (self.identifyId) {
-            dataDic[@"#distinct_id"] = self.identifyId;
-        }
-        if (properties) {
-            dataDic[@"properties"] = [NSDictionary dictionaryWithDictionary:properties];
-        }
-        if (eventData.eventName) {
-            dataDic[@"#event_name"] = eventData.eventName;
-        }
-        if (self.accountId) {
-            dataDic[@"#account_id"] = self.accountId;
+        double usedTime;
+        NSNumber *currentSystemUpTime = @([[NSDate date] timeIntervalSince1970]);
+        if (eventDuration) {
+            usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue] + [eventDuration doubleValue];
+        } else {
+            usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue];
         }
         
-        if (eventData.persist) {
-            NSInteger count = [self saveClickData:dataDic];
-            TDLogDebug(@"queueing data:%@", dataDic);
-            
+        if (usedTime > 0) {
+            properties[@"#duration"] = @([[NSString stringWithFormat:@"%.3f", usedTime] floatValue]);
+        }
+    }
+    
+    NSMutableDictionary *dataDic = [NSMutableDictionary dictionary];
+    dataDic[@"#time"] = timeStamp;
+    dataDic[@"#type"] = eventData.eventType;
+    dataDic[@"#uuid"] = [[NSUUID UUID] UUIDString];
+    
+    if (self.identifyId) {
+        dataDic[@"#distinct_id"] = self.identifyId;
+    }
+    if (properties) {
+        dataDic[@"properties"] = [NSDictionary dictionaryWithDictionary:properties];
+    }
+    if (eventData.eventName) {
+        dataDic[@"#event_name"] = eventData.eventName;
+    }
+    if (self.accountId) {
+        dataDic[@"#account_id"] = self.accountId;
+    }
+    
+    TDLogDebug(@"queueing data:%@", dataDic);
+    if (eventData.persist) {
+        dispatch_async(serialQueue, ^{
+            NSInteger count = [self saveEventsData:dataDic];
             if (count >= self.config.uploadSize) {
                 [self flush];
             }
-        } else {
+        });
+    } else {
+        dispatch_async(serialQueue, ^{
             [self flushImmediately:dataDic];
-        }
-    });
+        });
+    }
 }
 
 - (void)flushImmediately:(NSDictionary*)dataDic {
@@ -1210,7 +1259,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)_sync:(BOOL)vacuumAfterFlushing {
-    NSString *networkType = [self getNetWorkStates];
+    NSString *networkType = [[self class] getNetWorkStates];
     if (!([self convertNetworkType:networkType] & self.config.networkTypePolicy)) {
         return;
     }

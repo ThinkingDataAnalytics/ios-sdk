@@ -3,6 +3,8 @@
 #import "TDConfig.h"
 
 NS_ASSUME_NONNULL_BEGIN
+
+@class LightThinkingAnalyticsSDK;
 @interface ThinkingAnalyticsSDK : NSObject
 
 // 获取实例
@@ -120,6 +122,9 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 
 // 允许上报
 - (void)optInTracking;
+
+// 创建轻实例
+- (LightThinkingAnalyticsSDK *)createLightInstance;
 
 @property (nonatomic, readonly) BOOL isOptOut;
 

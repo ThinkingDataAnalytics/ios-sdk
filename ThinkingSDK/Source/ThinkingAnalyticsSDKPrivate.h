@@ -16,7 +16,7 @@ static NSString * const TD_APP_INSTALL_EVENT                = @"ta_app_install";
 static NSString * const TD_CRASH_REASON                     = @"#app_crashed_reason";
 static NSString * const TD_RESUME_FROM_BACKGROUND           = @"#resume_from_background";
 
-static NSString * const TD_EVENT_TYPE_TRACK                 = @"click";
+static NSString * const TD_EVENT_TYPE_TRACK                 = @"track";
 static NSString * const TD_EVENT_TYPE_USER_DEL              = @"user_del";
 static NSString * const TD_EVENT_TYPE_USER_ADD              = @"user_add";
 static NSString * const TD_EVENT_TYPE_USER_SET              = @"user_set";
@@ -63,6 +63,7 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 @property (nonatomic, strong) CTTelephonyNetworkInfo *telephonyInfo;
 @property (nonatomic, copy) NSDictionary<NSString *, id> *(^dynamicSuperProperties)(void);
 
+- (instancetype)initLight:(NSString *)appid;
 - (void)autotrack:(NSString *)event properties:(NSDictionary *)propertieDict withTime:(NSDate *)date;
 + (void)restartFlushTimer;
 - (BOOL)isViewControllerIgnored:(UIViewController *)viewController;
@@ -71,8 +72,10 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 + (dispatch_queue_t)serialQueue;
 + (dispatch_queue_t)networkQueue;
 + (UIApplication *)sharedUIApplication;
-- (NSInteger)saveClickData:(NSDictionary *)data;
+- (NSInteger)saveEventsData:(NSDictionary *)data;
 - (void)flushImmediately:(NSDictionary*)dataDic;
+- (BOOL)hasDisabled;
+- (BOOL)checkEventProperties:(NSDictionary *)properties withEventType:(NSString *)eventType haveAutoTrackEvents:(BOOL)haveAutoTrackEvents;
 
 @end
 
