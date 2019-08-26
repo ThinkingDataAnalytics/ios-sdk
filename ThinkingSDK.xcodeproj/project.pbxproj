@@ -6,6 +6,21 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		F30FC01723141D38003335F8 /* ThinkingSDKFramework */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = F30FC01A23141D38003335F8 /* Build configuration list for PBXAggregateTarget "ThinkingSDKFramework" */;
+			buildPhases = (
+				F30FC01D23141D42003335F8 /* ShellScript */,
+			);
+			dependencies = (
+				F30FC01C23141D40003335F8 /* PBXTargetDependency */,
+			);
+			name = ThinkingSDKFramework;
+			productName = ThinkingSDKFramework;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		F385AB80230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = F385AB7E230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F385AB81230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = F385AB7F230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.m */; };
@@ -49,6 +64,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		F30FC01B23141D40003335F8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F3D1900B230136B30043D595 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F3D19013230136B30043D595;
+			remoteInfo = ThinkingSDK;
+		};
 		F3D1901F230136B30043D595 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F3D1900B230136B30043D595 /* Project object */;
@@ -59,6 +81,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F30FC03B2314286B003335F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F30FC040231428B7003335F8 /* TDAnalyticsSDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TDAnalyticsSDK.bundle; path = ThinkingSDK/TDAnalyticsSDK.bundle; sourceTree = "<group>"; };
+		F30FC0422314293A003335F8 /* td_viewcontroller_ignorelist.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = td_viewcontroller_ignorelist.json; sourceTree = "<group>"; };
 		F385AB7E230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightThinkingAnalyticsSDK.h; sourceTree = "<group>"; };
 		F385AB7F230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightThinkingAnalyticsSDK.m; sourceTree = "<group>"; };
 		F3D19014230136B30043D595 /* ThinkingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ThinkingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -122,12 +147,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F30FC03A2314286B003335F8 /* TDAnalyticsSDK */ = {
+			isa = PBXGroup;
+			children = (
+				F30FC03B2314286B003335F8 /* Info.plist */,
+			);
+			path = TDAnalyticsSDK;
+			sourceTree = "<group>";
+		};
+		F30FC03F231428B7003335F8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F30FC040231428B7003335F8 /* TDAnalyticsSDK.bundle */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		F3D1900A230136B30043D595 = {
 			isa = PBXGroup;
 			children = (
 				F3D19016230136B30043D595 /* ThinkingSDK */,
 				F3D19021230136B30043D595 /* ThinkingSDKTests */,
+				F30FC03A2314286B003335F8 /* TDAnalyticsSDK */,
 				F3D19015230136B30043D595 /* Products */,
+				F30FC03F231428B7003335F8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -145,6 +188,7 @@
 			children = (
 				F3D1902E230137600043D595 /* Source */,
 				F3D19017230136B30043D595 /* ThinkingSDK.h */,
+				F30FC0422314293A003335F8 /* td_viewcontroller_ignorelist.json */,
 				F3D19018230136B30043D595 /* Info.plist */,
 			);
 			path = ThinkingSDK;
@@ -288,6 +332,9 @@
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = thinkingdata;
 				TargetAttributes = {
+					F30FC01723141D38003335F8 = {
+						CreatedOnToolsVersion = 10.3;
+					};
 					F3D19013230136B30043D595 = {
 						CreatedOnToolsVersion = 10.1;
 					};
@@ -302,6 +349,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = F3D1900A230136B30043D595;
 			productRefGroup = F3D19015230136B30043D595 /* Products */;
@@ -310,6 +358,7 @@
 			targets = (
 				F3D19013230136B30043D595 /* ThinkingSDK */,
 				F3D1901C230136B30043D595 /* ThinkingSDKTests */,
+				F30FC01723141D38003335F8 /* ThinkingSDKFramework */,
 			);
 		};
 /* End PBXProject section */
@@ -330,6 +379,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F30FC01D23141D42003335F8 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\nUNIVERSAL_BUILD_FOLDER=./build/\nmkdir -p \"${UNIVERSAL_BUILD_FOLDER}\"\nrm -rf \"${UNIVERSAL_BUILD_FOLDER}/${PROJECT_NAME}.framework\"\n\nTARGET=${TARGET_NAME%-Universal}\n\nxcodebuild -target \"${TARGET}\" ONLY_ACTIVE_ARCH=NO -configuration \"${CONFIGURATION}\" -sdk iphoneos BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\nxcodebuild -target \"${TARGET}\" ONLY_ACTIVE_ARCH=NO -configuration \"${CONFIGURATION}\" -sdk iphonesimulator BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\n\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_BUILD_FOLDER}/\"\n\nlipo -create -output \"${UNIVERSAL_BUILD_FOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n\n\nRESOURCES_INPUT_FOLDER=\"./ThinkingSDK/TDAnalyticsSDK.bundle\"\nif [ -d \"${RESOURCES_INPUT_FOLDER}\" ]; then\nRESOURCES_OUTPUT_FOLDER=\"${UNIVERSAL_BUILD_FOLDER}/ThinkingSDK.framework/TDAnalyticsSDK.bundle\"\nrm -rf \"${RESOURCES_OUTPUT_FOLDER}\"\ncp -R \"${RESOURCES_INPUT_FOLDER}\" \"${RESOURCES_OUTPUT_FOLDER}\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F3D19010230136B30043D595 /* Sources */ = {
@@ -367,6 +436,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		F30FC01C23141D40003335F8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F3D19013230136B30043D595 /* ThinkingSDK */;
+			targetProxy = F30FC01B23141D40003335F8 /* PBXContainerItemProxy */;
+		};
 		F3D19020230136B30043D595 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F3D19013230136B30043D595 /* ThinkingSDK */;
@@ -375,6 +449,22 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		F30FC01823141D38003335F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		F30FC01923141D38003335F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		F3D19026230136B30043D595 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -574,6 +664,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F30FC01A23141D38003335F8 /* Build configuration list for PBXAggregateTarget "ThinkingSDKFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F30FC01823141D38003335F8 /* Debug */,
+				F30FC01923141D38003335F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F3D1900E230136B30043D595 /* Build configuration list for PBXProject "ThinkingSDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
