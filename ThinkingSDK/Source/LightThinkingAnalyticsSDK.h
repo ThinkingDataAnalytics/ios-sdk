@@ -1,5 +1,5 @@
 
-#import <ThinkingSDK/ThinkingSDK.h>
+#import <ThinkingSDK/ThinkingAnalyticsSDK.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

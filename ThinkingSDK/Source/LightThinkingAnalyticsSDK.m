@@ -47,9 +47,13 @@
         return;
     }
 
-    @synchronized (self.accountId) {
+    @synchronized (self.identifyId) {
         self.identifyId = distinctId;
     };
+}
+
+- (NSString *)getDistinctId {
+    return [self.identifyId copy];
 }
 
 - (void)setSuperProperties:(NSDictionary *)properties {

@@ -37,15 +37,14 @@
 }
 
 - (void)test01doSave {
-    [_mockThinkingInstance track:@"test"];
     OCMExpect([_mockThinkingInstance saveEventsData:[OCMArg isNotNil]]);
+    [_mockThinkingInstance track:@"test"];
     
     [self waitForThinkingQueues];
     OCMVerifyAll(_mockThinkingInstance);
 }
 
 - (void)test02doFlush {
-    [_mockThinkingInstance setExpectationOrderMatters:YES];
     OCMExpect([_mockThinkingInstance saveEventsData:[OCMArg isNotNil]]);
     OCMExpect([_mockThinkingInstance flush]);
     for (int i = 0; i < 100; i++) {
@@ -320,9 +319,9 @@
 
 - (void)test11OptIn {
     [_mockThinkingInstance optInTracking];
+    OCMExpect([_mockThinkingInstance saveEventsData:[OCMArg any]]);
     [_mockThinkingInstance track:@"test"];
     [_mockThinkingInstance setSuperProperties:@{@"key2": @"value2"}];
-    OCMExpect([_mockThinkingInstance saveEventsData:[OCMArg any]]);
     NSDictionary *superProperties = [_mockThinkingInstance currentSuperProperties];
     XCTAssertEqualObjects(superProperties, @{@"key2": @"value2"});
     [self waitForThinkingQueues];

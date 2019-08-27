@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = 'ThinkingSDK'
   s.version          = '2.0.0'
-  s.summary          = 'Official ThinkingDara SDK for iOS.'
+  s.summary          = 'Official ThinkingData SDK for iOS.'
 
   s.homepage         = 'https://www.thinkingdata.cn'
   s.license          = 'Apache License, Version 2.0'
@@ -11,6 +11,7 @@ Pod::Spec.new do |s|
   s.platform         = :ios, "8.0"
 
   s.source_files        = 'ThinkingSDK/Source/*.{m,h}','ThinkingSDK/Source/autotrack/*.{m,h}'
+  s.public_header_files = 'ThinkingSDK/Source/ThinkingAnalyticsSDK.h', "ThinkingSDK/Source/TDConfig.h", "ThinkingSDK/Source/LightThinkingAnalyticsSDK.h"
   s.frameworks          = 'UIKit', 'Foundation', 'CoreTelephony', 'SystemConfiguration', 'CoreGraphics', 'Security'
   s.libraries           = 'sqlite3', 'z'
   s.public_header_files = 'ThinkingSDK/Source/ThinkingAnalyticsSDK.h', 'ThinkingSDK/Source/TDConfig.h'

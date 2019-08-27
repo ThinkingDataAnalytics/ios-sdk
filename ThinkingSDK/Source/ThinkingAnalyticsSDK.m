@@ -285,6 +285,7 @@ static dispatch_queue_t networkQueue;
 #pragma mark - LightInstance
 - (LightThinkingAnalyticsSDK *)createLightInstance {
     LightThinkingAnalyticsSDK *lightInstance = [[LightThinkingAnalyticsSDK alloc] initWithAPPID:defaultProjectAppid];
+    lightInstance.identifyId = self.deviceInfo.uniqueId;
     return lightInstance;
 }
 
@@ -834,11 +835,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (NSString *)getDistinctId {
-    __block NSString *distinctId = nil;
-    dispatch_sync(serialQueue, ^{
-        distinctId = self->_identifyId;
-    });
-    return distinctId;
+    return [self->_identifyId copy];
 }
 
 - (NSString *)getDeviceId {
