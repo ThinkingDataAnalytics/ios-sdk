@@ -180,10 +180,4 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 
 @end
 
-@interface LightThinkingAnalyticsSDK : ThinkingAnalyticsSDK
-
-- (instancetype)initWithAPPID:(NSString *)appID;
-
-@end
-
 NS_ASSUME_NONNULL_END

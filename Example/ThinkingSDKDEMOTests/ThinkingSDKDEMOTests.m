@@ -62,7 +62,7 @@
 }
 
 - (void)test03TrackEvent {
-    void (^saveClickDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+    void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
         [invocation getArgument: &dataDic atIndex: 2];
         
@@ -98,7 +98,7 @@
         XCTAssertEqualObjects(timeStr, @"2012-06-24 11:28:10.000");
         XCTAssertTrue([[dataDic allKeys] count] == 6);
     };
-    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
@@ -141,22 +141,22 @@
     id _mockThinking2 = OCMPartialMock(thinkingSDK2);
     
     static int count = 0;
-    void (^saveClickDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+    void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
         [invocation getArgument: &dataDic atIndex: 2];
         count ++;
         XCTAssertEqualObjects(dataDic[@"#event_name"], @"test");
     };
-    OCMStub([_mockThinking1 saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
+    OCMStub([_mockThinking1 saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
     
     static int count2 = 0;
-    void (^saveClickDataInvocation2)(NSInvocation *) = ^(NSInvocation *invocation) {
+    void (^saveEventsDataInvocation2)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
         [invocation getArgument: &dataDic atIndex: 2];
         count2 ++;
         XCTAssertEqualObjects(dataDic[@"#event_name"], @"test2");
     };
-    OCMStub([_mockThinking2 saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation2);
+    OCMStub([_mockThinking2 saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation2);
     
     dispatch_queue_t queue = dispatch_queue_create("test", DISPATCH_QUEUE_CONCURRENT);
     for (int i = 0; i < 100 ; i++) {
@@ -225,7 +225,7 @@
 
 - (void)test07LoginTrack {
     NSMutableArray *dataArrays = [NSMutableArray array];
-    void (^saveClickDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+    void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
         [invocation getArgument: &dataDic atIndex: 2];
         
@@ -247,7 +247,7 @@
                 break;
         }
     };
-    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
 
     [self.mockThinkingInstance login:@"logintest"];
     [self.mockThinkingInstance track:@"test"];
@@ -318,7 +318,7 @@
 - (void)test12Identify {
     
     NSMutableArray *dataArrays = [NSMutableArray array];
-    void (^saveClickDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+    void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
         [invocation getArgument: &dataDic atIndex: 2];
         
@@ -337,7 +337,7 @@
                 break;
         }
     };
-    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
     
     NSString *distinct1 = [_mockThinkingInstance getDistinctId];
     
@@ -391,7 +391,7 @@
 - (void)test15Superproperty {
     
     NSMutableArray *dataArrays = [NSMutableArray array];
-    void (^saveClickDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+    void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
         [invocation getArgument: &dataDic atIndex: 2];
         
@@ -417,7 +417,7 @@
                 break;
         }
     };
-    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
     
     [_mockThinkingInstance clearSuperProperties];
     [_mockThinkingInstance setSuperProperties:@{@"supKey":@"supValue"}];
@@ -450,7 +450,7 @@
 
 - (void)test16DynamicSuperProperties {
     __block int callTimes = 0;
-    void (^saveClickDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+    void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
         [invocation getArgument: &dataDic atIndex: 2];
         
@@ -460,7 +460,7 @@
         
         callTimes ++;
     };
-    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
     
     static NSString *testStr = @"testStr0";
     [_mockThinkingInstance registerDynamicSuperProperties:^NSDictionary * _Nonnull{
@@ -472,6 +472,110 @@
     testStr = @"testStr1";
     [_mockThinkingInstance track:@"test"];
     [self waitForThinkingQueues];
+}
+
+- (void)test17LightInstanceMulti {
+    NSString *appid1 = @"kAPPID1";
+    NSString *appid2 = @"kAPPID2";
+    ThinkingAnalyticsSDK *thinkingSDK1 = [ThinkingAnalyticsSDK startWithAppId:appid1 withUrl:@"kURL1"];
+    ThinkingAnalyticsSDK *thinkingSDK2 = [ThinkingAnalyticsSDK startWithAppId:appid2 withUrl:@"kURL2"];
+    
+    ThinkingAnalyticsSDK *lightInstance1 = [thinkingSDK1 createLightInstance];
+    ThinkingAnalyticsSDK *lightInstance2 = [thinkingSDK2 createLightInstance];
+    
+    XCTAssertNotEqual(thinkingSDK1, thinkingSDK2);
+    XCTAssertEqual(lightInstance1.appid, thinkingSDK1.appid);
+    XCTAssertEqual(lightInstance2.appid, thinkingSDK2.appid);
+    XCTAssertEqual(lightInstance1.getDistinctId, lightInstance2.getDistinctId);
+    XCTAssertEqual(lightInstance1.getDistinctId, thinkingSDK1.getDistinctId);
+    XCTAssertEqual(thinkingSDK1.getDistinctId, thinkingSDK2.getDistinctId);
+}
+
+- (void)test18LightInstance {
+    ThinkingAnalyticsSDK *thinkingSDK1 = [ThinkingAnalyticsSDK startWithAppId:@"appid" withUrl:@"kURL1"];
+    ThinkingAnalyticsSDK *lightInstance1 = [thinkingSDK1 createLightInstance];
+    id mockLightInstance = OCMPartialMock(lightInstance1);
+    
+    static int count = 0;
+    void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+        __weak NSDictionary *dataDic;
+        [invocation getArgument: &dataDic atIndex: 2];
+        
+        NSDictionary *properties = dataDic[@"properties"];
+        XCTAssertNotNil([dataDic objectForKey:@"#distinct_id"]);
+        NSLog(@"light:%@", dataDic);
+        switch (count) {
+            case 0:
+                XCTAssertNil([dataDic objectForKey:@"#account_id"]);
+                break;
+            case 1:
+                XCTAssertEqualObjects([dataDic objectForKey:@"#account_id"], @"lightacc");
+                break;
+            case 2:
+                XCTAssertEqualObjects([dataDic objectForKey:@"#distinct_id"], @"lightdist");
+                break;
+            case 3:
+                XCTAssertEqualObjects([properties objectForKey:@"lightKey"], @"lightValue");
+                XCTAssertEqualObjects([properties objectForKey:@"lightKey2"], @"lightValue2");
+                break;
+            case 4:
+                XCTAssertNil([dataDic objectForKey:@"#account_id"]);
+                break;
+            case 5:
+                XCTAssertEqualObjects([properties objectForKey:@"lightKey"], @"lightValue");
+                XCTAssertNil([properties objectForKey:@"lightKey2"]);
+                break;
+            case 6:
+                XCTAssertNil([properties objectForKey:@"lightKey"]);
+                XCTAssertNil([properties objectForKey:@"lightKey2"]);
+                break;
+            case 7:
+                XCTAssertEqualObjects([properties objectForKey:@"test"], @"testStr0");
+                break;
+            case 8:
+                XCTAssertEqualObjects([properties objectForKey:@"test"], @"testStr1");
+                break;
+            default:
+                break;
+        }
+        count ++;
+    };
+    OCMStub([mockLightInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
+    
+    [mockLightInstance track:@"track"];
+    
+    [mockLightInstance login:@"lightacc"];
+    [mockLightInstance track:@"track"];
+    
+    [mockLightInstance identify:@"lightdist"];
+    [mockLightInstance track:@"track"];
+    
+    [mockLightInstance setSuperProperties:@{@"lightKey":@"lightValue", @"lightKey2":@"lightValue2"}];
+    [mockLightInstance track:@"track"];
+                                    
+    [mockLightInstance logout];
+    [mockLightInstance track:@"track"];
+                                    
+    [mockLightInstance unsetSuperProperty:@"lightKey2"];
+    [mockLightInstance track:@"track"];
+    
+    [mockLightInstance clearSuperProperties];
+    [mockLightInstance track:@"track"];
+    
+    static NSString *testStr = @"testStr0";
+    [mockLightInstance registerDynamicSuperProperties:^NSDictionary * _Nonnull{
+        return @{@"test":testStr};
+    }];
+    [mockLightInstance track:@"test"];
+    [self waitForThinkingQueues];
+    
+    testStr = @"testStr1";
+    [mockLightInstance track:@"test"];
+    
+    [self waitForThinkingQueues];
+    
+    [self.mockThinkingInstance stopMocking];
+    self.mockThinkingInstance = nil;
 }
 
 @end
