@@ -47,7 +47,7 @@
         [(NSDictionary<id, id> *)object enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *dictionaryStop) {
             [self dictionary:dictionary
                    setObject:[self JSONSerializableObjectForObject:obj]
-                      forKey:[TDJSONUtil stringValue:key]];
+                      forKey:key];
         }];
         return dictionary;
     }
@@ -69,18 +69,6 @@
     if (object && key) {
         dictionary[key] = object;
     }
-}
-
-+ (NSString *)stringValue:(id)object
-{
-    if ([object isKindOfClass:[NSString class]]) {
-        return (NSString *)object;
-    } else if ([object isKindOfClass:[NSNumber class]]) {
-        return ((NSNumber *)object).stringValue;
-    } else if ([object isKindOfClass:[NSURL class]]) {
-        return ((NSURL *)object).absoluteString;
-    }
-    return nil;
 }
 
 @end
