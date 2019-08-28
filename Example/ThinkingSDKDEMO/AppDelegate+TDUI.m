@@ -16,7 +16,7 @@
 #import "AutoTableViewController.h"
 #import "AutoCollectionViewController.h"
 #import "NTPViewController.h"
-#import <ThinkingSDK/LightThinkingAnalyticsSDK.h>
+#import <ThinkingSDK/ThinkingAnalyticsSDK.h>
 
 @implementation AppDelegate (TDUI)
 
@@ -276,7 +276,7 @@
                  accessoryType:UITableViewCellAccessoryNone
                          block:^(UIViewController* controller)
       {
-          LightThinkingAnalyticsSDK *light = [[ThinkingAnalyticsSDK sharedInstance] createLightInstance];
+          ThinkingAnalyticsSDK *light = [[ThinkingAnalyticsSDK sharedInstance] createLightInstance];
           [light track:@"lighttest"];
       }]];
     

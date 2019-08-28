@@ -124,7 +124,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 - (void)optInTracking;
 
 // 创建轻实例
-- (LightThinkingAnalyticsSDK *)createLightInstance;
+- (ThinkingAnalyticsSDK *)createLightInstance;
 
 @property (nonatomic, readonly) BOOL isOptOut;
 
@@ -177,6 +177,12 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 @optional
 - (NSString *) getScreenUrl;
 - (NSDictionary *) getScreenUrlWithAppid;
+
+@end
+
+@interface LightThinkingAnalyticsSDK : ThinkingAnalyticsSDK
+
+- (instancetype)initWithAPPID:(NSString *)appID;
 
 @end
 
