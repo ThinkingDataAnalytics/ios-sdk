@@ -81,9 +81,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		F30FC03B2314286B003335F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F30FC040231428B7003335F8 /* TDAnalyticsSDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TDAnalyticsSDK.bundle; path = ThinkingSDK/TDAnalyticsSDK.bundle; sourceTree = "<group>"; };
-		F30FC0422314293A003335F8 /* td_viewcontroller_ignorelist.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = td_viewcontroller_ignorelist.json; sourceTree = "<group>"; };
 		F385AB7E230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightThinkingAnalyticsSDK.h; sourceTree = "<group>"; };
 		F385AB7F230FDD9F00F28B31 /* LightThinkingAnalyticsSDK.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightThinkingAnalyticsSDK.m; sourceTree = "<group>"; };
 		F3D19014230136B30043D595 /* ThinkingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ThinkingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,14 +145,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F30FC03A2314286B003335F8 /* TDAnalyticsSDK */ = {
-			isa = PBXGroup;
-			children = (
-				F30FC03B2314286B003335F8 /* Info.plist */,
-			);
-			path = TDAnalyticsSDK;
-			sourceTree = "<group>";
-		};
 		F30FC03F231428B7003335F8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -168,7 +158,6 @@
 			children = (
 				F3D19016230136B30043D595 /* ThinkingSDK */,
 				F3D19021230136B30043D595 /* ThinkingSDKTests */,
-				F30FC03A2314286B003335F8 /* TDAnalyticsSDK */,
 				F3D19015230136B30043D595 /* Products */,
 				F30FC03F231428B7003335F8 /* Frameworks */,
 			);
@@ -188,7 +177,6 @@
 			children = (
 				F3D1902E230137600043D595 /* Source */,
 				F3D19017230136B30043D595 /* ThinkingSDK.h */,
-				F30FC0422314293A003335F8 /* td_viewcontroller_ignorelist.json */,
 				F3D19018230136B30043D595 /* Info.plist */,
 			);
 			path = ThinkingSDK;

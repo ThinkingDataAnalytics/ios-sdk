@@ -1170,8 +1170,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 - (void)flushImmediately:(NSDictionary*)dataDic {
     [self dispatchOnNetworkQueue:^{
-        BOOL flushSucc = [self.network flushEvents:@[dataDic] withAppid:self.appid];
-        NSLog(@"flushSucc:%d", flushSucc);
+        [self.network flushEvents:@[dataDic] withAppid:self.appid];
     }];
 }
 

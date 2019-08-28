@@ -1,13 +1,12 @@
 #import "TDDeviceInfo.h"
-#import <UIKit/UIKit.h>
+#import "TDKeychainItemWrapper.h"
 
+#import <UIKit/UIKit.h>
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
-
-#import "TDKeychainItemWrapper.h"
 #import <sys/utsname.h>
 
-#define VERSION @"2.0.1"
+#define VERSION @"2.1.0"
 
 @interface TDDeviceInfo()
 

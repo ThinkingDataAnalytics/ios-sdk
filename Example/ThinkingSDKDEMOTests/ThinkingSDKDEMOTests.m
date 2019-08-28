@@ -8,8 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
-#import <ThinkingSDK/ThinkingSDK.h>
-#import <ThinkingSDK/ThinkingAnalyticsSDKPrivate.h>
+#import "ThinkingAnalyticsSDKPrivate.h"
 #import <objc/message.h>
 #import "TDJSONUtil.h"
 
@@ -47,7 +46,7 @@
 - (void)test02doFlush {
     OCMExpect([_mockThinkingInstance saveEventsData:[OCMArg isNotNil]]);
     OCMExpect([_mockThinkingInstance flush]);
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i <= 100; i++) {
         [_mockThinkingInstance track:@"test"];
     }
     
@@ -66,8 +65,6 @@
     void (^saveClickDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
         [invocation getArgument: &dataDic atIndex: 2];
-        
-        NSLog(@"dataDic:%@",dataDic);
         
         NSString *timeStr = dataDic[@"#time"];
         NSDateFormatter *timeFormatter = [[NSDateFormatter alloc]init];
@@ -149,7 +146,6 @@
         [invocation getArgument: &dataDic atIndex: 2];
         count ++;
         XCTAssertEqualObjects(dataDic[@"#event_name"], @"test");
-        NSLog(@"count:%d", count);
     };
     OCMStub([_mockThinking1 saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
     
@@ -201,11 +197,9 @@
     [self waitForThinkingQueues];
     
     NSString *accoundID1 = [self getArchiveAccound:thinkingSDK1];
-    NSLog(@"ret:%@", accoundID1);
     XCTAssertEqualObjects(accoundID1, @"logintest");
     
     NSString *accoundID2 = [self getArchiveAccound:thinkingSDK2];
-    NSLog(@"ret2:%@", accoundID2);
     XCTAssertEqualObjects(accoundID2, @"logintest2");
     
     [thinkingSDK1 login:@"logintestnew1"];
@@ -213,11 +207,9 @@
     [self waitForThinkingQueues];
     
     accoundID1 = [self getArchiveAccound:thinkingSDK1];
-    NSLog(@"ret:%@", accoundID1);
     XCTAssertEqualObjects(accoundID1, @"logintestnew1");
     
     accoundID2 = [self getArchiveAccound:thinkingSDK2];
-    NSLog(@"ret2:%@", accoundID2);
     XCTAssertEqualObjects(accoundID2, @"logintestnew2");
     
     [thinkingSDK1 logout];
@@ -225,11 +217,9 @@
     [self waitForThinkingQueues];
     
     accoundID1 = [self getArchiveAccound:thinkingSDK1];
-    NSLog(@"ret:%@", accoundID1);
     XCTAssertNil(accoundID1);
     
     accoundID2 = [self getArchiveAccound:thinkingSDK2];
-    NSLog(@"ret2:%@", accoundID2);
     XCTAssertNil(accoundID2);
 }
 
@@ -256,7 +246,6 @@
             default:
                 break;
         }
-        NSLog(@"dataDic:%@",dataDic);
     };
     OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
 
@@ -297,7 +286,6 @@
     [_mockThinkingInstance track:@"test"];
     [self waitForThinkingQueues];
     NSDictionary *superProperties = [_mockThinkingInstance currentSuperProperties];
-    NSLog(@"superProperties:%@", superProperties);
     OCMReject([_mockThinkingInstance saveEventsData:[OCMArg any]]);
     XCTAssertEqualObjects(superProperties, @{});
     OCMVerifyAll(_mockThinkingInstance);
@@ -309,7 +297,6 @@
         __weak NSDictionary *dataDic;
         [invocation getArgument: &dataDic atIndex: 2];
         
-        NSLog(@"dataDic:%@",dataDic);
         XCTAssertEqualObjects(dataDic[@"#type"], @"user_del");
     };
     OCMStub([_mockThinkingInstance flushImmediately:[OCMArg any]]).andDo(flushImmediately);
@@ -349,12 +336,10 @@
             default:
                 break;
         }
-        NSLog(@"dataDic:%@",dataDic);
     };
     OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveClickDataInvocation);
     
     NSString *distinct1 = [_mockThinkingInstance getDistinctId];
-    NSLog(@"distinct1:%@", distinct1);
     
     XCTAssertNotNil(distinct1);
     XCTAssertTrue([distinct1 isKindOfClass:[NSString class]] && distinct1.length > 0);
@@ -362,13 +347,11 @@
     [_mockThinkingInstance identify:@"distinct1"];
     [_mockThinkingInstance track:@"test"];
     distinct1 = [_mockThinkingInstance getDistinctId];
-    NSLog(@"distinct1:%@", distinct1);
     
     XCTAssertEqualObjects(distinct1, @"distinct1");
     [_mockThinkingInstance identify:@"distinctnew1"];
     [_mockThinkingInstance track:@"test"];
     distinct1 = [_mockThinkingInstance getDistinctId];
-    NSLog(@"distinct1:%@", distinct1);
     XCTAssertEqualObjects(distinct1, @"distinctnew1");
     [self waitForThinkingQueues];
 }
@@ -390,22 +373,19 @@
     [self waitForThinkingQueues];
     
     NSString *distinct1 = [self getArchiveDistince:_mockThinkingInstance];
-    NSLog(@"ret:%@", distinct1);
     XCTAssertEqualObjects(distinct1, @"distinct1");
     
     [_mockThinkingInstance identify:@"distinctnew1"];
     [self waitForThinkingQueues];
     
     distinct1 = [self getArchiveDistince:_mockThinkingInstance];
-    NSLog(@"ret:%@", distinct1);
     XCTAssertEqualObjects(distinct1, @"distinctnew1");
 }
 
 - (void)test14Json {
     NSDictionary *dic = @{@"key":@"value", @"number": @3, @"date": @"2012-06-24 11:28:10.124", @"float": @1.3, @"double": @1.12345678 , @"bool": @YES};
     NSString *jsonStr = [TDJSONUtil JSONStringForObject:dic];
-    NSLog(@"jsonStr:%@", jsonStr);
-   XCTAssertEqualObjects(@"{\"bool\":true,\"number\":3,\"key\":\"value\",\"float\":1.3,\"double\":1.12345678,\"date\":\"2012-06-24 11:28:10.124\"}", jsonStr);
+    XCTAssertEqualObjects(@"{\"bool\":true,\"number\":3,\"key\":\"value\",\"float\":1.3,\"double\":1.12345678,\"date\":\"2012-06-24 11:28:10.124\"}", jsonStr);
 }
 
 - (void)test15Superproperty {
@@ -419,7 +399,6 @@
         [dataArrays addObject:dataDic];
         
         NSInteger count = dataArrays.count;
-        NSLog(@"dataDic:%@",dataDic);
         switch (count) {
             case 1:
                 XCTAssertEqualObjects([[dataDic objectForKey:@"properties"] objectForKey:@"supKey"], @"supValue");
@@ -444,7 +423,6 @@
     [_mockThinkingInstance setSuperProperties:@{@"supKey":@"supValue"}];
     [_mockThinkingInstance track:@"testSuper"];
     NSDictionary *superPro1 = [_mockThinkingInstance currentSuperProperties];
-    NSLog(@"superPro1:%@", superPro1);
     
     XCTAssertTrue([superPro1 isKindOfClass:[NSDictionary class]] && superPro1.count == 1);
     XCTAssertEqualObjects(superPro1, @{@"supKey":@"supValue"});
@@ -452,7 +430,6 @@
     [_mockThinkingInstance setSuperProperties:@{@"supKey":@"supValue2", @"supAddKey":@"supAddValue"}];
     [_mockThinkingInstance track:@"testSuper"];
     superPro1 = [_mockThinkingInstance currentSuperProperties];
-    NSLog(@"superPro1:%@", superPro1);
     
     XCTAssertTrue(superPro1.count == 2);
     NSDictionary *dic = @{@"supAddKey":@"supAddValue", @"supKey":@"supValue2"};
@@ -461,13 +438,11 @@
     [_mockThinkingInstance unsetSuperProperty:@"supAddKey"];
     [_mockThinkingInstance track:@"testSuper"];
     superPro1 = [_mockThinkingInstance currentSuperProperties];
-    NSLog(@"superPro1:%@", superPro1);
     
     XCTAssertTrue([superPro1 isKindOfClass:[NSDictionary class]] && superPro1.count == 1);
     [_mockThinkingInstance clearSuperProperties];
     [_mockThinkingInstance track:@"testSuper"];
     superPro1 = [_mockThinkingInstance currentSuperProperties];
-    NSLog(@"superPro1:%@", superPro1);
     
     XCTAssertNotNil(superPro1);
     [self waitForThinkingQueues];
@@ -479,7 +454,6 @@
         __weak NSDictionary *dataDic;
         [invocation getArgument: &dataDic atIndex: 2];
         
-        NSLog(@"dataDic:%@",dataDic);
         NSDictionary *properties = dataDic[@"properties"];
         NSString *expectStr = [NSString stringWithFormat:@"testStr%d", callTimes];
         XCTAssertEqualObjects(properties[@"test"], expectStr);
