@@ -1,6 +1,5 @@
 
 #import "TDConfig.h"
-#import "TDConfigPrivate.h"
 #import "TDNetwork.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 

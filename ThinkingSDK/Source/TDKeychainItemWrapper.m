@@ -1,9 +1,9 @@
 #import "TDKeychainItemWrapper.h"
 #import "TDLogging.h"
 
-NSString * const TDKeychainService = @"com.thinkingddata.analytics.service";
-NSString * const TDInstallTimes = @"com.thinkingddata.analytics.installtimes";
-NSString * const TDDeviceID = @"com.thinkingddata.analytics.deviceid";
+static NSString * const TDKeychainService = @"com.thinkingddata.analytics.service";
+static NSString * const TDInstallTimes = @"com.thinkingddata.analytics.installtimes";
+static NSString * const TDDeviceID = @"com.thinkingddata.analytics.deviceid";
 
 @interface TDKeychainItemWrapper ()
 

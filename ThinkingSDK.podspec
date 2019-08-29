@@ -11,10 +11,9 @@ Pod::Spec.new do |s|
   s.platform         = :ios, "8.0"
 
   s.source_files        = 'ThinkingSDK/Source/*.{m,h}','ThinkingSDK/Source/autotrack/*.{m,h}'
-  s.public_header_files = 'ThinkingSDK/Source/ThinkingAnalyticsSDK.h', "ThinkingSDK/Source/TDConfig.h"
+  s.public_header_files = 'ThinkingSDK/Source/ThinkingAnalyticsSDK.h'
   s.frameworks          = 'UIKit', 'Foundation', 'CoreTelephony', 'SystemConfiguration', 'CoreGraphics', 'Security'
   s.libraries           = 'sqlite3', 'z'
-  s.public_header_files = 'ThinkingSDK/Source/ThinkingAnalyticsSDK.h', 'ThinkingSDK/Source/TDConfig.h'
   s.resources           = ['ThinkingSDK/TDAnalyticsSDK.bundle']
   
 end
