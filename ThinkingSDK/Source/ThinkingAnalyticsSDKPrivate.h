@@ -79,3 +79,8 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 
 @end
 
+@interface LightThinkingAnalyticsSDK : ThinkingAnalyticsSDK
+
+- (instancetype)initWithAPPID:(NSString *)appID;
+
+@end
