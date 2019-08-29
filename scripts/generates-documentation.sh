@@ -1,10 +1,14 @@
+basepath=$(cd `dirname $0`; pwd)
+
 # jazzy
-jazzy   \
+jazzy     \
  --objc   \
- --author ThinkingData   \
+ --clean  \
+ --module-version 2.1.0    \
+ --framework-root ./       \
+ --module ThinkingSDK      \
+ --sdk iphonesimulator     \
+ --output "$basepath"/docs \
+ --author ThinkingData     \
  --author_url http://http://www.thinkingdata.cn \
- --module-version 2.1.0   \
- --umbrella-header ThinkingSDK/Source/ThinkingAnalyticsSDK.h  \
- --framework-root .   \
- --module ThinkingSDK \
- --sdk iphonesimulator \
+ --umbrella-header "$basepath"/../ThinkingSDK/Source/ThinkingAnalyticsSDK.h  \
