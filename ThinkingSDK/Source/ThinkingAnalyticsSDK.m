@@ -37,15 +37,14 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (atomic, strong) TDDeviceInfo *deviceInfo;
 @property (atomic, strong) TDSqliteDataQueue *dataQueue;
 @property (atomic, strong) TDAutoTrackManager *autoTrackManager;
-@property (nonatomic, copy, nonnull) TDConfig *config;
+@property (nonatomic, copy) TDConfig *config;
+@property (nonatomic, strong) NSDateFormatter *timeFormatter;
+@property (nonatomic, assign) BOOL applicationWillResignActive;
+@property (nonatomic, assign) BOOL appRelaunched;
 
 @end
 
-@implementation ThinkingAnalyticsSDK {
-    NSDateFormatter *_timeFormatter;
-    BOOL _applicationWillResignActive;
-    BOOL _appRelaunched;
-}
+@implementation ThinkingAnalyticsSDK
 
 static ThinkingAnalyticsSDK *sharedInstance = nil;
 
@@ -1076,7 +1075,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             dispatch_async(serialQueue, ^{
                 NSDate *destDate;
                 if ([time isKindOfClass:[NSString class]] && time.length > 0) {
-                    destDate = [self->_timeFormatter dateFromString:time];
+                    destDate = [self.timeFormatter dateFromString:time];
                 }
                 [self h5track:event_name properties:dic withType:type withTime:destDate];
             });
@@ -1097,13 +1096,13 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     
     NSString *timeStamp;
     if (eventData.eventTime == nil) {
-        timeStamp = [self->_timeFormatter stringFromDate:[NSDate date]];
+        timeStamp = [_timeFormatter stringFromDate:[NSDate date]];
     } else {
-        timeStamp = [self->_timeFormatter stringFromDate:eventData.eventTime];
+        timeStamp = [_timeFormatter stringFromDate:eventData.eventTime];
     }
     
     if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK]) {
-        properties[@"#app_version"] = self->_deviceInfo.appVersion;
+        properties[@"#app_version"] = self.deviceInfo.appVersion;
         properties[@"#network_type"] = [[self class] getNetWorkStates];
         if (self.relaunchInBackGround) {
             properties[@"#relaunched_in_background"] = @YES;
