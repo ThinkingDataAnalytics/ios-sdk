@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import <ThinkingSDK/ThinkingAnalyticsSDK.h>
+#import "ThinkingAnalyticsSDK.h"
 
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
