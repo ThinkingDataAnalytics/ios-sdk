@@ -1,7 +1,9 @@
 #import "TDSqliteDataQueue.h"
-#import "ThinkingAnalyticsSDKPrivate.h"
 #import <sqlite3.h>
+
+#import "TDLogging.h"
 #import "TDJSONUtil.h"
+#import "ThinkingAnalyticsSDKPrivate.h"
 
 #define MAX_CACHE_SIZE 10000
 
@@ -69,6 +71,7 @@
         sqlite3_exec(_database, [query UTF8String], NULL, NULL, &errMsg);
         sqlite3_exec(_database, [query2 UTF8String], NULL, NULL, &errMsg);
     } @catch (NSException *exception) {
+        TDLogError(@"addColumn: %@", exception);
     }
 }
 
