@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
  [[ThinkingAnalyticsSDK sharedInstance] track:@"some_event"];
  ```
  ## 详细文档
- http://doc.thinkinggame.cn/tgamanual/installation/ios_sdk_installation.html
+ http://doc.thinkingdata.cn/tgamanual/installation/ios_sdk_installation.html
 
  */
 @interface ThinkingAnalyticsSDK : NSObject
@@ -315,6 +315,8 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  开启自动采集事件功能
 
  @param eventType 枚举 ThinkingAnalyticsAutoTrackEventType 的列表，表示需要开启的自动采集事件类型
+ 
+ 详细文档 http://doc.thinkingdata.cn/tgamanual/installation/ios_sdk_installation/ios_sdk_autotrack.html
  */
 - (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType;
 
@@ -340,11 +342,13 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 - (void)ignoreViewType:(Class)aClass;
 
 /**
- H5 与原生 APP SDK 打通
+ H5 与原生 APP SDK 打通，配合 addWebViewUserAgent 接口使用
 
- @param webView 需要打通H5的webView控件，支持 `WKWebView`、`UIWebView`
+ @param webView 需要打通H5的控件，支持 `WKWebView`、`UIWebView`
  @param request NSURLRequest 网络请求
  @return YES：处理此次请求 NO：未处理此次请求
+ 
+ 详细文档 http://doc.thinkingdata.cn/tgamanual/installation/h5_app_integrate.html
  */
 - (BOOL)showUpWebView:(id)webView WithRequest:(NSURLRequest *)request;
 
