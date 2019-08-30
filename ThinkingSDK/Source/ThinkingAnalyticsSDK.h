@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
  [ThinkingAnalyticsSDK startWithAppId:@"YOUR_APPID" withUrl:@"YOUR_SERVER_URL" withConfig:config];
  ```
  */
-@interface TDConfig : NSObject <NSCopying>
+@interface TDConfig : NSObject
 
 /**
  初始化配置 YES：采集后台自启事件 NO：不采集后台自启事件

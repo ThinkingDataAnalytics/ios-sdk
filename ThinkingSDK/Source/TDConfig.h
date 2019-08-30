@@ -13,7 +13,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
     ThinkingNetworkTypeALL      = 0xFF,
 };
 
-@interface TDConfig ()
+@interface TDConfig () <NSCopying>
 
 + (TDConfig *)defaultTDConfig;
 - (void)setNetworkType:(ThinkingAnalyticsNetworkType)type;
