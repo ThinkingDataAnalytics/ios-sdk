@@ -172,7 +172,6 @@
 			isa = PBXGroup;
 			children = (
 				F3D1902E230137600043D595 /* Source */,
-				F3D19017230136B30043D595 /* ThinkingSDK.h */,
 				F3D19018230136B30043D595 /* Info.plist */,
 			);
 			path = ThinkingSDK;
@@ -206,6 +205,7 @@
 				F3D1904C230137600043D595 /* TDConfig.h */,
 				F3D19031230137600043D595 /* TDConfig.m */,
 				F3D1903D230137600043D595 /* ThinkingAnalyticsSDKPrivate.h */,
+				F3D19017230136B30043D595 /* ThinkingSDK.h */,
 				F3D19054230137600043D595 /* ThinkingAnalyticsSDK.h */,
 				F3D1903A230137600043D595 /* ThinkingAnalyticsSDK.m */,
 				F3247C9923176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m */,
