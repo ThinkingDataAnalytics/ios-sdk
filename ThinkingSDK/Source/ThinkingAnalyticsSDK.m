@@ -30,7 +30,7 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 
 @end
 
-@interface ThinkingAnalyticsSDK()
+@interface ThinkingAnalyticsSDK ()
 
 @property (atomic, strong) TDNetwork *network;
 @property (atomic, strong) TDDeviceInfo *deviceInfo;

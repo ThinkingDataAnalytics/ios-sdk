@@ -1,6 +1,6 @@
-#import <Foundation/Foundation.h>
 #import "ThinkingAnalyticsSDK.h"
 
+#import <Foundation/Foundation.h>
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <SystemConfiguration/SystemConfiguration.h>
@@ -42,7 +42,7 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 }
 #endif
 
-@interface ThinkingAnalyticsSDK()
+@interface ThinkingAnalyticsSDK ()
 
 @property (atomic, copy) NSString *appid;
 @property (atomic, copy) NSString *serverURL;

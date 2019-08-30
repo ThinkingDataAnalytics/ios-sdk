@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+
 #import "ThinkingAnalyticsSDK.h"
 
 @class TDLogMessage;

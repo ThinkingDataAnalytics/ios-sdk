@@ -1,5 +1,5 @@
 #import "TDNetwork.h"
-#import "ThinkingAnalyticsSDKPrivate.h"
+
 #import "NSData+TDGzip.h"
 #import "TDJSONUtil.h"
 #import "TDLogging.h"

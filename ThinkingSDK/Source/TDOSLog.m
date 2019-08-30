@@ -1,9 +1,6 @@
 #import "TDOSLog.h"
-#import <os/log.h>
 
-#if !__has_feature(objc_arc)
-#error This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
-#endif
+#import <os/log.h>
 
 #ifndef DDLOG_MAX_QUEUE_SIZE
     #define DDLOG_MAX_QUEUE_SIZE 1000 

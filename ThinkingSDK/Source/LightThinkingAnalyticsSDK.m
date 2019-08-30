@@ -1,4 +1,3 @@
-
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "TDLogging.h"
 
