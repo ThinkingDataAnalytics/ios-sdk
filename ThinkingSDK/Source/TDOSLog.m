@@ -123,7 +123,7 @@ static dispatch_semaphore_t _queueSemaphore;
 @implementation TDLogMessage
 
 - (instancetype)initWithMessage:(NSString *)message
-                           type:(TDLoggingLevel)type{
+                           type:(TDLoggingLevel)type {
     if ((self = [super init])) {
         _message      = [message copy];
         _type         = type;

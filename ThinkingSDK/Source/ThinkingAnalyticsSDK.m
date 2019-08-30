@@ -55,8 +55,7 @@ static NSString *radioInfo;
 static dispatch_queue_t serialQueue;
 static dispatch_queue_t networkQueue;
 
-+ (nullable ThinkingAnalyticsSDK *)sharedInstance
-{
++ (nullable ThinkingAnalyticsSDK *)sharedInstance {
     if (instances.count == 0) {
         TDLogError(@"sharedInstance called before creating a Thinking instance");
         return nil;
@@ -65,8 +64,7 @@ static dispatch_queue_t networkQueue;
     return instances[defaultProjectAppid];
 }
 
-+ (ThinkingAnalyticsSDK *)sharedInstanceWithAppid:(NSString *)appid
-{
++ (ThinkingAnalyticsSDK *)sharedInstanceWithAppid:(NSString *)appid {
     if (instances[appid]) {
         return instances[appid];
     } else {
@@ -85,13 +83,11 @@ static dispatch_queue_t networkQueue;
     return [[self alloc] initWithAppkey:appId withServerURL:url withConfig:config];
 }
 
-+ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url
-{
++ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url {
     return [ThinkingAnalyticsSDK startWithAppId:appId withUrl:url withConfig:nil];
 }
 
-- (instancetype)init:(NSString *)appID
-{
+- (instancetype)init:(NSString *)appID {
     if (self = [super init]) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
@@ -154,7 +150,7 @@ static dispatch_queue_t networkQueue;
     return self;
 }
 
-- (instancetype)initWithAppkey:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config{
+- (instancetype)initWithAppkey:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config {
     if (self = [self init:appid]) {
         self.serverURL = [NSString stringWithFormat:@"%@/sync",serverURL];
         self.appid = appid;

@@ -21,8 +21,7 @@
     [super viewDidLoad];
 }
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
+- (id)initWithStyle:(UITableViewStyle)style {
     if ((self = [super initWithStyle:style]))
     {
         self.apis = [NSMutableArray array];
@@ -30,14 +29,12 @@
     return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self reloadTitle];
 }
 
-- (void)reloadTitle
-{
+- (void)reloadTitle {
     if (self.getTitleBlock != nil)
     {
         self.title = self.getTitleBlock(self);
@@ -46,18 +43,15 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(__unused UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(__unused UITableView *)tableView {
     return 1;
 }
 
-- (NSInteger)tableView:(__unused UITableView *)tableView numberOfRowsInSection:(__unused NSInteger)section
-{
+- (NSInteger)tableView:(__unused UITableView *)tableView numberOfRowsInSection:(__unused NSInteger)section {
     return (NSInteger)[self.apis count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
@@ -75,8 +69,7 @@
 
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [[self.apis objectAtIndex:(NSUInteger)indexPath.row] executeWithViewController:self];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

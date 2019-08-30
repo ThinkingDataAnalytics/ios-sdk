@@ -3,8 +3,7 @@
 
 @implementation TDJSONUtil
 
-+ (NSString *)JSONStringForObject:(id)obj
-{
++ (NSString *)JSONStringForObject:(id)obj {
     NSData *data = [self JSONSerializeForObject:obj];
     if (!data) {
         return nil;
@@ -57,15 +56,13 @@
     return s;
 }
 
-+ (void)array:(NSMutableArray *)array addObject:(id)object
-{
++ (void)array:(NSMutableArray *)array addObject:(id)object {
     if (object) {
         [array addObject:object];
     }
 }
 
-+ (void)dictionary:(NSMutableDictionary<NSString *, id> *)dictionary setObject:(id)object forKey:(id<NSCopying>)key
-{
++ (void)dictionary:(NSMutableDictionary<NSString *, id> *)dictionary setObject:(id)object forKey:(id<NSCopying>)key {
     if (object && key) {
         dictionary[key] = object;
     }

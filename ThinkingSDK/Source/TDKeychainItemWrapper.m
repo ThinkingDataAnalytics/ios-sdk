@@ -42,8 +42,7 @@ static NSString * const TDDeviceID = @"com.thinkingddata.analytics.deviceid";
     [self saveItem:string forKey:TDDeviceID];
 }
 
-- (NSString *)dataForKey:(NSString *)key
-{
+- (NSString *)dataForKey:(NSString *)key {
     NSMutableDictionary *attributes = [self keychainQueryWithAccount:key];
     attributes[(__bridge id)kSecMatchLimit] = (__bridge id)(kSecMatchLimitOne);
     attributes[(__bridge id)kSecReturnData] = (__bridge id)(kCFBooleanTrue);
@@ -89,13 +88,13 @@ static NSString * const TDDeviceID = @"com.thinkingddata.analytics.deviceid";
     }
 }
 
-- (NSString *)getInstallTimesOld{
+- (NSString *)getInstallTimesOld {
     if (self.oldKeychain)
         return [NSString stringWithFormat:@"%@",[self.oldKeychain objectForKey:@"thinking_setup_index"]];
     return nil;
 }
 
-- (NSString *)getDeviceIdOld{
+- (NSString *)getDeviceIdOld {
     if (self.oldKeychain)
         return [self.oldKeychain objectForKey:@"thinking_device_id"];
     return nil;

@@ -6,8 +6,7 @@
 
 @implementation TDNetwork
 
-+ (NSURLSession *)sharedURLSession
-{
++ (NSURLSession *)sharedURLSession {
     static NSURLSession *sharedSession = nil;
     @synchronized(self) {
         if (sharedSession == nil) {

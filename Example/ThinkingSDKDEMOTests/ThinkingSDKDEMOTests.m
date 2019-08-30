@@ -461,7 +461,7 @@
     OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
     
     static NSString *testStr = @"testStr0";
-    [_mockThinkingInstance registerDynamicSuperProperties:^NSDictionary * _Nonnull{
+    [_mockThinkingInstance registerDynamicSuperProperties:^NSDictionary * _Nonnull {
         return @{@"test":testStr};
     }];
     [_mockThinkingInstance track:@"test"];
@@ -561,7 +561,7 @@
     [mockLightInstance track:@"track"];
     
     static NSString *testStr = @"testStr0";
-    [mockLightInstance registerDynamicSuperProperties:^NSDictionary * _Nonnull{
+    [mockLightInstance registerDynamicSuperProperties:^NSDictionary * _Nonnull {
         return @{@"test":testStr};
     }];
     [mockLightInstance track:@"test"];

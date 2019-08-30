@@ -63,13 +63,11 @@
     [[ThinkingAnalyticsSDK sharedInstance] clearSuperProperties];
 }
 
-+ (void)testTimedEvent
-{
++ (void)testTimedEvent {
     [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"TimedEvent"];
 }
 
-+ (void)testTrackEventEnd
-{
++ (void)testTrackEventEnd {
     [[ThinkingAnalyticsSDK sharedInstance] track:@"TimedEvent"];
 }
 

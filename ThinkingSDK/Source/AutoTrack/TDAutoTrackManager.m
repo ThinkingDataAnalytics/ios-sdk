@@ -69,8 +69,7 @@
     [self trackViewController:controller];
 }
 
-- (UIViewController *)viewControllerForView:(UIView *)view
-{
+- (UIViewController *)viewControllerForView:(UIView *)view {
     UIResponder *responder = view.nextResponder;
     while (responder) {
         if ([responder isKindOfClass:[UIViewController class]]) {
@@ -358,8 +357,7 @@
     [self trackEventView:view withIndexPath:nil];
 }
 
-+ (UIViewController *)topPresentedViewController
-{
++ (UIViewController *)topPresentedViewController {
     UIViewController *controller = [ThinkingAnalyticsSDK sharedUIApplication].keyWindow.rootViewController;
     while (controller.presentedViewController) {
         controller = controller.presentedViewController;

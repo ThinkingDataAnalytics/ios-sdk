@@ -20,8 +20,7 @@
 
 @implementation AppDelegate (TDUI)
 
-- (UIViewController *)createRootViewController
-{
+- (UIViewController *)createRootViewController {
     TrackAPIVC *trackController = [self trackAPIVCWithApis:[self manageAPIs]];
     trackController.getTitleBlock = ^NSString * (__unused UIViewController *controller)
     {
@@ -30,15 +29,13 @@
     return [[UINavigationController alloc] initWithRootViewController:trackController];
 }
 
-- (TrackAPIVC *)trackAPIVCWithApis:(NSArray *)commands
-{
+- (TrackAPIVC *)trackAPIVCWithApis:(NSArray *)commands {
     TrackAPIVC *apiController = [[TrackAPIVC alloc] initWithStyle:UITableViewStylePlain];
     [apiController.apis addObjectsFromArray:commands];
     return apiController;
 }
 
-- (void)setBackButton:(UIViewController *)controller
-{
+- (void)setBackButton:(UIViewController *)controller {
     controller.navigationItem.backBarButtonItem =
     [[UIBarButtonItem alloc] initWithTitle:@"Back"
                                      style:UIBarButtonItemStyleDone
@@ -46,8 +43,7 @@
                                     action:nil];
 }
 
-- (NSArray *)manageAPIs
-{
+- (NSArray *)manageAPIs {
     NSMutableArray *commands = [NSMutableArray array];
     [commands addObject:
      [APIEntry commandWithName:@"Track"
