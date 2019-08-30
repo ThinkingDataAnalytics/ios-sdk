@@ -291,7 +291,7 @@
     OCMVerifyAll(_mockThinkingInstance);
 }
 
-- (void)test11 {
+- (void)test11optOutTrackingAndDeleteUser {
     [_mockThinkingInstance optInTracking];
     void (^flushImmediately)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
@@ -304,7 +304,7 @@
     [self waitForThinkingQueues];
 }
 
-- (void)test11OptIn {
+- (void)test12OptIn {
     [_mockThinkingInstance optInTracking];
     OCMExpect([_mockThinkingInstance saveEventsData:[OCMArg any]]);
     [_mockThinkingInstance track:@"test"];
@@ -315,8 +315,7 @@
     OCMVerifyAll(_mockThinkingInstance);
 }
 
-- (void)test12Identify {
-    
+- (void)test13Identify {
     NSMutableArray *dataArrays = [NSMutableArray array];
     void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
@@ -368,7 +367,7 @@
     
 }
 
-- (void)test13IdentifyArchive {
+- (void)test14IdentifyArchive {
     [_mockThinkingInstance identify:@"distinct1"];
     [self waitForThinkingQueues];
     
@@ -382,14 +381,13 @@
     XCTAssertEqualObjects(distinct1, @"distinctnew1");
 }
 
-- (void)test14Json {
+- (void)test15Json {
     NSDictionary *dic = @{@"key":@"value", @"number": @3, @"date": @"2012-06-24 11:28:10.124", @"float": @1.3, @"double": @1.12345678 , @"bool": @YES};
     NSString *jsonStr = [TDJSONUtil JSONStringForObject:dic];
     XCTAssertEqualObjects(@"{\"bool\":true,\"number\":3,\"key\":\"value\",\"float\":1.3,\"double\":1.12345678,\"date\":\"2012-06-24 11:28:10.124\"}", jsonStr);
 }
 
-- (void)test15Superproperty {
-    
+- (void)test16Superproperty {
     NSMutableArray *dataArrays = [NSMutableArray array];
     void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
@@ -448,7 +446,7 @@
     [self waitForThinkingQueues];
 }
 
-- (void)test16DynamicSuperProperties {
+- (void)test17DynamicSuperProperties {
     __block int callTimes = 0;
     void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
@@ -474,7 +472,7 @@
     [self waitForThinkingQueues];
 }
 
-- (void)test17LightInstanceMulti {
+- (void)test18LightInstanceMulti {
     NSString *appid1 = @"kAPPID1";
     NSString *appid2 = @"kAPPID2";
     ThinkingAnalyticsSDK *thinkingSDK1 = [ThinkingAnalyticsSDK startWithAppId:appid1 withUrl:@"kURL1"];
@@ -491,7 +489,7 @@
     XCTAssertEqual(thinkingSDK1.getDistinctId, thinkingSDK2.getDistinctId);
 }
 
-- (void)test18LightInstance {
+- (void)test19LightInstance {
     ThinkingAnalyticsSDK *thinkingSDK1 = [ThinkingAnalyticsSDK startWithAppId:@"appid" withUrl:@"kURL1"];
     ThinkingAnalyticsSDK *lightInstance1 = [thinkingSDK1 createLightInstance];
     id mockLightInstance = OCMPartialMock(lightInstance1);
