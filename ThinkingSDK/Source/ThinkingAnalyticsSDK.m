@@ -1,4 +1,3 @@
-#import "ThinkingAnalyticsSDK.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 
 #import <objc/runtime.h>

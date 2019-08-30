@@ -3,7 +3,6 @@
 
 #import "TDLogging.h"
 #import "TDJSONUtil.h"
-#import "ThinkingAnalyticsSDKPrivate.h"
 
 #define MAX_CACHE_SIZE 10000
 
