@@ -190,7 +190,7 @@
 		F3D1902E230137600043D595 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				F3D1903E230137600043D595 /* autotrack */,
+				F3D1903E230137600043D595 /* AutoTrack */,
 				F3D1902F230137600043D595 /* TDKeychainItemWrapper.h */,
 				F3D1904E230137600043D595 /* TDKeychainItemWrapper.m */,
 				F3D1904D230137600043D595 /* TDDeviceInfo.h */,
@@ -219,7 +219,7 @@
 			path = Source;
 			sourceTree = "<group>";
 		};
-		F3D1903E230137600043D595 /* autotrack */ = {
+		F3D1903E230137600043D595 /* AutoTrack */ = {
 			isa = PBXGroup;
 			children = (
 				F3D1903F230137600043D595 /* TDAutoTrackManager.h */,
@@ -233,7 +233,7 @@
 				F3D19048230137600043D595 /* UIApplication+AutoTrack.h */,
 				F3D19043230137600043D595 /* UIApplication+AutoTrack.m */,
 			);
-			path = autotrack;
+			path = AutoTrack;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
