@@ -7,16 +7,16 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
-		F30FC01723141D38003335F8 /* ThinkingSDKFramework */ = {
+		F30FC01723141D38003335F8 /* ThinkingSDK-Universal */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = F30FC01A23141D38003335F8 /* Build configuration list for PBXAggregateTarget "ThinkingSDKFramework" */;
+			buildConfigurationList = F30FC01A23141D38003335F8 /* Build configuration list for PBXAggregateTarget "ThinkingSDK-Universal" */;
 			buildPhases = (
 				F30FC01D23141D42003335F8 /* ShellScript */,
 			);
 			dependencies = (
 				F30FC01C23141D40003335F8 /* PBXTargetDependency */,
 			);
-			name = ThinkingSDKFramework;
+			name = "ThinkingSDK-Universal";
 			productName = ThinkingSDKFramework;
 		};
 /* End PBXAggregateTarget section */
@@ -338,7 +338,7 @@
 			targets = (
 				F3D19013230136B30043D595 /* ThinkingSDK */,
 				F3D1901C230136B30043D595 /* ThinkingSDKTests */,
-				F30FC01723141D38003335F8 /* ThinkingSDKFramework */,
+				F30FC01723141D38003335F8 /* ThinkingSDK-Universal */,
 			);
 		};
 /* End PBXProject section */
@@ -376,7 +376,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\nUNIVERSAL_BUILD_FOLDER=./build/\nmkdir -p \"${UNIVERSAL_BUILD_FOLDER}\"\nrm -rf \"${UNIVERSAL_BUILD_FOLDER}/${PROJECT_NAME}.framework\"\n\nTARGET=${TARGET_NAME%-Universal}\n\nxcodebuild -target \"${TARGET}\" ONLY_ACTIVE_ARCH=NO -configuration \"${CONFIGURATION}\" -sdk iphoneos BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\nxcodebuild -target \"${TARGET}\" ONLY_ACTIVE_ARCH=NO -configuration \"${CONFIGURATION}\" -sdk iphonesimulator BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\n\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_BUILD_FOLDER}/\"\n\nlipo -create -output \"${UNIVERSAL_BUILD_FOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n\n\nRESOURCES_INPUT_FOLDER=\"./ThinkingSDK/TDAnalyticsSDK.bundle\"\nif [ -d \"${RESOURCES_INPUT_FOLDER}\" ]; then\nRESOURCES_OUTPUT_FOLDER=\"${UNIVERSAL_BUILD_FOLDER}/ThinkingSDK.framework/TDAnalyticsSDK.bundle\"\nrm -rf \"${RESOURCES_OUTPUT_FOLDER}\"\ncp -R \"${RESOURCES_INPUT_FOLDER}\" \"${RESOURCES_OUTPUT_FOLDER}\"\nfi\n";
+			shellScript = "set -e\n\nif [ -n \"$TD_MULTIPLATFORM_BUILD_IN_PROGRESS\" ]; then\nexit 0\nfi\nexport TD_MULTIPLATFORM_BUILD_IN_PROGRESS=1\n\nUNIVERSAL_BUILD_FOLDER=./build/\nmkdir -p \"${UNIVERSAL_BUILD_FOLDER}\"\nrm -rf \"${UNIVERSAL_BUILD_FOLDER}/${PROJECT_NAME}.framework\"\n\nTARGET=${TARGET_NAME%-Universal}\n\nxcodebuild -target \"${TARGET}\" ONLY_ACTIVE_ARCH=NO -configuration \"${CONFIGURATION}\" -sdk iphoneos BUILD_DIR=\"${BUILD_DIR}\" OBJROOT=\"$OBJROOT/DependentBuilds\" BUILD_ROOT=\"${BUILD_ROOT}\"\nxcodebuild -target \"${TARGET}\" ONLY_ACTIVE_ARCH=NO -configuration \"${CONFIGURATION}\" -sdk iphonesimulator BUILD_DIR=\"${BUILD_DIR}\" OBJROOT=\"$OBJROOT/DependentBuilds\" BUILD_ROOT=\"${BUILD_ROOT}\"\n\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_BUILD_FOLDER}/\"\n\nlipo -create -output \"${UNIVERSAL_BUILD_FOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n\nRESOURCES_INPUT_FOLDER=\"./ThinkingSDK/TDAnalyticsSDK.bundle\"\nif [ -d \"${RESOURCES_INPUT_FOLDER}\" ]; then\nRESOURCES_OUTPUT_FOLDER=\"${UNIVERSAL_BUILD_FOLDER}/ThinkingSDK.framework/TDAnalyticsSDK.bundle\"\nrm -rf \"${RESOURCES_OUTPUT_FOLDER}\"\ncp -R \"${RESOURCES_INPUT_FOLDER}\" \"${RESOURCES_OUTPUT_FOLDER}\"\nfi\n\nopen \"${UNIVERSAL_BUILD_FOLDER}\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -648,7 +648,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F30FC01A23141D38003335F8 /* Build configuration list for PBXAggregateTarget "ThinkingSDKFramework" */ = {
+		F30FC01A23141D38003335F8 /* Build configuration list for PBXAggregateTarget "ThinkingSDK-Universal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F30FC01823141D38003335F8 /* Debug */,
