@@ -18,9 +18,9 @@
 
 @interface TDAutoTrackManager ()
 
-@property (strong, atomic) NSMutableDictionary<NSString*, id> *autoTrackOptions;
+@property (strong, atomic) NSMutableDictionary<NSString *, id> *autoTrackOptions;
 @property (strong, nonatomic, nonnull) dispatch_semaphore_t trackOptionLock;
-@property (copy, atomic) NSString* referrerViewControllerUrl;
+@property (copy, atomic) NSString *referrerViewControllerUrl;
 
 @end
 
@@ -180,8 +180,8 @@
     return ![ignoreClasses containsObject:NSStringFromClass(aClass)];
 }
 
-- (ThinkingAnalyticsAutoTrackEventType)autoTrackOptionForAppid:(NSString *) appid{
-    return (ThinkingAnalyticsAutoTrackEventType)[[self.autoTrackOptions objectForKey:appid]integerValue];
+- (ThinkingAnalyticsAutoTrackEventType)autoTrackOptionForAppid:(NSString *)appid {
+    return (ThinkingAnalyticsAutoTrackEventType)[[self.autoTrackOptions objectForKey:appid] integerValue];
 }
 
 - (void)swizzleSelected:(UIView *)view delegate:(id)delegate {
@@ -263,10 +263,10 @@
         UITabBar *tabbar = (UITabBar *)view;
         position = [NSString stringWithFormat: @"%ld", (long)[tabbar.items indexOfObject:tabbar.selectedItem]];
     } else if ([view isKindOfClass:[UISegmentedControl class]]){
-        UISegmentedControl* segment = (UISegmentedControl *)view;
+        UISegmentedControl *segment = (UISegmentedControl *)view;
         position = [NSString stringWithFormat:@"%ld", (long)segment.selectedSegmentIndex];
     } else if ([view isKindOfClass:[UIProgressView class]]) {
-        UIProgressView *progress = (UIProgressView*)view;
+        UIProgressView *progress = (UIProgressView *)view;
         position = [NSString stringWithFormat:@"%f", progress.progress];
     } else if ([view isKindOfClass:[UIPageControl class]]) {
         UIPageControl *pageControl = (UIPageControl *)view;
@@ -320,7 +320,7 @@
         UISegmentedControl *segment = (UISegmentedControl *)obj;
         text =  [NSString stringWithFormat:@"%@", [segment titleForSegmentAtIndex:segment.selectedSegmentIndex]];
     } else if ([obj isKindOfClass:[UISwitch class]]) {
-        UISwitch *switchItem = (UISwitch*)obj;
+        UISwitch *switchItem = (UISwitch *)obj;
         text = switchItem.on ? @"on" : @"off";
     } else if ([obj isKindOfClass:[UISlider class]]) {
         UISlider *slider = (UISlider *)obj;
@@ -368,7 +368,7 @@
     return controller;
 }
 
-- (void)trackEventView:(UIView *)view withIndexPath:(NSIndexPath*)indexPath {
+- (void)trackEventView:(UIView *)view withIndexPath:(NSIndexPath *)indexPath {
     if (view.thinkingAnalyticsIgnoreView) {
         return;
     }
@@ -387,7 +387,7 @@
         }
     }
     
-    NSDictionary* propDict = view.thinkingAnalyticsViewProperties;
+    NSDictionary *propDict = view.thinkingAnalyticsViewProperties;
     if ([propDict isKindOfClass:[NSDictionary class]]) {
         [properties addEntriesFromDictionary:propDict];
     }
@@ -456,7 +456,7 @@
             if ([instance isViewTypeIgnored:[view class]]) {
                 continue;
             }
-            NSDictionary* ignoreViews = view.thinkingAnalyticsIgnoreViewWithAppid;
+            NSDictionary *ignoreViews = view.thinkingAnalyticsIgnoreViewWithAppid;
             if (ignoreViews != nil && [[ignoreViews objectForKey:appid] isKindOfClass:[NSNumber class]]) {
                 BOOL ignore = [[ignoreViews objectForKey:appid] boolValue];
                 if (ignore)
@@ -467,12 +467,12 @@
                 continue;
             }
             
-            NSDictionary* viewIDs = view.thinkingAnalyticsViewIDWithAppid;
+            NSDictionary *viewIDs = view.thinkingAnalyticsViewIDWithAppid;
             if (viewIDs != nil && [viewIDs objectForKey:appid]) {
                 trackProperties[TD_EVENT_PROPERTY_ELEMENT_ID] = [viewIDs objectForKey:appid];
             }
             
-            NSDictionary* viewProperties = view.thinkingAnalyticsViewPropertiesWithAppid;
+            NSDictionary *viewProperties = view.thinkingAnalyticsViewPropertiesWithAppid;
             if (viewProperties != nil && [viewProperties objectForKey:appid]) {
                 NSDictionary *properties = [viewProperties objectForKey:appid];
                 if ([properties isKindOfClass:[NSDictionary class]]) {

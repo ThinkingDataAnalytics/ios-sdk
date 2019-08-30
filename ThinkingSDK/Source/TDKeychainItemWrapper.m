@@ -81,7 +81,7 @@ static NSString * const TDDeviceID = @"com.thinkingddata.analytics.deviceid";
         keychainErr = SecItemCopyMatching((__bridge CFDictionaryRef)returnDict, &cfXmlData);
         
         if (keychainErr == noErr) {
-            NSData *xmlData = (__bridge_transfer NSData *) cfXmlData;
+            NSData *xmlData = (__bridge_transfer NSData *)cfXmlData;
             NSPropertyListFormat fmt;
             NSDictionary *resultsInfo = [NSPropertyListSerialization propertyListWithData:xmlData options:NSPropertyListMutableContainersAndLeaves format:&fmt error:nil];
             self.oldKeychain = resultsInfo;

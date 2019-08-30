@@ -56,7 +56,7 @@
     return self;
 }
 
-- (void)addColumn:(NSString*)appid {
+- (void)addColumn:(NSString *)appid {
     int epochInterval = [[NSDate date] timeIntervalSince1970];
     NSString *query;
     if (appid.length > 0 && [appid isKindOfClass: [NSString class]])
@@ -93,8 +93,8 @@
 
 - (void)delExpiredData {
     NSTimeInterval oneDay = 24*60*60*1;
-    NSDate* theDate = [[NSDate date] initWithTimeIntervalSinceNow: -oneDay * 10];
-    int expirationDate = [theDate timeIntervalSince1970];
+    NSDate *date = [[NSDate date] initWithTimeIntervalSinceNow: -oneDay * 10];
+    int expirationDate = [date timeIntervalSince1970];
     [self removeOldRecords:expirationDate];
 }
 
@@ -106,7 +106,7 @@
     
     NSString *jsonStr = [TDJSONUtil JSONStringForObject:obj];
     NSTimeInterval epochInterval = [[NSDate date] timeIntervalSince1970];
-    NSString* query = @"INSERT INTO TDData(content, appid, creatAt) values(?, ?, ?)";
+    NSString *query = @"INSERT INTO TDData(content, appid, creatAt) values(?, ?, ?)";
     sqlite3_stmt *insertStatement;
     int rc;
     rc = sqlite3_prepare_v2(_database, [query UTF8String],-1, &insertStatement, nil);
@@ -130,16 +130,16 @@
         return @[];
     }
     
-    NSMutableArray* contentArray = [[NSMutableArray alloc] init];
-    NSString* query = @"SELECT content FROM TDData where appid=? ORDER BY id ASC LIMIT ?";
+    NSMutableArray *contentArray = [[NSMutableArray alloc] init];
+    NSString *query = @"SELECT content FROM TDData where appid=? ORDER BY id ASC LIMIT ?";
 
-    sqlite3_stmt* stmt = NULL;
+    sqlite3_stmt *stmt = NULL;
     int rc = sqlite3_prepare_v2(_database, [query UTF8String], -1, &stmt, NULL);
     if (rc == SQLITE_OK) {
         sqlite3_bind_text(stmt, 1, [appid UTF8String], -1, SQLITE_TRANSIENT);
         sqlite3_bind_int(stmt, 2, (int)recordSize);
         while (sqlite3_step(stmt) == SQLITE_ROW) {
-            char* jsonChar = (char*)sqlite3_column_text(stmt, 0);
+            char *jsonChar = (char *)sqlite3_column_text(stmt, 0);
             if (!jsonChar) {
                 return nil;
             }
@@ -159,7 +159,7 @@
 }
 
 - (void)removeFirstRecords:(NSUInteger)recordSize withAppid:(NSString *)appid {
-    NSString* query;
+    NSString *query;
     
     if (appid.length == 0) {
         query = @"DELETE FROM TDData WHERE id IN (SELECT id FROM TDData ORDER BY id ASC LIMIT ?)";
@@ -167,7 +167,7 @@
         query = @"DELETE FROM TDData WHERE id IN (SELECT id FROM TDData where appid=? ORDER BY id ASC LIMIT ?)";
     }
     
-    sqlite3_stmt* stmt = NULL;
+    sqlite3_stmt *stmt = NULL;
     int rc = sqlite3_prepare_v2(_database, [query UTF8String], -1, &stmt, NULL);
     
     if (rc == SQLITE_OK) {
@@ -184,9 +184,9 @@
 }
 
 - (BOOL)removeOldRecords:(int)timestamp {
-    NSString* query = @"DELETE FROM TDData WHERE creatAt<?";
+    NSString *query = @"DELETE FROM TDData WHERE creatAt<?";
     
-    sqlite3_stmt* stmt = NULL;
+    sqlite3_stmt *stmt = NULL;
     int rc = sqlite3_prepare_v2(_database, [query UTF8String], -1, &stmt, NULL);
     if (rc == SQLITE_OK) {
         sqlite3_bind_int(stmt, 1, (int)timestamp);
@@ -202,7 +202,7 @@
 }
 
 - (NSInteger)sqliteCountForAppid:(NSString *)appid {
-    NSString* query;
+    NSString *query;
     NSInteger count = 0;
     if (appid == nil) {
         query = @"select count(*) from TDData";
@@ -210,7 +210,7 @@
         query = @"select count(*) from TDData where appid=? ";
     }
     
-    sqlite3_stmt* stmt = NULL;
+    sqlite3_stmt *stmt = NULL;
     int rc = sqlite3_prepare_v2(_database, [query UTF8String], -1, &stmt, NULL);
     
     if (rc == SQLITE_OK) {
@@ -230,7 +230,7 @@
     if ([appid isKindOfClass:[NSString class]] && appid.length > 0) {
         NSString *query = @"DELETE FROM TDData where appid=? ";
         
-        sqlite3_stmt* stmt = NULL;
+        sqlite3_stmt *stmt = NULL;
         int rc = sqlite3_prepare_v2(_database, [query UTF8String], -1, &stmt, NULL);
         if (rc == SQLITE_OK) {
             sqlite3_bind_text(stmt, 1, [appid UTF8String], -1, SQLITE_TRANSIENT);

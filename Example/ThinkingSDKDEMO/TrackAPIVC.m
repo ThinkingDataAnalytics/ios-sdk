@@ -11,7 +11,7 @@
 
 @interface TrackAPIVC ()
 
-@property(nonatomic,readwrite,retain) NSMutableArray* apis;
+@property (nonatomic, strong) NSMutableArray *apis;
 
 @end
 
@@ -19,7 +19,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -47,27 +46,27 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(__unused UITableView*)tableView
+- (NSInteger)numberOfSectionsInTableView:(__unused UITableView *)tableView
 {
     return 1;
 }
 
-- (NSInteger)tableView:(__unused UITableView*)tableView numberOfRowsInSection:(__unused NSInteger)section
+- (NSInteger)tableView:(__unused UITableView *)tableView numberOfRowsInSection:(__unused NSInteger)section
 {
     return (NSInteger)[self.apis count];
 }
 
-- (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString* CellIdentifier = @"Cell";
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (cell == nil)
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                       reuseIdentifier:CellIdentifier];
     }
-    APIEntry* command = [self.apis objectAtIndex:(NSUInteger)indexPath.row];
+    APIEntry *command = [self.apis objectAtIndex:(NSUInteger)indexPath.row];
     cell.textLabel.text = command.name;
     cell.accessoryType = command.accessoryType;
     
@@ -76,7 +75,7 @@
 
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [[self.apis objectAtIndex:(NSUInteger)indexPath.row] executeWithViewController:self];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

@@ -13,7 +13,7 @@ static NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position
 
 + (instancetype)sharedManager;
 - (void)trackEventView:(UIView *)view;
-- (void)trackEventView:(UIView *)view withIndexPath:(NSIndexPath*)indexPath;
+- (void)trackEventView:(UIView *)view withIndexPath:(NSIndexPath *)indexPath;
 - (void)viewControlWillAppear:(UIViewController *)controller;
 - (void)trackWithAppid:(NSString *)appid withOption:(ThinkingAnalyticsAutoTrackEventType)type;
 

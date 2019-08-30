@@ -12,8 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TrackAPIVC : UITableViewController
 
-@property(nonatomic,readonly,retain) NSMutableArray* apis;
-@property(nonatomic,readwrite,copy) NSString* (^getTitleBlock)(UIViewController* controller);
+@property (nonatomic, readonly, strong) NSMutableArray *apis;
+@property (nonatomic, copy) NSString * (^getTitleBlock)(UIViewController *controller);
 
 @end
 

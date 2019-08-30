@@ -18,7 +18,7 @@ userInfo:[NSDictionary dictionaryWithObject:errStr forKey:NSLocalizedDescription
 
 @implementation NSObject (TDSwizzle)
 
-+ (BOOL)td_swizzleMethod:(SEL)origSel_ withMethod:(SEL)altSel_ error:(NSError**)error_ {
++ (BOOL)td_swizzleMethod:(SEL)origSel_ withMethod:(SEL)altSel_ error:(NSError **)error_ {
     Method origMethod = class_getInstanceMethod(self, origSel_);
     if (!origMethod) {
         SetNSError(error_, @"original method %@ not found for class %@", NSStringFromSelector(origSel_), [self class]);
@@ -44,7 +44,7 @@ userInfo:[NSDictionary dictionaryWithObject:errStr forKey:NSLocalizedDescription
     return YES;
 }
 
-+ (BOOL)td_swizzleClassMethod:(SEL)origSel_ withClassMethod:(SEL)altSel_ error:(NSError**)error_ {
++ (BOOL)td_swizzleClassMethod:(SEL)origSel_ withClassMethod:(SEL)altSel_ error:(NSError **)error_ {
     return [object_getClass((id)self) td_swizzleMethod:origSel_ withMethod:altSel_ error:error_];
 }
 

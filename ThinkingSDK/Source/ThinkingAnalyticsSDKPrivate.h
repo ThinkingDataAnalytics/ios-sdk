@@ -73,7 +73,7 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 + (dispatch_queue_t)networkQueue;
 + (UIApplication *)sharedUIApplication;
 - (NSInteger)saveEventsData:(NSDictionary *)data;
-- (void)flushImmediately:(NSDictionary*)dataDic;
+- (void)flushImmediately:(NSDictionary *)dataDic;
 - (BOOL)hasDisabled;
 - (BOOL)checkEventProperties:(NSDictionary *)properties withEventType:(NSString *)eventType haveAutoTrackEvents:(BOOL)haveAutoTrackEvents;
 

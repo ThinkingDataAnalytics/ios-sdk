@@ -77,7 +77,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param config 初始化配置
  @return SDK实例
  */
-+ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url withConfig:(nullable TDConfig*)config;
++ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url withConfig:(nullable TDConfig *)config;
 
 /**
  Log级别
@@ -399,12 +399,12 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 /**
 设置控件元素ID
  */
-@property (copy,nonatomic) NSString* thinkingAnalyticsViewID;
+@property (copy,nonatomic) NSString *thinkingAnalyticsViewID;
 
 /**
  配置APPID的控件元素ID
  */
-@property (strong,nonatomic) NSDictionary* thinkingAnalyticsViewIDWithAppid;
+@property (strong,nonatomic) NSDictionary *thinkingAnalyticsViewIDWithAppid;
 
 /**
  忽略某个控件的点击事件
@@ -414,17 +414,17 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 /**
  配置APPID的忽略某个控件的点击事件
  */
-@property (strong,nonatomic) NSDictionary* thinkingAnalyticsIgnoreViewWithAppid;
+@property (strong,nonatomic) NSDictionary *thinkingAnalyticsIgnoreViewWithAppid;
 
 /**
  自定义控件点击事件的属性
  */
-@property (strong,nonatomic) NSDictionary* thinkingAnalyticsViewProperties;
+@property (strong,nonatomic) NSDictionary *thinkingAnalyticsViewProperties;
 
 /**
  配置APPID的自定义控件点击事件的属性
  */
-@property (strong,nonatomic) NSDictionary* thinkingAnalyticsViewPropertiesWithAppid;
+@property (strong,nonatomic) NSDictionary *thinkingAnalyticsViewPropertiesWithAppid;
 
 /**
  thinkingAnalyticsDelegate
@@ -447,14 +447,14 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 
  @return 事件属性
  */
-- (NSDictionary *) thinkingAnalytics_tableView:(UITableView *)tableView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
+- (NSDictionary *)thinkingAnalytics_tableView:(UITableView *)tableView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
  APPID UITableView 事件属性
  
  @return 事件属性
  */
-- (NSDictionary *) thinkingAnalyticsWithAppid_tableView:(UITableView *)tableView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
+- (NSDictionary *)thinkingAnalyticsWithAppid_tableView:(UITableView *)tableView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
 
 @optional
 
@@ -463,14 +463,14 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 
  @return 事件属性
  */
-- (NSDictionary *) thinkingAnalytics_collectionView:(UICollectionView *)collectionView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
+- (NSDictionary *)thinkingAnalytics_collectionView:(UICollectionView *)collectionView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
  APPID UICollectionView 事件属性
 
  @return 事件属性
  */
-- (NSDictionary *) thinkingAnalyticsWithAppid_collectionView:(UICollectionView *)collectionView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
+- (NSDictionary *)thinkingAnalyticsWithAppid_collectionView:(UICollectionView *)collectionView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
@@ -509,14 +509,14 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 
  @return 预置属性 #url 的值
  */
-- (NSString *) getScreenUrl;
+- (NSString *)getScreenUrl;
 
 /**
  配置APPID自定义页面浏览事件的属性
 
  @return 预置属性 #url 的值
  */
-- (NSDictionary *) getScreenUrlWithAppid;
+- (NSDictionary *)getScreenUrlWithAppid;
 
 @end
 

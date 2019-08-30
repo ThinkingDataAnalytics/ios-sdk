@@ -76,7 +76,7 @@ static dispatch_queue_t networkQueue;
     }
 }
 
-+ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url withConfig:(TDConfig*)config {
++ (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url withConfig:(TDConfig *)config {
     if (instances[appId]) {
         return instances[appId];
     } else if (![url isKindOfClass:[NSString class]] || url.length == 0) {
@@ -373,7 +373,7 @@ static dispatch_queue_t networkQueue;
         if (![NSKeyedArchiver archiveRootObject:object toFile:filePath]) {
             return NO;
         }
-    } @catch (NSException* exception) {
+    } @catch (NSException *exception) {
         TDLogError(@"Got exception: %@, reason: %@. You can only send to Thinking values that inherit from NSObject and implement NSCoding.", exception.name, exception.reason);
         return NO;
     }
@@ -501,7 +501,7 @@ static dispatch_queue_t networkQueue;
 
 - (void)setNetRadioListeners {
     if ((_reachability = SCNetworkReachabilityCreateWithName(NULL, "thinkingdata.cn")) != NULL) {
-        SCNetworkReachabilityContext context = {0, (__bridge void*)self, NULL, NULL, NULL};
+        SCNetworkReachabilityContext context = {0, (__bridge void *)self, NULL, NULL, NULL};
         if (SCNetworkReachabilitySetCallback(_reachability, ThinkingReachabilityCallback, &context)) {
             if (!SCNetworkReachabilitySetDispatchQueue(_reachability, serialQueue)) {
                 SCNetworkReachabilitySetCallback(_reachability, NULL, NULL);
@@ -981,9 +981,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 - (NSString *)limitString:(NSString *)originalString withLength:(NSInteger)length {
     NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF8);
-    NSData* originalData = [originalString dataUsingEncoding:encoding];
-    NSData* subData = [originalData subdataWithRange:NSMakeRange(0, length)];
-    NSString* limitString = [[NSString alloc] initWithData:subData encoding:encoding];
+    NSData *originalData = [originalString dataUsingEncoding:encoding];
+    NSData *subData = [originalData subdataWithRange:NSMakeRange(0, length)];
+    NSString *limitString = [[NSString alloc] initWithData:subData encoding:encoding];
     
     NSInteger index = 1;
     while (index <= 3 && !limitString) {
@@ -1164,13 +1164,13 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 }
 
-- (void)flushImmediately:(NSDictionary*)dataDic {
+- (void)flushImmediately:(NSDictionary *)dataDic {
     [self dispatchOnNetworkQueue:^{
         [self.network flushEvents:@[dataDic] withAppid:self.appid];
     }];
 }
 
-- (NSDictionary<NSString *,id> *)processParameters:(NSDictionary<NSString *,id> *)propertiesDict withType:(NSString *)eventType withEventName:(NSString*)eventName withAutoTrack:(BOOL)autotrack withH5:(BOOL)isH5 isValid:(BOOL*)isValid {
+- (NSDictionary<NSString *,id> *)processParameters:(NSDictionary<NSString *,id> *)propertiesDict withType:(NSString *)eventType withEventName:(NSString *)eventName withAutoTrack:(BOOL)autotrack withH5:(BOOL)isH5 isValid:(BOOL *)isValid {
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
     if([eventType isEqualToString:TD_EVENT_TYPE_TRACK]) {
         [properties addEntriesFromDictionary:self.superProperty];
@@ -1413,7 +1413,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             return YES;
         
         if ([webView isKindOfClass:[UIWebView class]] || (wkWebViewClass && [webView isKindOfClass:wkWebViewClass])) {
-            NSString* eventData = [queryValue stringByRemovingPercentEncoding];
+            NSString *eventData = [queryValue stringByRemovingPercentEncoding];
             if (eventData.length > 0)
                 [self clickFromH5:eventData];
         }
@@ -1425,7 +1425,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     __block NSString *currentUA;
     if (currentUA  == nil)  {
         td_dispatch_main_sync_safe(^{
-            UIWebView* webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+            UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
             currentUA = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
         });
     }

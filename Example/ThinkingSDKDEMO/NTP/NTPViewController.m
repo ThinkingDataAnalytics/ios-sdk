@@ -32,7 +32,7 @@
 }
 
 - (void)reportFromDelegate {
-    NSDate* theDate = [[NSDate date] dateByAddingTimeInterval: -netAssociation.offset];
+    NSDate *theDate = [[NSDate date] dateByAddingTimeInterval: -netAssociation.offset];
     [[ThinkingAnalyticsSDK sharedInstance] track:@"test_event" properties:@{} time:theDate];
 }
 

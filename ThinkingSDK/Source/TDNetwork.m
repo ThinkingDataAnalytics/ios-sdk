@@ -39,7 +39,7 @@
     NSMutableURLRequest *request = [self buildRequestWithJSONString:jsonString];
     dispatch_semaphore_t flushSem = dispatch_semaphore_create(0);
 
-    void (^block)(NSData*, NSURLResponse*, NSError*) = ^(NSData *data, NSURLResponse *response, NSError *error) {
+    void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
             flushSucc = NO;
             TDLogError(@"Networking error");
@@ -47,7 +47,7 @@
             return;
         }
 
-        NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse*)response;
+        NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
         if ([urlResponse statusCode] == 200) {
             flushSucc = YES;
             TDLogDebug(@"fluch success. ret :%@, data :%@", [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil], flushDic);
@@ -81,7 +81,7 @@
 }
 
 - (void)fetchFlushConfig:(NSString *)appid handler:(TDFlushConfigBlock)handler {
-    void (^block)(NSData*, NSURLResponse*, NSError*) = ^(NSData *data, NSURLResponse *response, NSError *error) {
+    void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
             TDLogDebug(@"updateBatchSizeAndInterval network failure:%@",error);
             return;

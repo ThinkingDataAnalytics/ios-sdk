@@ -10,18 +10,18 @@
 
 @implementation APIEntry
 
-+ (APIEntry*) commandWithName:(NSString*) name
-                    accessoryType:(UITableViewCellAccessoryType) accessoryType
-                            block:(void (^)(UIViewController* controller)) block
++ (APIEntry *)commandWithName:(NSString *)name
+                accessoryType:(UITableViewCellAccessoryType)accessoryType
+                        block:(void (^)(UIViewController *controller))block
 {
     return [[self alloc] initWithName:name
                         accessoryType:accessoryType
                                 block:block];
 }
 
-- (id) initWithName:(NSString*) name
-      accessoryType:(UITableViewCellAccessoryType) accessoryType
-              block:(void (^)(UIViewController* controller)) block
+- (id)initWithName:(NSString *)name
+     accessoryType:(UITableViewCellAccessoryType)accessoryType
+             block:(void (^)(UIViewController *controller))block
 {
     if ((self = [super init]))
     {
@@ -32,7 +32,7 @@
     return self;
 }
 
-- (void) executeWithViewController:(UIViewController*) controller
+- (void)executeWithViewController:(UIViewController *)controller
 {
     self.block(controller);
 }
