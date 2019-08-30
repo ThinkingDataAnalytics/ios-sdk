@@ -4,17 +4,19 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- 配置后台自启是否开启采集
+ 配置后台自启事件是否采集 默认不采集
  ```objective-c
  TDConfig *config = [[TDConfig alloc] init];
+ 
  config.trackRelaunchedInBackgroundEvents = YES;
+ 
  [ThinkingAnalyticsSDK startWithAppId:@"YOUR_APPID" withUrl:@"YOUR_SERVER_URL" withConfig:config];
  ```
  */
 @interface TDConfig : NSObject
 
 /**
- 初始化配置 YES：采集后台自启事件 NO：不采集后台自启事件
+ 初始化配置后台自启事件 YES：采集后台自启事件 NO：不采集后台自启事件
  */
 @property (assign, nonatomic) BOOL trackRelaunchedInBackgroundEvents;
 
@@ -33,10 +35,15 @@ NS_ASSUME_NONNULL_BEGIN
  
  ```objective-c
  instance.track("some_event");
- 
+ ```
+ 或者
+ ```objective-c
  [[ThinkingAnalyticsSDK sharedInstanceWithAppid:@"YOUR_APPID"] track:@"some_event"];
  ```
- 
+ 如果项目中只有一个实例，也可以使用
+ ```objective-c
+ [[ThinkingAnalyticsSDK sharedInstance] track:@"some_event"];
+ ```
  ## 详细文档
  http://doc.thinkinggame.cn/tgamanual/installation/ios_sdk_installation.html
 
