@@ -4,6 +4,7 @@
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <sys/utsname.h>
+
 #import "TDKeychainItemWrapper.h"
 
 #define VERSION @"2.1.0"
@@ -37,11 +38,11 @@
     return self;
 }
 
-- (NSString *)getlibVersion {
+- (NSString *)libVersion {
     return VERSION;
 }
 
--(NSDictionary *)collectAutomaticProperties {
+- (NSDictionary *)collectAutomaticProperties {
     NSMutableDictionary *p = [NSMutableDictionary dictionary];
     UIDevice *device = [UIDevice currentDevice];
     [p setValue:_deviceId forKey:@"#device_id"];
@@ -60,7 +61,7 @@
     CGSize size = [UIScreen mainScreen].bounds.size;
     [p addEntriesFromDictionary:@{
                                   @"#lib": @"iOS",
-                                  @"#lib_version": [self getlibVersion],
+                                  @"#lib_version": [self libVersion],
                                   @"#manufacturer": @"Apple",
                                   @"#device_model": [self iphoneType],
                                   @"#os": [device systemName],
