@@ -160,7 +160,7 @@
     return [NSArray arrayWithArray:contentArray];
 }
 
-- (void)removeFirstRecords:(NSUInteger)recordSize withAppid:(NSString *)appid {
+- (BOOL)removeFirstRecords:(NSUInteger)recordSize withAppid:(NSString *)appid {
     NSString *query;
     
     if (appid.length == 0) {
@@ -173,16 +173,24 @@
     int rc = sqlite3_prepare_v2(_database, [query UTF8String], -1, &stmt, NULL);
     
     if (rc == SQLITE_OK) {
-         if (appid.length == 0) {
-             sqlite3_bind_int(stmt, 1, (int)recordSize);
-         } else {
-             sqlite3_bind_text(stmt, 1, [appid UTF8String], -1, SQLITE_TRANSIENT);
-             sqlite3_bind_int(stmt, 2, (int)recordSize);
-         }
-         sqlite3_step(stmt);
+        if (appid.length == 0) {
+            sqlite3_bind_int(stmt, 1, (int)recordSize);
+        } else {
+            sqlite3_bind_text(stmt, 1, [appid UTF8String], -1, SQLITE_TRANSIENT);
+            sqlite3_bind_int(stmt, 2, (int)recordSize);
+        }
+        rc = sqlite3_step(stmt);
+        if (rc != SQLITE_DONE && rc != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            return NO;
+        }
+    } else {
+        sqlite3_finalize(stmt);
+        return NO;
     }
     sqlite3_finalize(stmt);
     _allmessageCount = [self sqliteCount];
+    return YES;
 }
 
 - (BOOL)removeOldRecords:(int)timestamp {

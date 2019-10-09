@@ -1270,7 +1270,10 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         flushSucc = [self.network flushEvents:recordArray withAppid:self.appid];
         if (flushSucc) {
             @synchronized (instances) {
-                [self.dataQueue removeFirstRecords:sendSize withAppid:self.appid];
+                BOOL ret = [self.dataQueue removeFirstRecords:sendSize withAppid:self.appid];
+                if (!ret) {
+                    break;
+                }
                 recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:self.appid];
             }
         } else {
