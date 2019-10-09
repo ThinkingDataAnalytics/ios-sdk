@@ -46,7 +46,16 @@
     UIDevice *device = [UIDevice currentDevice];
     [p setValue:_deviceId forKey:@"#device_id"];
     _telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
-    CTCarrier *carrier = [_telephonyInfo subscriberCellularProvider];
+    CTCarrier *carrier = nil;
+
+    if (@available(iOS 12.1, *)) {
+        carrier = _telephonyInfo.serviceSubscriberCellularProviders.allValues.firstObject; 
+    }
+    
+    if (!carrier) {
+        carrier = [_telephonyInfo subscriberCellularProvider];
+    }
+
     [p setValue:carrier.carrierName forKey:@"#carrier"];
     CGSize size = [UIScreen mainScreen].bounds.size;
     [p addEntriesFromDictionary:@{
