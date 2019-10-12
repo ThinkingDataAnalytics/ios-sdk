@@ -78,6 +78,14 @@
       }]];
     
     [commands addObject:
+     [APIEntry commandWithName:@"User Unset"
+                 accessoryType:UITableViewCellAccessoryNone
+                         block:^(UIViewController *controller)
+      {
+          [ThinkingSDKAPI testUserUnset];
+      }]];
+    
+    [commands addObject:
      [APIEntry commandWithName:@"User Set Once"
                  accessoryType:UITableViewCellAccessoryNone
                          block:^(UIViewController *controller)

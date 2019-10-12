@@ -30,6 +30,10 @@
                                                      }];
 }
 
++ (void)testUserUnset {
+    [[ThinkingAnalyticsSDK sharedInstance] user_unset:@"key1"];
+}
+
 + (void)testUserSetonce {
     [[ThinkingAnalyticsSDK sharedInstance] user_setOnce:@{@"setOnce":@"setonevalue1"}];
 }

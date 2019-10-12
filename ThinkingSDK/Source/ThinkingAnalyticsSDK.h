@@ -245,6 +245,13 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 - (void)user_set:(NSDictionary *)property;
 
 /**
+ 重置用户属性
+ 
+ @param propertyName 用户属性
+ */
+- (void)user_unset:(NSString *)propertyName;
+
+/**
  设置单次用户属性
 
  @param property 用户属性

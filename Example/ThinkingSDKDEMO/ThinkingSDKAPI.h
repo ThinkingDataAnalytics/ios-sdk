@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)testTrackWithProperty;
 + (void)testTrackWithTime;
 + (void)testUserSet;
++ (void)testUserUnset;
 + (void)testUserSetonce;
 + (void)testUserDel;
 + (void)testUserAdd;

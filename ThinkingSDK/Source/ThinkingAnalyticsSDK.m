@@ -824,6 +824,16 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [self track:nil withProperties:property withTime:nil withType:TD_EVENT_TYPE_USER_SET];
 }
 
+- (void)user_unset:(NSString *)propertyName {
+    if ([self hasDisabled])
+        return;
+    
+    if([propertyName isKindOfClass:[NSString class]] && propertyName.length > 0) {
+        NSDictionary* userDic = @{propertyName: @0};
+        [self track:nil withProperties:userDic withTime:nil withType:TD_EVENT_TYPE_USER_UNSET];
+    }
+}
+
 - (void)user_delete {
     if ([self hasDisabled])
         return;
