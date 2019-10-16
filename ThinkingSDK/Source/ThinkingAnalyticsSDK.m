@@ -836,7 +836,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     
     BOOL isValid;
     properties = [self processParameters:properties withType:type withEventName:event withAutoTrack:NO withH5:NO isValid:&isValid];
-    if(isValid) {
+    if (isValid) {
         TDEventData *eventData = [[TDEventData alloc] init];
         eventData.eventName = event;
         eventData.properties = [properties copy];
