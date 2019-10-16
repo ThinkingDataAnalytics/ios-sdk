@@ -777,7 +777,12 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         eventData.eventType = TD_EVENT_TYPE_TRACK;
         eventData.autotrack = NO;
         eventData.persist = YES;
-        eventData.timeString = [_timeFormatter stringFromDate:time];
+        NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
+        timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+        timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+        timeFormatter.timeZone = timeZone;
+        eventData.timeString = [timeFormatter stringFromDate:time];
         eventData.zoneOffset = [self getTimezoneOffset:time timeZone:timeZone];
         eventData.timeValueType = TDTimeValueTypeAll;
         [self tdInternalTrack:eventData];
