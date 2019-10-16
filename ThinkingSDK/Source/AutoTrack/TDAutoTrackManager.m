@@ -357,12 +357,58 @@
     [self trackEventView:view withIndexPath:nil];
 }
 
-+ (UIViewController *)topPresentedViewController {
-    UIViewController *controller = [ThinkingAnalyticsSDK sharedUIApplication].keyWindow.rootViewController;
-    while (controller.presentedViewController) {
-        controller = controller.presentedViewController;
++ (UIWindow *)findWindow
+{
+    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    if (window == nil || window.windowLevel != UIWindowLevelNormal) {
+        for (window in [UIApplication sharedApplication].windows) {
+            if (window.windowLevel == UIWindowLevelNormal) {
+                break;
+            }
+        }
     }
-    return controller;
+    
+    if (@available(iOS 13.0, tvOS 13, *)) {
+        NSSet *scenes = [[UIApplication sharedApplication] valueForKey:@"connectedScenes"];
+        for (id scene in scenes) {
+            if (window) {
+                break;
+            }
+            
+            id activationState = [scene valueForKeyPath:@"activationState"];
+            BOOL isActive = activationState != nil && [activationState integerValue] == 0;
+            if (isActive) {
+                Class WindowScene = NSClassFromString(@"UIWindowScene");
+                if ([scene isKindOfClass:WindowScene]) {
+                    NSArray<UIWindow *> *windows = [scene valueForKeyPath:@"windows"];
+                    for (UIWindow *w in windows) {
+                        if (w.isKeyWindow) {
+                            window = w;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return window;
+}
+
++ (UIViewController *)topPresentedViewController
+{
+    UIWindow *keyWindow = [self findWindow];
+    if (keyWindow != nil && !keyWindow.isKeyWindow) {
+        [keyWindow makeKeyWindow];
+    }
+    
+    UIViewController *topController = keyWindow.rootViewController;
+    if ([topController isKindOfClass:[UINavigationController class]]) {
+        topController = [(UINavigationController *)topController topViewController];
+    }
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    return topController;
 }
 
 - (void)trackEventView:(UIView *)view withIndexPath:(NSIndexPath *)indexPath {

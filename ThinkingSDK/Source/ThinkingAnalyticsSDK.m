@@ -578,7 +578,8 @@ static dispatch_queue_t networkQueue;
     });
     
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
-        [self autotrack:TD_APP_END_EVENT properties:nil withTime:nil];
+        NSString *screenName = NSStringFromClass([[TDAutoTrackManager topPresentedViewController] class]);
+        [self autotrack:TD_APP_END_EVENT properties:@{TD_EVENT_PROPERTY_SCREEN_NAME: screenName} withTime:nil];
     }
     
     dispatch_group_enter(bgGroup);

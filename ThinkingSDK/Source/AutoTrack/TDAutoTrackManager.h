@@ -16,6 +16,7 @@ static NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position
 - (void)trackEventView:(UIView *)view withIndexPath:(NSIndexPath *)indexPath;
 - (void)viewControlWillAppear:(UIViewController *)controller;
 - (void)trackWithAppid:(NSString *)appid withOption:(ThinkingAnalyticsAutoTrackEventType)type;
++ (UIViewController *)topPresentedViewController;
 
 @end
 
