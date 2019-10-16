@@ -761,7 +761,10 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if ([self hasDisabled])
         return;
     if (timeZone == nil) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         [self track:event properties:properties time:time];
+#pragma clang diagnostic pop
         return;
     }
     BOOL isValid;

@@ -202,7 +202,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  @param propertieDict 事件属性
  @param time          事件触发时间
  */
-- (void)track:(NSString *)event properties:(nullable NSDictionary *)propertieDict time:(NSDate *)time;
+- (void)track:(NSString *)event properties:(nullable NSDictionary *)propertieDict time:(NSDate *)time __attribute__((deprecated("使用track:properties:time:timeZone:方法传入")));
 
 /**
  自定义事件埋点
