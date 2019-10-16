@@ -43,6 +43,12 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 }
 #endif
 
+typedef NS_OPTIONS(NSInteger, TimeValueType) {
+    TDTimeValueTypeNone      = 0,
+    TDTimeValueTypeTimeOnly  = 1 << 0,
+    TDTimeValueTypeAll       = 1 << 1,
+};
+
 @interface ThinkingAnalyticsSDK ()
 
 @property (atomic, copy) NSString *appid;

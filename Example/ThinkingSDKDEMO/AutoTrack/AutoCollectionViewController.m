@@ -38,7 +38,7 @@
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString * CellIdentifier = @"UICollectionViewCell";
+    static NSString *CellIdentifier = @"UICollectionViewCell";
     UICollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
     label.text = [NSString stringWithFormat:@"%ld",(long)indexPath.row];

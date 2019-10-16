@@ -170,7 +170,7 @@ static TDAbstractLogger *sharedInstance;
 
 - (void)logMessage:(TDLogMessage *)logMessage {
     if (@available(iOS 10.0, *)) {
-        NSString * message = logMessage->_message;
+        NSString *message = logMessage->_message;
         if (message != nil) {
             const char *msg = [message UTF8String];
             __auto_type logger = [self logger];

@@ -20,7 +20,7 @@
 }
 
 + (void)testTrackWithTime {
-    [[ThinkingAnalyticsSDK sharedInstance] track:@"key1" properties:@{@"properKey1":@"properValue1"} time:[NSDate date]];
+    [[ThinkingAnalyticsSDK sharedInstance] track:@"key1" properties:@{@"properKey1":@"properValue1"} time:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
 }
 
 + (void)testUserSet {

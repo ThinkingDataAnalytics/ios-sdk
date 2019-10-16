@@ -31,7 +31,7 @@
 //    [ThinkingAnalyticsSDK startWithAppId:@"APP" withUrl:@"https://sdk.tga.thinkinggame.cn:9443" withConfig:config];
     
     // 自动埋点
-//    [thinkingSDK enableAutoTrack:
+//    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:
 //     ThinkingAnalyticsEventTypeAppStart |
 //     ThinkingAnalyticsEventTypeAppEnd |
 //     ThinkingAnalyticsEventTypeAppViewScreen |
