@@ -22,8 +22,7 @@
 }
 
 - (id)initWithStyle:(UITableViewStyle)style {
-    if ((self = [super initWithStyle:style]))
-    {
+    if ((self = [super initWithStyle:style])) {
         self.apis = [NSMutableArray array];
     }
     return self;
@@ -35,8 +34,7 @@
 }
 
 - (void)reloadTitle {
-    if (self.getTitleBlock != nil)
-    {
+    if (self.getTitleBlock != nil) {
         self.title = self.getTitleBlock(self);
     }
 }
@@ -55,10 +53,8 @@
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
-    if (cell == nil)
-    {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                      reuseIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     APIEntry *command = [self.apis objectAtIndex:(NSUInteger)indexPath.row];
     cell.textLabel.text = command.name;
