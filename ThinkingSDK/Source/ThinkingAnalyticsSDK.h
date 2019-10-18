@@ -193,7 +193,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  @param event         事件名称
  @param propertieDict 事件属性
  */
-- (void)track:(NSString *)event properties:(NSDictionary *)propertieDict;
+- (void)track:(NSString *)event properties:(nullable NSDictionary *)propertieDict;
 
 /**
  自定义事件埋点

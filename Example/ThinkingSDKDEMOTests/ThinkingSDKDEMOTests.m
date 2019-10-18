@@ -56,8 +56,8 @@
 
 - (NSDictionary *)allPropertyTypes {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss zzz";
-    NSDate *date = [dateFormatter dateFromString:@"2012-09-24 11:28:10 PDT"];
+    dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+    NSDate *date = [dateFormatter dateFromString:@"2012-09-24 11:28:10.123"];
     return @{ @"string": @"hello", @"number": @3, @"date": date, @"float": @1.3 , @"bool": @YES };
 }
 
@@ -77,7 +77,7 @@
         XCTAssertNotNil(dataDic[@"#uuid"]);
         XCTAssertEqualObjects(dataDic[@"#event_name"], @"test");
         XCTAssertEqualObjects(dataDic[@"#type"], @"track");
-        XCTAssertTrue([[properties allKeys] count] == 7);
+        XCTAssertTrue([[properties allKeys] count] == 8);
         
         XCTAssertNotNil(properties[@"#app_version"]);
         XCTAssertTrue([properties[@"#app_version"] isKindOfClass:[NSString class]]);
@@ -85,7 +85,7 @@
             NSArray *network = @[@"WIFI", @"UNKNOWN", @"2G", @"3G", @"4G", @"NULL"];
             XCTAssertTrue([network containsObject:properties[@"#network_type"]]);
         }
-        XCTAssertEqualObjects(properties[@"date"], @"2012-09-25 02:28:10.000");
+        XCTAssertEqualObjects(properties[@"date"], @"2012-09-24 11:28:10.123");
         XCTAssertEqualObjects(properties[@"string"], @"hello");
         
         int isBool = strcmp([properties[@"bool"] objCType], [@YES objCType]);
@@ -103,7 +103,7 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
     NSDate *date = [dateFormatter dateFromString:@"2012-06-24 11:28:10"];
-    [_mockThinkingInstance track:@"test" properties:[self allPropertyTypes] time:date];
+    [_mockThinkingInstance track:@"test" properties:[self allPropertyTypes] time:date timeZone:[NSTimeZone localTimeZone]];
     [self waitForThinkingQueues];
 }
 

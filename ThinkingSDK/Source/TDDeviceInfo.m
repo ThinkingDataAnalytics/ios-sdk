@@ -7,7 +7,7 @@
 
 #import "TDKeychainItemWrapper.h"
 
-#define VERSION @"2.1.1"
+#define VERSION @"2.2.0"
 
 @interface TDDeviceInfo ()
 

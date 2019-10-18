@@ -33,7 +33,7 @@
 
 - (void)reportFromDelegate {
     NSDate *theDate = [[NSDate date] dateByAddingTimeInterval: -netAssociation.offset];
-    [[ThinkingAnalyticsSDK sharedInstance] track:@"test_event" properties:@{} time:theDate];
+    [[ThinkingAnalyticsSDK sharedInstance] track:@"test_event" properties:@{} time:theDate timeZone:[NSTimeZone localTimeZone]];
 }
 
 @end
