@@ -10,6 +10,14 @@
 #import "TDSqliteDataQueue.h"
 #import "TDAutoTrackManager.h"
 
+#if !defined(THINKING_UIWEBVIEW_SUPPORT)
+    #define THINKING_UIWEBVIEW_SUPPORT 0
+#endif
+
+#if !THINKING_UIWEBVIEW_SUPPORT
+#import <WebKit/WebKit.h>
+#endif
+
 #if !__has_feature(objc_arc)
 #error The ThinkingSDK library must be compiled with ARC enabled
 #endif
@@ -42,6 +50,10 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (nonatomic, strong) NSDateFormatter *timeFormatter;
 @property (nonatomic, assign) BOOL applicationWillResignActive;
 @property (nonatomic, assign) BOOL appRelaunched;
+
+#if !THINKING_UIWEBVIEW_SUPPORT
+@property (nonatomic, strong) WKWebView *wkWebView;
+#endif
 
 @end
 
@@ -1482,43 +1494,59 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         return YES;
     
     NSString *queryValue = [queryItem lastObject];
-    Class wkWebViewClass = NSClassFromString(@"WKWebView");
     if ([urlStr rangeOfString:TA_JS_TRACK_SCHEME].length > 0) {
         if ([self hasDisabled])
             return YES;
         
-        if ([webView isKindOfClass:[UIWebView class]] || (wkWebViewClass && [webView isKindOfClass:wkWebViewClass])) {
-            NSString *eventData = [queryValue stringByRemovingPercentEncoding];
-            if (eventData.length > 0)
-                [self clickFromH5:eventData];
-        }
+        NSString *eventData = [queryValue stringByRemovingPercentEncoding];
+        if (eventData.length > 0)
+            [self clickFromH5:eventData];
     }
     return YES;
 }
 
-- (NSString *)getUserAgent {
-    __block NSString *currentUA;
-    if (currentUA  == nil)  {
-        td_dispatch_main_sync_safe(^{
-            UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
-            currentUA = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
-        });
-    }
-    return currentUA;
+
+#if THINKING_UIWEBVIEW_SUPPORT
+- (NSString *)webViewGetUserAgent {
+    NSString *userAgent = nil;
+    UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+    userAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+    return userAgent;
 }
+#else
+- (void)wkWebViewGetUserAgent: (void (^)(NSString *))completion {
+    self.wkWebView = [[WKWebView alloc] initWithFrame:CGRectZero];
+    [self.wkWebView evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id __nullable userAgent, NSError * __nullable error) {
+        completion(userAgent);
+    }];
+}
+#endif
 
 - (void)addWebViewUserAgent {
     if ([self hasDisabled])
         return;
         
-    NSString *userAgent = [self getUserAgent];
-    if ([userAgent rangeOfString:@"td-sdk-ios"].location == NSNotFound) {
-        userAgent = [userAgent stringByAppendingString:@" /td-sdk-ios"];
-    }
+    void (^setUserAgent)(NSString *userAgent) = ^void (NSString *userAgent) {
+        if ([userAgent rangeOfString:@"td-sdk-ios"].location == NSNotFound) {
+            userAgent = [userAgent stringByAppendingString:@" /td-sdk-ios"];
+            
+            NSDictionary *userAgentDic = [[NSDictionary alloc] initWithObjectsAndKeys:userAgent, @"UserAgent", nil];
+            [[NSUserDefaults standardUserDefaults] registerDefaults:userAgentDic];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    };
     
-    NSDictionary *dictionnary = [[NSDictionary alloc] initWithObjectsAndKeys:userAgent, @"UserAgent", nil];
-    [[NSUserDefaults standardUserDefaults] registerDefaults:dictionnary];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    dispatch_block_t getUABlock = ^(){
+        #if THINKING_UIWEBVIEW_SUPPORT
+        setUserAgent([self webViewGetUserAgent]);
+        #else
+        [self wkWebViewGetUserAgent:^(NSString *userAgent) {
+            setUserAgent(userAgent);
+        }];
+        #endif
+    };
+    
+    td_dispatch_main_sync_safe(getUABlock);
 }
 
 #pragma mark - Logging
