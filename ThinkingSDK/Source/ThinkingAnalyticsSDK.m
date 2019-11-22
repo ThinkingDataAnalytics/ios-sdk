@@ -565,23 +565,23 @@ static dispatch_queue_t networkQueue;
     dispatch_group_enter(bgGroup);
     dispatch_async(serialQueue, ^{
         NSNumber *currentSystemUpTime = @([[NSDate date] timeIntervalSince1970]);
-        NSArray *keys = [self.trackTimer allKeys];
-        for (NSString *key in keys) {
-            if ([key isEqualToString:TD_APP_END_EVENT]) {
-                continue;
-            }
-            NSMutableDictionary *eventTimer = [[NSMutableDictionary alloc] initWithDictionary:self.trackTimer[key]];
-            if (eventTimer) {
-                NSNumber *eventBegin = [eventTimer valueForKey:TD_EVENT_START];
-                NSNumber *eventDuration = [eventTimer valueForKey:TD_EVENT_DURATION];
-                double usedTime;
-                if (eventDuration) {
-                    usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue] + [eventDuration doubleValue];
-                } else {
-                    usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue];
+        @synchronized (self.trackTimer) {
+            NSArray *keys = [self.trackTimer allKeys];
+            for (NSString *key in keys) {
+                if ([key isEqualToString:TD_APP_END_EVENT]) {
+                    continue;
                 }
-                [eventTimer setObject:[NSNumber numberWithDouble:usedTime] forKey:TD_EVENT_DURATION];
-                @synchronized (self.trackTimer) {
+                NSMutableDictionary *eventTimer = [[NSMutableDictionary alloc] initWithDictionary:self.trackTimer[key]];
+                if (eventTimer) {
+                    NSNumber *eventBegin = [eventTimer valueForKey:TD_EVENT_START];
+                    NSNumber *eventDuration = [eventTimer valueForKey:TD_EVENT_DURATION];
+                    double usedTime;
+                    if (eventDuration) {
+                        usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue] + [eventDuration doubleValue];
+                    } else {
+                        usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue];
+                    }
+                    [eventTimer setObject:[NSNumber numberWithDouble:usedTime] forKey:TD_EVENT_DURATION];
                     self.trackTimer[key] = eventTimer;
                 }
             }
@@ -625,12 +625,12 @@ static dispatch_queue_t networkQueue;
     
     dispatch_async(serialQueue, ^{
         NSNumber *currentTime = @([[NSDate date] timeIntervalSince1970]);
-        NSArray *keys = [self.trackTimer allKeys];
-        for (NSString *key in keys) {
-            NSMutableDictionary *eventTimer = [[NSMutableDictionary alloc] initWithDictionary:self.trackTimer[key]];
-            if (eventTimer) {
-                [eventTimer setValue:currentTime forKey:TD_EVENT_START];
-                @synchronized (self.trackTimer) {
+        @synchronized (self.trackTimer) {
+            NSArray *keys = [self.trackTimer allKeys];
+            for (NSString *key in keys) {
+                NSMutableDictionary *eventTimer = [[NSMutableDictionary alloc] initWithDictionary:self.trackTimer[key]];
+                if (eventTimer) {
+                    [eventTimer setValue:currentTime forKey:TD_EVENT_START];
                     self.trackTimer[key] = eventTimer;
                 }
             }
@@ -1193,12 +1193,14 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         }
     }
     
-    NSDictionary *eventTimer = self.trackTimer[eventData.eventName];
-    if (eventTimer) {
-        @synchronized (self.trackTimer) {
+    NSDictionary *eventTimer;
+    @synchronized (self.trackTimer) {
+        eventTimer = self.trackTimer[eventData.eventName];
+        if (eventTimer) {
             [self.trackTimer removeObjectForKey:eventData.eventName];
         }
-        
+    }
+    if (eventTimer) {
         NSNumber *eventBegin = [eventTimer valueForKey:TD_EVENT_START];
         NSNumber *eventDuration = [eventTimer valueForKey:TD_EVENT_DURATION];
         
@@ -1508,10 +1510,8 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 #if THINKING_UIWEBVIEW_SUPPORT
 - (NSString *)webViewGetUserAgent {
-    NSString *userAgent = nil;
     UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
-    userAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
-    return userAgent;
+    return [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
 }
 #else
 - (void)wkWebViewGetUserAgent: (void (^)(NSString *))completion {
