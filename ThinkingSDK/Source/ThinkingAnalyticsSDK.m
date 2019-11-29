@@ -50,6 +50,7 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (nonatomic, strong) NSDateFormatter *timeFormatter;
 @property (nonatomic, assign) BOOL applicationWillResignActive;
 @property (nonatomic, assign) BOOL appRelaunched;
+@property (nonatomic, assign) BOOL isEnableSceneSupport;
 
 #if !THINKING_UIWEBVIEW_SUPPORT
 @property (nonatomic, strong) WKWebView *wkWebView;
@@ -154,6 +155,7 @@ static dispatch_queue_t networkQueue;
         
         self.deviceInfo = [TDDeviceInfo sharedManager];
         
+        [self sceneSupportSetting];
         td_dispatch_main_sync_safe(^{
             UIApplicationState applicationState = [UIApplication sharedApplication].applicationState;
             if (applicationState == UIApplicationStateBackground) {
@@ -185,6 +187,7 @@ static dispatch_queue_t networkQueue;
         _timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
 
         _applicationWillResignActive = NO;
+        _firstEnterForeground = YES;
         _ignoredViewControllers = [[NSMutableSet alloc] init];
         _ignoredViewTypeList = [[NSMutableSet alloc] init];
         
@@ -212,6 +215,7 @@ static dispatch_queue_t networkQueue;
         _network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.serverURL]];
         _network.automaticData = _deviceInfo.automaticData;
         
+        [self sceneSupportSetting];
         td_dispatch_main_sync_safe(^{
             UIApplicationState applicationState = [UIApplication sharedApplication].applicationState;
             if (applicationState == UIApplicationStateBackground) {
@@ -539,8 +543,21 @@ static dispatch_queue_t networkQueue;
 
 - (void)applicationWillEnterForeground:(NSNotification *)notification {
     TDLogDebug(@"%@ application will enter foreground", self);
-    self.relaunchInBackGround = NO;
     
+    if (@available(iOS 13.0, *)) {
+        if (_isEnableSceneSupport && _firstEnterForeground) {
+            _firstEnterForeground = NO;
+            return;
+        } else {
+            [self applicationWillEnterForeground];
+        }
+    } else {
+        [self applicationWillEnterForeground];
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    _relaunchInBackGround = NO;
     _appRelaunched = YES;
     dispatch_async(serialQueue, ^{
         if (self.taskId != UIBackgroundTaskInvalid) {
@@ -591,6 +608,7 @@ static dispatch_queue_t networkQueue;
     
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
         NSString *screenName = NSStringFromClass([[TDAutoTrackManager topPresentedViewController] class]);
+        screenName = (screenName == nil) ? @"" : screenName;
         [self autotrack:TD_APP_END_EVENT properties:@{TD_EVENT_PROPERTY_SCREEN_NAME: screenName} withTime:nil];
     }
     
@@ -644,6 +662,20 @@ static dispatch_queue_t networkQueue;
         if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
             [self timeEvent:TD_APP_END_EVENT];
         }
+    }
+}
+
+- (void)sceneSupportSetting {
+    NSDictionary *sceneManifest = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIApplicationSceneManifest"];
+    if (sceneManifest) {
+        NSDictionary *sceneConfig = sceneManifest[@"UISceneConfigurations"];
+        if (sceneConfig.count > 0) {
+            _isEnableSceneSupport = YES;
+        } else {
+            _isEnableSceneSupport = NO;
+        }
+    } else {
+        _isEnableSceneSupport = NO;
     }
 }
 
@@ -1165,7 +1197,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if ([self hasDisabled])
         return;
     
-    if (_relaunchInBackGround && !_config.trackRelaunchedInBackgroundEvents) {
+    if (@available(iOS 13.0, *)) {
+        if (!_isEnableSceneSupport && _relaunchInBackGround && !_config.trackRelaunchedInBackgroundEvents) {
+            return;
+        }
+    } else if (_relaunchInBackGround && !_config.trackRelaunchedInBackgroundEvents) {
         return;
     }
     
@@ -1185,7 +1221,12 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK]) {
         properties[@"#app_version"] = self.deviceInfo.appVersion;
         properties[@"#network_type"] = [[self class] getNetWorkStates];
-        if (self.relaunchInBackGround) {
+        
+        if (@available(iOS 13.0, *)) {
+            if (!_isEnableSceneSupport && self.relaunchInBackGround) {
+                properties[@"#relaunched_in_background"] = @YES;
+            }
+        } else if (self.relaunchInBackGround) {
             properties[@"#relaunched_in_background"] = @YES;
         }
         if (eventData.timeValueType != TDTimeValueTypeTimeOnly) {
@@ -1420,6 +1461,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
         NSString *eventName = self.relaunchInBackGround?TD_APP_START_BACKGROUND_EVENT:TD_APP_START_EVENT;
+        if (@available(iOS 13.0, *)) {
+            if (_isEnableSceneSupport) {
+                eventName = TD_APP_START_EVENT;
+            }
+        }
         [self autotrack:eventName properties:@{TD_RESUME_FROM_BACKGROUND:@(_appRelaunched)} withTime:nil];
     }
     

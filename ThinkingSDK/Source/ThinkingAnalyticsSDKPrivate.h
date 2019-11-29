@@ -61,6 +61,7 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 @property (nonatomic, assign) BOOL relaunchInBackGround;
 @property (nonatomic, assign) BOOL isEnabled;
 @property (nonatomic, assign) BOOL isOptOut;
+@property (nonatomic, assign) BOOL firstEnterForeground;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) NSPredicate *regexKey;
 @property (nonatomic, strong) NSPredicate *regexAutoTrackKey;
