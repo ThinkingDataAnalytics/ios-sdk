@@ -1,3 +1,6 @@
+**v2.2.2** (2019/11/29)
+- 修复使用 UISceneDelegate 时，APP启动事件 resume_from_background 会异常的问题
+
 **v2.2.1** (2019/11/22)
 - 依据Appstore ITMS-90809 默认去除 UIWebView 相关内容
 
