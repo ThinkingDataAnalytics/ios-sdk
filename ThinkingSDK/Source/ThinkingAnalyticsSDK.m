@@ -216,16 +216,31 @@ static dispatch_queue_t networkQueue;
         _network.automaticData = _deviceInfo.automaticData;
         
         [self sceneSupportSetting];
-        td_dispatch_main_sync_safe(^{
-            UIApplicationState applicationState = [UIApplication sharedApplication].applicationState;
-            if (applicationState == UIApplicationStateBackground) {
-                self->_relaunchInBackGround = YES;
+        
+        if (@available(iOS 13.0, *)) {
+            if (!_isEnableSceneSupport) {
+                [self launchedIntoBackground];
+            } else if (config.launchOptions && [config.launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]) {
+                _relaunchInBackGround = YES;
+            } else {
+                _relaunchInBackGround = NO;
             }
-        });
+        } else {
+            [self launchedIntoBackground];
+        }
         
         instances[appid] = self;
     }
     return self;
+}
+
+- (void)launchedIntoBackground {
+    td_dispatch_main_sync_safe(^{
+        UIApplicationState applicationState = [UIApplication sharedApplication].applicationState;
+        if (applicationState == UIApplicationStateBackground) {
+            self->_relaunchInBackGround = YES;
+        }
+    });
 }
 
 - (NSString *)description {
@@ -1197,11 +1212,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if ([self hasDisabled])
         return;
     
-    if (@available(iOS 13.0, *)) {
-        if (!_isEnableSceneSupport && _relaunchInBackGround && !_config.trackRelaunchedInBackgroundEvents) {
-            return;
-        }
-    } else if (_relaunchInBackGround && !_config.trackRelaunchedInBackgroundEvents) {
+    if (_relaunchInBackGround && !_config.trackRelaunchedInBackgroundEvents) {
         return;
     }
     

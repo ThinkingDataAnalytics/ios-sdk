@@ -82,7 +82,7 @@ static TDConfig * _defaultTDConfig;
     config.trackRelaunchedInBackgroundEvents = self.trackRelaunchedInBackgroundEvents;
     config.autoTrackEventType = self.autoTrackEventType;
     config.networkTypePolicy = self.networkTypePolicy;
-    
+    config.launchOptions = [self.launchOptions copyWithZone:zone];
     return config;
 }
 
