@@ -1228,11 +1228,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         properties[@"#app_version"] = self.deviceInfo.appVersion;
         properties[@"#network_type"] = [[self class] getNetWorkStates];
         
-        if (@available(iOS 13.0, *)) {
-            if (!_isEnableSceneSupport && self.relaunchInBackGround) {
-                properties[@"#relaunched_in_background"] = @YES;
-            }
-        } else if (self.relaunchInBackGround) {
+        if (self.relaunchInBackGround) {
             properties[@"#relaunched_in_background"] = @YES;
         }
         if (eventData.timeValueType != TDTimeValueTypeTimeOnly) {

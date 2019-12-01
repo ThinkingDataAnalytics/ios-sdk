@@ -19,6 +19,10 @@ NS_ASSUME_NONNULL_BEGIN
  初始化配置后台自启事件 YES：采集后台自启事件 NO：不采集后台自启事件
  */
 @property (nonatomic, assign) BOOL trackRelaunchedInBackgroundEvents;
+
+/**
+ 初始化配置launchOptions
+*/
 @property (nonatomic, copy) NSDictionary *launchOptions;
 
 @end
