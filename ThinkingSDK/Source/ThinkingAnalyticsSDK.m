@@ -154,14 +154,6 @@ static dispatch_queue_t networkQueue;
         }
         
         self.deviceInfo = [TDDeviceInfo sharedManager];
-        
-        [self sceneSupportSetting];
-        td_dispatch_main_sync_safe(^{
-            UIApplicationState applicationState = [UIApplication sharedApplication].applicationState;
-            if (applicationState == UIApplicationStateBackground) {
-                self->_relaunchInBackGround = YES;
-            }
-        });
     }
     return self;
 }
@@ -317,6 +309,9 @@ static dispatch_queue_t networkQueue;
 - (ThinkingAnalyticsSDK *)createLightInstance {
     ThinkingAnalyticsSDK *lightInstance = [[LightThinkingAnalyticsSDK alloc] initWithAPPID:self.appid];
     lightInstance.identifyId = self.deviceInfo.uniqueId;
+    lightInstance.config = [self.config copy];
+    lightInstance.relaunchInBackGround = self.relaunchInBackGround;
+    lightInstance.isEnableSceneSupport = self.isEnableSceneSupport;
     return lightInstance;
 }
 
