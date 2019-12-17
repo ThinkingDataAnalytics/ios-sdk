@@ -73,7 +73,6 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 
 - (instancetype)initLight:(NSString *)appid;
 - (void)autotrack:(NSString *)event properties:(NSDictionary *)propertieDict withTime:(NSDate *)date;
-+ (void)restartFlushTimer;
 - (BOOL)isViewControllerIgnored:(UIViewController *)viewController;
 - (BOOL)isAutoTrackEventTypeIgnored:(ThinkingAnalyticsAutoTrackEventType)eventType;
 - (BOOL)isViewTypeIgnored:(Class)aClass;
@@ -84,6 +83,9 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 - (void)flushImmediately:(NSDictionary *)dataDic;
 - (BOOL)hasDisabled;
 - (BOOL)checkEventProperties:(NSDictionary *)properties withEventType:(NSString *)eventType haveAutoTrackEvents:(BOOL)haveAutoTrackEvents;
+- (void)archiveUploadSize:(NSNumber *)uploadSize;
+- (void)archiveUploadInterval:(NSNumber *)uploadInterval;
+- (void)startFlushTimer;
 
 @end
 

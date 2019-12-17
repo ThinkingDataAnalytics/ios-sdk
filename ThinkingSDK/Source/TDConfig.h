@@ -19,8 +19,8 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
 - (void)setNetworkType:(ThinkingAnalyticsNetworkType)type;
 @property (assign, nonatomic) ThinkingAnalyticsAutoTrackEventType autoTrackEventType;
 @property (assign, nonatomic) ThinkingNetworkType networkTypePolicy;
-@property (assign, nonatomic) NSInteger uploadInterval;
-@property (assign, nonatomic) NSInteger uploadSize;
+@property (assign, nonatomic) NSNumber *uploadInterval;
+@property (assign, nonatomic) NSNumber *uploadSize;
 @property (atomic, copy) NSString *appid;
 @property (atomic, copy) NSString *configureURL;
 - (void)updateConfig;

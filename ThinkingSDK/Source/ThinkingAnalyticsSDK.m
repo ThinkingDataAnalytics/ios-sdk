@@ -170,6 +170,9 @@ static dispatch_queue_t networkQueue;
         _config = [config copy];
         _config.appid = appid;
         _config.configureURL = [NSString stringWithFormat:@"%@/config",serverURL];
+        
+        self.deviceInfo = [TDDeviceInfo sharedManager];
+        [self retrievePersistedData];
         [_config updateConfig];
         
         self.trackTimer = [NSMutableDictionary dictionary];
@@ -199,10 +202,7 @@ static dispatch_queue_t networkQueue;
         [self setApplicationListeners];
         [self setNetRadioListeners];
         
-        self.deviceInfo = [TDDeviceInfo sharedManager];
         self.autoTrackManager = [TDAutoTrackManager sharedManager];
-        
-        [self retrievePersistedData];
         
         _network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.serverURL]];
         _network.automaticData = _deviceInfo.automaticData;
@@ -322,6 +322,8 @@ static dispatch_queue_t networkQueue;
     [self unarchiveIdentifyID];
     [self unarchiveEnabled];
     [self unarchiveOptOut];
+    [self unarchiveUploadSize];
+    [self unarchiveUploadInterval];
     
     if (self.identifyId.length == 0) {
         self.identifyId = self.deviceInfo.uniqueId;
@@ -348,6 +350,34 @@ static dispatch_queue_t networkQueue;
 
 - (void)unarchiveAccountID {
     self.accountId = (NSString *)[ThinkingAnalyticsSDK unarchiveFromFile:[self accountIDFilePath] asClass:[NSString class]];
+}
+
+- (void)archiveUploadSize:(NSNumber *)uploadSize {
+    NSString *filePath = [self uploadSizeFilePath];
+    if (![self archiveObject:uploadSize withFilePath:filePath]) {
+        TDLogError(@"%@ unable to archive uploadSize", self);
+    }
+}
+
+- (void)unarchiveUploadSize {
+    self.config.uploadSize = (NSNumber *)[ThinkingAnalyticsSDK unarchiveFromFile:[self uploadSizeFilePath] asClass:[NSNumber class]];
+    if (!self.config.uploadSize) {
+        self.config.uploadSize = [NSNumber numberWithInteger:100];
+    }
+}
+
+- (void)archiveUploadInterval:(NSNumber *)uploadInterval {
+    NSString *filePath = [self uploadIntervalFilePath];
+    if (![self archiveObject:uploadInterval withFilePath:filePath]) {
+        TDLogError(@"%@ unable to archive uploadInterval", self);
+    }
+}
+
+- (void)unarchiveUploadInterval {
+    self.config.uploadInterval = (NSNumber *)[ThinkingAnalyticsSDK unarchiveFromFile:[self uploadIntervalFilePath] asClass:[NSNumber class]];
+    if (!self.config.uploadInterval) {
+        self.config.uploadInterval = [NSNumber numberWithInteger:60];
+    }
 }
 
 - (void)archiveAccountID:(NSString *)accountID {
@@ -448,6 +478,14 @@ static dispatch_queue_t networkQueue;
 
 - (NSString *)accountIDFilePath {
     return [self persistenceFilePath:@"accountID"];
+}
+
+- (NSString *)uploadSizeFilePath {
+    return [self persistenceFilePath:@"uploadSize"];
+}
+
+- (NSString *)uploadIntervalFilePath {
+    return [self persistenceFilePath:@"uploadInterval"];
 }
 
 - (NSString *)identifyIdFilePath {
@@ -579,7 +617,7 @@ static dispatch_queue_t networkQueue;
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
     TDLogDebug(@"%@ application did enter background", self);
-    self.relaunchInBackGround = NO;
+    _relaunchInBackGround = NO;
     _applicationWillResignActive = NO;
     
     __block UIBackgroundTaskIdentifier backgroundTask = [[ThinkingAnalyticsSDK sharedUIApplication] beginBackgroundTaskWithExpirationHandler:^{
@@ -1228,7 +1266,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         properties[@"#app_version"] = self.deviceInfo.appVersion;
         properties[@"#network_type"] = [[self class] getNetWorkStates];
         
-        if (self.relaunchInBackGround) {
+        if (_relaunchInBackGround) {
             properties[@"#relaunched_in_background"] = @YES;
         }
         if (eventData.timeValueType != TDTimeValueTypeTimeOnly) {
@@ -1282,7 +1320,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if (eventData.persist) {
         dispatch_async(serialQueue, ^{
             NSInteger count = [self saveEventsData:dataDic];
-            if (count >= self.config.uploadSize) {
+            if (count >= [self.config.uploadSize integerValue]) {
                 [self flush];
             }
         });
@@ -1416,20 +1454,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 #pragma mark - Flush control
-+ (void)restartFlushTimer {
-    for (NSString *appid in instances) {
-        dispatch_async(serialQueue, ^{
-            ThinkingAnalyticsSDK *instance = [instances objectForKey:appid];
-            [instance startFlushTimer];
-        });
-    }
-}
-
 - (void)startFlushTimer {
     [self stopFlushTimer];
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.config.uploadInterval > 0) {
-            self.timer = [NSTimer scheduledTimerWithTimeInterval:self.config.uploadInterval
+            self.timer = [NSTimer scheduledTimerWithTimeInterval:[self.config.uploadInterval integerValue]
                                                           target:self
                                                         selector:@selector(flush)
                                                         userInfo:nil
@@ -1457,12 +1486,12 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         [self autotrack:TD_APP_INSTALL_EVENT properties:nil withTime:nil];
     }
     
-    if (!self.relaunchInBackGround && (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd)) {
+    if (!_relaunchInBackGround && (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd)) {
         [self timeEvent:TD_APP_END_EVENT];
     }
 
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
-        NSString *eventName = self.relaunchInBackGround?TD_APP_START_BACKGROUND_EVENT:TD_APP_START_EVENT;
+        NSString *eventName = _relaunchInBackGround?TD_APP_START_BACKGROUND_EVENT:TD_APP_START_EVENT;
         if (@available(iOS 13.0, *)) {
             if (_isEnableSceneSupport) {
                 eventName = TD_APP_START_EVENT;

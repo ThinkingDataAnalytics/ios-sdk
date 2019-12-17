@@ -23,7 +23,6 @@ static TDConfig * _defaultTDConfig;
         _trackRelaunchedInBackgroundEvents = NO;
         _autoTrackEventType = ThinkingAnalyticsEventTypeNone;
         _networkTypePolicy = ThinkingNetworkType3G | ThinkingNetworkType4G | ThinkingNetworkTypeWIFI;
-        [self getBatchSizeAndInterval];
     }
     return self;
 }
@@ -32,39 +31,21 @@ static TDConfig * _defaultTDConfig;
     TDNetwork *network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.configureURL]];
     [network fetchFlushConfig:self.appid handler:^(NSDictionary * _Nonnull result, NSError * _Nullable error) {
         if (!error) {
-            NSInteger uploadInterval = [[[result copy] objectForKey:@"sync_interval"] integerValue];
-            NSInteger uploadSize = [[[result copy] objectForKey:@"sync_batch_size"] integerValue];
-            if (uploadInterval != self->_uploadInterval || uploadSize != self->_uploadSize) {
+            NSInteger uploadInterval = [[result objectForKey:@"sync_interval"] integerValue];
+            NSInteger uploadSize = [[result objectForKey:@"sync_batch_size"] integerValue];
+            if (uploadInterval != [self->_uploadInterval integerValue] || uploadSize != [self->_uploadSize integerValue]) {
                 if (uploadInterval > 0) {
-                    self->_uploadInterval = uploadInterval;
-                    [[NSUserDefaults standardUserDefaults] setInteger:uploadInterval forKey:TA_USER_UPLOADINTERVAL];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
-                    [ThinkingAnalyticsSDK restartFlushTimer];
+                    self->_uploadInterval = [NSNumber numberWithInteger:uploadInterval];
+                    [[ThinkingAnalyticsSDK sharedInstanceWithAppid:self.appid] archiveUploadInterval:self->_uploadInterval];
+                    [[ThinkingAnalyticsSDK sharedInstanceWithAppid:self.appid] startFlushTimer];
                 }
                 if (uploadSize > 0) {
-                    self->_uploadSize = uploadSize;
-                    [[NSUserDefaults standardUserDefaults] setInteger:uploadSize forKey:TA_USER_UPLOADSIZE];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    self->_uploadSize = [NSNumber numberWithInteger:uploadSize];
+                    [[ThinkingAnalyticsSDK sharedInstanceWithAppid:self.appid] archiveUploadSize:self->_uploadSize];
                 }
             }
         }
     }];
-}
-
-- (void)getBatchSizeAndInterval {
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    NSInteger interval = [userDefaults integerForKey:TA_USER_UPLOADINTERVAL];
-    if (interval <= 0) {
-        _uploadInterval = 60;
-    } else {
-        _uploadInterval = interval;
-    }
-    NSInteger size = [userDefaults integerForKey:TA_USER_UPLOADSIZE];
-    if (size <= 0) {
-        _uploadSize = 100;
-    } else {
-        _uploadSize = size;
-    }
 }
 
 - (void)setNetworkType:(ThinkingAnalyticsNetworkType)type {

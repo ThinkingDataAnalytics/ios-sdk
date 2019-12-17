@@ -30,6 +30,9 @@
 //    config.trackRelaunchedInBackgroundEvents = YES;
 //    [ThinkingAnalyticsSDK startWithAppId:@"APP" withUrl:@"https://sdk.tga.thinkinggame.cn:9443" withConfig:config];
     
+    // 开启Log
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    
     // 自动埋点
 //    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:
 //     ThinkingAnalyticsEventTypeAppStart |
@@ -39,9 +42,6 @@
 //     ThinkingAnalyticsEventTypeAppInstall //|
 ////     ThinkingAnalyticsEventTypeAppViewCrash
 //     ];
-    
-    // 开启Log
-    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     
     // H5 需要打通时  需要配置
     [[ThinkingAnalyticsSDK sharedInstance] addWebViewUserAgent];

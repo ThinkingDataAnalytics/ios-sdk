@@ -88,7 +88,7 @@
         NSError *err;
         NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
         if (!err && [ret isKindOfClass:[NSDictionary class]] && [ret[@"code"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
-            handler([[ret copy] objectForKey:@"data"], error);
+            handler([ret objectForKey:@"data"], error);
         } else if ([[ret objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:-2]]) {
             TDLogError(@"APPID is wrong.");
         } else {
