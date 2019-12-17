@@ -28,7 +28,8 @@ static TDConfig * _defaultTDConfig;
 }
 
 - (void)updateConfig {
-    TDNetwork *network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.configureURL]];
+    TDNetwork *network = [[TDNetwork alloc] init];
+    network.serverURL = [NSURL URLWithString:self.configureURL];
     [network fetchFlushConfig:self.appid handler:^(NSDictionary * _Nonnull result, NSError * _Nullable error) {
         if (!error) {
             NSInteger uploadInterval = [[result objectForKey:@"sync_interval"] integerValue];
@@ -64,6 +65,7 @@ static TDConfig * _defaultTDConfig;
     config.autoTrackEventType = self.autoTrackEventType;
     config.networkTypePolicy = self.networkTypePolicy;
     config.launchOptions = [self.launchOptions copyWithZone:zone];
+    config.debugMode = self.debugMode;
     return config;
 }
 

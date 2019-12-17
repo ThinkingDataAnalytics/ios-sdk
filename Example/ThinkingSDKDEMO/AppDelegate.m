@@ -28,6 +28,8 @@
     // 配置后台自启事件的初始化方法
 //    TDConfig *config = [[TDConfig alloc] init];
 //    config.trackRelaunchedInBackgroundEvents = YES;
+//    config.debugMode = ThinkingAnalyticsDebugOnly;
+//    config.debugMode = ThinkingAnalyticsDebug;
 //    [ThinkingAnalyticsSDK startWithAppId:@"APP" withUrl:@"https://sdk.tga.thinkinggame.cn:9443" withConfig:config];
     
     // 开启Log

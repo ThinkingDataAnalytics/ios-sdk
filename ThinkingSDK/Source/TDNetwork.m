@@ -17,21 +17,67 @@
     return sharedSession;
 }
 
-- (instancetype)initWithServerURL:(NSURL *)serverURL {
-    self = [super init];
-    if (self) {
-        self.serverURL = serverURL;
-    }
-    return self;
+- (NSString *)URLEncode:(NSString *)string {
+    return [string stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 }
 
-- (BOOL)flushEvents:(NSArray<NSDictionary *> *)recordArray withAppid:(NSString *)appid {
+- (int)flushDebugEvents:(NSDictionary *)record withAppid:(NSString *)appid {
+    __block int debugResult = -1;
+    NSMutableDictionary *recordDic = [record mutableCopy];
+    NSMutableDictionary *properties = [[recordDic objectForKey:@"properties"] mutableCopy];
+    [properties addEntriesFromDictionary:self.automaticData];
+    [recordDic setObject:properties forKey:@"properties"];
+    NSString *jsonString = [TDJSONUtil JSONStringForObject:recordDic];
+    NSMutableURLRequest *request = [self buildDebugRequestWithJSONString:jsonString withAppid:appid withDeviceId:[properties objectForKey:@"#device_id"]];
+    dispatch_semaphore_t flushSem = dispatch_semaphore_create(0);
+
+    void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
+            debugResult = -2;
+            TDLogError(@"Debug Networking error");
+            dispatch_semaphore_signal(flushSem);
+            return;
+        }
+
+        NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
+        if ([urlResponse statusCode] == 200) {
+            NSError *err;
+            NSDictionary *retDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
+            if (err) {
+                TDLogError(@"Debug data error:%@", err);
+                debugResult = -2;
+            } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:1]] || [[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:2]]) {
+                TDLogError(@"Debug data error:%@", [retDic objectForKey:@"errorReasons"]);
+                [NSException raise:@"Debug data error" format:@"errorReasons: %@", [retDic objectForKey:@"errorReasons"]];
+            } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
+                debugResult = 0;
+                TDLogDebug(@"Verify data success.");
+            } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:-1]]) {
+                debugResult = -1;
+                TDLogDebug(@"Debug mode forced degrade.");
+            }
+        } else {
+            debugResult = -2;
+            NSString *urlResponse = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            TDLogError(@"%@", [NSString stringWithFormat:@"Debug %@ network failure with response '%@'.", self, urlResponse]);
+        }
+        dispatch_semaphore_signal(flushSem);
+    };
+
+    NSURLSessionDataTask *task = [[TDNetwork sharedURLSession] dataTaskWithRequest:request completionHandler:block];
+    [task resume];
+
+    dispatch_semaphore_wait(flushSem, DISPATCH_TIME_FOREVER);
+    return debugResult;
+}
+
+- (BOOL)flushEvents:(NSArray<NSDictionary *> *)recordArray {
     __block BOOL flushSucc = YES;
     
     NSDictionary *flushDic = @{
                     @"data": recordArray,
                     @"automaticData": self.automaticData,
-                    @"#app_id": appid,
+                    @"#app_id": self.appid,
                     };
     
     NSString *jsonString = [TDJSONUtil JSONStringForObject:flushDic];
@@ -49,7 +95,7 @@
         NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
         if ([urlResponse statusCode] == 200) {
             flushSucc = YES;
-            TDLogDebug(@"fluch success. ret :%@, data :%@", [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil], flushDic);
+            TDLogDebug(@"flush success. ret :%@, data :%@", [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil], flushDic);
         } else {
             flushSucc = NO;
             NSString *urlResponse = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -75,7 +121,21 @@
     NSString *contentType = [NSString stringWithFormat:@"text/plain"];
     [request addValue:contentType forHTTPHeaderField:@"Content-Type"];
     [request setTimeoutInterval:60.0];
+    return request;
+}
 
+- (NSMutableURLRequest *)buildDebugRequestWithJSONString:(NSString *)jsonString withAppid:(NSString *)appid withDeviceId:(NSString *)deviceId {
+    // dryRun=0，如果校验通过就会入库。 dryRun=1，不会入库
+    int dryRun = 0;
+    if (_debugMode == ThinkingAnalyticsDebugOnly) {
+        dryRun = 1;
+    } else if (_debugMode == ThinkingAnalyticsDebug) {
+        dryRun = 0;
+    }
+    NSString *postData = [NSString stringWithFormat:@"appid=%@&source=client&dryRun=%d&deviceId=%@&data=%@", appid, dryRun, deviceId, [self URLEncode:jsonString]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.serverDebugURL];
+    [request setHTTPMethod:@"POST"];
+    request.HTTPBody = [postData dataUsingEncoding:NSUTF8StringEncoding];
     return request;
 }
 
@@ -87,7 +147,9 @@
         }
         NSError *err;
         NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
-        if (!err && [ret isKindOfClass:[NSDictionary class]] && [ret[@"code"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
+        if (err) {
+            TDLogError(@"update batchSize interval failed:%@", err);
+        } else if ([ret isKindOfClass:[NSDictionary class]] && [ret[@"code"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
             handler([ret objectForKey:@"data"], error);
         } else if ([[ret objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:-2]]) {
             TDLogError(@"APPID is wrong.");

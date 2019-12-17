@@ -3,8 +3,8 @@
 
 @implementation LightThinkingAnalyticsSDK
 
-- (instancetype)initWithAPPID:(NSString *)appID {
-    if (self = [self initLight:appID]) {
+- (instancetype)initWithAPPID:(NSString *)appID withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config {
+    if (self = [self initLight:appID withServerURL:serverURL withConfig:config]) {
     }
     
     return self;

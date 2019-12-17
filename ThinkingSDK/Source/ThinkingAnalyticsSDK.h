@@ -4,6 +4,28 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
+Debug模式
+
+- ThinkingAnalyticsDebugOff : 默认 不开启Debug模式
+*/
+typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsDebugMode) {
+    /**
+     默认 不开启Debug模式
+     */
+    ThinkingAnalyticsDebugOff      = 0,
+    
+    /**
+     开启Debug模式，不入库
+     */
+    ThinkingAnalyticsDebugOnly     = 1 << 0,
+    
+    /**
+     开启Debug模式，并入库
+     */
+    ThinkingAnalyticsDebug         = 1 << 1
+};
+
+/**
  配置后台自启事件是否采集 默认不采集
  ```objective-c
  TDConfig *config = [[TDConfig alloc] init];
@@ -19,6 +41,11 @@ NS_ASSUME_NONNULL_BEGIN
  初始化配置后台自启事件 YES：采集后台自启事件 NO：不采集后台自启事件
  */
 @property (nonatomic, assign) BOOL trackRelaunchedInBackgroundEvents;
+
+/**
+初始化配置Debug模式
+*/
+@property (nonatomic, assign) ThinkingAnalyticsDebugMode debugMode;
 
 /**
  初始化配置launchOptions

@@ -132,10 +132,11 @@ static dispatch_queue_t networkQueue;
     return networkQueue;
 }
 
-- (instancetype)initLight:(NSString *)appid {
+- (instancetype)initLight:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config {
     if (self = [self init]) {
         _appid = appid;
         _isEnabled = YES;
+        _config = [config copy];
         
         self.trackTimer = [NSMutableDictionary dictionary];
         _timeFormatter = [[NSDateFormatter alloc] init];
@@ -154,13 +155,21 @@ static dispatch_queue_t networkQueue;
         }
         
         self.deviceInfo = [TDDeviceInfo sharedManager];
+        self.debugEventsQueue = [NSMutableArray array];
+        
+        _network = [[TDNetwork alloc] init];
+        _network.debugMode = config.debugMode;
+        _network.appid = appid;
+        if (config.debugMode == ThinkingAnalyticsDebugOnly || config.debugMode == ThinkingAnalyticsDebug) {
+            _network.serverDebugURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/data_debug", serverURL]];
+        }
     }
     return self;
 }
 
 - (instancetype)initWithAppkey:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config {
     if (self = [self init:appid]) {
-        self.serverURL = [NSString stringWithFormat:@"%@/sync",serverURL];
+        self.serverURL = serverURL;
         self.appid = appid;
         
         if (!config) {
@@ -203,8 +212,15 @@ static dispatch_queue_t networkQueue;
         [self setNetRadioListeners];
         
         self.autoTrackManager = [TDAutoTrackManager sharedManager];
-        
-        _network = [[TDNetwork alloc] initWithServerURL:[NSURL URLWithString:self.serverURL]];
+        self.debugEventsQueue = [NSMutableArray array];
+
+        _network = [[TDNetwork alloc] init];
+        _network.debugMode = config.debugMode;
+        _network.appid = appid;
+        if (config.debugMode == ThinkingAnalyticsDebugOnly || config.debugMode == ThinkingAnalyticsDebug) {
+            _network.serverDebugURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/data_debug",serverURL]];
+        }
+        _network.serverURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/sync",serverURL]];
         _network.automaticData = _deviceInfo.automaticData;
         
         [self sceneSupportSetting];
@@ -236,7 +252,7 @@ static dispatch_queue_t networkQueue;
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - appid: %@ serverUrl:%@>", (void *)self, self.appid, self.serverURL];
+    return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - appid: %@ serverUrl: %@>", (void *)self, self.appid, self.serverURL];
 }
 
 + (UIApplication *)sharedUIApplication {
@@ -307,9 +323,8 @@ static dispatch_queue_t networkQueue;
 
 #pragma mark - LightInstance
 - (ThinkingAnalyticsSDK *)createLightInstance {
-    ThinkingAnalyticsSDK *lightInstance = [[LightThinkingAnalyticsSDK alloc] initWithAPPID:self.appid];
+    ThinkingAnalyticsSDK *lightInstance = [[LightThinkingAnalyticsSDK alloc] initWithAPPID:self.appid withServerURL:self.serverURL withConfig:self.config];
     lightInstance.identifyId = self.deviceInfo.uniqueId;
-    lightInstance.config = [self.config copy];
     lightInstance.relaunchInBackGround = self.relaunchInBackGround;
     lightInstance.isEnableSceneSupport = self.isEnableSceneSupport;
     return lightInstance;
@@ -1317,7 +1332,23 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
     
     TDLogDebug(@"queueing data:%@", dataDic);
-    if (eventData.persist) {
+    if (self.config.debugMode == ThinkingAnalyticsDebugOnly || self.config.debugMode == ThinkingAnalyticsDebug) {
+        @synchronized (self) {
+            [self.debugEventsQueue addObject:dataDic];
+            if (self.debugEventsQueue.count > 5000) {
+                [self.debugEventsQueue removeObjectAtIndex:0];
+            }
+        }
+        
+        [self flushDebugEvent:nil];
+        NSInteger count;
+        @synchronized (instances) {
+            count = [self.dataQueue sqliteCountForAppid:self.appid];
+        }
+        if (count >= [self.config.uploadSize integerValue]) {
+            [self flush];
+        }
+    } else if (eventData.persist) {
         dispatch_async(serialQueue, ^{
             NSInteger count = [self saveEventsData:dataDic];
             if (count >= [self.config.uploadSize integerValue]) {
@@ -1333,7 +1364,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 - (void)flushImmediately:(NSDictionary *)dataDic {
     [self dispatchOnNetworkQueue:^{
-        [self.network flushEvents:@[dataDic] withAppid:self.appid];
+        [self.network flushEvents:@[dataDic]];
     }];
 }
 
@@ -1408,16 +1439,73 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [self syncWithCompletion:nil];
 }
 
-- (void)syncWithCompletion:(void (^)(void))handler {
+- (void)degradeDebugMode {
+    self.config.debugMode = ThinkingAnalyticsDebugOff;
+    self.network.debugMode = ThinkingAnalyticsDebugOff;
+    NSMutableArray *queueCopying;
+    @synchronized (self) {
+        queueCopying = [self.debugEventsQueue mutableCopy];
+        self.debugEventsQueue = [NSMutableArray array];
+    }
+    if (queueCopying.count > 0) {
+        dispatch_async(serialQueue, ^{
+            [queueCopying enumerateObjectsUsingBlock:^(NSDictionary *eventDic, NSUInteger idx, BOOL * _Nonnull stop) {
+                 [self saveEventsData:eventDic];
+            }];
+        });
+    }
+}
+
+- (void)flushDebugEvent:(void (^)(void))handler {
     [self dispatchOnNetworkQueue:^{
-        [self _sync:NO];
+        [self _syncDebug];
         if (handler) {
             dispatch_async(dispatch_get_main_queue(), handler);
         }
     }];
 }
 
-- (void)_sync:(BOOL)vacuumAfterFlushing {
+- (void)syncWithCompletion:(void (^)(void))handler {
+    [self dispatchOnNetworkQueue:^{
+        [self _sync];
+        if (handler) {
+            dispatch_async(dispatch_get_main_queue(), handler);
+        }
+    }];
+}
+
+- (void)_syncDebug {
+    NSMutableArray *queueCopying;
+    @synchronized (self) {
+        queueCopying = [self.debugEventsQueue mutableCopy];
+    }
+    int debugResult = 0;
+    while (queueCopying.count > 0 && self.config.debugMode != ThinkingAnalyticsDebugOff) {
+        NSDictionary *record = [queueCopying firstObject];
+        debugResult = [self.network flushDebugEvents:record withAppid:self.appid];
+        if (debugResult == 0) {
+            @synchronized (self) {
+                [queueCopying removeObjectAtIndex:0];
+                [self.debugEventsQueue removeObjectAtIndex:0];
+            }
+        } else if (debugResult == -1) {
+            [self degradeDebugMode];
+            break;
+        } else if (debugResult == -2) {
+            if (self.config.debugMode == ThinkingAnalyticsDebug) {
+                dispatch_async(serialQueue, ^{
+                    [self saveEventsData:record];
+                });
+            }
+            @synchronized (self) {
+                [queueCopying removeObjectAtIndex:0];
+                [self.debugEventsQueue removeObjectAtIndex:0];
+            }
+        }
+    }
+}
+
+- (void)_sync {
     NSString *networkType = [[self class] getNetWorkStates];
     if (!([self convertNetworkType:networkType] & self.config.networkTypePolicy)) {
         return;
@@ -1432,7 +1520,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     BOOL flushSucc = YES;
     while (recordArray.count > 0 && flushSucc) {
         NSUInteger sendSize = recordArray.count;
-        flushSucc = [self.network flushEvents:recordArray withAppid:self.appid];
+        flushSucc = [self.network flushEvents:recordArray];
         if (flushSucc) {
             @synchronized (instances) {
                 BOOL ret = [self.dataQueue removeFirstRecords:sendSize withAppid:self.appid];

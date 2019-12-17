@@ -70,8 +70,9 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 @property (nonatomic, assign) SCNetworkReachabilityRef reachability;
 @property (nonatomic, strong) CTTelephonyNetworkInfo *telephonyInfo;
 @property (nonatomic, copy) NSDictionary<NSString *, id> *(^dynamicSuperProperties)(void);
+@property (nonatomic, strong) NSMutableArray *debugEventsQueue;
 
-- (instancetype)initLight:(NSString *)appid;
+- (instancetype)initLight:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config;
 - (void)autotrack:(NSString *)event properties:(NSDictionary *)propertieDict withTime:(NSDate *)date;
 - (BOOL)isViewControllerIgnored:(UIViewController *)viewController;
 - (BOOL)isAutoTrackEventTypeIgnored:(ThinkingAnalyticsAutoTrackEventType)eventType;
@@ -86,11 +87,12 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 - (void)archiveUploadSize:(NSNumber *)uploadSize;
 - (void)archiveUploadInterval:(NSNumber *)uploadInterval;
 - (void)startFlushTimer;
+- (void)degradeDebugMode;
 
 @end
 
 @interface LightThinkingAnalyticsSDK : ThinkingAnalyticsSDK
 
-- (instancetype)initWithAPPID:(NSString *)appID;
+- (instancetype)initWithAPPID:(NSString *)appID withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config;
 
 @end
