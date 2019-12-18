@@ -1246,6 +1246,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     NSDictionary *eventDict = [NSJSONSerialization JSONObjectWithData:jsonData
                                                               options:NSJSONReadingMutableContainers
                                                                 error:&err];
+    NSString *appid = [eventDict[@"#app_id"] isKindOfClass:[NSString class]] ? eventDict[@"#app_id"] : self.appid;
     id dataArr = eventDict[@"data"];
     if (!err && [dataArr isKindOfClass:[NSArray class]]) {
         NSDictionary *dataInfo = [dataArr objectAtIndex:0];
@@ -1263,9 +1264,16 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             [dic removeObjectForKey:@"#screen_height"];
             [dic removeObjectForKey:@"#screen_width"];
             
-            dispatch_async(serialQueue, ^{
-                [self h5track:event_name properties:dic withType:type withTime:time];
-            });
+            ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:appid];
+            if (instance) {
+                dispatch_async(serialQueue, ^{
+                    [instance h5track:event_name properties:dic withType:type withTime:time];
+                });
+            } else {
+                dispatch_async(serialQueue, ^{
+                    [self h5track:event_name properties:dic withType:type withTime:time];
+                });
+            }
         }
     }
 }
