@@ -238,6 +238,9 @@ static dispatch_queue_t networkQueue;
         }
         
         instances[appid] = self;
+        
+        TDLogInfo(@"Thank you very much for using Thinking Data SDK. We will do our best to provide you with the best service.");
+        TDLogInfo(@"Thinking Data SDK version:%@, DeviceId:%@", [self.deviceInfo libVersion], [self getDeviceId]);
     }
     return self;
 }
@@ -833,7 +836,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 - (void)track:(NSString *)event properties:(NSDictionary *)propertiesDict {
     if ([self hasDisabled])
         return;
-    BOOL isValid;
+    BOOL isValid = YES;
     propertiesDict = [self processParameters:propertiesDict withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:NO withH5:NO isValid:&isValid];
     if (isValid) {
         TDEventData *eventData = [[TDEventData alloc] init];
@@ -1183,43 +1186,54 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
     
     __block BOOL failed = NO;
+    NSMutableString *exceptionErrMsg = [[NSMutableString alloc] init];
+    [exceptionErrMsg appendString:@"[ThinkingSDKDebug] "];
     [properties enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if (![key isKindOfClass:[NSString class]]) {
-            NSString *errMsg = @"property Key should by NSString";
+            NSString *errMsg = [NSString stringWithFormat:@"property key must by NSString. got: %@. ", key];
             TDLogError(errMsg);
+            [exceptionErrMsg appendString:errMsg];
             failed = YES;
         }
         
         if (![self isValidName:key isAutoTrack:haveAutoTrackEvents]) {
-            NSString *errMsg = [NSString stringWithFormat:@"property name[%@] is not valid", key];
+            NSString *errMsg = [NSString stringWithFormat:@"property key is not valid. got: %@. ", key];
             TDLogError(errMsg);
+            [exceptionErrMsg appendString:errMsg];
             failed = YES;
         }
         
         if (![obj isKindOfClass:[NSString class]] &&
             ![obj isKindOfClass:[NSNumber class]] &&
             ![obj isKindOfClass:[NSDate class]]) {
-            NSString *errMsg = [NSString stringWithFormat:@"property values must be NSString, NSNumber, NSDate. got: %@ %@", [obj class], obj];
+            NSString *errMsg = [NSString stringWithFormat:@"property values must be NSString, NSNumber, NSDate. got: %@ %@. ", [obj class], obj];
             TDLogError(errMsg);
+            [exceptionErrMsg appendString:errMsg];
             failed = YES;
         }
         
         if (eventType.length > 0 && [eventType isEqualToString:TD_EVENT_TYPE_USER_ADD]) {
             if (![obj isKindOfClass:[NSNumber class]]) {
-                NSString *errMsg = [NSString stringWithFormat:@"user_add value must be NSNumber. got: %@ %@", [obj class], obj];
+                NSString *errMsg = [NSString stringWithFormat:@"user_add value must be NSNumber. got: %@ %@. ", [obj class], obj];
                 TDLogError(errMsg);
+                [exceptionErrMsg appendString:errMsg];
                 failed = YES;
             }
         }
         
         if ([obj isKindOfClass:[NSNumber class]]) {
             if ([obj doubleValue] > 9999999999999.999 || [obj doubleValue] < -9999999999999.999) {
-                TDLogError(@"number value is not valid.");
+                NSString *errMsg = [NSString stringWithFormat:@"property number value is not valid. got: %@. ", obj];
+                TDLogError(errMsg);
+                [exceptionErrMsg appendString:errMsg];
                 failed = YES;
             }
         }
     }];
     if (failed) {
+        if (self.config.allowDebug) {
+            [NSException raise:@"track data error" format:@"errorReasons: %@", exceptionErrMsg];
+        }
         return NO;
     }
     
@@ -1381,19 +1395,29 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         [properties addEntriesFromDictionary:propertiesDict];
     }
     
+    NSMutableString *exceptionErrMsg = [[NSMutableString alloc] init];
+    [exceptionErrMsg appendString:@"[ThinkingSDKDebug] "];
     if ([eventType isEqualToString:TD_EVENT_TYPE_TRACK] && !isH5) {
         if (![eventName isKindOfClass:[NSString class]] || eventName.length == 0) {
-            TDLogError(@"track event key is not valid");
+            NSString *errMsg = [NSString stringWithFormat:@"track eventName is not valid. got: %@. ", eventName];
+            TDLogError(errMsg);
+            [exceptionErrMsg appendString:errMsg];
             *isValid = NO;
-            return nil;
         }
         
         if (![self isValidName:eventName isAutoTrack:NO]) {
             NSString *errMsg = [NSString stringWithFormat:@"property name[%@] is not valid", eventName];
             TDLogError(@"%@", errMsg);
+            [exceptionErrMsg appendString:errMsg];
             *isValid = NO;
-            return nil;
         }
+    }
+    
+    if (*isValid == NO) {
+        if (self.config.allowDebug) {
+            [NSException raise:@"track data error" format:@"errorReasons: %@", exceptionErrMsg];
+        }
+        return nil;
     }
     
     if (properties && !isH5 && ![self checkEventProperties:properties withEventType:eventType haveAutoTrackEvents:autotrack]) {
@@ -1483,24 +1507,23 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     while (queueCopying.count > 0 && self.config.debugMode != ThinkingAnalyticsDebugOff) {
         NSDictionary *record = [queueCopying firstObject];
         debugResult = [self.network flushDebugEvents:record withAppid:self.appid];
-        if (debugResult == 0) {
-            @synchronized (self) {
-                [queueCopying removeObjectAtIndex:0];
-                [self.debugEventsQueue removeObjectAtIndex:0];
-            }
-        } else if (debugResult == -1) {
-            [self degradeDebugMode];
-            break;
-        } else if (debugResult == -2) {
-            if (self.config.debugMode == ThinkingAnalyticsDebug) {
+        if (self.config.debugMode == ThinkingAnalyticsDebug) {
+            if (debugResult == -1) {
+                // 服务器不允许Debug
+                [self degradeDebugMode];
+            } else if (debugResult == -2) {
+                // 网络异常
                 dispatch_async(serialQueue, ^{
                     [self saveEventsData:record];
                 });
             }
-            @synchronized (self) {
-                [queueCopying removeObjectAtIndex:0];
-                [self.debugEventsQueue removeObjectAtIndex:0];
-            }
+        }
+        if (debugResult == 0 || debugResult == 1 || debugResult == 2) {
+            self.config.allowDebug = YES;
+        }
+        [queueCopying removeObjectAtIndex:0];
+        @synchronized (self) {
+            [self.debugEventsQueue removeObjectAtIndex:0];
         }
     }
 }

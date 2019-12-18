@@ -22,6 +22,8 @@
     self.window.rootViewController = [self createRootViewController];
     [self.window makeKeyAndVisible];
     
+    // 开启Log
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     // 初始化
     [ThinkingAnalyticsSDK startWithAppId:@"YOUR_APPID" withUrl:@"YOUR_SERVER_URL"];
     
@@ -32,8 +34,6 @@
 //    config.debugMode = ThinkingAnalyticsDebug;
 //    [ThinkingAnalyticsSDK startWithAppId:@"APP" withUrl:@"https://sdk.tga.thinkinggame.cn:9443" withConfig:config];
     
-    // 开启Log
-    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     
     // 自动埋点
 //    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:

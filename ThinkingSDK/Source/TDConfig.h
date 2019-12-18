@@ -21,6 +21,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
 @property (assign, nonatomic) ThinkingNetworkType networkTypePolicy;
 @property (assign, nonatomic) NSNumber *uploadInterval;
 @property (assign, nonatomic) NSNumber *uploadSize;
+@property (assign, nonatomic) BOOL allowDebug;
 @property (atomic, copy) NSString *appid;
 @property (atomic, copy) NSString *configureURL;
 - (void)updateConfig;

@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSDictionary *automaticData;
 @property (nonatomic) BOOL isFirstOpen;
 
+- (NSString *)libVersion;
+
 @end
 
 NS_ASSUME_NONNULL_END
