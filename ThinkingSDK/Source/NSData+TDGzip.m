@@ -6,7 +6,7 @@
 
 + (NSData *)gzipData:(NSData *)pUncompressedData {
     if (!pUncompressedData || [pUncompressedData length] == 0) {
-        TDLogDebug(@"[THINKING] %s: Error: Can't compress an empty or nil NSData object",__func__);
+        TDLogDebug(@"%s: Error: Can't compress an empty or nil NSData object",__func__);
         return nil;
     }
     
@@ -37,7 +37,7 @@
                 break;
         }
         
-        TDLogDebug(@"[THINKING] %s:deflateInit2() Error: \"%@\" Message: \"%s\"",__func__,errorMsg,zlibStreamStruct.msg);
+        TDLogDebug(@"%s:deflateInit2() Error: \"%@\" Message: \"%s\"",__func__,errorMsg,zlibStreamStruct.msg);
         return nil;
     }
     

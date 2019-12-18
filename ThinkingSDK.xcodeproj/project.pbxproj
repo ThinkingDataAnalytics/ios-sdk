@@ -22,6 +22,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		F30338BC23AA0E600020C129 /* TDToastView.m in Sources */ = {isa = PBXBuildFile; fileRef = F30338BA23AA0E5F0020C129 /* TDToastView.m */; };
+		F30338BD23AA0E600020C129 /* TDToastView.h in Headers */ = {isa = PBXBuildFile; fileRef = F30338BB23AA0E5F0020C129 /* TDToastView.h */; };
 		F3247C9B23176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = F3247C9923176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m */; };
 		F3D1901E230136B30043D595 /* ThinkingSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3D19014230136B30043D595 /* ThinkingSDK.framework */; };
 		F3D19023230136B30043D595 /* ThinkingSDKTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19022230136B30043D595 /* ThinkingSDKTests.m */; };
@@ -79,6 +81,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F30338BA23AA0E5F0020C129 /* TDToastView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDToastView.m; sourceTree = "<group>"; };
+		F30338BB23AA0E5F0020C129 /* TDToastView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDToastView.h; sourceTree = "<group>"; };
 		F30FC040231428B7003335F8 /* TDAnalyticsSDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TDAnalyticsSDK.bundle; path = ThinkingSDK/TDAnalyticsSDK.bundle; sourceTree = "<group>"; };
 		F3247C9923176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightThinkingAnalyticsSDK.m; sourceTree = "<group>"; };
 		F3D19014230136B30043D595 /* ThinkingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ThinkingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -215,6 +219,8 @@
 				F3D19036230137600043D595 /* ThinkingExceptionHandler.m */,
 				F3D19055230137600043D595 /* NSData+TDGzip.h */,
 				F3D19039230137600043D595 /* NSData+TDGzip.m */,
+				F30338BB23AA0E5F0020C129 /* TDToastView.h */,
+				F30338BA23AA0E5F0020C129 /* TDToastView.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -248,6 +254,7 @@
 				F3D19072230137610043D595 /* TDConfig.h in Headers */,
 				F3D19064230137600043D595 /* ThinkingAnalyticsSDKPrivate.h in Headers */,
 				F3D1905F230137600043D595 /* TDNetwork.h in Headers */,
+				F30338BD23AA0E600020C129 /* TDToastView.h in Headers */,
 				F3D1907B230137610043D595 /* NSData+TDGzip.h in Headers */,
 				F3D19077230137610043D595 /* ThinkingExceptionHandler.h in Headers */,
 				F3D1906E230137610043D595 /* UIApplication+AutoTrack.h in Headers */,
@@ -389,6 +396,7 @@
 				F3D19057230137600043D595 /* TDDeviceInfo.m in Sources */,
 				F3D1906A230137600043D595 /* TDAutoTrackManager.m in Sources */,
 				F3D1906D230137610043D595 /* TDSwizzler.m in Sources */,
+				F30338BC23AA0E600020C129 /* TDToastView.m in Sources */,
 				F3D1906C230137610043D595 /* NSObject+TDSwizzle.m in Sources */,
 				F3D1905A230137600043D595 /* TDOSLog.m in Sources */,
 				F3D19074230137610043D595 /* TDKeychainItemWrapper.m in Sources */,

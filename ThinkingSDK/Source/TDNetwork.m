@@ -3,6 +3,7 @@
 #import "NSData+TDGzip.h"
 #import "TDJSONUtil.h"
 #import "TDLogging.h"
+#import "TDToastView.h"
 
 @implementation TDNetwork
 
@@ -56,6 +57,16 @@
                 debugResult = -1;
                 TDLogDebug(@"Debug mode forced degrade.");
             }
+            
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                if (debugResult == 0 || debugResult == 1 || debugResult == 2) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        UIWindow *window = [UIApplication sharedApplication].keyWindow;
+                        [TDToastView showInWindow:window text:[NSString stringWithFormat:@"当前模式为:%@", self.debugMode == ThinkingAnalyticsDebugOnly ? @"DebugOnly(数据不入库)" : @"Debug"] duration:2.0];
+                    });
+                }
+            });
         } else {
             debugResult = -2;
             NSString *urlResponse = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
