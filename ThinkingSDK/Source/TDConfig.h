@@ -15,16 +15,19 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
 
 @interface TDConfig () <NSCopying>
 
-+ (TDConfig *)defaultTDConfig;
-- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type;
 @property (assign, nonatomic) ThinkingAnalyticsAutoTrackEventType autoTrackEventType;
 @property (assign, nonatomic) ThinkingNetworkType networkTypePolicy;
 @property (assign, nonatomic) NSNumber *uploadInterval;
 @property (assign, nonatomic) NSNumber *uploadSize;
 @property (assign, nonatomic) BOOL allowDebug;
+@property (class,  nonatomic) NSInteger maxNumEvents;
+@property (class,  nonatomic) NSInteger expirationDays;
+
 @property (atomic, copy) NSString *appid;
 @property (atomic, copy) NSString *configureURL;
++ (TDConfig *)defaultTDConfig;
 - (void)updateConfig;
+- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type;
 
 @end
 NS_ASSUME_NONNULL_END

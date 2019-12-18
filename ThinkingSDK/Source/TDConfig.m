@@ -3,11 +3,35 @@
 #import "TDNetwork.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 
-static NSString * const TA_USER_UPLOADINTERVAL = @"thinkingdata_uploadInterval";
-static NSString * const TA_USER_UPLOADSIZE = @"thinkingdata_uploadSize";
+#define TDSDKSETTINGS_PLIST_SETTING_IMPL(TYPE, PLIST_KEY, GETTER, SETTER, DEFAULT_VALUE, ENABLE_CACHE) \
+static TYPE *g_##PLIST_KEY = nil; \
++ (TYPE *)GETTER \
+{ \
+  if (!g_##PLIST_KEY && ENABLE_CACHE) { \
+    g_##PLIST_KEY = [[[NSUserDefaults standardUserDefaults] objectForKey:@#PLIST_KEY] copy]; \
+  } \
+  if (!g_##PLIST_KEY) { \
+    g_##PLIST_KEY = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@#PLIST_KEY] copy] ?: DEFAULT_VALUE; \
+  } \
+  return g_##PLIST_KEY; \
+} \
++ (void)SETTER:(TYPE *)value { \
+  g_##PLIST_KEY = [value copy]; \
+  if (ENABLE_CACHE) { \
+    if (value) { \
+      [[NSUserDefaults standardUserDefaults] setObject:value forKey:@#PLIST_KEY]; \
+    } else { \
+      [[NSUserDefaults standardUserDefaults] removeObjectForKey:@#PLIST_KEY]; \
+    } \
+  } \
+}
+
 static TDConfig * _defaultTDConfig;
 
 @implementation TDConfig
+
+TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKMaxCacheSize, _maxNumEventsNumber, _setMaxNumEventsNumber, @10000, NO);
+TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expirationDaysNumber, _setExpirationDaysNumber, @10, NO);
 
 + (TDConfig *)defaultTDConfig {
     static dispatch_once_t onceToken;
@@ -59,6 +83,7 @@ static TDConfig * _defaultTDConfig;
     }
 }
 
+#pragma mark - NSCopying
 - (id)copyWithZone:(NSZone *)zone {
     TDConfig *config = [[[self class] allocWithZone:zone] init];
     config.trackRelaunchedInBackgroundEvents = self.trackRelaunchedInBackgroundEvents;
@@ -67,6 +92,27 @@ static TDConfig * _defaultTDConfig;
     config.launchOptions = [self.launchOptions copyWithZone:zone];
     config.debugMode = self.debugMode;
     return config;
+}
+
++ (NSInteger)maxNumEvents {
+    NSInteger maxNumEvents = [self _maxNumEventsNumber].integerValue;
+    if (maxNumEvents < 5000) {
+        maxNumEvents = 5000;
+    }
+    return maxNumEvents;
+}
+
++ (void)setMaxNumEvents:(NSInteger)maxNumEventsNumber {
+    [self _setMaxNumEventsNumber:@(maxNumEventsNumber)];
+}
+
++ (NSInteger)expirationDays {
+    NSInteger maxNumEvents = [self _expirationDaysNumber].integerValue;
+    return maxNumEvents >= 0 ? maxNumEvents : 10;
+}
+
++ (void)setExpirationDays:(NSInteger)expirationDays {
+    [self _setExpirationDaysNumber:@(expirationDays)];
 }
 
 @end

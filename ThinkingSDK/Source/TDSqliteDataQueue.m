@@ -3,6 +3,7 @@
 
 #import "TDLogging.h"
 #import "TDJSONUtil.h"
+#import "TDConfig.h"
 
 #define MAX_CACHE_SIZE 10000
 
@@ -95,13 +96,13 @@
 
 - (void)delExpiredData {
     NSTimeInterval oneDay = 24*60*60*1;
-    NSDate *date = [[NSDate date] initWithTimeIntervalSinceNow: -oneDay * 10];
+    NSDate *date = [[NSDate date] initWithTimeIntervalSinceNow: -oneDay * [TDConfig expirationDays]];
     int expirationDate = [date timeIntervalSince1970];
     [self removeOldRecords:expirationDate];
 }
 
 - (NSInteger)addObejct:(id)obj withAppid:(NSString *)appid {
-    NSUInteger maxCacheSize = (NSUInteger)MAX_CACHE_SIZE;
+    NSUInteger maxCacheSize = [TDConfig maxNumEvents];
     if (_allmessageCount >= maxCacheSize) {
         [self removeFirstRecords:100 withAppid:nil];
     }
