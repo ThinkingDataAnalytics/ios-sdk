@@ -26,14 +26,56 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsDebugMode) {
 };
 
 /**
- 配置后台自启事件是否采集 默认不采集
- ```objective-c
- TDConfig *config = [[TDConfig alloc] init];
- 
- config.trackRelaunchedInBackgroundEvents = YES;
- 
- [ThinkingAnalyticsSDK startWithAppId:@"YOUR_APPID" withUrl:@"YOUR_SERVER_URL" withConfig:config];
- ```
+ 证书验证模式
+*/
+typedef NS_OPTIONS(NSInteger, TDSSLPinningMode) {
+    /**
+     默认认证方式，只会在系统的信任的证书列表中对服务端返回的证书进行验证
+    */
+    TDSSLPinningModeNone          = 0,
+    
+    /**
+     校验证书的公钥
+    */
+    TDSSLPinningModePublicKey     = 1 << 0,
+    
+    /**
+     校验证书的所有内容
+    */
+    TDSSLPinningModeCertificate   = 1 << 1
+};
+
+/**
+ 自定义HTTPS认证
+*/
+typedef NSURLSessionAuthChallengeDisposition (^TDURLSessionDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential *_Nullable __autoreleasing *_Nullable credential);
+
+@interface TDSecurityPolicy : NSObject
+
+/**
+ 是否允许自建证书或者过期SSL证书，默认NO
+*/
+@property (nonatomic, assign) BOOL allowInvalidCertificates;
+
+/**
+ 是否验证证书域名，默认YES
+*/
+@property (nonatomic, assign) BOOL validatesDomainName;
+
+/**
+ 自定义HTTPS认证
+*/
+@property (nonatomic, copy) TDURLSessionDidReceiveAuthenticationChallengeBlock sessionDidReceiveAuthenticationChallenge;
+
+/**
+ 证书验证模式
+*/
++ (instancetype)policyWithPinningMode:(TDSSLPinningMode)pinningMode;
+
+@end
+
+/**
+ 初始化配置
  */
 @interface TDConfig : NSObject
 
@@ -43,7 +85,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsDebugMode) {
 @property (nonatomic, assign) BOOL trackRelaunchedInBackgroundEvents;
 
 /**
-初始化配置Debug模式
+ 初始化配置debug模式
 */
 @property (nonatomic, assign) ThinkingAnalyticsDebugMode debugMode;
 
@@ -51,6 +93,11 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsDebugMode) {
  初始化配置launchOptions
 */
 @property (nonatomic, copy) NSDictionary *launchOptions;
+
+/**
+ 初始化配置证书校验策略
+*/
+@property (nonatomic, strong) TDSecurityPolicy *securityPolicy;
 
 @end
 

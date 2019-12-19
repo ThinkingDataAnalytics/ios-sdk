@@ -24,6 +24,8 @@
 /* Begin PBXBuildFile section */
 		F30338BC23AA0E600020C129 /* TDToastView.m in Sources */ = {isa = PBXBuildFile; fileRef = F30338BA23AA0E5F0020C129 /* TDToastView.m */; };
 		F30338BD23AA0E600020C129 /* TDToastView.h in Headers */ = {isa = PBXBuildFile; fileRef = F30338BB23AA0E5F0020C129 /* TDToastView.h */; };
+		F30338C023AB57750020C129 /* TDSecurityPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = F30338BE23AB57740020C129 /* TDSecurityPolicy.h */; };
+		F30338C123AB57750020C129 /* TDSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = F30338BF23AB57750020C129 /* TDSecurityPolicy.m */; };
 		F3247C9B23176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = F3247C9923176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m */; };
 		F3D1901E230136B30043D595 /* ThinkingSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3D19014230136B30043D595 /* ThinkingSDK.framework */; };
 		F3D19023230136B30043D595 /* ThinkingSDKTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19022230136B30043D595 /* ThinkingSDKTests.m */; };
@@ -83,6 +85,8 @@
 /* Begin PBXFileReference section */
 		F30338BA23AA0E5F0020C129 /* TDToastView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDToastView.m; sourceTree = "<group>"; };
 		F30338BB23AA0E5F0020C129 /* TDToastView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDToastView.h; sourceTree = "<group>"; };
+		F30338BE23AB57740020C129 /* TDSecurityPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDSecurityPolicy.h; sourceTree = "<group>"; };
+		F30338BF23AB57750020C129 /* TDSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDSecurityPolicy.m; sourceTree = "<group>"; };
 		F30FC040231428B7003335F8 /* TDAnalyticsSDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TDAnalyticsSDK.bundle; path = ThinkingSDK/TDAnalyticsSDK.bundle; sourceTree = "<group>"; };
 		F3247C9923176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightThinkingAnalyticsSDK.m; sourceTree = "<group>"; };
 		F3D19014230136B30043D595 /* ThinkingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ThinkingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -204,6 +208,8 @@
 				F3D19033230137600043D595 /* TDOSLog.m */,
 				F3D19050230137600043D595 /* TDSqliteDataQueue.h */,
 				F3D19037230137600043D595 /* TDSqliteDataQueue.m */,
+				F30338BE23AB57740020C129 /* TDSecurityPolicy.h */,
+				F30338BF23AB57750020C129 /* TDSecurityPolicy.m */,
 				F3D19038230137600043D595 /* TDNetwork.h */,
 				F3D1904F230137600043D595 /* TDNetwork.m */,
 				F3D1904C230137600043D595 /* TDConfig.h */,
@@ -261,6 +267,7 @@
 				F3D19068230137600043D595 /* TDSwizzler.h in Headers */,
 				F3D19073230137610043D595 /* TDDeviceInfo.h in Headers */,
 				F3D19066230137600043D595 /* NSObject+TDSwizzle.h in Headers */,
+				F30338C023AB57750020C129 /* TDSecurityPolicy.h in Headers */,
 				F3D19065230137600043D595 /* TDAutoTrackManager.h in Headers */,
 				F3D19079230137610043D595 /* TDLogging.h in Headers */,
 				F3D1906B230137600043D595 /* UIViewController+AutoTrack.h in Headers */,
@@ -392,6 +399,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F30338C123AB57750020C129 /* TDSecurityPolicy.m in Sources */,
 				F3247C9B23176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m in Sources */,
 				F3D19057230137600043D595 /* TDDeviceInfo.m in Sources */,
 				F3D1906A230137600043D595 /* TDAutoTrackManager.m in Sources */,

@@ -160,6 +160,7 @@ static dispatch_queue_t networkQueue;
         _network = [[TDNetwork alloc] init];
         _network.debugMode = config.debugMode;
         _network.appid = appid;
+        _network.sessionDidReceiveAuthenticationChallenge = config.securityPolicy.sessionDidReceiveAuthenticationChallenge;
         if (config.debugMode == ThinkingAnalyticsDebugOnly || config.debugMode == ThinkingAnalyticsDebug) {
             _network.serverDebugURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/data_debug", serverURL]];
         }
@@ -217,11 +218,13 @@ static dispatch_queue_t networkQueue;
         _network = [[TDNetwork alloc] init];
         _network.debugMode = config.debugMode;
         _network.appid = appid;
+        _network.sessionDidReceiveAuthenticationChallenge = config.securityPolicy.sessionDidReceiveAuthenticationChallenge;
         if (config.debugMode == ThinkingAnalyticsDebugOnly || config.debugMode == ThinkingAnalyticsDebug) {
             _network.serverDebugURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/data_debug",serverURL]];
         }
         _network.serverURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/sync",serverURL]];
         _network.automaticData = _deviceInfo.automaticData;
+        _network.securityPolicy = config.securityPolicy;
         
         [self sceneSupportSetting];
         

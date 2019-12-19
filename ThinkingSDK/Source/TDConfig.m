@@ -2,6 +2,7 @@
 
 #import "TDNetwork.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
+#import "TDSecurityPolicy.h"
 
 #define TDSDKSETTINGS_PLIST_SETTING_IMPL(TYPE, PLIST_KEY, GETTER, SETTER, DEFAULT_VALUE, ENABLE_CACHE) \
 static TYPE *g_##PLIST_KEY = nil; \
@@ -47,6 +48,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
         _trackRelaunchedInBackgroundEvents = NO;
         _autoTrackEventType = ThinkingAnalyticsEventTypeNone;
         _networkTypePolicy = ThinkingNetworkType3G | ThinkingNetworkType4G | ThinkingNetworkTypeWIFI;
+        _securityPolicy = [TDSecurityPolicy defaultPolicy];
     }
     return self;
 }
@@ -91,6 +93,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
     config.networkTypePolicy = self.networkTypePolicy;
     config.launchOptions = [self.launchOptions copyWithZone:zone];
     config.debugMode = self.debugMode;
+    config.securityPolicy = [self.securityPolicy copyWithZone:zone];
     return config;
 }
 

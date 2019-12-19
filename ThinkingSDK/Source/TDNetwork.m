@@ -3,16 +3,17 @@
 #import "NSData+TDGzip.h"
 #import "TDJSONUtil.h"
 #import "TDLogging.h"
+#import "TDSecurityPolicy.h"
 #import "TDToastView.h"
 
 @implementation TDNetwork
 
-+ (NSURLSession *)sharedURLSession {
+- (NSURLSession *)sharedURLSession {
     static NSURLSession *sharedSession = nil;
     @synchronized(self) {
         if (sharedSession == nil) {
             NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
-            sharedSession = [NSURLSession sessionWithConfiguration:sessionConfig];
+            sharedSession = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:nil];
         }
     }
     return sharedSession;
@@ -49,6 +50,7 @@
                 debugResult = -2;
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:1]] || [[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:2]]) {
                 TDLogError(@"Debug data error:%@", [retDic objectForKey:@"errorReasons"]);
+                debugResult = (int)[[retDic objectForKey:@"errorLevel"] integerValue];
                 [NSException raise:@"Debug data error" format:@"errorReasons: %@", [retDic objectForKey:@"errorReasons"]];
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
                 debugResult = 0;
@@ -75,7 +77,7 @@
         dispatch_semaphore_signal(flushSem);
     };
 
-    NSURLSessionDataTask *task = [[TDNetwork sharedURLSession] dataTaskWithRequest:request completionHandler:block];
+    NSURLSessionDataTask *task = [[self sharedURLSession] dataTaskWithRequest:request completionHandler:block];
     [task resume];
 
     dispatch_semaphore_wait(flushSem, DISPATCH_TIME_FOREVER);
@@ -116,7 +118,7 @@
         dispatch_semaphore_signal(flushSem);
     };
 
-    NSURLSessionDataTask *task = [[TDNetwork sharedURLSession] dataTaskWithRequest:request completionHandler:block];
+    NSURLSessionDataTask *task = [[self sharedURLSession] dataTaskWithRequest:request completionHandler:block];
     [task resume];
 
     dispatch_semaphore_wait(flushSem, DISPATCH_TIME_FOREVER);
@@ -174,6 +176,35 @@
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:block];
     [task resume];
+}
+
+#pragma mark - NSURLSessionDelegate
+- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable))completionHandler {
+    NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+    NSURLCredential *credential = nil;
+
+    if (self.sessionDidReceiveAuthenticationChallenge) {
+        disposition = self.sessionDidReceiveAuthenticationChallenge(session, challenge, &credential);
+    } else {
+        if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+            if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
+                credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+                if (credential) {
+                    disposition = NSURLSessionAuthChallengeUseCredential;
+                } else {
+                    disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+                }
+            } else {
+                disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+            }
+        } else {
+            disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+        }
+    }
+
+    if (completionHandler) {
+        completionHandler(disposition, credential);
+    }
 }
 
 @end
