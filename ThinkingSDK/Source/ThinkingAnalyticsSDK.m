@@ -1,5 +1,7 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 
+#import "TDAutoTrackManager.h"
+
 #if !__has_feature(objc_arc)
 #error The ThinkingSDK library must be compiled with ARC enabled
 #endif
@@ -7,6 +9,7 @@
 @interface ThinkingAnalyticsSDK ()
 
 @property (atomic, strong) TDNetwork *network;
+@property (atomic, strong) TDAutoTrackManager *autoTrackManager;
 
 @end
 
@@ -394,10 +397,11 @@ static dispatch_queue_t networkQueue;
 
 - (void)unarchiveEnabled {
     NSNumber *enabled = (NSNumber *)[ThinkingAnalyticsSDK unarchiveFromFile:[self enabledFilePath] asClass:[NSNumber class]];
-    if (enabled == nil)
+    if (enabled == nil) {
         self.isEnabled = YES;
-    else
+    } else {
         self.isEnabled = [enabled boolValue];
+    }
 }
 
 - (BOOL)archiveObject:(id)object withFilePath:(NSString *)filePath {
@@ -1395,14 +1399,10 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         NSMutableDictionary<NSString *, id> *propertiesDic = [NSMutableDictionary dictionaryWithDictionary:properties];
         
         for (NSString *key in [properties keyEnumerator]) {
-            if ([properties[key] isKindOfClass:[NSString class]]) {
+            if ([properties[key] isKindOfClass:[NSString class]] && [key isEqualToString:TD_CRASH_REASON]) {
                 NSString *string = properties[key];
                 NSUInteger objLength = [((NSString *)string)lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-                NSUInteger valueMaxLength = TA_PROPERTY_LENGTH_LIMIT;
-                
-                if ([key isEqualToString:TD_CRASH_REASON]) {
-                    valueMaxLength = TA_PROPERTY_CRASH_LENGTH_LIMIT;
-                }
+                NSUInteger valueMaxLength = TA_PROPERTY_CRASH_LENGTH_LIMIT;
                 if (objLength > valueMaxLength) {
                     NSString *errMsg = [NSString stringWithFormat:@"The value is too long: %@", (NSString *)properties[key]];
                     TDLogDebug(errMsg);
@@ -1464,18 +1464,22 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)_syncDebug {
+    if (self.config.debugMode == ThinkingAnalyticsDebugOff) {
+        return;
+    }
     NSMutableArray *queueCopying;
     @synchronized (self) {
         queueCopying = [self.debugEventsQueue mutableCopy];
     }
     int debugResult = 0;
-    while (queueCopying.count > 0 && self.config.debugMode != ThinkingAnalyticsDebugOff) {
+    while (queueCopying.count > 0) {
         NSDictionary *record = [queueCopying firstObject];
         debugResult = [self.network flushDebugEvents:record withAppid:self.appid];
         if (self.config.debugMode == ThinkingAnalyticsDebug) {
             if (debugResult == -1) {
-                // 服务器不允许Debug 做降级处理
+                // 服务器不允许Debug，做降级处理
                 [self degradeDebugMode];
+                break;
             } else if (debugResult == -2) {
                 // 网络异常
                 dispatch_async(serialQueue, ^{

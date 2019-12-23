@@ -46,7 +46,7 @@
             NSError *err;
             NSDictionary *retDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
             if (err) {
-                TDLogError(@"Debug data error:%@", err);
+                TDLogError(@"Debug data json error:%@", err);
                 debugResult = -2;
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:1]] || [[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:2]]) {
                 TDLogError(@"Debug data error:%@", [retDic objectForKey:@"errorReasons"]);
@@ -155,19 +155,19 @@
 - (void)fetchFlushConfig:(NSString *)appid handler:(TDFlushConfigBlock)handler {
     void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
-            TDLogError(@"updateBatchSizeAndInterval network failure:%@",error);
+            TDLogError(@"UpdateBatchSizeAndInterval network failure:%@", error);
             return;
         }
         NSError *err;
         NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
         if (err) {
-            TDLogError(@"update batchSize interval failed:%@", err);
+            TDLogError(@"Update batchSize interval json error:%@", err);
         } else if ([ret isKindOfClass:[NSDictionary class]] && [ret[@"code"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
             handler([ret objectForKey:@"data"], error);
         } else if ([[ret objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:-2]]) {
             TDLogError(@"APPID is wrong.");
         } else {
-            TDLogError(@"update batchSize interval failed");
+            TDLogError(@"Update batchSize interval failed");
         }
     };
     NSString *urlStr = [NSString stringWithFormat:@"%@?appid=%@", self.serverURL, appid];

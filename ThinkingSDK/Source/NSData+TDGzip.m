@@ -37,7 +37,7 @@
                 break;
         }
         
-        TDLogDebug(@"%s:deflateInit2() Error: \"%@\" Message: \"%s\"",__func__,errorMsg,zlibStreamStruct.msg);
+        TDLogDebug(@"%s:deflateInit2() Error: \"%@\" Message: \"%s\"", __func__, errorMsg, zlibStreamStruct.msg);
         return nil;
     }
     
