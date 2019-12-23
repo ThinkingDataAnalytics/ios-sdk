@@ -51,7 +51,7 @@
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:1]] || [[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:2]]) {
                 TDLogError(@"Debug data error:%@", [retDic objectForKey:@"errorReasons"]);
                 debugResult = (int)[[retDic objectForKey:@"errorLevel"] integerValue];
-                [NSException raise:@"Debug data error" format:@"errorReasons: %@", [retDic objectForKey:@"errorReasons"]];
+                [NSException raise:@"Debug data error" format:@"error reason: %@", [retDic objectForKey:@"errorReasons"]];
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
                 debugResult = 0;
                 TDLogDebug(@"Verify data success.");

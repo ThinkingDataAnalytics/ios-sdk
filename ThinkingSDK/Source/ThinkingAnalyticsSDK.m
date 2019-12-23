@@ -89,6 +89,7 @@ static dispatch_queue_t networkQueue;
         _appid = appid;
         _isEnabled = YES;
         _config = [config copy];
+        self.deviceInfo = [TDDeviceInfo sharedManager];
         
         self.trackTimer = [NSMutableDictionary dictionary];
         _timeFormatter = [[NSDateFormatter alloc] init];
@@ -106,7 +107,6 @@ static dispatch_queue_t networkQueue;
             TDLogError(@"SqliteException: init SqliteDataQueue failed");
         }
         
-        self.deviceInfo = [TDDeviceInfo sharedManager];
         self.debugEventsQueue = [NSMutableArray array];
         
         _network = [[TDNetwork alloc] init];
@@ -116,6 +116,8 @@ static dispatch_queue_t networkQueue;
         if (config.debugMode == ThinkingAnalyticsDebugOnly || config.debugMode == ThinkingAnalyticsDebug) {
             _network.serverDebugURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/data_debug", serverURL]];
         }
+        _network.automaticData = _deviceInfo.automaticData;
+        _network.securityPolicy = config.securityPolicy;
     }
     return self;
 }
@@ -1187,7 +1189,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }];
     if (failed) {
         if (self.config.allowDebug) {
-            [NSException raise:@"track data error" format:@"errorReasons: %@", exceptionErrMsg];
+            [NSException raise:@"track data error" format:@"error reason: %@", exceptionErrMsg];
         }
         return NO;
     }
@@ -1362,7 +1364,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [exceptionErrMsg appendString:@"[ThinkingSDKDebug] "];
     if ([eventType isEqualToString:TD_EVENT_TYPE_TRACK] && !isH5) {
         if (![eventName isKindOfClass:[NSString class]] || eventName.length == 0) {
-            NSString *errMsg = [NSString stringWithFormat:@"track eventName is not valid. got: %@. ", eventName];
+            NSString *errMsg = [NSString stringWithFormat:@"track event name is not valid. got: %@. ", eventName];
             TDLogError(errMsg);
             [exceptionErrMsg appendString:errMsg];
             *isValid = NO;
@@ -1378,7 +1380,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     
     if (*isValid == NO) {
         if (self.config.allowDebug) {
-            [NSException raise:@"track data error" format:@"errorReasons: %@", exceptionErrMsg];
+            [NSException raise:@"track data error" format:@"error reason: %@", exceptionErrMsg];
         }
         return nil;
     }
@@ -1472,7 +1474,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         debugResult = [self.network flushDebugEvents:record withAppid:self.appid];
         if (self.config.debugMode == ThinkingAnalyticsDebug) {
             if (debugResult == -1) {
-                // 服务器不允许Debug
+                // 服务器不允许Debug 做降级处理
                 [self degradeDebugMode];
             } else if (debugResult == -2) {
                 // 网络异常
