@@ -4,6 +4,19 @@
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <SystemConfiguration/SystemConfiguration.h>
+#import <objc/runtime.h>
+
+#if !THINKING_UIWEBVIEW_SUPPORT
+#import <WebKit/WebKit.h>
+#endif
+
+#import "TDLogging.h"
+#import "ThinkingExceptionHandler.h"
+#import "TDNetwork.h"
+#import "TDDeviceInfo.h"
+#import "TDConfig.h"
+#import "TDSqliteDataQueue.h"
+#import "TDAutoTrackManager.h"
 
 static NSString * const TD_APP_START_EVENT                  = @"ta_app_start";
 static NSString * const TD_APP_START_BACKGROUND_EVENT       = @"ta_app_bg_start";
@@ -43,6 +56,15 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 }
 #endif
 
+#if !defined(THINKING_UIWEBVIEW_SUPPORT)
+    #define THINKING_UIWEBVIEW_SUPPORT 0
+#endif
+
+static NSUInteger const kBatchSize = 50;
+static NSUInteger const TA_PROPERTY_LENGTH_LIMIT = 2048;
+static NSUInteger const TA_PROPERTY_CRASH_LENGTH_LIMIT = 8191*2;
+static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
+
 typedef NS_OPTIONS(NSInteger, TimeValueType) {
     TDTimeValueTypeNone      = 0,
     TDTimeValueTypeTimeOnly  = 1 << 0,
@@ -72,6 +94,19 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 @property (nonatomic, copy) NSDictionary<NSString *, id> *(^dynamicSuperProperties)(void);
 @property (nonatomic, strong) NSMutableArray *debugEventsQueue;
 
+@property (atomic, strong) TDDeviceInfo *deviceInfo;
+@property (atomic, strong) TDSqliteDataQueue *dataQueue;
+@property (atomic, strong) TDAutoTrackManager *autoTrackManager;
+@property (nonatomic, copy) TDConfig *config;
+@property (nonatomic, strong) NSDateFormatter *timeFormatter;
+@property (nonatomic, assign) BOOL applicationWillResignActive;
+@property (nonatomic, assign) BOOL appRelaunched;
+@property (nonatomic, assign) BOOL isEnableSceneSupport;
+
+#if !THINKING_UIWEBVIEW_SUPPORT
+@property (nonatomic, strong) WKWebView *wkWebView;
+#endif
+
 - (instancetype)initLight:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config;
 - (void)autotrack:(NSString *)event properties:(NSDictionary *)propertieDict withTime:(NSDate *)date;
 - (BOOL)isViewControllerIgnored:(UIViewController *)viewController;
@@ -88,6 +123,19 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 - (void)archiveUploadInterval:(NSNumber *)uploadInterval;
 - (void)startFlushTimer;
 - (void)degradeDebugMode;
+
+@end
+
+@interface TDEventData : NSObject
+
+@property (nonatomic, copy) NSString *eventName;
+@property (nonatomic, copy) NSString *eventType;
+@property (nonatomic, copy) NSString *timeString;
+@property (nonatomic, assign) BOOL autotrack;
+@property (nonatomic, assign) BOOL persist;
+@property (nonatomic, assign) double zoneOffset;
+@property (nonatomic, assign) TimeValueType timeValueType;
+@property (nonatomic, strong) NSDictionary *properties;
 
 @end
 

@@ -169,7 +169,7 @@
             NSError *err;
             NSArray *ignorelistedArray = [NSJSONSerialization JSONObjectWithData:jsonData  options:NSJSONReadingAllowFragments error:&err];
        
-            if (!err && [ignorelistedArray isKindOfClass:[NSArray class]]){
+            if (!err && [ignorelistedArray isKindOfClass:[NSArray class]]) {
                 ignoreClasses = [NSSet setWithArray:ignorelistedArray];
             }
         }
@@ -260,7 +260,7 @@
     if ([view isKindOfClass:[UITabBar class]]) {
         UITabBar *tabbar = (UITabBar *)view;
         position = [NSString stringWithFormat: @"%ld", (long)[tabbar.items indexOfObject:tabbar.selectedItem]];
-    } else if ([view isKindOfClass:[UISegmentedControl class]]){
+    } else if ([view isKindOfClass:[UISegmentedControl class]]) {
         UISegmentedControl *segment = (UISegmentedControl *)view;
         position = [NSString stringWithFormat:@"%ld", (long)segment.selectedSegmentIndex];
     } else if ([view isKindOfClass:[UIProgressView class]]) {
@@ -323,7 +323,7 @@
     } else if ([obj isKindOfClass:[UISlider class]]) {
         UISlider *slider = (UISlider *)obj;
         text = [NSString stringWithFormat:@"%f", [slider value]];
-    } else if ([obj isKindOfClass:[UIStepper class]]){
+    } else if ([obj isKindOfClass:[UIStepper class]]) {
         UIStepper *step = (UIStepper *)obj;
         text = [NSString stringWithFormat:@"%f", [step value]];
     } else {
@@ -438,7 +438,7 @@
     UIView *contentView;
     NSDictionary *propertyWithAppid;
     if (indexPath) {
-        if ([view isKindOfClass:[UITableView class]]){
+        if ([view isKindOfClass:[UITableView class]]) {
             UITableView *tableView = (UITableView *)view;
             contentView = [tableView cellForRowAtIndexPath:indexPath];
             if (!contentView) {
@@ -450,7 +450,7 @@
             if ([tableView.thinkingAnalyticsDelegate conformsToProtocol:@protocol(TDUIViewAutoTrackDelegate)]) {
                 if ([tableView.thinkingAnalyticsDelegate respondsToSelector:@selector(thinkingAnalytics_tableView:autoTrackPropertiesAtIndexPath:)]) {
                     NSDictionary *dic = [view.thinkingAnalyticsDelegate thinkingAnalytics_tableView:tableView autoTrackPropertiesAtIndexPath:indexPath];
-                    if ([dic isKindOfClass:[NSDictionary class]]){
+                    if ([dic isKindOfClass:[NSDictionary class]]) {
                         [properties addEntriesFromDictionary:dic];
                     }
                 }

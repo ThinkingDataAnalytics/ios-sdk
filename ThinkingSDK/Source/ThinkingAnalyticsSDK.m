@@ -1,60 +1,12 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 
-#import <objc/runtime.h>
-
-#import "TDLogging.h"
-#import "ThinkingExceptionHandler.h"
-#import "TDNetwork.h"
-#import "TDDeviceInfo.h"
-#import "TDConfig.h"
-#import "TDSqliteDataQueue.h"
-#import "TDAutoTrackManager.h"
-
-#if !defined(THINKING_UIWEBVIEW_SUPPORT)
-    #define THINKING_UIWEBVIEW_SUPPORT 0
-#endif
-
-#if !THINKING_UIWEBVIEW_SUPPORT
-#import <WebKit/WebKit.h>
-#endif
-
 #if !__has_feature(objc_arc)
 #error The ThinkingSDK library must be compiled with ARC enabled
 #endif
 
-static NSUInteger const kBatchSize = 50;
-static NSUInteger const TA_PROPERTY_LENGTH_LIMIT = 2048;
-static NSUInteger const TA_PROPERTY_CRASH_LENGTH_LIMIT = 8191*2;
-static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
-
-@interface TDEventData : NSObject
-
-@property (nonatomic, copy) NSString *eventName;
-@property (nonatomic, copy) NSString *eventType;
-@property (nonatomic, copy) NSString *timeString;
-@property (nonatomic, assign) BOOL autotrack;
-@property (nonatomic, assign) BOOL persist;
-@property (nonatomic, assign) double zoneOffset;
-@property (nonatomic, assign) TimeValueType timeValueType;
-@property (nonatomic, strong) NSDictionary *properties;
-
-@end
-
 @interface ThinkingAnalyticsSDK ()
 
 @property (atomic, strong) TDNetwork *network;
-@property (atomic, strong) TDDeviceInfo *deviceInfo;
-@property (atomic, strong) TDSqliteDataQueue *dataQueue;
-@property (atomic, strong) TDAutoTrackManager *autoTrackManager;
-@property (nonatomic, copy) TDConfig *config;
-@property (nonatomic, strong) NSDateFormatter *timeFormatter;
-@property (nonatomic, assign) BOOL applicationWillResignActive;
-@property (nonatomic, assign) BOOL appRelaunched;
-@property (nonatomic, assign) BOOL isEnableSceneSupport;
-
-#if !THINKING_UIWEBVIEW_SUPPORT
-@property (nonatomic, strong) WKWebView *wkWebView;
-#endif
 
 @end
 
@@ -1706,14 +1658,13 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     return YES;
 }
 
-
 #if THINKING_UIWEBVIEW_SUPPORT
 - (NSString *)webViewGetUserAgent {
     UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
     return [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
 }
 #else
-- (void)wkWebViewGetUserAgent: (void (^)(NSString *))completion {
+- (void)wkWebViewGetUserAgent:(void (^)(NSString *))completion {
     self.wkWebView = [[WKWebView alloc] initWithFrame:CGRectZero];
     [self.wkWebView evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id __nullable userAgent, NSError * __nullable error) {
         completion(userAgent);
@@ -1735,7 +1686,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         }
     };
     
-    dispatch_block_t getUABlock = ^(){
+    dispatch_block_t getUABlock = ^() {
         #if THINKING_UIWEBVIEW_SUPPORT
         setUserAgent([self webViewGetUserAgent]);
         #else
