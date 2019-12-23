@@ -97,6 +97,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
     return config;
 }
 
+#pragma mark - SETTINGS
 + (NSInteger)maxNumEvents {
     NSInteger maxNumEvents = [self _maxNumEventsNumber].integerValue;
     if (maxNumEvents < 5000) {

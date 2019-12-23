@@ -36,7 +36,7 @@
     void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
             debugResult = -2;
-            TDLogError(@"Debug Networking error");
+            TDLogError(@"Debug Networking error:%@", error);
             dispatch_semaphore_signal(flushSem);
             return;
         }
@@ -57,7 +57,7 @@
                 TDLogDebug(@"Verify data success.");
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:-1]]) {
                 debugResult = -1;
-                TDLogDebug(@"Debug mode forced degrade.");
+                TDLogError(@"Debug mode forced degrade.");
             }
             
             static dispatch_once_t onceToken;
@@ -65,7 +65,7 @@
                 if (debugResult == 0 || debugResult == 1 || debugResult == 2) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         UIWindow *window = [UIApplication sharedApplication].keyWindow;
-                        [TDToastView showInWindow:window text:[NSString stringWithFormat:@"当前模式为:%@", self.debugMode == ThinkingAnalyticsDebugOnly ? @"DebugOnly(数据不入库)" : @"Debug"] duration:2.0];
+                        [TDToastView showInWindow:window text:[NSString stringWithFormat:@"当前模式为:%@", self.debugMode == ThinkingAnalyticsDebugOnly ? @"DebugOnly(数据不入库)\n测试联调阶段开启\n正式上线前请关闭Debug功能" : @"Debug"] duration:2.0];
                     });
                 }
             });
@@ -100,7 +100,7 @@
     void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
             flushSucc = NO;
-            TDLogError(@"Networking error");
+            TDLogError(@"Networking error:%@", error);
             dispatch_semaphore_signal(flushSem);
             return;
         }
@@ -155,7 +155,7 @@
 - (void)fetchFlushConfig:(NSString *)appid handler:(TDFlushConfigBlock)handler {
     void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
-            TDLogDebug(@"updateBatchSizeAndInterval network failure:%@",error);
+            TDLogError(@"updateBatchSizeAndInterval network failure:%@",error);
             return;
         }
         NSError *err;
