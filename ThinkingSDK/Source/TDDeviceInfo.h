@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL isFirstOpen;
 
 - (NSString *)libVersion;
+- (NSDictionary *)collectAutomaticProperties;
 
 @end
 

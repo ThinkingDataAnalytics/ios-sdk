@@ -814,7 +814,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 - (void)track:(NSString *)event properties:(NSDictionary *)propertiesDict time:(NSDate *)time {
     if ([self hasDisabled])
         return;
-    BOOL isValid;
+    BOOL isValid = YES;
     propertiesDict = [self processParameters:propertiesDict withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:NO withH5:NO isValid:&isValid];
     if (isValid) {
         TDEventData *eventData = [[TDEventData alloc] init];
@@ -839,7 +839,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 #pragma clang diagnostic pop
         return;
     }
-    BOOL isValid;
+    BOOL isValid = YES;
     properties = [self processParameters:properties withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:NO withH5:NO isValid:&isValid];
     if (isValid) {
         TDEventData *eventData = [[TDEventData alloc] init];
@@ -863,7 +863,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 - (void)h5track:(NSString *)event properties:(NSDictionary *)propertieDict withType:(NSString *)type withTime:(NSString *)time {
     if ([self hasDisabled])
         return;
-    BOOL isValid;
+    BOOL isValid = YES;
     propertieDict = [self processParameters:propertieDict withType:type withEventName:event withAutoTrack:NO withH5:YES isValid:&isValid];
     if (isValid) {
         TDEventData *eventData = [[TDEventData alloc] init];
@@ -885,7 +885,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 - (void)autotrack:(NSString *)event properties:(NSDictionary *)propertieDict withTime:(NSDate *)time {
     if ([self hasDisabled])
         return;
-    BOOL isValid;
+    BOOL isValid = YES;
     propertieDict = [self processParameters:propertieDict withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:YES withH5:NO isValid:&isValid];
     if (isValid) {
         TDEventData *eventData = [[TDEventData alloc] init];
@@ -910,7 +910,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if ([self hasDisabled])
         return;
     
-    BOOL isValid;
+    BOOL isValid = YES;
     properties = [self processParameters:properties withType:type withEventName:event withAutoTrack:NO withH5:NO isValid:&isValid];
     if (isValid) {
         TDEventData *eventData = [[TDEventData alloc] init];
@@ -972,6 +972,10 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 - (NSString *)getDistinctId {
     return [self.identifyId copy];
+}
+
+- (NSDictionary *)getCollectAutomaticProperties {
+    return [self.deviceInfo collectAutomaticProperties];
 }
 
 - (NSString *)getDeviceId {

@@ -315,6 +315,13 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 - (NSString *)getDistinctId;
 
 /**
+ 获取设备信息
+
+ @return 获取设备信息
+ */
+- (NSDictionary *)getCollectAutomaticProperties;
+
+/**
  设置账号ID
 
  @param accountId 账号 ID
