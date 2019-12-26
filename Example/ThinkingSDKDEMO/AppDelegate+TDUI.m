@@ -174,6 +174,14 @@
       }]];
     
     [commands addObject:
+       [APIEntry commandWithName:@"Flush"
+                   accessoryType:UITableViewCellAccessoryNone
+                           block:^(UIViewController *controller)
+        {
+            [ThinkingSDKAPI testFlush];
+        }]];
+    
+    [commands addObject:
      [APIEntry commandWithName:@"Enable"
                  accessoryType:UITableViewCellAccessoryNone
                          block:^(UIViewController *controller)
