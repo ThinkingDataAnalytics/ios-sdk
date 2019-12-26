@@ -36,11 +36,22 @@
 }
 
 - (void)test01doSave {
-    OCMExpect([_mockThinkingInstance saveEventsData:[OCMArg isNotNil]]);
-    [_mockThinkingInstance track:@"test"];
+    static int count = 0;
+    void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+        count ++;
+    };
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
     
+    [_mockThinkingInstance track:@"test"];
+    [_mockThinkingInstance track:@"test" properties:@{@"UserName":@"TA1"}];
+    [_mockThinkingInstance track:@"test" properties:@{@"timezone_offset": [NSNumber numberWithInteger:[[NSTimeZone localTimeZone] secondsFromGMTForDate:[NSDate date]]]} time:[NSDate date] timeZone:[NSTimeZone timeZoneWithName:@"UTC+0800"]];
+    [_mockThinkingInstance user_set:@{@"UserName":@"TA1", @"Age":[NSNumber numberWithInt:20]}];
+    [_mockThinkingInstance user_unset:@"key1"];
+    [_mockThinkingInstance user_setOnce:@{@"setOnce":@"setonevalue1"}];
+    [_mockThinkingInstance user_delete];
+    [_mockThinkingInstance user_add:@{@"key1":[NSNumber numberWithInt:6]}];
     [self waitForThinkingQueues];
-    OCMVerifyAll(_mockThinkingInstance);
+    XCTAssertEqualObjects([NSNumber numberWithInteger:count], @8);
 }
 
 - (void)test02doFlush {
