@@ -199,8 +199,10 @@ static dispatch_queue_t networkQueue;
         
         instances[appid] = self;
         
-        TDLogInfo(@"Thank you very much for using Thinking Data SDK. We will do our best to provide you with the best service.");
-        TDLogInfo(@"Thinking Data SDK version:%@, DeviceId:%@", [self.deviceInfo libVersion], [self getDeviceId]);
+        if(instances.count == 1) {
+            TDLogInfo(@"Thank you very much for using Thinking Data SDK. We will do our best to provide you with the best service.");
+            TDLogInfo(@"Thinking Data SDK version:%@, DeviceId:%@", [self.deviceInfo libVersion], [self getDeviceId]);
+        }
     }
     return self;
 }
