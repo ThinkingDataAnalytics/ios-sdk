@@ -75,7 +75,7 @@
 - (void)test03TrackEvent {
     void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
-        [invocation getArgument: &dataDic atIndex: 2];
+        [invocation getArgument:&dataDic atIndex:2];
         
         NSString *timeStr = dataDic[@"#time"];
         NSDateFormatter *timeFormatter = [[NSDateFormatter alloc]init];
@@ -154,7 +154,7 @@
     static int count = 0;
     void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
-        [invocation getArgument: &dataDic atIndex: 2];
+        [invocation getArgument:&dataDic atIndex:2];
         count ++;
         XCTAssertEqualObjects(dataDic[@"#event_name"], @"test");
     };
@@ -163,7 +163,7 @@
     static int count2 = 0;
     void (^saveEventsDataInvocation2)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
-        [invocation getArgument: &dataDic atIndex: 2];
+        [invocation getArgument:&dataDic atIndex:2];
         count2 ++;
         XCTAssertEqualObjects(dataDic[@"#event_name"], @"test2");
     };
@@ -238,7 +238,7 @@
     NSMutableArray *dataArrays = [NSMutableArray array];
     void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
-        [invocation getArgument: &dataDic atIndex: 2];
+        [invocation getArgument:&dataDic atIndex:2];
         
         XCTAssertNotNil(dataDic);
         [dataArrays addObject:dataDic];
@@ -306,7 +306,7 @@
     [_mockThinkingInstance optInTracking];
     void (^flushImmediately)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
-        [invocation getArgument: &dataDic atIndex: 2];
+        [invocation getArgument:&dataDic atIndex:2];
         
         XCTAssertEqualObjects(dataDic[@"#type"], @"user_del");
     };
@@ -330,7 +330,7 @@
     NSMutableArray *dataArrays = [NSMutableArray array];
     void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
-        [invocation getArgument: &dataDic atIndex: 2];
+        [invocation getArgument:&dataDic atIndex:2];
         
         XCTAssertNotNil(dataDic);
         [dataArrays addObject:dataDic];
@@ -402,7 +402,7 @@
     NSMutableArray *dataArrays = [NSMutableArray array];
     void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
-        [invocation getArgument: &dataDic atIndex: 2];
+        [invocation getArgument:&dataDic atIndex:2];
         
         XCTAssertNotNil(dataDic);
         [dataArrays addObject:dataDic];
@@ -461,7 +461,7 @@
     __block int callTimes = 0;
     void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
-        [invocation getArgument: &dataDic atIndex: 2];
+        [invocation getArgument:&dataDic atIndex:2];
         
         NSDictionary *properties = dataDic[@"properties"];
         NSString *expectStr = [NSString stringWithFormat:@"testStr%d", callTimes];
@@ -508,7 +508,7 @@
     static int count = 0;
     void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
-        [invocation getArgument: &dataDic atIndex: 2];
+        [invocation getArgument:&dataDic atIndex:2];
         
         NSDictionary *properties = dataDic[@"properties"];
         XCTAssertNotNil([dataDic objectForKey:@"#distinct_id"]);

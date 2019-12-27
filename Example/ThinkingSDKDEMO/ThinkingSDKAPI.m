@@ -19,8 +19,8 @@
     [[ThinkingAnalyticsSDK sharedInstance] track:@"testProperty" properties:@{@"properKey":@"properValue"}];
 }
 
-+ (void)testTrackWithTime {
-    [[ThinkingAnalyticsSDK sharedInstance] track:@"key1" properties:@{@"properKey1":@"properValue1"} time:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
++ (void)testTrackWithTimezone {
+    [[ThinkingAnalyticsSDK sharedInstance] track:@"testUtc" properties:@{@"timezone_offset": [NSNumber numberWithInteger:[[NSTimeZone localTimeZone] secondsFromGMTForDate:[NSDate date]]]} time:[NSDate date] timeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
 }
 
 + (void)testUserSet {

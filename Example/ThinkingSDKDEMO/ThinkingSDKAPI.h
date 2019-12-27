@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)testTrack;
 + (void)testTrackWithProperty;
-+ (void)testTrackWithTime;
++ (void)testTrackWithTimezone;
 + (void)testUserSet;
 + (void)testUserUnset;
 + (void)testUserSetonce;
