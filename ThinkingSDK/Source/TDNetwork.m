@@ -139,12 +139,7 @@
 
 - (NSMutableURLRequest *)buildDebugRequestWithJSONString:(NSString *)jsonString withAppid:(NSString *)appid withDeviceId:(NSString *)deviceId {
     // dryRun=0，如果校验通过就会入库。 dryRun=1，不会入库
-    int dryRun = 0;
-    if (_debugMode == ThinkingAnalyticsDebugOnly) {
-        dryRun = 1;
-    } else if (_debugMode == ThinkingAnalyticsDebug) {
-        dryRun = 0;
-    }
+    int dryRun = _debugMode == ThinkingAnalyticsDebugOnly ? 1 : 0;
     NSString *postData = [NSString stringWithFormat:@"appid=%@&source=client&dryRun=%d&deviceId=%@&data=%@", appid, dryRun, deviceId, [self URLEncode:jsonString]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.serverDebugURL];
     [request setHTTPMethod:@"POST"];
@@ -163,7 +158,7 @@
         if (err) {
             TDLogError(@"Update batchSize interval json error:%@", err);
         } else if ([ret isKindOfClass:[NSDictionary class]] && [ret[@"code"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
-            TDLogDebug(@"FlushConfig :%@", [ret objectForKey:@"data"]);
+            TDLogDebug(@"FlushConfig:%@", [ret objectForKey:@"data"]);
             handler([ret objectForKey:@"data"], error);
         } else if ([[ret objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:-2]]) {
             TDLogError(@"APPID is wrong.");
