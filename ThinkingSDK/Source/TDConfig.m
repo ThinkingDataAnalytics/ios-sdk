@@ -56,6 +56,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
 - (void)updateConfig {
     TDNetwork *network = [[TDNetwork alloc] init];
     network.serverURL = [NSURL URLWithString:self.configureURL];
+    network.securityPolicy = _securityPolicy;
     [network fetchFlushConfig:self.appid handler:^(NSDictionary * _Nonnull result, NSError * _Nullable error) {
         if (!error) {
             NSInteger uploadInterval = [[result objectForKey:@"sync_interval"] integerValue];

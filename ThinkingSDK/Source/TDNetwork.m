@@ -163,6 +163,7 @@
         if (err) {
             TDLogError(@"Update batchSize interval json error:%@", err);
         } else if ([ret isKindOfClass:[NSDictionary class]] && [ret[@"code"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
+            TDLogDebug(@"FlushConfig :%@", [ret objectForKey:@"data"]);
             handler([ret objectForKey:@"data"], error);
         } else if ([[ret objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:-2]]) {
             TDLogError(@"APPID is wrong.");
@@ -173,8 +174,7 @@
     NSString *urlStr = [NSString stringWithFormat:@"%@?appid=%@", self.serverURL, appid];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr]];
     [request setHTTPMethod:@"Get"];
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:block];
+    NSURLSessionDataTask *task = [[self sharedURLSession] dataTaskWithRequest:request completionHandler:block];
     [task resume];
 }
 
