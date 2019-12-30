@@ -1,3 +1,9 @@
+**v2.3.0** (2019/12/31)
+- 支持 Debug 模式: 需配合后台 Debug 设备白名单一起开启
+- H5 与原生 SDK 打通支持多实例
+- 优化 SDK 配置: 增加全局设置;上报策略允许针对不同项目配置
+- 支持配置HTTPS证书校验
+
 **v2.2.2** (2019/12/01)
 - 修复 EnableSceneSupport 时，APP启动事件 resume_from_background 会异常的问题
 

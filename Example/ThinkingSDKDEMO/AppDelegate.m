@@ -27,7 +27,7 @@
     // 初始化
     [ThinkingAnalyticsSDK startWithAppId:@"YOUR_APPID" withUrl:@"YOUR_SERVER_URL"];
     
-    // 配置后台自启事件的初始化方法
+    // 配置初始化方法
 //    TDConfig *config = [[TDConfig alloc] init];
 //    config.trackRelaunchedInBackgroundEvents = YES;
 //    config.debugMode = ThinkingAnalyticsDebugOnly;
