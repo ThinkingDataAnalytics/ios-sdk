@@ -319,7 +319,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 
  @return 获取设备信息
  */
-- (NSDictionary *)getCollectAutomaticProperties;
+- (NSDictionary *)getAutomaticData;
 
 /**
  设置账号ID
