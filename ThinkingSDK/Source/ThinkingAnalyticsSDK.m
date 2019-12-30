@@ -149,7 +149,6 @@ static dispatch_queue_t networkQueue;
         _timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
 
         _applicationWillResignActive = NO;
-        _firstEnterForeground = YES;
         _ignoredViewControllers = [[NSMutableSet alloc] init];
         _ignoredViewTypeList = [[NSMutableSet alloc] init];
         
@@ -573,27 +572,16 @@ static dispatch_queue_t networkQueue;
 - (void)applicationWillEnterForeground:(NSNotification *)notification {
     TDLogDebug(@"%@ application will enter foreground", self);
     
-    if (@available(iOS 13.0, *)) {
-        if (_isEnableSceneSupport && _firstEnterForeground) {
-            _firstEnterForeground = NO;
-            return;
-        } else {
-            [self applicationWillEnterForeground];
-        }
-    } else {
-        [self applicationWillEnterForeground];
+    if (UIApplication.sharedApplication.applicationState == UIApplicationStateBackground) {
+        _relaunchInBackGround = NO;
+        _appRelaunched = YES;
+        dispatch_async(serialQueue, ^{
+            if (self.taskId != UIBackgroundTaskInvalid) {
+                [[ThinkingAnalyticsSDK sharedUIApplication] endBackgroundTask:self.taskId];
+                self.taskId = UIBackgroundTaskInvalid;
+            }
+        });
     }
-}
-
-- (void)applicationWillEnterForeground {
-    _relaunchInBackGround = NO;
-    _appRelaunched = YES;
-    dispatch_async(serialQueue, ^{
-        if (self.taskId != UIBackgroundTaskInvalid) {
-            [[ThinkingAnalyticsSDK sharedUIApplication] endBackgroundTask:self.taskId];
-            self.taskId = UIBackgroundTaskInvalid;
-        }
-    });
 }
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
