@@ -964,7 +964,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     return [self.identifyId copy];
 }
 
-- (NSDictionary *)getAutomaticData {
+- (NSDictionary *)getDeviceInfo {
     return [self.deviceInfo collectAutomaticProperties];
 }
 
