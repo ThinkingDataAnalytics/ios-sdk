@@ -200,7 +200,7 @@ static dispatch_queue_t networkQueue;
         
         if(instances.count == 1) {
             TDLogInfo(@"Thank you very much for using Thinking Data SDK. We will do our best to provide you with the best service.");
-            TDLogInfo(@"Thinking Data SDK version:%@, DeviceId:%@", [self.deviceInfo libVersion], [self getDeviceId]);
+            TDLogInfo(@"Thinking Data SDK version:%@, DeviceId:%@", [TDDeviceInfo libVersion], [self getDeviceId]);
         }
     }
     return self;
@@ -964,8 +964,8 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     return [self.identifyId copy];
 }
 
-- (NSDictionary *)getDeviceInfo {
-    return [self.deviceInfo collectAutomaticProperties];
++ (NSString *)getSDKVersion {
+    return [TDDeviceInfo libVersion];
 }
 
 - (NSString *)getDeviceId {
