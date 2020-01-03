@@ -49,6 +49,13 @@
                       forKey:key];
         }];
         return dictionary;
+    } else if ([object isKindOfClass:[NSArray class]]) {
+        NSMutableArray<id> *array = [[NSMutableArray alloc] init];
+        for (id obj in (NSArray *)object) {
+            id convertedObj = [self JSONSerializableObjectForObject:obj];
+            [self array:array addObject:convertedObj];
+        }
+        object = array;
     }
     
     NSString *s = [object description];

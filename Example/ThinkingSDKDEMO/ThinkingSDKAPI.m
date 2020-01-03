@@ -16,12 +16,11 @@
 }
 
 + (void)testTrackWithProperty {
-    [[ThinkingAnalyticsSDK sharedInstance] track:@"testProperty" properties:@{@"properKey":@"properValue"}];
+    [[ThinkingAnalyticsSDK sharedInstance] track:@"testProperty" properties:@{@"properKey":@"properValue", @"arrKey":@[@1, @2]}];
 }
 
 + (void)testTrackWithTimezone {
     [[ThinkingAnalyticsSDK sharedInstance] track:@"test" properties:nil time:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
-//    [[ThinkingAnalyticsSDK sharedInstance] track:@"testUtc" properties:@{@"timezone_offset": [NSNumber numberWithInteger:[[NSTimeZone localTimeZone] secondsFromGMTForDate:[NSDate date]]]} time:[NSDate date] timeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
 }
 
 + (void)testUserSet {
@@ -45,6 +44,10 @@
 
 + (void)testUserAdd {
     [[ThinkingAnalyticsSDK sharedInstance] user_add:@{@"key1":[NSNumber numberWithInt:6]}];
+}
+
++ (void)testUserAppend {
+    [[ThinkingAnalyticsSDK sharedInstance] user_append:@"arrKey" withArray:@[@"4", @"3"]];
 }
 
 + (void)testLogin {

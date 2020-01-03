@@ -110,6 +110,14 @@
       }]];
     
     [commands addObject:
+     [APIEntry commandWithName:@"User APPEND"
+                accessoryType:UITableViewCellAccessoryNone
+                        block:^(UIViewController *controller)
+      {
+          [ThinkingSDKAPI testUserAppend];
+      }]];
+    
+    [commands addObject:
      [APIEntry commandWithName:@"Login"
                  accessoryType:UITableViewCellAccessoryNone
                          block:^(UIViewController *controller)
