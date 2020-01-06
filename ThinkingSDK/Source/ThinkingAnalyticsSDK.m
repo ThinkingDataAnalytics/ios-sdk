@@ -1424,6 +1424,15 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             } else if ([properties[key] isKindOfClass:[NSDate class]]) {
                 NSString *dateStr = [_timeFormatter stringFromDate:(NSDate *)properties[key]];
                 propertiesDic[key] = dateStr;
+            } else if ([properties[key] isKindOfClass:[NSArray class]]) {
+                NSMutableArray *arrayItem = [properties[key] mutableCopy];
+                for (int i = 0; i < arrayItem.count ; i++) {
+                    if ([arrayItem[i] isKindOfClass:[NSDate class]]) {
+                        NSString *dateStr = [_timeFormatter stringFromDate:(NSDate *)arrayItem[i]];
+                        arrayItem[i] = dateStr;
+                    }
+                }
+                propertiesDic[key] = arrayItem;
             }
         }
         
