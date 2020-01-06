@@ -377,7 +377,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 /**
  对Array类型用户属性进行新增操作
 */
-- (void)user_append:(NSString *)key withArray:(NSArray *)array;
+- (void)user_append:(NSDictionary *)properties;
 
 /**
  设置公共事件属性

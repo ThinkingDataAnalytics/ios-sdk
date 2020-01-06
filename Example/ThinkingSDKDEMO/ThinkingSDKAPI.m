@@ -47,7 +47,7 @@
 }
 
 + (void)testUserAppend {
-    [[ThinkingAnalyticsSDK sharedInstance] user_append:@"arrKey" withArray:@[@"4", @"3"]];
+    [[ThinkingAnalyticsSDK sharedInstance] user_append:@{@"arrKey": @[@"4", @"3"], @"arrKey2": @[@"44", @"33"]}];
 }
 
 + (void)testLogin {
