@@ -49,6 +49,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
         _autoTrackEventType = ThinkingAnalyticsEventTypeNone;
         _networkTypePolicy = ThinkingNetworkType3G | ThinkingNetworkType4G | ThinkingNetworkTypeWIFI;
         _securityPolicy = [TDSecurityPolicy defaultPolicy];
+        _defaultTimeZone = [NSTimeZone localTimeZone];
     }
     return self;
 }
@@ -95,6 +96,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
     config.launchOptions = [self.launchOptions copyWithZone:zone];
     config.debugMode = self.debugMode;
     config.securityPolicy = [self.securityPolicy copyWithZone:zone];
+    config.defaultTimeZone = [self.defaultTimeZone copyWithZone:zone];
     return config;
 }
 

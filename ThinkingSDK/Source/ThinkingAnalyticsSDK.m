@@ -99,6 +99,7 @@ static dispatch_queue_t networkQueue;
         _timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
         _timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         _timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+        _timeFormatter.timeZone = config.defaultTimeZone;
         
         self.telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
         
@@ -147,6 +148,7 @@ static dispatch_queue_t networkQueue;
         _timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
         _timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         _timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+        _timeFormatter.timeZone = config.defaultTimeZone;
 
         _applicationWillResignActive = NO;
         _ignoredViewControllers = [[NSMutableSet alloc] init];
@@ -796,6 +798,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         eventData.eventType = TD_EVENT_TYPE_TRACK;
         eventData.autotrack = NO;
         eventData.persist = YES;
+        eventData.timeValueType = TDTimeValueTypeNone;
         [self tdInternalTrack:eventData];
     }
 }
@@ -885,6 +888,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         eventData.autotrack = YES;
         eventData.persist = YES;
         eventData.timeString = [_timeFormatter stringFromDate:time];
+        eventData.timeValueType = TDTimeValueTypeNone;
         [self tdInternalTrack:eventData];
     }
 }
@@ -1248,7 +1252,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     double offset;
     if (eventData.timeValueType == TDTimeValueTypeNone) {
         timeString = [_timeFormatter stringFromDate:[NSDate date]];
-        offset = [self getTimezoneOffset:[NSDate date] timeZone:nil];
+        offset = [self getTimezoneOffset:[NSDate date] timeZone:_config.defaultTimeZone];
     } else {
         timeString = eventData.timeString;
         offset = eventData.zoneOffset;

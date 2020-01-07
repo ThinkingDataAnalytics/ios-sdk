@@ -68,8 +68,7 @@
 - (NSDictionary *)allPropertyTypes {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
-    NSDate *date = [dateFormatter dateFromString:@"2012-09-24 11:28:10.123"];
-    return @{ @"string": @"hello", @"number": @3, @"date": date, @"float": @1.3 , @"bool": @YES };
+    return @{ @"string": @"hello", @"number": @3, @"float": @1.3 , @"bool": @YES };
 }
 
 - (void)test03TrackEvent {
@@ -88,7 +87,7 @@
         XCTAssertNotNil(dataDic[@"#uuid"]);
         XCTAssertEqualObjects(dataDic[@"#event_name"], @"test");
         XCTAssertEqualObjects(dataDic[@"#type"], @"track");
-        XCTAssertTrue([[properties allKeys] count] == 8);
+        XCTAssertTrue([[properties allKeys] count] == 7);
         
         XCTAssertNotNil(properties[@"#app_version"]);
         XCTAssertTrue([properties[@"#app_version"] isKindOfClass:[NSString class]]);
@@ -96,7 +95,6 @@
             NSArray *network = @[@"WIFI", @"UNKNOWN", @"2G", @"3G", @"4G", @"NULL"];
             XCTAssertTrue([network containsObject:properties[@"#network_type"]]);
         }
-        XCTAssertEqualObjects(properties[@"date"], @"2012-09-24 11:28:10.123");
         XCTAssertEqualObjects(properties[@"string"], @"hello");
         
         int isBool = strcmp([properties[@"bool"] objCType], [@YES objCType]);
@@ -106,15 +104,10 @@
         XCTAssertTrue([properties[@"number"] isKindOfClass:[NSNumber class]]);
         
         XCTAssertTrue([date isKindOfClass:[NSDate class]]);
-        XCTAssertEqualObjects(timeStr, @"2012-06-24 11:28:10.000");
         XCTAssertTrue([[dataDic allKeys] count] == 6);
     };
     OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
-
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
-    NSDate *date = [dateFormatter dateFromString:@"2012-06-24 11:28:10"];
-    [_mockThinkingInstance track:@"test" properties:[self allPropertyTypes] time:date timeZone:[NSTimeZone localTimeZone]];
+    [_mockThinkingInstance track:@"test" properties:[self allPropertyTypes]];
     [self waitForThinkingQueues];
 }
 

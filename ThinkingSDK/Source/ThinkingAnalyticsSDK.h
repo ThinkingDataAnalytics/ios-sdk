@@ -99,6 +99,11 @@ typedef NSURLSessionAuthChallengeDisposition (^TDURLSessionDidReceiveAuthenticat
 */
 @property (nonatomic, strong) TDSecurityPolicy *securityPolicy;
 
+/**
+ 设置默认时区
+*/
+@property (nonatomic, strong) NSTimeZone *defaultTimeZone;
+
 @end
 
 /**
