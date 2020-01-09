@@ -964,6 +964,13 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [self track:nil withProperties:nil withType:TD_EVENT_TYPE_USER_DEL];
 }
 
+- (void)user_append:(NSDictionary *)properties {
+    if ([self hasDisabled])
+        return;
+    
+    [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_APPEND];
+}
+
 - (NSString *)getDistinctId {
     return [self.identifyId copy];
 }
@@ -1164,8 +1171,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         
         if (![obj isKindOfClass:[NSString class]] &&
             ![obj isKindOfClass:[NSNumber class]] &&
-            ![obj isKindOfClass:[NSDate class]]) {
-            NSString *errMsg = [NSString stringWithFormat:@"property values must be NSString, NSNumber, NSDate. got: %@ %@. ", [obj class], obj];
+            ![obj isKindOfClass:[NSDate class]] &&
+            ![obj isKindOfClass:[NSArray class]]) {
+            NSString *errMsg = [NSString stringWithFormat:@"property values must be NSString, NSNumber, NSDate, NSArray. got: %@ %@. ", [obj class], obj];
             TDLogError(errMsg);
             [exceptionErrMsg appendString:errMsg];
             failed = YES;
@@ -1174,6 +1182,15 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         if (eventType.length > 0 && [eventType isEqualToString:TD_EVENT_TYPE_USER_ADD]) {
             if (![obj isKindOfClass:[NSNumber class]]) {
                 NSString *errMsg = [NSString stringWithFormat:@"user_add value must be NSNumber. got: %@ %@. ", [obj class], obj];
+                TDLogError(errMsg);
+                [exceptionErrMsg appendString:errMsg];
+                failed = YES;
+            }
+        }
+        
+        if (eventType.length > 0 && [eventType isEqualToString:TD_EVENT_TYPE_USER_APPEND]) {
+            if (![obj isKindOfClass:[NSArray class]]) {
+                NSString *errMsg = [NSString stringWithFormat:@"user_append value must be NSArray. got: %@ %@. ", [obj class], obj];
                 TDLogError(errMsg);
                 [exceptionErrMsg appendString:errMsg];
                 failed = YES;
@@ -1411,6 +1428,15 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             } else if ([properties[key] isKindOfClass:[NSDate class]]) {
                 NSString *dateStr = [_timeFormatter stringFromDate:(NSDate *)properties[key]];
                 propertiesDic[key] = dateStr;
+            } else if ([properties[key] isKindOfClass:[NSArray class]]) {
+                NSMutableArray *arrayItem = [properties[key] mutableCopy];
+                for (int i = 0; i < arrayItem.count ; i++) {
+                    if ([arrayItem[i] isKindOfClass:[NSDate class]]) {
+                        NSString *dateStr = [_timeFormatter stringFromDate:(NSDate *)arrayItem[i]];
+                        arrayItem[i] = dateStr;
+                    }
+                }
+                propertiesDic[key] = arrayItem;
             }
         }
         

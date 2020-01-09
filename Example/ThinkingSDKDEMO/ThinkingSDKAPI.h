@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)testUserSetonce;
 + (void)testUserDel;
 + (void)testUserAdd;
++ (void)testUserAppend;
 + (void)testLogin;
 + (void)testLogout;
 + (void)testSetsuper;

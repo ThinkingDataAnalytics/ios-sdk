@@ -380,6 +380,11 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 - (void)user_delete;
 
 /**
+ 对Array类型用户属性进行新增操作
+*/
+- (void)user_append:(NSDictionary *)properties;
+
+/**
  设置公共事件属性
 
  @param propertyDict 公共事件属性
