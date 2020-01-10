@@ -580,4 +580,34 @@
     self.mockThinkingInstance = nil;
 }
 
+- (void)test20timeZoneOffset {
+    __block int index = 0;
+    NSDate *date = [NSDate date];
+    NSTimeZone *timezone = [NSTimeZone timeZoneWithName:@"America/Chicago"];
+    void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+        __weak NSDictionary *dataDic;
+        [invocation getArgument:&dataDic atIndex:2];
+        if (index == 0) {
+            NSTimeZone *tz = [NSTimeZone localTimeZone];
+            NSInteger sourceGMTOffset = [tz secondsFromGMTForDate:[NSDate date]];
+            XCTAssertTrue([[[dataDic objectForKey:@"properties"] objectForKey:@"#zone_offset"] intValue] == (int)sourceGMTOffset/3600);
+        } else if (index == 1) {
+            NSInteger sourceGMTOffset = [timezone secondsFromGMTForDate:[NSDate date]];
+            XCTAssertTrue([[[dataDic objectForKey:@"properties"] objectForKey:@"#zone_offset"] intValue] == (int)sourceGMTOffset/3600);
+            NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
+            timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+            timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+            timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+            timeFormatter.timeZone = timezone;
+            NSLog(@"%@ %@", [dataDic objectForKey:@"#time"], [timeFormatter stringFromDate:date]);
+            XCTAssertEqualObjects([dataDic objectForKey:@"#time"], [timeFormatter stringFromDate:date]);
+        }
+        index++;
+    };
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
+    [_mockThinkingInstance track:@"test"];
+    [_mockThinkingInstance track:@"test" properties:nil time:date timeZone:timezone];
+    [self waitForThinkingQueues];
+}
+
 @end
