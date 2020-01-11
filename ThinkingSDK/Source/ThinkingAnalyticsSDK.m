@@ -1125,27 +1125,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 }
 
-- (NSString *)limitString:(NSString *)originalString withLength:(NSInteger)length {
-    NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF8);
-    NSData *originalData = [originalString dataUsingEncoding:encoding];
-    NSData *subData = [originalData subdataWithRange:NSMakeRange(0, length)];
-    NSString *limitString = [[NSString alloc] initWithData:subData encoding:encoding];
-    
-    NSInteger index = 1;
-    while (index <= 3 && !limitString) {
-        if (length > index) {
-            subData = [originalData subdataWithRange:NSMakeRange(0, length - index)];
-            limitString = [[NSString alloc] initWithData:subData encoding:encoding];
-        }
-        index ++;
-    }
-    
-    if (!limitString) {
-        return originalString;
-    }
-    return limitString;
-}
-
 - (BOOL)checkEventProperties:(NSDictionary *)properties withEventType:(NSString *)eventType haveAutoTrackEvents:(BOOL)haveAutoTrackEvents {
     if (![properties isKindOfClass:[NSDictionary class]]) {
         return NO;
@@ -1412,20 +1391,8 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     
     if (properties) {
         NSMutableDictionary<NSString *, id> *propertiesDic = [NSMutableDictionary dictionaryWithDictionary:properties];
-        
         for (NSString *key in [properties keyEnumerator]) {
-            if ([properties[key] isKindOfClass:[NSString class]] && [key isEqualToString:TD_CRASH_REASON]) {
-                NSString *string = properties[key];
-                NSUInteger objLength = [((NSString *)string)lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-                NSUInteger valueMaxLength = TA_PROPERTY_CRASH_LENGTH_LIMIT;
-                if (objLength > valueMaxLength) {
-                    NSString *errMsg = [NSString stringWithFormat:@"The value is too long: %@", (NSString *)properties[key]];
-                    TDLogDebug(errMsg);
-                    
-                    NSMutableString *fixedStr = [NSMutableString stringWithString:[self limitString:string withLength:valueMaxLength - 1]];
-                    propertiesDic[key] = fixedStr;
-                }
-            } else if ([properties[key] isKindOfClass:[NSDate class]]) {
+            if ([properties[key] isKindOfClass:[NSDate class]]) {
                 NSString *dateStr = [_timeFormatter stringFromDate:(NSDate *)properties[key]];
                 propertiesDic[key] = dateStr;
             } else if ([properties[key] isKindOfClass:[NSArray class]]) {
