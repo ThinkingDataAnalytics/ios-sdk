@@ -12,9 +12,6 @@
 }
 
 + (NSData *)JSONSerializeForObject:(id)object {
-    if (![NSJSONSerialization isValidJSONObject:object]) {
-        return nil;
-    }
     
     id obj = [TDJSONUtil JSONSerializableObjectForObject:object];
     NSData *data = nil;

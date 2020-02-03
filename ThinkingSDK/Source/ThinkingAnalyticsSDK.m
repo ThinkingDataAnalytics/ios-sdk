@@ -789,37 +789,31 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 - (void)track:(NSString *)event properties:(NSDictionary *)propertiesDict {
     if ([self hasDisabled])
         return;
-    BOOL isValid = YES;
-    propertiesDict = [self processParameters:propertiesDict withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:NO withH5:NO isValid:&isValid];
-    if (isValid) {
-        TDEventData *eventData = [[TDEventData alloc] init];
-        eventData.eventName = event;
-        eventData.properties = [propertiesDict copy];
-        eventData.eventType = TD_EVENT_TYPE_TRACK;
-        eventData.autotrack = NO;
-        eventData.persist = YES;
-        eventData.timeValueType = TDTimeValueTypeNone;
-        [self tdInternalTrack:eventData];
-    }
+    propertiesDict = [self processParameters:propertiesDict withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:NO withH5:NO];
+    TDEventData *eventData = [[TDEventData alloc] init];
+    eventData.eventName = event;
+    eventData.properties = [propertiesDict copy];
+    eventData.eventType = TD_EVENT_TYPE_TRACK;
+    eventData.autotrack = NO;
+    eventData.persist = YES;
+    eventData.timeValueType = TDTimeValueTypeNone;
+    [self tdInternalTrack:eventData];
 }
 
 //废弃
 - (void)track:(NSString *)event properties:(NSDictionary *)propertiesDict time:(NSDate *)time {
     if ([self hasDisabled])
         return;
-    BOOL isValid = YES;
-    propertiesDict = [self processParameters:propertiesDict withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:NO withH5:NO isValid:&isValid];
-    if (isValid) {
-        TDEventData *eventData = [[TDEventData alloc] init];
-        eventData.eventName = event;
-        eventData.properties = [propertiesDict copy];
-        eventData.eventType = TD_EVENT_TYPE_TRACK;
-        eventData.autotrack = NO;
-        eventData.persist = YES;
-        eventData.timeString = [_timeFormatter stringFromDate:time];
-        eventData.timeValueType = TDTimeValueTypeTimeOnly;
-        [self tdInternalTrack:eventData];
-    }
+    propertiesDict = [self processParameters:propertiesDict withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:NO withH5:NO];
+    TDEventData *eventData = [[TDEventData alloc] init];
+    eventData.eventName = event;
+    eventData.properties = [propertiesDict copy];
+    eventData.eventType = TD_EVENT_TYPE_TRACK;
+    eventData.autotrack = NO;
+    eventData.persist = YES;
+    eventData.timeString = [_timeFormatter stringFromDate:time];
+    eventData.timeValueType = TDTimeValueTypeTimeOnly;
+    [self tdInternalTrack:eventData];
 }
 
 - (void)track:(NSString *)event properties:(nullable NSDictionary *)properties time:(NSDate *)time timeZone:(NSTimeZone *)timeZone {
@@ -832,65 +826,56 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 #pragma clang diagnostic pop
         return;
     }
-    BOOL isValid = YES;
-    properties = [self processParameters:properties withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:NO withH5:NO isValid:&isValid];
-    if (isValid) {
-        TDEventData *eventData = [[TDEventData alloc] init];
-        eventData.eventName = event;
-        eventData.properties = [properties copy];
-        eventData.eventType = TD_EVENT_TYPE_TRACK;
-        eventData.autotrack = NO;
-        eventData.persist = YES;
-        NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
-        timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
-        timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-        timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-        timeFormatter.timeZone = timeZone;
-        eventData.timeString = [timeFormatter stringFromDate:time];
-        eventData.zoneOffset = [self getTimezoneOffset:time timeZone:timeZone];
-        eventData.timeValueType = TDTimeValueTypeAll;
-        [self tdInternalTrack:eventData];
-    }
+    properties = [self processParameters:properties withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:NO withH5:NO];
+    TDEventData *eventData = [[TDEventData alloc] init];
+    eventData.eventName = event;
+    eventData.properties = [properties copy];
+    eventData.eventType = TD_EVENT_TYPE_TRACK;
+    eventData.autotrack = NO;
+    eventData.persist = YES;
+    NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
+    timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+    timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    timeFormatter.timeZone = timeZone;
+    eventData.timeString = [timeFormatter stringFromDate:time];
+    eventData.zoneOffset = [self getTimezoneOffset:time timeZone:timeZone];
+    eventData.timeValueType = TDTimeValueTypeAll;
+    [self tdInternalTrack:eventData];
 }
 
 - (void)h5track:(NSString *)event properties:(NSDictionary *)propertieDict withType:(NSString *)type withTime:(NSString *)time {
     if ([self hasDisabled])
         return;
-    BOOL isValid = YES;
-    propertieDict = [self processParameters:propertieDict withType:type withEventName:event withAutoTrack:NO withH5:YES isValid:&isValid];
-    if (isValid) {
-        TDEventData *eventData = [[TDEventData alloc] init];
-        eventData.eventName = event;
-        eventData.properties = [propertieDict copy];
-        eventData.eventType = type;
-        eventData.persist = YES;
-        if ([propertieDict objectForKey:@"#zone_offset"]) {
-            eventData.zoneOffset = [[propertieDict objectForKey:@"#zone_offset"] doubleValue];
-            eventData.timeValueType = TDTimeValueTypeAll;
-        } else {
-            eventData.timeValueType = TDTimeValueTypeTimeOnly;
-        }
-        eventData.timeString = time;
-        [self tdInternalTrack:eventData];
+    propertieDict = [self processParameters:propertieDict withType:type withEventName:event withAutoTrack:NO withH5:YES];
+    TDEventData *eventData = [[TDEventData alloc] init];
+    eventData.eventName = event;
+    eventData.properties = [propertieDict copy];
+    eventData.eventType = type;
+    eventData.persist = YES;
+    if ([propertieDict objectForKey:@"#zone_offset"]) {
+        eventData.zoneOffset = [[propertieDict objectForKey:@"#zone_offset"] doubleValue];
+        eventData.timeValueType = TDTimeValueTypeAll;
+    } else {
+        eventData.timeValueType = TDTimeValueTypeTimeOnly;
     }
+    eventData.timeString = time;
+    [self tdInternalTrack:eventData];
 }
 
 - (void)autotrack:(NSString *)event properties:(NSDictionary *)propertieDict withTime:(NSDate *)time {
     if ([self hasDisabled])
         return;
-    BOOL isValid = YES;
-    propertieDict = [self processParameters:propertieDict withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:YES withH5:NO isValid:&isValid];
-    if (isValid) {
-        TDEventData *eventData = [[TDEventData alloc] init];
-        eventData.eventName = event;
-        eventData.properties = [propertieDict copy];
-        eventData.eventType = TD_EVENT_TYPE_TRACK;
-        eventData.autotrack = YES;
-        eventData.persist = YES;
-        eventData.timeString = [_timeFormatter stringFromDate:time];
-        eventData.timeValueType = TDTimeValueTypeNone;
-        [self tdInternalTrack:eventData];
-    }
+    propertieDict = [self processParameters:propertieDict withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:YES withH5:NO];
+    TDEventData *eventData = [[TDEventData alloc] init];
+    eventData.eventName = event;
+    eventData.properties = [propertieDict copy];
+    eventData.eventType = TD_EVENT_TYPE_TRACK;
+    eventData.autotrack = YES;
+    eventData.persist = YES;
+    eventData.timeString = [_timeFormatter stringFromDate:time];
+    eventData.timeValueType = TDTimeValueTypeNone;
+    [self tdInternalTrack:eventData];
 }
 
 - (double)getTimezoneOffset:(NSDate *)date timeZone:(NSTimeZone *)timeZone {
@@ -904,17 +889,14 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if ([self hasDisabled])
         return;
     
-    BOOL isValid = YES;
-    properties = [self processParameters:properties withType:type withEventName:event withAutoTrack:NO withH5:NO isValid:&isValid];
-    if (isValid) {
-        TDEventData *eventData = [[TDEventData alloc] init];
-        eventData.eventName = event;
-        eventData.properties = [properties copy];
-        eventData.eventType = type;
-        eventData.autotrack = NO;
-        eventData.persist = YES;
-        [self tdInternalTrack:eventData];
-    }
+    properties = [self processParameters:properties withType:type withEventName:event withAutoTrack:NO withH5:NO];
+    TDEventData *eventData = [[TDEventData alloc] init];
+    eventData.eventName = event;
+    eventData.properties = [properties copy];
+    eventData.eventType = type;
+    eventData.autotrack = NO;
+    eventData.persist = YES;
+    [self tdInternalTrack:eventData];
 }
 
 - (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue {
@@ -1345,7 +1327,8 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }];
 }
 
-- (NSDictionary<NSString *,id> *)processParameters:(NSDictionary<NSString *,id> *)propertiesDict withType:(NSString *)eventType withEventName:(NSString *)eventName withAutoTrack:(BOOL)autotrack withH5:(BOOL)isH5 isValid:(BOOL *)isValid {
+- (NSDictionary<NSString *,id> *)processParameters:(NSDictionary<NSString *,id> *)propertiesDict withType:(NSString *)eventType withEventName:(NSString *)eventName withAutoTrack:(BOOL)autotrack withH5:(BOOL)isH5 {
+    BOOL isValid = YES;
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
     if ([eventType isEqualToString:TD_EVENT_TYPE_TRACK]) {
         [properties addEntriesFromDictionary:self.superProperty];
@@ -1365,18 +1348,18 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             NSString *errMsg = [NSString stringWithFormat:@"track event name is not valid. got: %@. ", eventName];
             TDLogError(errMsg);
             [exceptionErrMsg appendString:errMsg];
-            *isValid = NO;
+            isValid = NO;
         }
         
         if (![self isValidName:eventName isAutoTrack:NO]) {
             NSString *errMsg = [NSString stringWithFormat:@"property name[%@] is not valid", eventName];
             TDLogError(@"%@", errMsg);
             [exceptionErrMsg appendString:errMsg];
-            *isValid = NO;
+            isValid = NO;
         }
     }
     
-    if (*isValid == NO) {
+    if (isValid == NO) {
         if (self.config.allowDebug) {
             [NSException raise:@"track data error" format:@"error reason: %@", exceptionErrMsg];
         }
@@ -1385,7 +1368,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if (properties && !isH5 && ![self checkEventProperties:properties withEventType:eventType haveAutoTrackEvents:autotrack]) {
         NSString *errMsg = [NSString stringWithFormat:@"%@ property error.", properties];
         TDLogError(errMsg);
-        *isValid = NO;
+        isValid = NO;
         
         if (self.config.allowDebug) {
             [NSException raise:@"track data error" format:@"error reason: %@", errMsg];
@@ -1410,11 +1393,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             }
         }
         
-        *isValid = YES;
+        isValid = YES;
         return [propertiesDic copy];
     }
     
-    *isValid = YES;
+    isValid = YES;
     return nil;
 }
 

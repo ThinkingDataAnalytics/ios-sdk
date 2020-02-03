@@ -108,6 +108,9 @@
     }
     
     NSString *jsonStr = [TDJSONUtil JSONStringForObject:obj];
+    if (!jsonStr) {
+        return [self sqliteCountForAppid:appid];
+    }
     NSTimeInterval epochInterval = [[NSDate date] timeIntervalSince1970];
     NSString *query = @"INSERT INTO TDData(content, appid, creatAt) values(?, ?, ?)";
     sqlite3_stmt *insertStatement;
@@ -144,7 +147,7 @@
         while (sqlite3_step(stmt) == SQLITE_ROW) {
             char *jsonChar = (char *)sqlite3_column_text(stmt, 0);
             if (!jsonChar) {
-                return nil;
+                continue;
             }
             
             NSData *jsonData = [[NSString stringWithUTF8String:jsonChar] dataUsingEncoding:NSUTF8StringEncoding];
