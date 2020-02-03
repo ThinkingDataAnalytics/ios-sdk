@@ -1380,13 +1380,16 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         if (self.config.allowDebug) {
             [NSException raise:@"track data error" format:@"error reason: %@", exceptionErrMsg];
         }
-        return nil;
     }
     
     if (properties && !isH5 && ![self checkEventProperties:properties withEventType:eventType haveAutoTrackEvents:autotrack]) {
-        TDLogError(@"%@ property error.", properties);
+        NSString *errMsg = [NSString stringWithFormat:@"%@ property error.", properties];
+        TDLogError(errMsg);
         *isValid = NO;
-        return nil;
+        
+        if (self.config.allowDebug) {
+            [NSException raise:@"track data error" format:@"error reason: %@", errMsg];
+        }
     }
     
     if (properties) {
