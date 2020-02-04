@@ -946,7 +946,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [self track:nil withProperties:nil withType:TD_EVENT_TYPE_USER_DEL];
 }
 
-- (void)user_append:(NSDictionary *)properties {
+- (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties {
     if ([self hasDisabled])
         return;
     
