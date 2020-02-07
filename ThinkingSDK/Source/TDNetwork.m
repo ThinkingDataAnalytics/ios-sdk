@@ -27,10 +27,12 @@
     __block int debugResult = -1;
     NSMutableDictionary *recordDic = [record mutableCopy];
     NSMutableDictionary *properties = [[recordDic objectForKey:@"properties"] mutableCopy];
-    [properties addEntriesFromDictionary:self.automaticData];
+    if ([[record objectForKey:@"#type"] isEqualToString:@"track"]) {
+        [properties addEntriesFromDictionary:self.automaticData];
+    }
     [recordDic setObject:properties forKey:@"properties"];
     NSString *jsonString = [TDJSONUtil JSONStringForObject:recordDic];
-    NSMutableURLRequest *request = [self buildDebugRequestWithJSONString:jsonString withAppid:appid withDeviceId:[properties objectForKey:@"#device_id"]];
+    NSMutableURLRequest *request = [self buildDebugRequestWithJSONString:jsonString withAppid:appid withDeviceId:[self.automaticData objectForKey:@"#device_id"]];
     dispatch_semaphore_t flushSem = dispatch_semaphore_create(0);
 
     void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
