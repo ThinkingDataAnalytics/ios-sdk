@@ -380,7 +380,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 - (void)user_delete;
 
 /**
- 对Array类型用户属性进行新增操作
+ 对 Array 类型的用户属性进行追加操作
 */
 - (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties;
 

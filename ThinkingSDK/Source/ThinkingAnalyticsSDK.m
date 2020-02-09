@@ -981,7 +981,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
     properties = [properties copy];
     
-    if (![self checkEventProperties:properties withEventType:nil haveAutoTrackEvents:NO]) {
+    if ([TDLogging sharedInstance].loggingLevel != TDLoggingLevelNone && ![self checkEventProperties:properties withEventType:nil haveAutoTrackEvents:NO]) {
         TDLogError(@"%@ propertieDict error.", properties);
         return;
     }
@@ -1112,15 +1112,18 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         return NO;
     }
     
+    __block BOOL failed = NO;
     [properties enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if (![key isKindOfClass:[NSString class]]) {
             NSString *errMsg = [NSString stringWithFormat:@"property key must by NSString. got: %@. ", key];
             TDLogError(errMsg);
+            failed = YES;
         }
         
         if (![self isValidName:key isAutoTrack:haveAutoTrackEvents]) {
             NSString *errMsg = [NSString stringWithFormat:@"property key is not valid. got: %@. ", key];
             TDLogError(errMsg);
+            failed = YES;
         }
         
         if (![obj isKindOfClass:[NSString class]] &&
@@ -1129,12 +1132,14 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             ![obj isKindOfClass:[NSArray class]]) {
             NSString *errMsg = [NSString stringWithFormat:@"property values must be NSString, NSNumber, NSDate, NSArray. got: %@ %@. ", [obj class], obj];
             TDLogError(errMsg);
+            failed = YES;
         }
         
         if (eventType.length > 0 && [eventType isEqualToString:TD_EVENT_TYPE_USER_ADD]) {
             if (![obj isKindOfClass:[NSNumber class]]) {
                 NSString *errMsg = [NSString stringWithFormat:@"user_add value must be NSNumber. got: %@ %@. ", [obj class], obj];
                 TDLogError(errMsg);
+                failed = YES;
             }
         }
         
@@ -1142,6 +1147,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             if (![obj isKindOfClass:[NSArray class]]) {
                 NSString *errMsg = [NSString stringWithFormat:@"user_append value must be NSArray. got: %@ %@. ", [obj class], obj];
                 TDLogError(errMsg);
+                failed = YES;
             }
         }
         
@@ -1149,9 +1155,14 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             if ([obj doubleValue] > 9999999999999.999 || [obj doubleValue] < -9999999999999.999) {
                 NSString *errMsg = [NSString stringWithFormat:@"property number value is not valid. got: %@. ", obj];
                 TDLogError(errMsg);
+                failed = YES;
             }
         }
     }];
+    if (failed) {
+        return NO;
+    }
+    
     return YES;
 }
 
@@ -1330,7 +1341,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         }
     }
     
-    if (properties && !isH5 && ![self checkEventProperties:properties withEventType:eventType haveAutoTrackEvents:autotrack]) {
+    if (properties && !isH5 && [TDLogging sharedInstance].loggingLevel != TDLoggingLevelNone && ![self checkEventProperties:properties withEventType:eventType haveAutoTrackEvents:autotrack]) {
         NSString *errMsg = [NSString stringWithFormat:@"%@ property error.", properties];
         TDLogError(errMsg);
     }
@@ -1421,9 +1432,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                     [self saveEventsData:record];
                 });
             }
-        }
-        if (debugResult == 0 || debugResult == 1 || debugResult == 2) {
-            self.config.allowDebug = YES;
         }
         [queueCopying removeObjectAtIndex:0];
         @synchronized (self) {
