@@ -47,7 +47,7 @@
 }
 
 + (void)testUserAppend {
-    [[ThinkingAnalyticsSDK sharedInstance] user_append:@{@"arrKey": @[@"4", @"3"], @"arrKey2": @[@"44", @"33"]}];
+    [[ThinkingAnalyticsSDK sharedInstance] user_append:@{@"product_buy": @[@"product_name1", @"product_name2"]}];
 }
 
 + (void)testLogin {
