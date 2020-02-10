@@ -116,7 +116,7 @@
       {
           [ThinkingSDKAPI testUserAppend];
       }]];
-    
+
     [commands addObject:
      [APIEntry commandWithName:@"Login"
                  accessoryType:UITableViewCellAccessoryNone

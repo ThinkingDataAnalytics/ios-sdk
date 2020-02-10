@@ -618,13 +618,13 @@
     void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         __weak NSDictionary *dataDic;
         [invocation getArgument:&dataDic atIndex:2];
-        
+
         NSString *timeStr = dataDic[@"#time"];
         NSDateFormatter *timeFormatter = [[NSDateFormatter alloc]init];
         timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
         NSDate *date = [timeFormatter dateFromString:timeStr];
         NSDictionary *properties = dataDic[@"properties"];
-        
+
         XCTAssertNotNil(date);
         XCTAssertNotNil(timeStr);
         XCTAssertNotNil(dataDic);
@@ -654,7 +654,7 @@
             XCTAssertEqualObjects([properties objectForKey:@"arrKey"], arr1);
             XCTAssertEqualObjects([properties objectForKey:@"arrKey2"], arr2);
         }
-        
+
         index ++;
     };
     OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);

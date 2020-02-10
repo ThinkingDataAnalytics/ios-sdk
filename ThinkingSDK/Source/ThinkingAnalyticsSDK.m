@@ -949,7 +949,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 - (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties {
     if ([self hasDisabled])
         return;
-    
+
     [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_APPEND];
 }
 
@@ -1142,7 +1142,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                 failed = YES;
             }
         }
-        
+
         if (eventType.length > 0 && [eventType isEqualToString:TD_EVENT_TYPE_USER_APPEND]) {
             if (![obj isKindOfClass:[NSArray class]]) {
                 NSString *errMsg = [NSString stringWithFormat:@"user_append value must be NSArray. got: %@ %@. ", [obj class], obj];

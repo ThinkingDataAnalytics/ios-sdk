@@ -114,7 +114,7 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
             crashStr = [NSString stringWithFormat:@"%@ %@", [exception reason], [NSThread callStackSymbols]];
         }
         crashStr = [crashStr stringByReplacingOccurrencesOfString:@"\n" withString:@"<br>"];
-        
+
         NSUInteger strLength = [((NSString *)crashStr) lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
         NSUInteger strMaxLength = TA_PROPERTY_CRASH_LENGTH_LIMIT;
         if (strLength > strMaxLength) {
@@ -151,7 +151,7 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
     NSData *originalData = [originalString dataUsingEncoding:encoding];
     NSData *subData = [originalData subdataWithRange:NSMakeRange(0, length)];
     NSString *limitString = [[NSString alloc] initWithData:subData encoding:encoding];
-    
+
     NSInteger index = 1;
     while (index <= 3 && !limitString) {
         if (length > index) {
@@ -160,7 +160,7 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
         }
         index ++;
     }
-    
+
     if (!limitString) {
         return originalString;
     }
