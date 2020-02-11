@@ -51,7 +51,7 @@
                 TDLogError(@"Debug data json error:%@", err);
                 debugResult = -2;
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:1]] || [[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:2]]) {
-                TDLogError(@"Debug data error:%@", [retDic objectForKey:@"errorReasons"]);
+                TDLogError(@"Debug data error:%@", retDic);
                 debugResult = (int)[[retDic objectForKey:@"errorLevel"] integerValue];
                 [NSException raise:@"Debug data error" format:@"error reason: %@", [retDic objectForKey:@"errorReasons"]];
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
@@ -59,7 +59,7 @@
                 TDLogDebug(@"Verify data success.");
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:-1]]) {
                 debugResult = -1;
-                TDLogError(@"Debug mode forced degrade.");
+                TDLogError(@"Debug mode error. error:%@", retDic);
             }
             
             static dispatch_once_t onceToken;
