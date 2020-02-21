@@ -17,8 +17,8 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
 
 @property (assign, nonatomic) ThinkingAnalyticsAutoTrackEventType autoTrackEventType;
 @property (assign, nonatomic) ThinkingNetworkType networkTypePolicy;
-@property (assign, nonatomic) NSNumber *uploadInterval;
-@property (assign, nonatomic) NSNumber *uploadSize;
+@property (nonatomic) NSNumber *uploadInterval;
+@property (nonatomic) NSNumber *uploadSize;
 @property (class,  nonatomic) NSInteger maxNumEvents;
 @property (class,  nonatomic) NSInteger expirationDays;
 
