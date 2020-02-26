@@ -91,7 +91,7 @@ static dispatch_semaphore_t _queueSemaphore;
 - (void)lt_addLogger:(id <TDLogger>)logger {
     NSAssert(dispatch_get_specific(GlobalLoggingQueueIdentityKey),
              @"This method should only be run on the logging thread/queue");
-    const char *loggerQueueName = [@"com.thinkingddata.analytics.osLogger" UTF8String];
+    const char *loggerQueueName = [@"cn.thinkingdata.analytics.osLogger" UTF8String];
     dispatch_queue_t loggerQueue = dispatch_queue_create(loggerQueueName, NULL);
     _logger = logger;
     _loggerQueue = loggerQueue;
@@ -157,7 +157,7 @@ static TDAbstractLogger *sharedInstance;
 - (os_log_t)getLogger {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunguarded-availability"
-    return os_log_create("com.thinkingddata.analytics.log", "THINKING");
+    return os_log_create("cn.thinkingdata.analytics.log", "THINKING");
 #pragma clang diagnostic pop
 }
 
