@@ -50,16 +50,27 @@
             if (err) {
                 TDLogError(@"Debug data json error:%@", err);
                 debugResult = -2;
-            } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:1]] || [[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:2]]) {
-                TDLogError(@"Debug data error:%@", retDic);
-                debugResult = (int)[[retDic objectForKey:@"errorLevel"] integerValue];
-                [NSException raise:@"Debug data error" format:@"error reason: %@", [retDic objectForKey:@"errorReasons"]];
+            } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:1]]) {
+                NSArray* errorProperties = [retDic objectForKey:@"errorProperties"];
+                NSMutableString *errorStr = [NSMutableString string];
+                for (id obj in errorProperties) {
+                    NSString *errorReasons = [obj objectForKey:@"errorReason"];
+                    NSString *propertyName = [obj objectForKey:@"propertyName"];
+                    [errorStr appendFormat:@" propertyName:%@ errorReasons:%@\n", propertyName, errorReasons];
+                }
+                TDLogError(@"Debug data error:%@", errorStr);
+                [NSException raise:@"Debug data error" format:@"error:%@", errorStr];
+            } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:2]]) {
+                NSString *errorReasons = [[retDic objectForKey:@"errorReasons"] componentsJoinedByString:@" "];
+                TDLogError(@"Debug data error:%@", errorReasons);
+                [NSException raise:@"Debug data error" format:@"error:%@", errorReasons];
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
                 debugResult = 0;
                 TDLogDebug(@"Verify data success.");
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:-1]]) {
                 debugResult = -1;
-                TDLogError(@"Debug mode error. error:%@", retDic);
+                NSString *errorReasons = [[retDic objectForKey:@"errorReasons"] componentsJoinedByString:@" "];
+                TDLogError(@"Debug mode error:%@", errorReasons);
             }
             
             static dispatch_once_t onceToken;
