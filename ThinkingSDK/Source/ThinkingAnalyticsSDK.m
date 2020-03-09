@@ -167,8 +167,6 @@ static dispatch_queue_t networkQueue;
             TDLogError(@"SqliteException: init SqliteDataQueue failed");
         }
         
-        [self startFlushTimer];
-        [self setApplicationListeners];
         [self setNetRadioListeners];
         
         self.autoTrackManager = [TDAutoTrackManager sharedManager];
@@ -198,6 +196,9 @@ static dispatch_queue_t networkQueue;
         } else {
             [self launchedIntoBackground];
         }
+        
+        [self startFlushTimer];
+        [self setApplicationListeners];
         
         instances[appid] = self;
         
