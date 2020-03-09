@@ -18,6 +18,8 @@
     
     if ([NSJSONSerialization isValidJSONObject:obj]) {
         data = [NSJSONSerialization dataWithJSONObject:obj options:0 error:NULL];
+    } else {
+        TDLogError(@"Invalid json: %@", obj);
     }
     
     return data;
