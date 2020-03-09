@@ -113,7 +113,6 @@
 		F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoTrackViewController.m; sourceTree = "<group>"; };
 		F383E11F230268B600E08658 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = ThinkingSDKDEMO/OCMock.framework; sourceTree = "<group>"; };
 		F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ThinkingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F3BE260022FBCB8C00F46506 /* ThinkingSDKDEMO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ThinkingSDKDEMO.entitlements; sourceTree = "<group>"; };
 		F3ECE9F2230D55FD00670FBD /* AutoTrackSecViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoTrackSecViewController.h; sourceTree = "<group>"; };
 		F3ECE9F3230D55FD00670FBD /* AutoTrackSecViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoTrackSecViewController.m; sourceTree = "<group>"; };
 		F3F45D9E2301785600218049 /* thinkingdata.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = thinkingdata.min.js; sourceTree = "<group>"; };
@@ -225,7 +224,6 @@
 		F380B2A722C0E8BB00955FC5 /* ThinkingSDKDEMO */ = {
 			isa = PBXGroup;
 			children = (
-				F3BE260022FBCB8C00F46506 /* ThinkingSDKDEMO.entitlements */,
 				F380B2A822C0E8BB00955FC5 /* AppDelegate.h */,
 				F380B2A922C0E8BB00955FC5 /* AppDelegate.m */,
 				F380B31922C0EF5900955FC5 /* ThinkingSDKAPI.h */,
@@ -574,7 +572,7 @@
 		F380B2D222C0E8BC00955FC5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = ThinkingSDKDEMO/ThinkingSDKDEMO.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LF3XB637JR;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -588,7 +586,7 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = com.thinking.ThinkingSDKDEMO;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.thinking.ThinkingSDKDEMO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -597,7 +595,7 @@
 		F380B2D322C0E8BC00955FC5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = ThinkingSDKDEMO/ThinkingSDKDEMO.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LF3XB637JR;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -611,7 +609,7 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = com.thinking.ThinkingSDKDEMO;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.thinking.ThinkingSDKDEMO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

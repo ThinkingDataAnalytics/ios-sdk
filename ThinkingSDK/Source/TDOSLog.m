@@ -38,7 +38,7 @@ static dispatch_semaphore_t _queueSemaphore;
     static dispatch_once_t TDLogOnceToken;
 
     dispatch_once(&TDLogOnceToken, ^{
-        _loggingQueue = dispatch_queue_create("com.thinking.log", NULL);
+        _loggingQueue = dispatch_queue_create("cn.thinking.log", NULL);
         _loggingGroup = dispatch_group_create();
 
         void *nonNullValue = GlobalLoggingQueueIdentityKey;

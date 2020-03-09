@@ -72,7 +72,7 @@ static dispatch_queue_t networkQueue;
 + (void)initialize {
     static dispatch_once_t ThinkingOnceToken;
     dispatch_once(&ThinkingOnceToken, ^{
-        NSString *queuelabel = [NSString stringWithFormat:@"com.Thinkingdata.%p", (void *)self];
+        NSString *queuelabel = [NSString stringWithFormat:@"cn.Thinkingdata.%p", (void *)self];
         serialQueue = dispatch_queue_create([queuelabel UTF8String], DISPATCH_QUEUE_SERIAL);
         NSString *networkLabel = [queuelabel stringByAppendingString:@".network"];
         networkQueue = dispatch_queue_create([networkLabel UTF8String], DISPATCH_QUEUE_SERIAL);
@@ -167,6 +167,7 @@ static dispatch_queue_t networkQueue;
             TDLogError(@"SqliteException: init SqliteDataQueue failed");
         }
         
+        [self startFlushTimer];
         [self setApplicationListeners];
         [self setNetRadioListeners];
         
@@ -197,8 +198,6 @@ static dispatch_queue_t networkQueue;
         } else {
             [self launchedIntoBackground];
         }
-        
-        [self startFlushTimer];
         
         instances[appid] = self;
         
