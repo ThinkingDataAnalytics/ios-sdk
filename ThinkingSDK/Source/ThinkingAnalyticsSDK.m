@@ -198,6 +198,8 @@ static dispatch_queue_t networkQueue;
             [self launchedIntoBackground];
         }
         
+        [self startFlushTimer];
+        
         instances[appid] = self;
         
         if(instances.count == 1) {
