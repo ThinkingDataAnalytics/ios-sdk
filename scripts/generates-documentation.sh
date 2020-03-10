@@ -5,7 +5,6 @@ jazzy     \
  --objc   \
  --clean  \
  --module-version 2.1.0    \
- --framework-root ./       \
  --module ThinkingSDK      \
  --sdk iphonesimulator     \
  --output "$basepath"/docs \
