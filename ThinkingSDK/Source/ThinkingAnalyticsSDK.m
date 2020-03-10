@@ -1609,19 +1609,12 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     return YES;
 }
 
-#if THINKING_UIWEBVIEW_SUPPORT
-- (NSString *)webViewGetUserAgent {
-    UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
-    return [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
-}
-#else
 - (void)wkWebViewGetUserAgent:(void (^)(NSString *))completion {
     self.wkWebView = [[WKWebView alloc] initWithFrame:CGRectZero];
     [self.wkWebView evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id __nullable userAgent, NSError * __nullable error) {
         completion(userAgent);
     }];
 }
-#endif
 
 - (void)addWebViewUserAgent {
     if ([self hasDisabled])
@@ -1638,13 +1631,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     };
     
     dispatch_block_t getUABlock = ^() {
-        #if THINKING_UIWEBVIEW_SUPPORT
-        setUserAgent([self webViewGetUserAgent]);
-        #else
         [self wkWebViewGetUserAgent:^(NSString *userAgent) {
             setUserAgent(userAgent);
         }];
-        #endif
     };
     
     td_dispatch_main_sync_safe(getUABlock);

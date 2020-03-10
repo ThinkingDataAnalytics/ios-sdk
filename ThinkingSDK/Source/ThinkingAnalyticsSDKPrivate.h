@@ -5,10 +5,7 @@
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <objc/runtime.h>
-
-#if !THINKING_UIWEBVIEW_SUPPORT
 #import <WebKit/WebKit.h>
-#endif
 
 #import "TDLogging.h"
 #import "ThinkingExceptionHandler.h"
@@ -56,10 +53,6 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 }
 #endif
 
-#if !defined(THINKING_UIWEBVIEW_SUPPORT)
-    #define THINKING_UIWEBVIEW_SUPPORT 0
-#endif
-
 static NSUInteger const kBatchSize = 50;
 static NSUInteger const TA_PROPERTY_CRASH_LENGTH_LIMIT = 8191*2;
 static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
@@ -99,10 +92,7 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 @property (nonatomic, assign) BOOL applicationWillResignActive;
 @property (nonatomic, assign) BOOL appRelaunched;
 @property (nonatomic, assign) BOOL isEnableSceneSupport;
-
-#if !THINKING_UIWEBVIEW_SUPPORT
 @property (nonatomic, strong) WKWebView *wkWebView;
-#endif
 
 - (instancetype)initLight:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config;
 - (void)autotrack:(NSString *)event properties:(NSDictionary *)propertieDict withTime:(NSDate *)date;
