@@ -15,13 +15,11 @@
 
 @implementation ThinkingAnalyticsSDK
 
-static ThinkingAnalyticsSDK *sharedInstance = nil;
-
 static NSMutableDictionary *instances;
 static NSString *defaultProjectAppid;
 static BOOL isWifi;
 static NSString *radioInfo;
-
+static TDCalibratedTime *calibratedTime;
 static dispatch_queue_t serialQueue;
 static dispatch_queue_t networkQueue;
 
@@ -96,7 +94,7 @@ static dispatch_queue_t networkQueue;
         
         self.trackTimer = [NSMutableDictionary dictionary];
         _timeFormatter = [[NSDateFormatter alloc] init];
-        _timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+        _timeFormatter.dateFormat = kDefaultTimeFormat;
         _timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         _timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
         _timeFormatter.timeZone = config.defaultTimeZone;
@@ -110,8 +108,6 @@ static dispatch_queue_t networkQueue;
         if (self.dataQueue == nil) {
             TDLogError(@"SqliteException: init SqliteDataQueue failed");
         }
-        
-        self.debugEventsQueue = [NSMutableArray array];
         
         _network = [[TDNetwork alloc] init];
         _network.debugMode = config.debugMode;
@@ -145,7 +141,7 @@ static dispatch_queue_t networkQueue;
         
         self.trackTimer = [NSMutableDictionary dictionary];
         _timeFormatter = [[NSDateFormatter alloc] init];
-        _timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+        _timeFormatter.dateFormat = kDefaultTimeFormat;
         _timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         _timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
         _timeFormatter.timeZone = config.defaultTimeZone;
@@ -170,8 +166,7 @@ static dispatch_queue_t networkQueue;
         [self setNetRadioListeners];
         
         self.autoTrackManager = [TDAutoTrackManager sharedManager];
-        self.debugEventsQueue = [NSMutableArray array];
-
+        
         _network = [[TDNetwork alloc] init];
         _network.debugMode = config.debugMode;
         _network.appid = appid;
@@ -276,6 +271,7 @@ static dispatch_queue_t networkQueue;
 }
 
 - (void)optOutTrackingAndDeleteUser {
+    TDLogDebug(@"%@ optOutTrackingAndDeleteUser...", self);
     TDEventData *eventData = [[TDEventData alloc] init];
     eventData.eventType = TD_EVENT_TYPE_USER_DEL;
     eventData.persist = NO;
@@ -505,7 +501,7 @@ static dispatch_queue_t networkQueue;
     NSMutableDictionary *event = [[NSMutableDictionary alloc] initWithDictionary:data];
     NSInteger count;
     @synchronized (instances) {
-        count = [self.dataQueue addObejct:event withAppid:self.appid];
+        count = [self.dataQueue addObject:event withAppid:self.appid];
     }
     return count;
 }
@@ -802,7 +798,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [self tdInternalTrack:eventData];
 }
 
-//废弃
+// deprecated  使用 track:properties:time:timeZone: 方法传入
 - (void)track:(NSString *)event properties:(NSDictionary *)propertiesDict time:(NSDate *)time {
     if ([self hasDisabled])
         return;
@@ -836,7 +832,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     eventData.autotrack = NO;
     eventData.persist = YES;
     NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
-    timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+    timeFormatter.dateFormat = kDefaultTimeFormat;
     timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     timeFormatter.timeZone = timeZone;
@@ -936,7 +932,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         return;
     
     if ([propertyName isKindOfClass:[NSString class]] && propertyName.length > 0) {
-        NSDictionary* properties = @{propertyName: @0};
+        NSDictionary *properties = @{propertyName: @0};
         [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_UNSET];
     }
 }
@@ -1087,7 +1083,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if (![event isKindOfClass:[NSString class]] || event.length == 0 || ![self isValidName:event isAutoTrack:NO]) {
         NSString *errMsg = [NSString stringWithFormat:@"timeEvent parameter[%@] is not valid", event];
         TDLogError(errMsg);
-        return ;
+        return;
     }
     
     NSNumber *eventBegin = @([[NSDate date] timeIntervalSince1970]);
@@ -1117,13 +1113,13 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     __block BOOL failed = NO;
     [properties enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if (![key isKindOfClass:[NSString class]]) {
-            NSString *errMsg = [NSString stringWithFormat:@"property key must by NSString. got: %@. ", key];
+            NSString *errMsg = [NSString stringWithFormat:@"Property name is not valid. The property KEY must be NSString. got: %@ %@", [key class], key];
             TDLogError(errMsg);
             failed = YES;
         }
         
         if (![self isValidName:key isAutoTrack:haveAutoTrackEvents]) {
-            NSString *errMsg = [NSString stringWithFormat:@"property key is not valid. got: %@. ", key];
+            NSString *errMsg = [NSString stringWithFormat:@"Property name[%@] is not valid. The property KEY must be string that starts with English letter, and contains letter, number, and '_'. The max length of the property KEY is 50.", key];
             TDLogError(errMsg);
             failed = YES;
         }
@@ -1132,7 +1128,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             ![obj isKindOfClass:[NSNumber class]] &&
             ![obj isKindOfClass:[NSDate class]] &&
             ![obj isKindOfClass:[NSArray class]]) {
-            NSString *errMsg = [NSString stringWithFormat:@"property values must be NSString, NSNumber, NSDate, NSArray. got: %@ %@. ", [obj class], obj];
+            NSString *errMsg = [NSString stringWithFormat:@"Property value must be type NSString, NSNumber, NSDate or NSArray. got: %@ %@. ", [obj class], obj];
             TDLogError(errMsg);
             failed = YES;
         }
@@ -1155,7 +1151,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         
         if ([obj isKindOfClass:[NSNumber class]]) {
             if ([obj doubleValue] > 9999999999999.999 || [obj doubleValue] < -9999999999999.999) {
-                NSString *errMsg = [NSString stringWithFormat:@"property number value is not valid. got: %@. ", obj];
+                NSString *errMsg = [NSString stringWithFormat:@"The number value [%@] is invalid.", obj];
                 TDLogError(errMsg);
                 failed = YES;
             }
@@ -1218,7 +1214,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     NSMutableDictionary<NSString *, id> *properties = [NSMutableDictionary dictionaryWithDictionary:propertiesDict];
     
     NSString *timeString;
-    double offset;
+    NSDate *nowDate = [NSDate date];
+    NSTimeInterval systemUptime = [[NSProcessInfo processInfo] systemUptime];
+    double offset = 0;
     if (eventData.timeValueType == TDTimeValueTypeNone) {
         timeString = [_timeFormatter stringFromDate:[NSDate date]];
         offset = [self getTimezoneOffset:[NSDate date] timeZone:_config.defaultTimeZone];
@@ -1246,6 +1244,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             [self.trackTimer removeObjectForKey:eventData.eventName];
         }
     }
+    
     if (eventTimer) {
         NSNumber *eventBegin = [eventTimer valueForKey:TD_EVENT_START];
         NSNumber *eventDuration = [eventTimer valueForKey:TD_EVENT_DURATION];
@@ -1281,35 +1280,52 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         dataDic[@"#account_id"] = self.accountId;
     }
     
-    TDLogDebug(@"queueing data:%@", dataDic);
-    if (self.config.debugMode == ThinkingAnalyticsDebugOnly || self.config.debugMode == ThinkingAnalyticsDebug) {
-        @synchronized (self) {
-            [self.debugEventsQueue addObject:dataDic];
-            if (self.debugEventsQueue.count > 5000) {
-                [self.debugEventsQueue removeObjectAtIndex:0];
-            }
-        }
-        
-        [self flushDebugEvent:nil];
-        NSInteger count;
-        @synchronized (instances) {
-            count = [self.dataQueue sqliteCountForAppid:self.appid];
-        }
-        if (count >= [self.config.uploadSize integerValue]) {
-            [self flush];
-        }
-    } else if (eventData.persist) {
+    if (eventData.persist) {
         dispatch_async(serialQueue, ^{
-            NSInteger count = [self saveEventsData:dataDic];
+            NSDictionary *finalDic = dataDic;
+            if (eventData.timeValueType == TDTimeValueTypeNone && calibratedTime && !calibratedTime.stopCalibrate) {
+                finalDic = [self calibratedTime:dataDic withDate:nowDate withSystemDate:systemUptime withEventData:eventData];
+            }
+            NSInteger count;
+            if (self.config.debugMode == ThinkingAnalyticsDebugOnly || self.config.debugMode == ThinkingAnalyticsDebug) {
+                TDLogDebug(@"queueing debug data:%@", finalDic);
+                [self flushDebugEvent:finalDic];
+                count = [self.dataQueue sqliteCountForAppid:self.appid];
+            } else {
+                TDLogDebug(@"queueing data:%@", finalDic);
+                count = [self saveEventsData:finalDic];
+            }
             if (count >= [self.config.uploadSize integerValue]) {
                 [self flush];
             }
         });
     } else {
+        TDLogDebug(@"queueing data flush immediately:%@", dataDic);
         dispatch_async(serialQueue, ^{
             [self flushImmediately:dataDic];
         });
     }
+}
+
+- (NSDictionary *)calibratedTime:(NSDictionary *)dataDic withDate:(NSDate *)date withSystemDate:(NSTimeInterval)systemUptime withEventData:(TDEventData *)eventData {
+    NSMutableDictionary *calibratedData = [NSMutableDictionary dictionaryWithDictionary:dataDic];
+    NSTimeInterval outTime = systemUptime - calibratedTime.systemUptime;
+    NSDate *serverDate = [NSDate dateWithTimeIntervalSince1970:(calibratedTime.serverTime + outTime)];
+
+    if (calibratedTime.stopCalibrate) {
+        return dataDic;
+    }
+    NSString *timeString = [_timeFormatter stringFromDate:serverDate];
+    double offset = [self getTimezoneOffset:serverDate timeZone:_config.defaultTimeZone];
+    
+    calibratedData[@"#time"] = timeString;
+    NSMutableDictionary *properties = [NSMutableDictionary dictionaryWithDictionary:[calibratedData objectForKey:@"properties"]];
+
+    if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK] && eventData.timeValueType != TDTimeValueTypeTimeOnly) {
+        properties[@"#zone_offset"] = @(offset);
+    }
+    calibratedData[@"properties"] = properties;
+    return calibratedData;
 }
 
 - (void)flushImmediately:(NSDictionary *)dataDic {
@@ -1327,24 +1343,28 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             [properties addEntriesFromDictionary:dynamicSuperPropertiesDict];
         }
     }
-    if (propertiesDict && [propertiesDict isKindOfClass:[NSDictionary class]]) {
-        [properties addEntriesFromDictionary:propertiesDict];
+    if (propertiesDict) {
+        if ([propertiesDict isKindOfClass:[NSDictionary class]]) {
+            [properties addEntriesFromDictionary:propertiesDict];
+        } else {
+            TDLogDebug(@"The property must be NSDictionary. got: %@ %@", [propertiesDict class], propertiesDict);
+        }
     }
     
     if ([eventType isEqualToString:TD_EVENT_TYPE_TRACK] && !isH5) {
         if (![eventName isKindOfClass:[NSString class]] || eventName.length == 0) {
-            NSString *errMsg = [NSString stringWithFormat:@"track event name is not valid. got: %@. ", eventName];
+            NSString *errMsg = [NSString stringWithFormat:@"Event name is invalid. Event name must be NSString. got: %@ %@", [eventName class], eventName];
             TDLogError(errMsg);
         }
         
         if (![self isValidName:eventName isAutoTrack:NO]) {
-            NSString *errMsg = [NSString stringWithFormat:@"property name[%@] is not valid", eventName];
+            NSString *errMsg = [NSString stringWithFormat:@"Event name[ %@ ] is invalid. Event name must be string that starts with English letter, and contains letter, number, and '_'. The max length of the event name is 50.", eventName];
             TDLogError(@"%@", errMsg);
         }
     }
     
     if (properties && !isH5 && [TDLogging sharedInstance].loggingLevel != TDLoggingLevelNone && ![self checkEventProperties:properties withEventType:eventType haveAutoTrackEvents:autotrack]) {
-        NSString *errMsg = [NSString stringWithFormat:@"%@ property error.", properties];
+        NSString *errMsg = [NSString stringWithFormat:@"%@ The data contains invalid key or value.", properties];
         TDLogError(errMsg);
     }
     
@@ -1376,29 +1396,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [self syncWithCompletion:nil];
 }
 
-- (void)degradeDebugMode {
-    self.config.debugMode = ThinkingAnalyticsDebugOff;
-    self.network.debugMode = ThinkingAnalyticsDebugOff;
-    NSMutableArray *queueCopying;
-    @synchronized (self) {
-        queueCopying = [self.debugEventsQueue mutableCopy];
-        self.debugEventsQueue = [NSMutableArray array];
-    }
-    if (queueCopying.count > 0) {
-        dispatch_async(serialQueue, ^{
-            [queueCopying enumerateObjectsUsingBlock:^(NSDictionary *eventDic, NSUInteger idx, BOOL * _Nonnull stop) {
-                 [self saveEventsData:eventDic];
-            }];
-        });
-    }
-}
-
-- (void)flushDebugEvent:(void (^)(void))handler {
+- (void)flushDebugEvent:(NSDictionary *)data {
     [self dispatchOnNetworkQueue:^{
-        [self _syncDebug];
-        if (handler) {
-            dispatch_async(dispatch_get_main_queue(), handler);
-        }
+        [self _syncDebug:data];
     }];
 }
 
@@ -1411,33 +1411,28 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }];
 }
 
-- (void)_syncDebug {
-    if (self.config.debugMode == ThinkingAnalyticsDebugOff) {
-        return;
-    }
-    NSMutableArray *queueCopying;
-    @synchronized (self) {
-        queueCopying = [self.debugEventsQueue mutableCopy];
-    }
-    int debugResult = 0;
-    while (queueCopying.count > 0) {
-        NSDictionary *record = [queueCopying firstObject];
-        debugResult = [self.network flushDebugEvents:record withAppid:self.appid];
-        if (self.config.debugMode == ThinkingAnalyticsDebug) {
-            if (debugResult == -1) {
-                // 服务器不允许Debug，做降级处理
-                [self degradeDebugMode];
-                break;
-            } else if (debugResult == -2) {
-                // 网络异常
-                dispatch_async(serialQueue, ^{
-                    [self saveEventsData:record];
-                });
-            }
+- (void)_syncDebug:(NSDictionary *)record {
+    int debugResult = [self.network flushDebugEvents:record withAppid:self.appid];
+    if (debugResult == -1) {
+        // 降级处理
+        if (self.config.debugMode != ThinkingAnalyticsDebugOnly) {
+            dispatch_async(serialQueue, ^{
+                TDLogDebug(@"The data will be discarded due to this device is not allowed to debug:%@", record);
+                [self saveEventsData:record];
+            });
         }
-        [queueCopying removeObjectAtIndex:0];
-        @synchronized (self) {
-            [self.debugEventsQueue removeObjectAtIndex:0];
+        
+        self.config.debugMode = ThinkingAnalyticsDebugOff;
+        self.network.debugMode = ThinkingAnalyticsDebugOff;
+    }
+
+    if (debugResult == -2) {
+        if (self.config.debugMode == ThinkingAnalyticsDebug) {
+            // 网络异常
+            dispatch_async(serialQueue, ^{
+                TDLogDebug(@"Exception occurred when sending message to Server:%@", record);
+                [self saveEventsData:record];
+            });
         }
     }
 }
@@ -1647,6 +1642,19 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 #pragma mark - Crash tracking
 -(void)trackCrash {
     [[ThinkingExceptionHandler sharedHandler] addThinkingInstance:self];
+}
+
+#pragma mark - Calibrate time
++ (void)calibrateTimeWithNtp {
+    calibratedTime = [TDCalibratedTimeWithNTP sharedInstance];
+}
+
++ (void)calibrateTimeWithNtp:(NSArray *)ntpServer {
+    calibratedTime = [TDCalibratedTimeWithNTP sharedInstanceWithNtpServerHost:ntpServer];
+}
+
++ (void)calibrateTime:(NSTimeInterval)timestamp {
+    calibratedTime = [TDCalibratedTime sharedInstanceWithTimeInterval:timestamp];
 }
 
 @end

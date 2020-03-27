@@ -291,7 +291,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  @param propertieDict 事件属性
  @param time          事件触发时间
  */
-- (void)track:(NSString *)event properties:(nullable NSDictionary *)propertieDict time:(NSDate *)time __attribute__((deprecated("使用track:properties:time:timeZone:方法传入")));
+- (void)track:(NSString *)event properties:(nullable NSDictionary *)propertieDict time:(NSDate *)time __attribute__((deprecated("使用 track:properties:time:timeZone: 方法传入")));
 
 /**
  自定义事件埋点
@@ -301,7 +301,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  @param time          事件触发时间
  @param timeZone      事件触发时间时区
  */
-- (void)track:(NSString *)event properties:(nullable NSDictionary *)propertieDict time:(NSDate *)time timeZone:(NSTimeZone*)timeZone;
+- (void)track:(NSString *)event properties:(nullable NSDictionary *)propertieDict time:(NSDate *)time timeZone:(NSTimeZone *)timeZone;
 
 /**
  记录事件时长
@@ -464,7 +464,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 /**
  H5 与原生 APP SDK 打通，配合 addWebViewUserAgent 接口使用
 
- @param webView 需要打通H5的控件，支持 `WKWebView`、`UIWebView`
+ @param webView 需要打通H5的控件
  @param request NSURLRequest 网络请求
  @return YES：处理此次请求 NO：未处理此次请求
  
@@ -517,6 +517,24 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  @return SDK 实例
  */
 - (ThinkingAnalyticsSDK *)createLightInstance;
+
+/**
+ 使用NTP Server 校准时间
+*/
++ (void)calibrateTimeWithNtp;
+
+/**
+ 使用指定NTP Server 校准时间
+ @param ntpServer NTP Server
+*/
++ (void)calibrateTimeWithNtp:(NSArray *)ntpServer;
+
+/**
+ 校准时间
+ 
+ @param timestamp 当前时间戳
+*/
++ (void)calibrateTime:(NSTimeInterval)timestamp;
 
 @end
 

@@ -13,6 +13,8 @@
 #import "TDDeviceInfo.h"
 #import "TDConfig.h"
 #import "TDSqliteDataQueue.h"
+#import "TDCalibratedTime.h"
+#import "TDCalibratedTimeWithNTP.h"
 
 static NSString * const TD_APP_START_EVENT                  = @"ta_app_start";
 static NSString * const TD_APP_START_BACKGROUND_EVENT       = @"ta_app_bg_start";
@@ -53,6 +55,8 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 }
 #endif
 
+#define kDefaultTimeFormat  @"yyyy-MM-dd HH:mm:ss.SSS"
+
 static NSUInteger const kBatchSize = 50;
 static NSUInteger const TA_PROPERTY_CRASH_LENGTH_LIMIT = 8191*2;
 static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
@@ -83,7 +87,6 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 @property (nonatomic, assign) SCNetworkReachabilityRef reachability;
 @property (nonatomic, strong) CTTelephonyNetworkInfo *telephonyInfo;
 @property (nonatomic, copy) NSDictionary<NSString *, id> *(^dynamicSuperProperties)(void);
-@property (nonatomic, strong) NSMutableArray *debugEventsQueue;
 
 @property (atomic, strong) TDDeviceInfo *deviceInfo;
 @property (atomic, strong) TDSqliteDataQueue *dataQueue;

@@ -101,7 +101,7 @@
     [self removeOldRecords:expirationDate];
 }
 
-- (NSInteger)addObejct:(id)obj withAppid:(NSString *)appid {
+- (NSInteger)addObject:(id)obj withAppid:(NSString *)appid {
     NSUInteger maxCacheSize = [TDConfig maxNumEvents];
     if (_allmessageCount >= maxCacheSize) {
         [self removeFirstRecords:100 withAppid:nil];
