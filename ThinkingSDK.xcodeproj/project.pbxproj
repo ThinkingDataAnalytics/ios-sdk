@@ -27,14 +27,14 @@
 		F30338C023AB57750020C129 /* TDSecurityPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = F30338BE23AB57740020C129 /* TDSecurityPolicy.h */; };
 		F30338C123AB57750020C129 /* TDSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = F30338BF23AB57750020C129 /* TDSecurityPolicy.m */; };
 		F3247C9B23176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = F3247C9923176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m */; };
-		F35B12CE242E138000C630FC /* TDCalibratedTimeWithNTP.m in Sources */ = {isa = PBXBuildFile; fileRef = F35B12C6242E138000C630FC /* TDCalibratedTimeWithNTP.m */; };
-		F35B12CF242E138000C630FC /* TDNTPTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F35B12C7242E138000C630FC /* TDNTPTypes.h */; };
-		F35B12D0242E138000C630FC /* TDCalibratedTime.h in Headers */ = {isa = PBXBuildFile; fileRef = F35B12C8242E138000C630FC /* TDCalibratedTime.h */; };
-		F35B12D1242E138000C630FC /* TDNTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = F35B12C9242E138000C630FC /* TDNTPServer.h */; };
-		F35B12D2242E138000C630FC /* TDNTPTypes.c in Sources */ = {isa = PBXBuildFile; fileRef = F35B12CA242E138000C630FC /* TDNTPTypes.c */; };
-		F35B12D3242E138000C630FC /* TDCalibratedTimeWithNTP.h in Headers */ = {isa = PBXBuildFile; fileRef = F35B12CB242E138000C630FC /* TDCalibratedTimeWithNTP.h */; };
-		F35B12D4242E138000C630FC /* TDCalibratedTime.m in Sources */ = {isa = PBXBuildFile; fileRef = F35B12CC242E138000C630FC /* TDCalibratedTime.m */; };
-		F35B12D5242E138000C630FC /* TDNTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = F35B12CD242E138000C630FC /* TDNTPServer.m */; };
+		F35B1313242EFB9B00C630FC /* TDCalibratedTimeWithNTP.m in Sources */ = {isa = PBXBuildFile; fileRef = F35B130B242EFB9B00C630FC /* TDCalibratedTimeWithNTP.m */; };
+		F35B1314242EFB9B00C630FC /* TDNTPTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F35B130C242EFB9B00C630FC /* TDNTPTypes.h */; };
+		F35B1315242EFB9B00C630FC /* TDCalibratedTime.h in Headers */ = {isa = PBXBuildFile; fileRef = F35B130D242EFB9B00C630FC /* TDCalibratedTime.h */; };
+		F35B1316242EFB9B00C630FC /* TDNTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = F35B130E242EFB9B00C630FC /* TDNTPServer.h */; };
+		F35B1317242EFB9B00C630FC /* TDNTPTypes.c in Sources */ = {isa = PBXBuildFile; fileRef = F35B130F242EFB9B00C630FC /* TDNTPTypes.c */; };
+		F35B1318242EFB9B00C630FC /* TDCalibratedTimeWithNTP.h in Headers */ = {isa = PBXBuildFile; fileRef = F35B1310242EFB9B00C630FC /* TDCalibratedTimeWithNTP.h */; };
+		F35B1319242EFB9B00C630FC /* TDCalibratedTime.m in Sources */ = {isa = PBXBuildFile; fileRef = F35B1311242EFB9B00C630FC /* TDCalibratedTime.m */; };
+		F35B131A242EFB9B00C630FC /* TDNTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = F35B1312242EFB9B00C630FC /* TDNTPServer.m */; };
 		F3D1901E230136B30043D595 /* ThinkingSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3D19014230136B30043D595 /* ThinkingSDK.framework */; };
 		F3D19023230136B30043D595 /* ThinkingSDKTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D19022230136B30043D595 /* ThinkingSDKTests.m */; };
 		F3D19025230136B30043D595 /* ThinkingSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19017230136B30043D595 /* ThinkingSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -97,14 +97,14 @@
 		F30338BF23AB57750020C129 /* TDSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDSecurityPolicy.m; sourceTree = "<group>"; };
 		F30FC040231428B7003335F8 /* TDAnalyticsSDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TDAnalyticsSDK.bundle; path = ThinkingSDK/TDAnalyticsSDK.bundle; sourceTree = "<group>"; };
 		F3247C9923176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightThinkingAnalyticsSDK.m; sourceTree = "<group>"; };
-		F35B12C6242E138000C630FC /* TDCalibratedTimeWithNTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDCalibratedTimeWithNTP.m; sourceTree = "<group>"; };
-		F35B12C7242E138000C630FC /* TDNTPTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDNTPTypes.h; sourceTree = "<group>"; };
-		F35B12C8242E138000C630FC /* TDCalibratedTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDCalibratedTime.h; sourceTree = "<group>"; };
-		F35B12C9242E138000C630FC /* TDNTPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDNTPServer.h; sourceTree = "<group>"; };
-		F35B12CA242E138000C630FC /* TDNTPTypes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TDNTPTypes.c; sourceTree = "<group>"; };
-		F35B12CB242E138000C630FC /* TDCalibratedTimeWithNTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDCalibratedTimeWithNTP.h; sourceTree = "<group>"; };
-		F35B12CC242E138000C630FC /* TDCalibratedTime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDCalibratedTime.m; sourceTree = "<group>"; };
-		F35B12CD242E138000C630FC /* TDNTPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDNTPServer.m; sourceTree = "<group>"; };
+		F35B130B242EFB9B00C630FC /* TDCalibratedTimeWithNTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDCalibratedTimeWithNTP.m; sourceTree = "<group>"; };
+		F35B130C242EFB9B00C630FC /* TDNTPTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDNTPTypes.h; sourceTree = "<group>"; };
+		F35B130D242EFB9B00C630FC /* TDCalibratedTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDCalibratedTime.h; sourceTree = "<group>"; };
+		F35B130E242EFB9B00C630FC /* TDNTPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDNTPServer.h; sourceTree = "<group>"; };
+		F35B130F242EFB9B00C630FC /* TDNTPTypes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TDNTPTypes.c; sourceTree = "<group>"; };
+		F35B1310242EFB9B00C630FC /* TDCalibratedTimeWithNTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDCalibratedTimeWithNTP.h; sourceTree = "<group>"; };
+		F35B1311242EFB9B00C630FC /* TDCalibratedTime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDCalibratedTime.m; sourceTree = "<group>"; };
+		F35B1312242EFB9B00C630FC /* TDNTPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDNTPServer.m; sourceTree = "<group>"; };
 		F3D19014230136B30043D595 /* ThinkingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ThinkingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3D19017230136B30043D595 /* ThinkingSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThinkingSDK.h; sourceTree = "<group>"; };
 		F3D19018230136B30043D595 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -173,20 +173,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		F35B12C5242E138000C630FC /* CalibratedTime */ = {
+		F35B130A242EFB9B00C630FC /* CalibratedTime */ = {
 			isa = PBXGroup;
 			children = (
-				F35B12C7242E138000C630FC /* TDNTPTypes.h */,
-				F35B12CA242E138000C630FC /* TDNTPTypes.c */,
-				F35B12C9242E138000C630FC /* TDNTPServer.h */,
-				F35B12CD242E138000C630FC /* TDNTPServer.m */,
-				F35B12CB242E138000C630FC /* TDCalibratedTimeWithNTP.h */,
-				F35B12C6242E138000C630FC /* TDCalibratedTimeWithNTP.m */,
-				F35B12C8242E138000C630FC /* TDCalibratedTime.h */,
-				F35B12CC242E138000C630FC /* TDCalibratedTime.m */,
+				F35B130E242EFB9B00C630FC /* TDNTPServer.h */,
+				F35B1312242EFB9B00C630FC /* TDNTPServer.m */,
+				F35B130C242EFB9B00C630FC /* TDNTPTypes.h */,
+				F35B130F242EFB9B00C630FC /* TDNTPTypes.c */,
+				F35B130D242EFB9B00C630FC /* TDCalibratedTime.h */,
+				F35B1311242EFB9B00C630FC /* TDCalibratedTime.m */,
+				F35B1310242EFB9B00C630FC /* TDCalibratedTimeWithNTP.h */,
+				F35B130B242EFB9B00C630FC /* TDCalibratedTimeWithNTP.m */,
 			);
-			name = CalibratedTime;
-			path = ../../../../../Downloads/CalibratedTime;
+			path = CalibratedTime;
 			sourceTree = "<group>";
 		};
 		F3D1900A230136B30043D595 = {
@@ -229,7 +228,7 @@
 		F3D1902E230137600043D595 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				F35B12C5242E138000C630FC /* CalibratedTime */,
+				F35B130A242EFB9B00C630FC /* CalibratedTime */,
 				F3D1903E230137600043D595 /* AutoTrack */,
 				F3D1902F230137600043D595 /* TDKeychainItemWrapper.h */,
 				F3D1904E230137600043D595 /* TDKeychainItemWrapper.m */,
@@ -295,16 +294,16 @@
 				F3D1905F230137600043D595 /* TDNetwork.h in Headers */,
 				F30338BD23AA0E600020C129 /* TDToastView.h in Headers */,
 				F3D1907B230137610043D595 /* NSData+TDGzip.h in Headers */,
-				F35B12D3242E138000C630FC /* TDCalibratedTimeWithNTP.h in Headers */,
+				F35B1318242EFB9B00C630FC /* TDCalibratedTimeWithNTP.h in Headers */,
 				F3D19077230137610043D595 /* ThinkingExceptionHandler.h in Headers */,
 				F3D1906E230137610043D595 /* UIApplication+AutoTrack.h in Headers */,
 				F3D19068230137600043D595 /* TDSwizzler.h in Headers */,
-				F35B12CF242E138000C630FC /* TDNTPTypes.h in Headers */,
+				F35B1314242EFB9B00C630FC /* TDNTPTypes.h in Headers */,
 				F3D19073230137610043D595 /* TDDeviceInfo.h in Headers */,
 				F3D19066230137600043D595 /* NSObject+TDSwizzle.h in Headers */,
-				F35B12D1242E138000C630FC /* TDNTPServer.h in Headers */,
+				F35B1316242EFB9B00C630FC /* TDNTPServer.h in Headers */,
 				F30338C023AB57750020C129 /* TDSecurityPolicy.h in Headers */,
-				F35B12D0242E138000C630FC /* TDCalibratedTime.h in Headers */,
+				F35B1315242EFB9B00C630FC /* TDCalibratedTime.h in Headers */,
 				F3D19065230137600043D595 /* TDAutoTrackManager.h in Headers */,
 				F3D19079230137610043D595 /* TDLogging.h in Headers */,
 				F3D1906B230137600043D595 /* UIViewController+AutoTrack.h in Headers */,
@@ -436,8 +435,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F35B12D2242E138000C630FC /* TDNTPTypes.c in Sources */,
-				F35B12D4242E138000C630FC /* TDCalibratedTime.m in Sources */,
+				F35B1317242EFB9B00C630FC /* TDNTPTypes.c in Sources */,
+				F35B1319242EFB9B00C630FC /* TDCalibratedTime.m in Sources */,
 				F30338C123AB57750020C129 /* TDSecurityPolicy.m in Sources */,
 				F3247C9B23176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m in Sources */,
 				F3D19057230137600043D595 /* TDDeviceInfo.m in Sources */,
@@ -451,11 +450,11 @@
 				F3D19060230137600043D595 /* NSData+TDGzip.m in Sources */,
 				F3D19061230137600043D595 /* ThinkingAnalyticsSDK.m in Sources */,
 				F3D1905D230137600043D595 /* ThinkingExceptionHandler.m in Sources */,
-				F35B12D5242E138000C630FC /* TDNTPServer.m in Sources */,
+				F35B131A242EFB9B00C630FC /* TDNTPServer.m in Sources */,
 				F3D19069230137600043D595 /* UIApplication+AutoTrack.m in Sources */,
 				F3D19071230137610043D595 /* TDJSONUtil.m in Sources */,
 				F3D19062230137600043D595 /* TDLogging.m in Sources */,
-				F35B12CE242E138000C630FC /* TDCalibratedTimeWithNTP.m in Sources */,
+				F35B1313242EFB9B00C630FC /* TDCalibratedTimeWithNTP.m in Sources */,
 				F3D19067230137600043D595 /* UIViewController+AutoTrack.m in Sources */,
 				F3D1905E230137600043D595 /* TDSqliteDataQueue.m in Sources */,
 				F3D19058230137600043D595 /* TDConfig.m in Sources */,
