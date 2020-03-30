@@ -252,7 +252,11 @@ static dispatch_queue_t networkQueue;
     }
     
     @synchronized (self.identifyId) {
-        self.identifyId = self.deviceInfo.uniqueId;
+        if (self.config.distinctIdIsDevice) {
+            self.identifyId = self.deviceInfo.deviceId;
+        } else {
+            self.identifyId = self.deviceInfo.uniqueId;
+        }
     }
     
     @synchronized (self.accountId) {
@@ -265,7 +269,7 @@ static dispatch_queue_t networkQueue;
         }
         
         [self archiveAccountID:nil];
-        [self archiveIdentifyId:nil];
+        [self archiveIdentifyId:self.identifyId];
         [self archiveSuperProperties:nil];
         [self archiveOptOut:YES];
     });
@@ -289,7 +293,11 @@ static dispatch_queue_t networkQueue;
 #pragma mark - LightInstance
 - (ThinkingAnalyticsSDK *)createLightInstance {
     ThinkingAnalyticsSDK *lightInstance = [[LightThinkingAnalyticsSDK alloc] initWithAPPID:self.appid withServerURL:self.serverURL withConfig:self.config];
-    lightInstance.identifyId = self.deviceInfo.uniqueId;
+    if (self.config.distinctIdIsDevice) {
+        lightInstance.identifyId = self.deviceInfo.deviceId;
+    } else {
+        lightInstance.identifyId = self.deviceInfo.uniqueId;
+    }
     lightInstance.relaunchInBackGround = self.relaunchInBackGround;
     lightInstance.isEnableSceneSupport = self.isEnableSceneSupport;
     return lightInstance;
@@ -306,7 +314,11 @@ static dispatch_queue_t networkQueue;
     [self unarchiveUploadInterval];
     
     if (self.identifyId.length == 0) {
-        self.identifyId = self.deviceInfo.uniqueId;
+        if (self.config.distinctIdIsDevice) {
+            self.identifyId = self.deviceInfo.deviceId;
+        } else {
+            self.identifyId = self.deviceInfo.uniqueId;
+        }
     }
     
     // 兼容老版本

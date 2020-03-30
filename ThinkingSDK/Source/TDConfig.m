@@ -97,6 +97,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
     config.debugMode = self.debugMode;
     config.securityPolicy = [self.securityPolicy copyWithZone:zone];
     config.defaultTimeZone = [self.defaultTimeZone copyWithZone:zone];
+    config.distinctIdIsDevice = self.distinctIdIsDevice;
     return config;
 }
 
