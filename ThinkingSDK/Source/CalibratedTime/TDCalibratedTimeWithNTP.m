@@ -43,31 +43,20 @@
 }
 
 - (NSTimeInterval)serverTime {
-    dispatch_group_wait(_ntpGroup, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)));
+    long ret = dispatch_group_wait(_ntpGroup, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)));
+    if (ret != 0) {
+        self.stopCalibrate = YES;
+    }
     return _serverTime;
 }
 
 - (void)startNtp:(NSArray *)ntpServerHost {
-    NSArray *hostArr = @[@"ntp.aliyun.com",
-                         @"time.apple.com",
-                         @"time.asia.apple.com",
-                         @"pool.ntp.org",
-                         @"0.US.pool.ntp.org",
-                         @"asia.pool.ntp.org",
-                         @"europe.pool.ntp.org",
-                         @"oceania.pool.ntp.org"];
     NSMutableArray *serverHostArr = [NSMutableArray array];
     for (NSString *host in ntpServerHost) {
         if ([host isKindOfClass:[NSString class]] && host.length > 0) {
             [serverHostArr addObject:host];
         }
     }
-    if (serverHostArr.count == 0) {
-        serverHostArr = [hostArr copy];
-    } else {
-        [serverHostArr addObjectsFromArray:hostArr];
-    }
-    
     NSError *err;
     for (NSString *host in serverHostArr) {
         TDLogDebug(@"ntp host :%@", host);

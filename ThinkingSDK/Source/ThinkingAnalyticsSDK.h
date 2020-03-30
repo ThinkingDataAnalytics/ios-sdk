@@ -519,11 +519,6 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 - (ThinkingAnalyticsSDK *)createLightInstance;
 
 /**
- 使用NTP Server 校准时间
-*/
-+ (void)calibrateTimeWithNtp;
-
-/**
  使用指定NTP Server 校准时间
  @param ntpServer NTP Server
 */

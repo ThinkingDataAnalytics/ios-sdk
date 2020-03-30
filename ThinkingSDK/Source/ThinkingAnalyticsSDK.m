@@ -1,6 +1,7 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 
 #import "TDAutoTrackManager.h"
+#import "TDCalibratedTimeWithNTP.h"
 
 #if !__has_feature(objc_arc)
 #error The ThinkingSDK library must be compiled with ARC enabled
@@ -566,7 +567,6 @@ static dispatch_queue_t networkQueue;
 
 - (void)applicationWillTerminateNotification:(NSNotification *)notification {
     TDLogDebug(@"%@ applicationWillTerminateNotification", self);
-    dispatch_sync(serialQueue, ^{});
 }
 
 - (void)applicationWillEnterForeground:(NSNotification *)notification {
@@ -1645,10 +1645,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 #pragma mark - Calibrate time
-+ (void)calibrateTimeWithNtp {
-    calibratedTime = [TDCalibratedTimeWithNTP sharedInstance];
-}
-
 + (void)calibrateTimeWithNtp:(NSArray *)ntpServer {
     calibratedTime = [TDCalibratedTimeWithNTP sharedInstanceWithNtpServerHost:ntpServer];
 }

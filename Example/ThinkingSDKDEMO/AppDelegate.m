@@ -22,13 +22,12 @@
     self.window.rootViewController = [self createRootViewController];
     [self.window makeKeyAndVisible];
     
-    // 开启Log
+    // 使用 NTP Server 校准时间
+//    [ThinkingAnalyticsSDK calibrateTimeWithNtp:@[@"time.apple.com"]];
+    // 开启 Log
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     // 初始化
     [ThinkingAnalyticsSDK startWithAppId:@"YOUR_APPID" withUrl:@"YOUR_SERVER_URL"];
-    
-    // 使用NTP Server 校准时间
-//    [ThinkingAnalyticsSDK calibrateTimeWithNtp];
     
     // 配置初始化方法
 //    TDConfig *config = [[TDConfig alloc] init];

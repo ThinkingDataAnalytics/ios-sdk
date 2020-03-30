@@ -13,8 +13,6 @@
 #import "TDDeviceInfo.h"
 #import "TDConfig.h"
 #import "TDSqliteDataQueue.h"
-#import "TDCalibratedTime.h"
-#import "TDCalibratedTimeWithNTP.h"
 
 static NSString * const TD_APP_START_EVENT                  = @"ta_app_start";
 static NSString * const TD_APP_START_BACKGROUND_EVENT       = @"ta_app_bg_start";
@@ -112,7 +110,6 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 - (void)archiveUploadSize:(NSNumber *)uploadSize;
 - (void)archiveUploadInterval:(NSNumber *)uploadInterval;
 - (void)startFlushTimer;
-- (void)degradeDebugMode;
 
 @end
 
