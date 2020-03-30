@@ -28,26 +28,37 @@
                                                      @"UserName":@"TA1",
                                                      @"Age":[NSNumber numberWithInt:20]
                                                      }];
+    [[ThinkingAnalyticsSDK sharedInstance] user_set:@{
+                                                      @"UserName":@"TA1",
+                                                      @"Age":[NSNumber numberWithInt:20]
+                                                      } withTime:[NSDate date]];
 }
 
 + (void)testUserUnset {
     [[ThinkingAnalyticsSDK sharedInstance] user_unset:@"key1"];
+    [[ThinkingAnalyticsSDK sharedInstance] user_unset:@"key1" withTime:[NSDate date]];
 }
 
 + (void)testUserSetonce {
     [[ThinkingAnalyticsSDK sharedInstance] user_setOnce:@{@"setOnce":@"setonevalue1"}];
+    [[ThinkingAnalyticsSDK sharedInstance] user_setOnce:@{@"setOnce":@"setonevalue1"} withTime:[NSDate date]];
 }
 
 + (void)testUserDel {
     [[ThinkingAnalyticsSDK sharedInstance] user_delete];
+    [[ThinkingAnalyticsSDK sharedInstance] user_delete:[NSDate date]];
 }
 
 + (void)testUserAdd {
     [[ThinkingAnalyticsSDK sharedInstance] user_add:@{@"key1":[NSNumber numberWithInt:6]}];
+    [[ThinkingAnalyticsSDK sharedInstance] user_add:@{@"key1":[NSNumber numberWithInt:6]} withTime:[NSDate date]];
+    [[ThinkingAnalyticsSDK sharedInstance] user_add:@"key1" andPropertyValue:[NSNumber numberWithInt:6]];
+    [[ThinkingAnalyticsSDK sharedInstance] user_add:@"key1" andPropertyValue:[NSNumber numberWithInt:6] withTime:[NSDate date]];
 }
 
 + (void)testUserAppend {
     [[ThinkingAnalyticsSDK sharedInstance] user_append:@{@"product_buy": @[@"product_name1", @"product_name2"]}];
+    [[ThinkingAnalyticsSDK sharedInstance] user_append:@{@"product_buy": @[@"product_name1", @"product_name2"]} withTime:[NSDate date]];
 }
 
 + (void)testLogin {

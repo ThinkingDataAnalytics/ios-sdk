@@ -346,9 +346,17 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 /**
  设置用户属性
 
- @param property 用户属性
+ @param properties 用户属性
  */
-- (void)user_set:(NSDictionary *)property;
+- (void)user_set:(NSDictionary *)properties;
+
+/**
+ 设置用户属性
+
+ @param properties 用户属性
+ @param time 事件触发时间
+*/
+- (void)user_set:(NSDictionary *)properties withTime:(NSDate *)time;
 
 /**
  重置用户属性
@@ -358,31 +366,71 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 - (void)user_unset:(NSString *)propertyName;
 
 /**
+ 重置用户属性
+
+ @param propertyName 用户属性
+ @param time 事件触发时间
+*/
+- (void)user_unset:(NSString *)propertyName withTime:(NSDate *)time;
+
+/**
  设置单次用户属性
 
- @param property 用户属性
+ @param properties 用户属性
  */
-- (void)user_setOnce:(NSDictionary *)property;
+- (void)user_setOnce:(NSDictionary *)properties;
+
+/**
+ 设置单次用户属性
+
+ @param properties 用户属性
+ @param time 事件触发时间
+*/
+- (void)user_setOnce:(NSDictionary *)properties withTime:(NSDate *)time;
 
 /**
  对数值类型用户属性进行累加操作
 
- @param property 用户属性
+ @param properties 用户属性
  */
-- (void)user_add:(NSDictionary *)property;
+- (void)user_add:(NSDictionary *)properties;
+
+/**
+ 对数值类型用户属性进行累加操作
+
+ @param properties 用户属性
+ @param time 事件触发时间
+*/
+- (void)user_add:(NSDictionary *)properties withTime:(NSDate *)time;
+
+/**
+  对数值类型用户属性进行累加操作
+
+  @param propertyName  属性名称
+  @param propertyValue 属性值
+ */
+- (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue;
 
 /**
  对数值类型用户属性进行累加操作
 
  @param propertyName  属性名称
  @param propertyValue 属性值
- */
-- (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue;
+ @param time 事件触发时间
+*/
+- (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue withTime:(NSDate *)time;
 
 /**
  删除用户 该操作不可逆 需慎重使用
  */
 - (void)user_delete;
+
+/**
+ 删除用户 该操作不可逆 需慎重使用
+ 
+ @param time 事件触发时间
+ */
+- (void)user_delete:(NSDate *)time;
 
 /**
  对 Array 类型的用户属性进行追加操作
@@ -392,11 +440,19 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 - (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties;
 
 /**
+ 对 Array 类型的用户属性进行追加操作
+ 
+ @param properties 用户属性
+ @param time 事件触发时间
+*/
+- (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties withTime:(NSDate *)time;
+
+/**
  设置公共事件属性
 
- @param propertyDict 公共事件属性
+ @param properties 公共事件属性
  */
-- (void)setSuperProperties:(NSDictionary *)propertyDict;
+- (void)setSuperProperties:(NSDictionary *)properties;
 
 /**
  清除一条公共事件属性

@@ -884,6 +884,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 // 内部
 - (void)track:(NSString *)event withProperties:(NSDictionary *)properties withType:(NSString *)type {
+    [self track:event withProperties:properties withType:type withTime:nil];
+}
+
+// 内部
+- (void)track:(NSString *)event withProperties:(NSDictionary *)properties withType:(NSString *)type withTime:(NSDate *)time {
     if ([self hasDisabled])
         return;
     
@@ -894,6 +899,12 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     eventData.eventType = type;
     eventData.autotrack = NO;
     eventData.persist = YES;
+    if (time) {
+        eventData.timeString = [_timeFormatter stringFromDate:time];
+        eventData.timeValueType = TDTimeValueTypeTimeOnly;
+    } else {
+        eventData.timeValueType = TDTimeValueTypeNone;
+    }
     [self tdInternalTrack:eventData];
 }
 
@@ -906,11 +917,27 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 }
 
+- (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue withTime:(NSDate *)time {
+    if ([self hasDisabled])
+        return;
+    
+    if (propertyName && propertyValue) {
+        [self track:nil withProperties:@{propertyName:propertyValue} withType:TD_EVENT_TYPE_USER_ADD withTime:time];
+    }
+}
+
 - (void)user_add:(NSDictionary *)properties {
     if ([self hasDisabled])
         return;
     
     [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_ADD];
+}
+
+- (void)user_add:(NSDictionary *)properties withTime:(NSDate *)time {
+    if ([self hasDisabled])
+        return;
+    
+    [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_ADD withTime:time];
 }
 
 - (void)user_setOnce:(NSDictionary *)properties {
@@ -920,11 +947,25 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_SETONCE];
 }
 
+- (void)user_setOnce:(NSDictionary *)properties withTime:(NSDate *)time {
+    if ([self hasDisabled])
+        return;
+    
+    [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_SETONCE withTime:time];
+}
+
 - (void)user_set:(NSDictionary *)properties {
     if ([self hasDisabled])
         return;
     
     [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_SET];
+}
+
+- (void)user_set:(NSDictionary *)properties withTime:(NSDate *)time {
+    if ([self hasDisabled])
+        return;
+    
+    [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_SET withTime:time];
 }
 
 - (void)user_unset:(NSString *)propertyName {
@@ -937,6 +978,16 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 }
 
+- (void)user_unset:(NSString *)propertyName withTime:(NSDate *)time {
+    if ([self hasDisabled])
+        return;
+    
+    if ([propertyName isKindOfClass:[NSString class]] && propertyName.length > 0) {
+        NSDictionary *properties = @{propertyName: @0};
+        [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_UNSET withTime:time];
+    }
+}
+
 - (void)user_delete {
     if ([self hasDisabled])
         return;
@@ -944,11 +995,25 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [self track:nil withProperties:nil withType:TD_EVENT_TYPE_USER_DEL];
 }
 
+- (void)user_delete:(NSDate *)time {
+    if ([self hasDisabled])
+        return;
+    
+    [self track:nil withProperties:nil withType:TD_EVENT_TYPE_USER_DEL withTime:time];
+}
+
 - (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties {
     if ([self hasDisabled])
         return;
 
     [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_APPEND];
+}
+
+- (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties withTime:(NSDate *)time {
+    if ([self hasDisabled])
+        return;
+
+    [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_APPEND withTime:time];
 }
 
 - (NSString *)getDistinctId {
