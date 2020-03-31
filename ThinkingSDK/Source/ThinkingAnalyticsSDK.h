@@ -592,6 +592,8 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 */
 + (void)calibrateTime:(NSTimeInterval)timestamp;
 
+- (NSString *)getTimeString:(NSDate *)date;
+
 @end
 
 #pragma mark - Autotrack View Interface

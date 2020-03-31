@@ -1730,6 +1730,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     calibratedTime = [TDCalibratedTime sharedInstanceWithTimeInterval:timestamp];
 }
 
+// for UNITY
+- (NSString *)getTimeString:(NSDate *)date {
+    return [_timeFormatter stringFromDate:date];
+}
+
 @end
 
 @implementation TDEventData

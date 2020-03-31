@@ -46,6 +46,7 @@
     long ret = dispatch_group_wait(_ntpGroup, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)));
     if (ret != 0) {
         self.stopCalibrate = YES;
+        TDLogDebug(@"wait ntp time timeout");
     }
     return _serverTime;
 }
