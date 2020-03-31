@@ -71,7 +71,7 @@ static dispatch_queue_t networkQueue;
 + (void)initialize {
     static dispatch_once_t ThinkingOnceToken;
     dispatch_once(&ThinkingOnceToken, ^{
-        NSString *queuelabel = [NSString stringWithFormat:@"cn.Thinkingdata.%p", (void *)self];
+        NSString *queuelabel = [NSString stringWithFormat:@"cn.thinkingdata.%p", (void *)self];
         serialQueue = dispatch_queue_create([queuelabel UTF8String], DISPATCH_QUEUE_SERIAL);
         NSString *networkLabel = [queuelabel stringByAppendingString:@".network"];
         networkQueue = dispatch_queue_create([networkLabel UTF8String], DISPATCH_QUEUE_SERIAL);

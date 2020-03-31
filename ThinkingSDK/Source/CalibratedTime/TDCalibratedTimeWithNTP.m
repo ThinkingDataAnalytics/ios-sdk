@@ -32,7 +32,7 @@
 - (instancetype)initWithNtpServerHost:(NSArray *)host {
     if (self = [super init]) {
         _ntpGroup = dispatch_group_create();
-        NSString *queuelabel = [NSString stringWithFormat:@"cn.Thinkingdata.ntp.%p", (void *)self];
+        NSString *queuelabel = [NSString stringWithFormat:@"cn.thinkingdata.ntp.%p", (void *)self];
         dispatch_queue_t ntpSerialQueue = dispatch_queue_create([queuelabel UTF8String], DISPATCH_QUEUE_SERIAL);
         
         dispatch_group_async(_ntpGroup, ntpSerialQueue, ^{
@@ -63,6 +63,7 @@
         err = nil;
         TDNTPServer *server = [[TDNTPServer alloc] initWithHostname:host port:123];
         NSTimeInterval offset = [server dateWithError:&err];
+        [server disconnect];
         
         if (err) {
             TDLogDebug(@"ntp failed :%@", err);
