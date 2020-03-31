@@ -96,7 +96,7 @@
 
 - (void)delExpiredData {
     NSTimeInterval oneDay = 24*60*60*1;
-    NSDate *date = [[NSDate date] initWithTimeIntervalSinceNow: -oneDay * [TDConfig expirationDays]];
+    NSDate *date = [[NSDate alloc] initWithTimeIntervalSinceNow: -oneDay * [TDConfig expirationDays]];
     int expirationDate = [date timeIntervalSince1970];
     [self removeOldRecords:expirationDate];
 }

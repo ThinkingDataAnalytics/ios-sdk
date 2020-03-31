@@ -312,7 +312,7 @@
     } else if ([obj isKindOfClass:[UIDatePicker class]]) {
         UIDatePicker *picker = (UIDatePicker *)obj;
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+        formatter.dateFormat = kDefaultTimeFormat;
         text = [formatter stringFromDate:picker.date];
     } else if ([obj isKindOfClass:[UISegmentedControl class]]) {
         UISegmentedControl *segment = (UISegmentedControl *)obj;

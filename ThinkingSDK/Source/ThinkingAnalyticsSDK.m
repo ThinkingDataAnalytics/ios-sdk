@@ -1351,7 +1351,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             if (eventData.timeValueType == TDTimeValueTypeNone && calibratedTime && !calibratedTime.stopCalibrate) {
                 finalDic = [self calibratedTime:dataDic withDate:nowDate withSystemDate:systemUptime withEventData:eventData];
             }
-            NSInteger count;
+            NSInteger count = 0;
             if (self.config.debugMode == ThinkingAnalyticsDebugOnly || self.config.debugMode == ThinkingAnalyticsDebug) {
                 TDLogDebug(@"queueing debug data:%@", finalDic);
                 [self flushDebugEvent:finalDic];
@@ -1480,15 +1480,16 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     int debugResult = [self.network flushDebugEvents:record withAppid:self.appid];
     if (debugResult == -1) {
         // 降级处理
-        if (self.config.debugMode != ThinkingAnalyticsDebugOnly) {
+        if (self.config.debugMode == ThinkingAnalyticsDebug) {
             dispatch_async(serialQueue, ^{
-                TDLogDebug(@"The data will be discarded due to this device is not allowed to debug:%@", record);
                 [self saveEventsData:record];
             });
+            
+            self.config.debugMode = ThinkingAnalyticsDebugOff;
+            self.network.debugMode = ThinkingAnalyticsDebugOff;
+        } else if (self.config.debugMode == ThinkingAnalyticsDebugOnly) {
+            TDLogDebug(@"The data will be discarded due to this device is not allowed to debug:%@", record);
         }
-        
-        self.config.debugMode = ThinkingAnalyticsDebugOff;
-        self.network.debugMode = ThinkingAnalyticsDebugOff;
     }
 
     if (debugResult == -2) {
@@ -1711,7 +1712,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 #pragma mark - Calibrate time
 + (void)calibrateTimeWithNtp:(NSArray *)ntpServer {
-    calibratedTime = [TDCalibratedTimeWithNTP sharedInstanceWithNtpServerHost:ntpServer];
+    if (ntpServer) {
+        calibratedTime = [TDCalibratedTimeWithNTP sharedInstanceWithNtpServerHost:ntpServer];
+    }
 }
 
 + (void)calibrateTime:(NSTimeInterval)timestamp {
