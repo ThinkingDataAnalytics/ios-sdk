@@ -35,7 +35,6 @@
 //    config.debugMode = ThinkingAnalyticsDebugOnly;
 //    config.debugMode = ThinkingAnalyticsDebug;
 //    config.defaultTimeZone = [NSTimeZone timeZoneWithName:@"UTC+0900"];
-//    config.distinctIdIsDevice = YES;
 //    ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK startWithAppId:@"APP" withUrl:@"https://sdk.tga.thinkinggame.cn:9443" withConfig:config];
     
     // 自动埋点

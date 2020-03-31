@@ -109,11 +109,6 @@ typedef NSURLSessionAuthChallengeDisposition (^TDURLSessionDidReceiveAuthenticat
 */
 @property (nonatomic, strong) NSTimeZone *defaultTimeZone;
 
-/**
- 初始化配置设备 ID 为访客 ID
- */
-@property (nonatomic, assign) BOOL distinctIdIsDevice;
-
 @end
 
 /**
