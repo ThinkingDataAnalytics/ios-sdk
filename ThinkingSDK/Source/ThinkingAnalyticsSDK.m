@@ -1493,10 +1493,10 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 
     if (debugResult == -2) {
+        TDLogDebug(@"Exception occurred when sending message to Server:%@", record);
         if (self.config.debugMode == ThinkingAnalyticsDebug) {
             // 网络异常
             dispatch_async(serialQueue, ^{
-                TDLogDebug(@"Exception occurred when sending message to Server:%@", record);
                 [self saveEventsData:record];
             });
         }
