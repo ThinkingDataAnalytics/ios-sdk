@@ -598,7 +598,7 @@ static dispatch_queue_t networkQueue;
 
     dispatch_group_enter(bgGroup);
     dispatch_async(serialQueue, ^{
-        NSNumber *currentSystemUpTime = @([[NSDate date] timeIntervalSince1970]);
+        NSNumber *currentTimeStamp = @([[NSDate date] timeIntervalSince1970]);
         @synchronized (self.trackTimer) {
             NSArray *keys = [self.trackTimer allKeys];
             for (NSString *key in keys) {
@@ -611,9 +611,9 @@ static dispatch_queue_t networkQueue;
                     NSNumber *eventDuration = [eventTimer valueForKey:TD_EVENT_DURATION];
                     double usedTime;
                     if (eventDuration) {
-                        usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue] + [eventDuration doubleValue];
+                        usedTime = [currentTimeStamp doubleValue] - [eventBegin doubleValue] + [eventDuration doubleValue];
                     } else {
-                        usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue];
+                        usedTime = [currentTimeStamp doubleValue] - [eventBegin doubleValue];
                     }
                     [eventTimer setObject:[NSNumber numberWithDouble:usedTime] forKey:TD_EVENT_DURATION];
                     self.trackTimer[key] = eventTimer;
@@ -1315,11 +1315,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         NSNumber *eventDuration = [eventTimer valueForKey:TD_EVENT_DURATION];
         
         double usedTime;
-        NSNumber *currentSystemUpTime = @([[NSDate date] timeIntervalSince1970]);
+        NSNumber *currentTimeStamp = @([[NSDate date] timeIntervalSince1970]);
         if (eventDuration) {
-            usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue] + [eventDuration doubleValue];
+            usedTime = [currentTimeStamp doubleValue] - [eventBegin doubleValue] + [eventDuration doubleValue];
         } else {
-            usedTime = [currentSystemUpTime doubleValue] - [eventBegin doubleValue];
+            usedTime = [currentTimeStamp doubleValue] - [eventBegin doubleValue];
         }
         
         if (usedTime > 0) {
@@ -1718,7 +1718,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 + (void)calibrateTime:(NSTimeInterval)timestamp {
-    calibratedTime = [TDCalibratedTime sharedInstanceWithTimeInterval:timestamp];
+    calibratedTime = [TDCalibratedTime sharedInstanceWithTimeInterval:timestamp/1000.0];
 }
 
 // for UNITY
