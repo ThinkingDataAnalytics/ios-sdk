@@ -583,7 +583,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 /**
  校准时间
  
- @param timestamp 当前时间戳
+ @param timestamp 当前时间戳，单位毫秒
 */
 + (void)calibrateTime:(NSTimeInterval)timestamp;
 
