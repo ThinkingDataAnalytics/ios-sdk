@@ -578,7 +578,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  使用指定NTP Server 校准时间
  @param ntpServer NTP Server
 */
-+ (void)calibrateTimeWithNtp:(NSArray *)ntpServer;
++ (void)calibrateTimeWithNtp:(NSString *)ntpServer;
 
 /**
  校准时间
