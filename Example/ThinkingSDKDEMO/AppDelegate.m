@@ -23,7 +23,7 @@
     [self.window makeKeyAndVisible];
     
     // 使用 NTP Server 校准时间
-//    [ThinkingAnalyticsSDK calibrateTimeWithNtp:@[@"time.apple.com"]];
+//    [ThinkingAnalyticsSDK calibrateTimeWithNtp:@"ntp.aliyun.com"];
     // 开启 Log
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     // 初始化
