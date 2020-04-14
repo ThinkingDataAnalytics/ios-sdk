@@ -19,6 +19,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingNetworkType) {
 @property (assign, nonatomic) ThinkingNetworkType networkTypePolicy;
 @property (nonatomic) NSNumber *uploadInterval;
 @property (nonatomic) NSNumber *uploadSize;
+@property (strong, nonatomic) NSArray *disableEvents;
 @property (class,  nonatomic) NSInteger maxNumEvents;
 @property (class,  nonatomic) NSInteger expirationDays;
 

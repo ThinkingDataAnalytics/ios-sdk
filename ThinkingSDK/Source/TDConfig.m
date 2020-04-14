@@ -73,6 +73,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
                     [[ThinkingAnalyticsSDK sharedInstanceWithAppid:self.appid] archiveUploadSize:self->_uploadSize];
                 }
             }
+            self.disableEvents = [result objectForKey:@"disable_event_list"];
         }
     }];
 }

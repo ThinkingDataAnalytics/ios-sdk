@@ -1345,6 +1345,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         dataDic[@"#account_id"] = self.accountId;
     }
     
+    if ([self.config.disableEvents containsObject:eventData.eventName]) {
+        TDLogDebug(@"disabled data:%@", dataDic);
+        return;
+    }
+    
     if (eventData.persist) {
         dispatch_async(serialQueue, ^{
             NSDictionary *finalDic = dataDic;
