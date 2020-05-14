@@ -118,7 +118,7 @@ static void (*td_swizzledMethods[MAX_ARGS - MIN_ARGS + 1])() = {td_swizzledMetho
     
     uint numArgs = method_getNumberOfArguments(aMethod);
     if (numArgs < MIN_ARGS || numArgs > MAX_ARGS) {
-        [NSException raise:@"SwizzleException" format:@"Cannot swizzle method with %d args", numArgs];
+        TDLogError(@"Cannot swizzle method with %d args", numArgs);
     }
     
     IMP swizzledMethod = (IMP)td_swizzledMethods[numArgs - 2];
@@ -132,7 +132,7 @@ static void (*td_swizzledMethods[MAX_ARGS - MIN_ARGS + 1])() = {td_swizzledMetho
                   named:(NSString *)aName {
     Method aMethod = class_getInstanceMethod(aClass, aSelector);
     if (!aMethod) {
-        [NSException raise:@"SwizzleException" format:@"Cannot find method for %@ on %@", NSStringFromSelector(aSelector), NSStringFromClass(aClass)];
+         TDLogError(@"Cannot find method for %@ on %@", NSStringFromSelector(aSelector), NSStringFromClass(aClass));
     }
     
     BOOL isLocal = [self isLocallyDefinedMethod:aMethod onClass:aClass];
@@ -160,12 +160,12 @@ static void (*td_swizzledMethods[MAX_ARGS - MIN_ARGS + 1])() = {td_swizzledMetho
         
         // Add the swizzle as a new local method on the class.
         if (!class_addMethod(aClass, aSelector, aSwizzleMethod, method_getTypeEncoding(aMethod))) {
-            [NSException raise:@"SwizzleException" format:@"Could not add swizzled for %@::%@, even though it didn't already exist locally", NSStringFromClass(aClass), NSStringFromSelector(aSelector)];
+             TDLogError(@"Could not add swizzled for %@::%@, even though it didn't already exist locally", NSStringFromClass(aClass), NSStringFromSelector(aSelector));
         }
         // Now re-get the Method, it should be the one we just added.
         Method newMethod = class_getInstanceMethod(aClass, aSelector);
         if (aMethod == newMethod) {
-            [NSException raise:@"SwizzleException" format:@"Newly added method for %@::%@ was the same as the old method", NSStringFromClass(aClass), NSStringFromSelector(aSelector)];
+             TDLogError(@"Newly added method for %@::%@ was the same as the old method", NSStringFromClass(aClass), NSStringFromSelector(aSelector));
         }
         
         TDSwizzle *newSwizzle = [[TDSwizzle alloc] initWithBlock:aBlock named:aName forClass:aClass selector:aSelector originalMethod:originalMethod];

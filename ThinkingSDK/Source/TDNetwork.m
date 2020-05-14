@@ -59,11 +59,9 @@
                     [errorStr appendFormat:@" propertyName:%@ errorReasons:%@\n", propertyName, errorReasons];
                 }
                 TDLogError(@"Debug data error:%@", errorStr);
-                [NSException raise:@"Debug data error" format:@"error:%@", errorStr];
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:2]]) {
                 NSString *errorReasons = [[retDic objectForKey:@"errorReasons"] componentsJoinedByString:@" "];
                 TDLogError(@"Debug data error:%@", errorReasons);
-                [NSException raise:@"Debug data error" format:@"error:%@", errorReasons];
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
                 debugResult = 0;
                 TDLogDebug(@"Verify data success.");
