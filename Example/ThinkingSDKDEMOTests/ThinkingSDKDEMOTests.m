@@ -11,6 +11,7 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import <objc/message.h>
 #import "TDJSONUtil.h"
+#import "CalibratedTime/TDCalibratedTimeWithNTP.h"
 
 @interface ThinkingSDKDEMOTests : XCTestCase
 
@@ -664,6 +665,57 @@
     [_mockThinkingInstance user_delete];
     [_mockThinkingInstance user_append:@{@"arrKey": arr1, @"arrKey2": arr2}];
     [self waitForThinkingQueues];
+}
+
+- (void)test22CalibrateTime {
+    [ThinkingAnalyticsSDK calibrateTime:100];
+      void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+          __weak NSDictionary *dataDic;
+          [invocation getArgument:&dataDic atIndex:2];
+          
+          NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+          [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSS"];
+          NSDate *date = [dateFormat dateFromString:[dataDic objectForKey:@"#time"]];
+          
+          NSTimeInterval time = [date timeIntervalSince1970]*1000;
+          XCTAssertGreaterThan(time, 100);
+          XCTAssertLessThan(time, 101);
+      };
+      OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
+      
+      [_mockThinkingInstance track:@"test"];
+      [self waitForThinkingQueues];
+}
+
+- (void)test23CalibrateTimeWithNtp {
+    id _mockCalibrateTime = OCMPartialMock([TDCalibratedTimeWithNTP sharedInstanceWithNtpServerHost:@[@"ntp.aliyun.com"]]);
+    void (^serverTimeInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+        NSTimeInterval value = 100;
+        [invocation setReturnValue:&value];
+    };
+    OCMStub([_mockCalibrateTime serverTime]).andDo(serverTimeInvocation);
+    [ThinkingAnalyticsSDK calibrateTimeWithNtp:@"ntp.aliyun.com"];
+    [_mockCalibrateTime setStopCalibrate:NO];
+
+    void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+        __weak NSDictionary *dataDic;
+        [invocation getArgument:&dataDic atIndex:2];
+
+        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+        [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSS"];
+        NSDate *date = [dateFormat dateFromString:[dataDic objectForKey:@"#time"]];
+
+        NSTimeInterval time = [date timeIntervalSince1970]*1000;
+        XCTAssertGreaterThan(time, 100000);
+        XCTAssertLessThan(time, 101000);
+    };
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
+
+    [_mockThinkingInstance track:@"test"];
+    [self waitForThinkingQueues];
+    
+    [_mockCalibrateTime stopMocking];
+    _mockCalibrateTime = nil;
 }
 
 @end
