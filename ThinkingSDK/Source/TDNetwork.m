@@ -51,6 +51,7 @@
                 TDLogError(@"Debug data json error:%@", err);
                 debugResult = -2;
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:1]]) {
+                debugResult = 1;
                 NSArray* errorProperties = [retDic objectForKey:@"errorProperties"];
                 NSMutableString *errorStr = [NSMutableString string];
                 for (id obj in errorProperties) {
@@ -60,6 +61,7 @@
                 }
                 TDLogError(@"Debug data error:%@", errorStr);
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:2]]) {
+                debugResult = 2;
                 NSString *errorReasons = [[retDic objectForKey:@"errorReasons"] componentsJoinedByString:@" "];
                 TDLogError(@"Debug data error:%@", errorReasons);
             } else if ([[retDic objectForKey:@"errorLevel"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
