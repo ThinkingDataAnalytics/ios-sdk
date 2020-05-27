@@ -241,6 +241,10 @@ static dispatch_queue_t networkQueue;
 
 - (void)optOutTracking {
     TDLogDebug(@"%@ optOutTracking...", self);
+    [self doOptOutTracking];
+}
+
+- (void)doOptOutTracking {
     self.isOptOut = YES;
     
     @synchronized (self.trackTimer) {
@@ -277,7 +281,7 @@ static dispatch_queue_t networkQueue;
     eventData.eventType = TD_EVENT_TYPE_USER_DEL;
     eventData.persist = NO;
     [self tdInternalTrack:eventData];
-    [self optOutTracking];
+    [self doOptOutTracking];
 }
 
 - (void)optInTracking {
