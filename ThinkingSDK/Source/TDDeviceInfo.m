@@ -64,7 +64,7 @@
                                   @"#lib_version": [TDDeviceInfo libVersion],
                                   @"#manufacturer": @"Apple",
                                   @"#device_model": [self iphoneType],
-                                  @"#os": [device systemName],
+                                  @"#os": @"iOS",
                                   @"#os_version": [device systemVersion],
                                   @"#screen_height": @((NSInteger)size.height),
                                   @"#screen_width": @((NSInteger)size.width)
