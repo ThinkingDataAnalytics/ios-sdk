@@ -5,8 +5,6 @@
 #import "TDJSONUtil.h"
 #import "TDConfig.h"
 
-#define MAX_CACHE_SIZE 10000
-
 @implementation TDSqliteDataQueue {
     sqlite3 *_database;
     NSInteger _allmessageCount;
