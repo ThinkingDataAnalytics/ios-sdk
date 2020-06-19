@@ -711,8 +711,6 @@ static dispatch_queue_t networkQueue;
         return ThinkingNetworkType3G;
     } else if ([@"4G" isEqualToString:networkType]) {
         return ThinkingNetworkType4G;
-    } else if ([@"UNKNOWN" isEqualToString:networkType]) {
-        return ThinkingNetworkType4G;
     }
     return ThinkingNetworkTypeNONE;
 }
@@ -754,8 +752,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         newtworkType = @"2G";
     } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyGPRS]) {
         newtworkType = @"2G";
-    } else if (currentRadioAccessTechnology) {
-        newtworkType = @"UNKNOWN";
     }
     return newtworkType;
 }
