@@ -198,10 +198,7 @@ static dispatch_queue_t networkQueue;
         
         instances[appid] = self;
         
-        if(instances.count == 1) {
-            TDLogInfo(@"Thank you very much for using Thinking Data SDK. We will do our best to provide you with the best service.");
-            TDLogInfo(@"Thinking Data SDK version:%@, DeviceId:%@", [TDDeviceInfo libVersion], [self getDeviceId]);
-        }
+        TDLogInfo(@"Thinking Analytics SDK %@ instance initialized successfully with mode: %@, APP ID: %@, server url: %@, device ID: %@", [TDDeviceInfo libVersion], [self modeEnumToString:config.debugMode], appid, serverURL, [self getDeviceId]);
     }
     return self;
 }
@@ -567,10 +564,6 @@ static dispatch_queue_t networkQueue;
                            selector:@selector(setCurrentRadio)
                                name:CTRadioAccessTechnologyDidChangeNotification
                              object:nil];
-}
-
-- (void)applicationWillTerminateNotification:(NSNotification *)notification {
-    TDLogDebug(@"%@ applicationWillTerminateNotification", self);
 }
 
 - (void)applicationWillEnterForeground:(NSNotification *)notification {
@@ -1483,6 +1476,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             dispatch_async(dispatch_get_main_queue(), handler);
         }
     }];
+}
+
+- (NSString*)modeEnumToString:(ThinkingAnalyticsDebugMode)enumVal {
+    NSArray *modeEnumArray = [[NSArray alloc] initWithObjects:kModeEnumArray];
+    return [modeEnumArray objectAtIndex:enumVal];
 }
 
 - (void)_syncDebug:(NSDictionary *)record {

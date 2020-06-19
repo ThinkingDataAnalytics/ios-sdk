@@ -65,6 +65,8 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
     TDTimeValueTypeAll       = 1 << 1,
 };
 
+#define kModeEnumArray @"NORMAL", @"DebugOnly", @"Debug", nil
+
 @interface ThinkingAnalyticsSDK ()
 
 @property (atomic, copy) NSString *appid;

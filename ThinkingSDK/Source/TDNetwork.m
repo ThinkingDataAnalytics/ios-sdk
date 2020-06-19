@@ -163,20 +163,18 @@
 - (void)fetchFlushConfig:(NSString *)appid handler:(TDFlushConfigBlock)handler {
     void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
-            TDLogError(@"UpdateBatchSizeAndInterval network failure:%@", error);
+            TDLogError(@"Fetched remote config network failure:%@", error);
             return;
         }
         NSError *err;
         NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
         if (err) {
-            TDLogError(@"Update batchSize interval json error:%@", err);
+            TDLogError(@"Fetched remote config json error:%@", err);
         } else if ([ret isKindOfClass:[NSDictionary class]] && [ret[@"code"] isEqualToNumber:[NSNumber numberWithInt:0]]) {
-            TDLogDebug(@"FlushConfig:%@", [ret objectForKey:@"data"]);
+            TDLogDebug(@"Fetched remote config for %@ : %@", appid, [ret objectForKey:@"data"]);
             handler([ret objectForKey:@"data"], error);
-        } else if ([[ret objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:-2]]) {
-            TDLogError(@"APPID is wrong.");
         } else {
-            TDLogError(@"Update batchSize interval failed");
+            TDLogError(@"Fetched remote config failed");
         }
     };
     NSString *urlStr = [NSString stringWithFormat:@"%@?appid=%@", self.serverURL, appid];
