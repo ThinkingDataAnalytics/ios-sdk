@@ -1,4 +1,7 @@
 
+**v2.5.5** (2020-06-23)
+- 修复部分机型 #system_language 异常
+
 **v2.5.4** (2020-06-22)
 - 修复 v2.5.3 undeclared selector 'applicationWillTerminateNotification:' [-Wundeclared-selector]
 
