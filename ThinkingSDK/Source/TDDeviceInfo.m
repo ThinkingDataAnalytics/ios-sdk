@@ -59,7 +59,6 @@
 
     [p setValue:carrier.carrierName forKey:@"#carrier"];
     CGSize size = [UIScreen mainScreen].bounds.size;
-    NSLocale *currentLocale = [NSLocale currentLocale];
     [p addEntriesFromDictionary:@{
                                   @"#lib": @"iOS",
                                   @"#lib_version": [TDDeviceInfo libVersion],
@@ -67,10 +66,15 @@
                                   @"#device_model": [self iphoneType],
                                   @"#os": @"iOS",
                                   @"#os_version": [device systemVersion],
-                                  @"#system_language": [currentLocale objectForKey:NSLocaleLanguageCode],
                                   @"#screen_height": @((NSInteger)size.height),
                                   @"#screen_width": @((NSInteger)size.width)
                                   }];
+    
+    NSString *preferredLanguages = [[NSLocale preferredLanguages] firstObject];
+    if (preferredLanguages && preferredLanguages.length > 0) {
+        p[@"#system_language"] = [[preferredLanguages componentsSeparatedByString:@"-"] firstObject];;
+    }
+    
     return [p copy];
 }
 
