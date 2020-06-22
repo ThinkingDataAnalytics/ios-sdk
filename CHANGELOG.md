@@ -1,4 +1,7 @@
 
+**v2.5.4** (2020-06-22)
+- 修复 v2.5.3 undeclared selector 'applicationWillTerminateNotification:' [-Wundeclared-selector]
+
 **v2.5.3** (2020-06-22)
 - 新增预置属性 #system_language
 - 固定预置属性 #os 为 "iOS"

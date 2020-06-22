@@ -539,11 +539,6 @@ static dispatch_queue_t networkQueue;
                            selector:@selector(applicationDidEnterBackground:)
                                name:UIApplicationDidEnterBackgroundNotification
                              object:nil];
-    
-    [notificationCenter addObserver:self
-                           selector:@selector(applicationWillTerminateNotification:)
-                               name:UIApplicationWillTerminateNotification
-                             object:nil];
 }
 
 - (void)setNetRadioListeners {
