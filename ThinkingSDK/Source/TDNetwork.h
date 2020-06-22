@@ -17,7 +17,7 @@ typedef void (^TDFlushConfigBlock)(NSDictionary *result, NSError * _Nullable err
 @property (nonatomic, copy) TDURLSessionDidReceiveAuthenticationChallengeBlock sessionDidReceiveAuthenticationChallenge;
 
 - (BOOL)flushEvents:(NSArray<NSDictionary *> *)events;
-- (void)fetchFlushConfig:(NSString *)appid handler:(TDFlushConfigBlock)handler;
+- (void)fetchRemoteConfig:(NSString *)appid handler:(TDFlushConfigBlock)handler;
 - (int)flushDebugEvents:(NSDictionary *)record withAppid:(NSString *)appid;
 
 @end
