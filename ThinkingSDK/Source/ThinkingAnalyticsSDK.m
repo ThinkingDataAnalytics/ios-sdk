@@ -765,7 +765,8 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     });
 }
 
-#pragma mark - Tracking
+#pragma mark - Public
+
 - (void)track:(NSString *)event {
     if ([self hasDisabled])
         return;
@@ -830,6 +831,8 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [self tdInternalTrack:eventData];
 }
 
+#pragma mark - Private
+
 - (void)h5track:(NSString *)event properties:(NSDictionary *)propertieDict withType:(NSString *)type withTime:(NSString *)time {
     if ([self hasDisabled])
         return;
@@ -870,12 +873,10 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     return (double)sourceGMTOffset/3600;
 }
 
-// 内部
 - (void)track:(NSString *)event withProperties:(NSDictionary *)properties withType:(NSString *)type {
     [self track:event withProperties:properties withType:type withTime:nil];
 }
 
-// 内部
 - (void)track:(NSString *)event withProperties:(NSDictionary *)properties withType:(NSString *)type withTime:(NSDate *)time {
     if ([self hasDisabled])
         return;
@@ -896,80 +897,48 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [self tdInternalTrack:eventData];
 }
 
+#pragma mark -
+
 - (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue {
-    if ([self hasDisabled])
-        return;
-    
-    if (propertyName && propertyValue) {
-        [self track:nil withProperties:@{propertyName:propertyValue} withType:TD_EVENT_TYPE_USER_ADD];
-    }
+    [self user_add:propertyName andPropertyValue:propertyValue withTime:nil];
 }
 
 - (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue withTime:(NSDate *)time {
-    if ([self hasDisabled])
-        return;
-    
     if (propertyName && propertyValue) {
         [self track:nil withProperties:@{propertyName:propertyValue} withType:TD_EVENT_TYPE_USER_ADD withTime:time];
     }
 }
 
 - (void)user_add:(NSDictionary *)properties {
-    if ([self hasDisabled])
-        return;
-    
-    [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_ADD];
+    [self user_add:properties withTime:nil];
 }
 
 - (void)user_add:(NSDictionary *)properties withTime:(NSDate *)time {
     if ([self hasDisabled])
-        return;
-    
     [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_ADD withTime:time];
 }
 
 - (void)user_setOnce:(NSDictionary *)properties {
-    if ([self hasDisabled])
-        return;
-    
-    [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_SETONCE];
+    [self user_setOnce:properties withTime:nil];
 }
 
 - (void)user_setOnce:(NSDictionary *)properties withTime:(NSDate *)time {
-    if ([self hasDisabled])
-        return;
-    
     [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_SETONCE withTime:time];
 }
 
 - (void)user_set:(NSDictionary *)properties {
-    if ([self hasDisabled])
-        return;
-    
-    [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_SET];
+    [self user_set:properties withTime:nil];
 }
 
 - (void)user_set:(NSDictionary *)properties withTime:(NSDate *)time {
-    if ([self hasDisabled])
-        return;
-    
     [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_SET withTime:time];
 }
 
 - (void)user_unset:(NSString *)propertyName {
-    if ([self hasDisabled])
-        return;
-    
-    if ([propertyName isKindOfClass:[NSString class]] && propertyName.length > 0) {
-        NSDictionary *properties = @{propertyName: @0};
-        [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_UNSET];
-    }
+    [self user_unset:propertyName withTime:nil];
 }
 
 - (void)user_unset:(NSString *)propertyName withTime:(NSDate *)time {
-    if ([self hasDisabled])
-        return;
-    
     if ([propertyName isKindOfClass:[NSString class]] && propertyName.length > 0) {
         NSDictionary *properties = @{propertyName: @0};
         [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_UNSET withTime:time];
@@ -977,30 +946,18 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)user_delete {
-    if ([self hasDisabled])
-        return;
-    
-    [self track:nil withProperties:nil withType:TD_EVENT_TYPE_USER_DEL];
+    [self user_delete:nil];
 }
 
 - (void)user_delete:(NSDate *)time {
-    if ([self hasDisabled])
-        return;
-    
     [self track:nil withProperties:nil withType:TD_EVENT_TYPE_USER_DEL withTime:time];
 }
 
 - (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties {
-    if ([self hasDisabled])
-        return;
-
-    [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_APPEND];
+    [self user_append:properties withTime:nil];
 }
 
 - (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties withTime:(NSDate *)time {
-    if ([self hasDisabled])
-        return;
-
     [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_APPEND withTime:time];
 }
 
