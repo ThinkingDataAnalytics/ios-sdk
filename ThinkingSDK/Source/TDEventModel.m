@@ -1,10 +1,3 @@
-//
-//  TDEventModel.m
-//  ThinkingSDK
-//
-//  Created by LiHuanan on 2020/7/22.
-//  Copyright © 2020 thinkingdata. All rights reserved.
-//
 
 #import "TDEventModel.h"
 #import "ThinkingAnalyticsSDKPrivate.h"

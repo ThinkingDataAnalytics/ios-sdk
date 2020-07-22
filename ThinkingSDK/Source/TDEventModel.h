@@ -1,10 +1,3 @@
-//
-//  TDEventModel.h
-//  ThinkingSDK
-//
-//  Created by LiHuanan on 2020/7/22.
-//  Copyright © 2020 thinkingdata. All rights reserved.
-//
 
 #import <Foundation/Foundation.h>
 
@@ -32,7 +25,7 @@ FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE;
 
 @property (nonatomic, copy) NSString *eventID;
 @property (nonatomic, copy) NSString *eventName;
-@property (nonatomic, copy) kEDEventTypeName eventType;
+@property (nonatomic, copy) kEDEventTypeName eventType; // Default is TD_EVENT_TYPE_TRACK
 @property (nonatomic, copy) NSString *firstCheckID;
 
 @property (nonatomic, strong) NSDictionary *properties;

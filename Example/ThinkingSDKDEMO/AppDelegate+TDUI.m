@@ -50,9 +50,41 @@
                  accessoryType:UITableViewCellAccessoryNone
                          block:^(UIViewController *controller)
       {
-          [ThinkingSDKAPI testTrack];
-      }]];
+        [ThinkingSDKAPI testTrack];
+    }]];
     
+    [commands addObject:
+     [APIEntry commandWithName:@"Track_EventID"
+                 accessoryType:UITableViewCellAccessoryNone
+                         block:^(UIViewController *controller)
+      {
+        [ThinkingSDKAPI testTrackWithEventID];
+    }]];
+
+    [commands addObject:
+     [APIEntry commandWithName:@"Track_FirstCheckID"
+                 accessoryType:UITableViewCellAccessoryNone
+                         block:^(UIViewController *controller)
+      {
+        [ThinkingSDKAPI testTrackWithFirstCheckID];
+    }]];
+
+    [commands addObject:
+     [APIEntry commandWithName:@"Track_Update"
+                 accessoryType:UITableViewCellAccessoryNone
+                         block:^(UIViewController *controller)
+      {
+        [ThinkingSDKAPI testTrackUpdate];
+    }]];
+
+    [commands addObject:
+     [APIEntry commandWithName:@"Track_Overwrite"
+                 accessoryType:UITableViewCellAccessoryNone
+                         block:^(UIViewController *controller)
+      {
+        [ThinkingSDKAPI testTrackOverwrite];
+    }]];
+
     [commands addObject:
      [APIEntry commandWithName:@"Track with property"
                  accessoryType:UITableViewCellAccessoryNone

@@ -23,6 +23,41 @@
     [[ThinkingAnalyticsSDK sharedInstance] track:@"test" properties:nil time:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
 }
 
++ (void)testTrackWithEventID {
+    TDEventModel *eventModel = [[TDEventModel alloc] init];
+    eventModel.eventName = @"testTrack_eventID";
+    eventModel.eventID = @"eventIDxxx";
+    eventModel.properties = @{ @"testTrack_eventID_property": @"property"};
+    [eventModel configTime:[NSDate date] timeZone:nil];
+    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
+}
+
++ (void)testTrackWithFirstCheckID {
+    TDEventModel *eventModel = [[TDEventModel alloc] init];
+    eventModel.eventName = @"testTrack_firstCheckID";
+    eventModel.firstCheckID = @"firstCheckIDxxx";
+    eventModel.properties = @{ @"testTrack_firstCheckID_property": @"property"};
+    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
+}
+
++ (void)testTrackUpdate {
+    TDEventModel *eventModel = [[TDEventModel alloc] init];
+    eventModel.eventName = @"testTrack_eventID";
+    eventModel.eventID = @"eventIDxxx";
+    eventModel.eventType = TD_EVENT_TYPE_TRACK_UPDATE;
+    eventModel.properties = @{ @"testTrack_eventID_property": @"property_update"};
+    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
+}
+
++ (void)testTrackOverwrite {
+    TDEventModel *eventModel = [[TDEventModel alloc] init];
+    eventModel.eventName = @"testTrack_eventID";
+    eventModel.eventID = @"eventIDxxx";
+    eventModel.eventType = TD_EVENT_TYPE_TRACK_UPDATE;
+    eventModel.properties = @{ @"testTrack_eventID_property_overwrite": @"property_overwrite"};
+    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
+}
+
 + (void)testUserSet {
     [[ThinkingAnalyticsSDK sharedInstance] user_set:@{
                                                      @"UserName":@"TA1",
