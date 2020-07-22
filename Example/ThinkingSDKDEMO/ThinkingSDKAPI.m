@@ -35,6 +35,7 @@
 + (void)testTrackWithFirstCheckID {
     TDEventModel *eventModel = [[TDEventModel alloc] init];
     eventModel.eventName = @"testTrack_firstCheckID";
+    eventModel.eventID = @"testTrack_firstCheckID_EventID";
     eventModel.firstCheckID = @"firstCheckIDxxx";
     eventModel.properties = @{ @"testTrack_firstCheckID_property": @"property"};
     [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
@@ -45,7 +46,7 @@
     eventModel.eventName = @"testTrack_eventID";
     eventModel.eventID = @"eventIDxxx";
     eventModel.eventType = TD_EVENT_TYPE_TRACK_UPDATE;
-    eventModel.properties = @{ @"testTrack_eventID_property": @"property_update"};
+    eventModel.properties = @{ @"testTrack_eventID_property": @"property_update2"};
     [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
 }
 
@@ -53,8 +54,8 @@
     TDEventModel *eventModel = [[TDEventModel alloc] init];
     eventModel.eventName = @"testTrack_eventID";
     eventModel.eventID = @"eventIDxxx";
-    eventModel.eventType = TD_EVENT_TYPE_TRACK_UPDATE;
-    eventModel.properties = @{ @"testTrack_eventID_property_overwrite": @"property_overwrite"};
+    eventModel.eventType = TD_EVENT_TYPE_TRACK_OVERWRITE;
+    eventModel.properties = @{ @"testTrack_eventID_property_overwrite": @"property_overwrite123"};
     [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
 }
 

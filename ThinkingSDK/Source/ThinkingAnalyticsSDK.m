@@ -1291,7 +1291,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         dataDic[@"#event_id"] = eventData.eventID;
     }
     if (eventData.firstCheckID) {
-        dataDic[@"first_check_id"] = eventData.firstCheckID;
+        dataDic[@"#first_check_id"] = eventData.firstCheckID;
     }
     if (self.accountId) {
         dataDic[@"#account_id"] = self.accountId;
