@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "TDEventModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -268,6 +269,8 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
     ThinkingAnalyticsEventTypeAppInstall    = 1 << 5
 };
 
+#pragma mark - Action Track
+
 /**
  自定义事件埋点
 
@@ -302,6 +305,10 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  @param timeZone      事件触发时间时区
  */
 - (void)track:(NSString *)event properties:(nullable NSDictionary *)propertieDict time:(NSDate *)time timeZone:(NSTimeZone *)timeZone;
+
+- (void)trackWithEventModel:(TDEventModel *)eventModel;
+
+#pragma mark -
 
 /**
  记录事件时长

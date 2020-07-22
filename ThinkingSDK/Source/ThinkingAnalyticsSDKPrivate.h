@@ -13,6 +13,7 @@
 #import "TDDeviceInfo.h"
 #import "TDConfig.h"
 #import "TDSqliteDataQueue.h"
+#import "TDEventModel.h"
 
 static NSString * const TD_APP_START_EVENT                  = @"ta_app_start";
 static NSString * const TD_APP_START_BACKGROUND_EVENT       = @"ta_app_bg_start";
@@ -25,7 +26,6 @@ static NSString * const TD_APP_INSTALL_EVENT                = @"ta_app_install";
 static NSString * const TD_CRASH_REASON                     = @"#app_crashed_reason";
 static NSString * const TD_RESUME_FROM_BACKGROUND           = @"#resume_from_background";
 
-static NSString * const TD_EVENT_TYPE_TRACK                 = @"track";
 static NSString * const TD_EVENT_TYPE_USER_DEL              = @"user_del";
 static NSString * const TD_EVENT_TYPE_USER_ADD              = @"user_add";
 static NSString * const TD_EVENT_TYPE_USER_SET              = @"user_set";
@@ -58,12 +58,6 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 static NSUInteger const kBatchSize = 50;
 static NSUInteger const TA_PROPERTY_CRASH_LENGTH_LIMIT = 8191*2;
 static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
-
-typedef NS_OPTIONS(NSInteger, TimeValueType) {
-    TDTimeValueTypeNone      = 0,
-    TDTimeValueTypeTimeOnly  = 1 << 0,
-    TDTimeValueTypeAll       = 1 << 1,
-};
 
 #define kModeEnumArray @"NORMAL", @"DebugOnly", @"Debug", nil
 
@@ -115,16 +109,11 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 
 @end
 
-@interface TDEventData : NSObject
+@interface TDEventModel ()
 
-@property (nonatomic, copy) NSString *eventName;
-@property (nonatomic, copy) NSString *eventType;
 @property (nonatomic, copy) NSString *timeString;
-@property (nonatomic, assign) BOOL autotrack;
-@property (nonatomic, assign) BOOL persist;
 @property (nonatomic, assign) double zoneOffset;
 @property (nonatomic, assign) TimeValueType timeValueType;
-@property (nonatomic, strong) NSDictionary *properties;
 
 @end
 
