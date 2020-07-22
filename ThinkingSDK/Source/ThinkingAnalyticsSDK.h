@@ -363,7 +363,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  @param properties 用户属性
  @param time 事件触发时间
 */
-- (void)user_set:(NSDictionary *)properties withTime:(NSDate *)time;
+- (void)user_set:(NSDictionary *)properties withTime:(NSDate * _Nullable)time;
 
 /**
  重置用户属性
@@ -378,7 +378,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  @param propertyName 用户属性
  @param time 事件触发时间
 */
-- (void)user_unset:(NSString *)propertyName withTime:(NSDate *)time;
+- (void)user_unset:(NSString *)propertyName withTime:(NSDate * _Nullable)time;
 
 /**
  设置单次用户属性
@@ -393,7 +393,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  @param properties 用户属性
  @param time 事件触发时间
 */
-- (void)user_setOnce:(NSDictionary *)properties withTime:(NSDate *)time;
+- (void)user_setOnce:(NSDictionary *)properties withTime:(NSDate * _Nullable)time;
 
 /**
  对数值类型用户属性进行累加操作
@@ -408,7 +408,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  @param properties 用户属性
  @param time 事件触发时间
 */
-- (void)user_add:(NSDictionary *)properties withTime:(NSDate *)time;
+- (void)user_add:(NSDictionary *)properties withTime:(NSDate * _Nullable)time;
 
 /**
   对数值类型用户属性进行累加操作
@@ -425,7 +425,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  @param propertyValue 属性值
  @param time 事件触发时间
 */
-- (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue withTime:(NSDate *)time;
+- (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue withTime:(NSDate * _Nullable)time;
 
 /**
  删除用户 该操作不可逆 需慎重使用
@@ -437,7 +437,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  
  @param time 事件触发时间
  */
-- (void)user_delete:(NSDate *)time;
+- (void)user_delete:(NSDate * _Nullable)time;
 
 /**
  对 Array 类型的用户属性进行追加操作
@@ -452,7 +452,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  @param properties 用户属性
  @param time 事件触发时间
 */
-- (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties withTime:(NSDate *)time;
+- (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties withTime:(NSDate * _Nullable)time;
 
 /**
  设置公共事件属性
