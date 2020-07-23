@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6EA0E35A24C84B5D008FCF11 /* SpaceMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6EA0E35824C84B5D008FCF11 /* SpaceMono-Bold.ttf */; };
+		6EA0E35B24C84B5D008FCF11 /* SpaceMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6EA0E35924C84B5D008FCF11 /* SpaceMono-Regular.ttf */; };
+		6EA0E35D24C84C74008FCF11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6EA0E35C24C84C74008FCF11 /* Assets.xcassets */; };
+		6EA0E36024C8515F008FCF11 /* UIColor+TDUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EA0E35F24C8515F008FCF11 /* UIColor+TDUtil.m */; };
+		6EA0E36724C85456008FCF11 /* TDTrackAPIListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EA0E36624C85456008FCF11 /* TDTrackAPIListCell.m */; };
 		F34CAAD222C5B26C00A8FF82 /* WKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */; };
 		F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */; };
 		F34CAB0122C730D400A8FF82 /* AutoCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAB0022C730D400A8FF82 /* AutoCollectionViewController.m */; };
@@ -19,7 +24,7 @@
 		F380B2C222C0E8BC00955FC5 /* ThinkingSDKDEMOTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2C122C0E8BC00955FC5 /* ThinkingSDKDEMOTests.m */; };
 		F380B2CD22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2CC22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.m */; };
 		F380B2DF22C0E99D00955FC5 /* AppDelegate+TDUI.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2DE22C0E99D00955FC5 /* AppDelegate+TDUI.m */; };
-		F380B2E222C0EA0100955FC5 /* TrackAPIVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2E122C0EA0100955FC5 /* TrackAPIVC.m */; };
+		F380B2E222C0EA0100955FC5 /* TrackAPIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2E122C0EA0100955FC5 /* TrackAPIViewController.m */; };
 		F380B2E522C0EAC400955FC5 /* APIEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2E422C0EAC400955FC5 /* APIEntry.m */; };
 		F380B31B22C0EF5900955FC5 /* ThinkingSDKAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B31A22C0EF5900955FC5 /* ThinkingSDKAPI.m */; };
 		F380B3C922C23FA500955FC5 /* AutoTrackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */; };
@@ -76,6 +81,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6EA0E35624C8421A008FCF11 /* ThinkingSDKDEMO-PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ThinkingSDKDEMO-PrefixHeader.pch"; sourceTree = "<group>"; };
+		6EA0E35724C8430D008FCF11 /* TDMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDMacro.h; sourceTree = "<group>"; };
+		6EA0E35824C84B5D008FCF11 /* SpaceMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpaceMono-Bold.ttf"; sourceTree = "<group>"; };
+		6EA0E35924C84B5D008FCF11 /* SpaceMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpaceMono-Regular.ttf"; sourceTree = "<group>"; };
+		6EA0E35C24C84C74008FCF11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6EA0E35E24C8515F008FCF11 /* UIColor+TDUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+TDUtil.h"; sourceTree = "<group>"; };
+		6EA0E35F24C8515F008FCF11 /* UIColor+TDUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+TDUtil.m"; sourceTree = "<group>"; };
+		6EA0E36524C85456008FCF11 /* TDTrackAPIListCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDTrackAPIListCell.h; sourceTree = "<group>"; };
+		6EA0E36624C85456008FCF11 /* TDTrackAPIListCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDTrackAPIListCell.m; sourceTree = "<group>"; };
 		F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CocoaAsyncSocket.framework; sourceTree = "<group>"; };
 		F34CAAD022C5B26C00A8FF82 /* WKWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WKWebViewController.h; sourceTree = "<group>"; };
 		F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WKWebViewController.m; sourceTree = "<group>"; };
@@ -103,8 +117,8 @@
 		F380B2CE22C0E8BC00955FC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F380B2DD22C0E99D00955FC5 /* AppDelegate+TDUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+TDUI.h"; sourceTree = "<group>"; };
 		F380B2DE22C0E99D00955FC5 /* AppDelegate+TDUI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+TDUI.m"; sourceTree = "<group>"; };
-		F380B2E022C0EA0100955FC5 /* TrackAPIVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrackAPIVC.h; sourceTree = "<group>"; };
-		F380B2E122C0EA0100955FC5 /* TrackAPIVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrackAPIVC.m; sourceTree = "<group>"; };
+		F380B2E022C0EA0100955FC5 /* TrackAPIViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrackAPIViewController.h; sourceTree = "<group>"; };
+		F380B2E122C0EA0100955FC5 /* TrackAPIViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrackAPIViewController.m; sourceTree = "<group>"; };
 		F380B2E322C0EAC400955FC5 /* APIEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APIEntry.h; sourceTree = "<group>"; };
 		F380B2E422C0EAC400955FC5 /* APIEntry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APIEntry.m; sourceTree = "<group>"; };
 		F380B31922C0EF5900955FC5 /* ThinkingSDKAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThinkingSDKAPI.h; sourceTree = "<group>"; };
@@ -146,6 +160,55 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6EA0E35524C841FB008FCF11 /* Global */ = {
+			isa = PBXGroup;
+			children = (
+				6EA0E35E24C8515F008FCF11 /* UIColor+TDUtil.h */,
+				6EA0E35F24C8515F008FCF11 /* UIColor+TDUtil.m */,
+				6EA0E35824C84B5D008FCF11 /* SpaceMono-Bold.ttf */,
+				6EA0E35924C84B5D008FCF11 /* SpaceMono-Regular.ttf */,
+				6EA0E35624C8421A008FCF11 /* ThinkingSDKDEMO-PrefixHeader.pch */,
+				6EA0E35724C8430D008FCF11 /* TDMacro.h */,
+				6EA0E35C24C84C74008FCF11 /* Assets.xcassets */,
+			);
+			path = Global;
+			sourceTree = "<group>";
+		};
+		6EA0E36124C853D0008FCF11 /* Module */ = {
+			isa = PBXGroup;
+			children = (
+				6EA0E36224C853EA008FCF11 /* TrackAPI */,
+			);
+			path = Module;
+			sourceTree = "<group>";
+		};
+		6EA0E36224C853EA008FCF11 /* TrackAPI */ = {
+			isa = PBXGroup;
+			children = (
+				6EA0E36424C8543C008FCF11 /* View */,
+				6EA0E36324C85435008FCF11 /* ViewController */,
+			);
+			path = TrackAPI;
+			sourceTree = "<group>";
+		};
+		6EA0E36324C85435008FCF11 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				F380B2E022C0EA0100955FC5 /* TrackAPIViewController.h */,
+				F380B2E122C0EA0100955FC5 /* TrackAPIViewController.m */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		6EA0E36424C8543C008FCF11 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				6EA0E36524C85456008FCF11 /* TDTrackAPIListCell.h */,
+				6EA0E36624C85456008FCF11 /* TDTrackAPIListCell.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		F34CAAD622C5B91500A8FF82 /* AutoTrack */ = {
 			isa = PBXGroup;
 			children = (
@@ -224,6 +287,7 @@
 		F380B2A722C0E8BB00955FC5 /* ThinkingSDKDEMO */ = {
 			isa = PBXGroup;
 			children = (
+				6EA0E36124C853D0008FCF11 /* Module */,
 				F380B2A822C0E8BB00955FC5 /* AppDelegate.h */,
 				F380B2A922C0E8BB00955FC5 /* AppDelegate.m */,
 				F380B31922C0EF5900955FC5 /* ThinkingSDKAPI.h */,
@@ -232,8 +296,7 @@
 				F380B2DE22C0E99D00955FC5 /* AppDelegate+TDUI.m */,
 				F380B2E322C0EAC400955FC5 /* APIEntry.h */,
 				F380B2E422C0EAC400955FC5 /* APIEntry.m */,
-				F380B2E022C0EA0100955FC5 /* TrackAPIVC.h */,
-				F380B2E122C0EA0100955FC5 /* TrackAPIVC.m */,
+				6EA0E35524C841FB008FCF11 /* Global */,
 				F34D3DA92306C973006FEDCC /* NTP */,
 				F34CAAD622C5B91500A8FF82 /* AutoTrack */,
 				F34CAAD722C5B92200A8FF82 /* WebView */,
@@ -383,7 +446,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				F37AE90622C493A9005D64F8 /* index.html in Resources */,
+				6EA0E35B24C84B5D008FCF11 /* SpaceMono-Regular.ttf in Resources */,
+				6EA0E35A24C84B5D008FCF11 /* SpaceMono-Bold.ttf in Resources */,
 				F3F45D9F2301785600218049 /* thinkingdata.min.js in Resources */,
+				6EA0E35D24C84C74008FCF11 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,12 +476,14 @@
 			files = (
 				F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */,
 				F37AE90222C49007005D64F8 /* WEBViewController.m in Sources */,
+				6EA0E36724C85456008FCF11 /* TDTrackAPIListCell.m in Sources */,
 				F380B2E522C0EAC400955FC5 /* APIEntry.m in Sources */,
 				F3ECE9F4230D55FD00670FBD /* AutoTrackSecViewController.m in Sources */,
-				F380B2E222C0EA0100955FC5 /* TrackAPIVC.m in Sources */,
+				F380B2E222C0EA0100955FC5 /* TrackAPIViewController.m in Sources */,
 				F34CAAD222C5B26C00A8FF82 /* WKWebViewController.m in Sources */,
 				F380B3C922C23FA500955FC5 /* AutoTrackViewController.m in Sources */,
 				F380B31B22C0EF5900955FC5 /* ThinkingSDKAPI.m in Sources */,
+				6EA0E36024C8515F008FCF11 /* UIColor+TDUtil.m in Sources */,
 				F380B2B822C0E8BC00955FC5 /* main.m in Sources */,
 				F34CAB0122C730D400A8FF82 /* AutoCollectionViewController.m in Sources */,
 				F380B2AA22C0E8BB00955FC5 /* AppDelegate.m in Sources */,
@@ -572,14 +640,16 @@
 		F380B2D222C0E8BC00955FC5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LF3XB637JR;
+				DEVELOPMENT_TEAM = 5TFS5EU5SZ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
 					"$(PROJECT_DIR)",
 				);
+				GCC_PREFIX_HEADER = "$(SRCROOT)/ThinkingSDKDEMO/Global/ThinkingSDKDEMO-PrefixHeader.pch";
 				INFOPLIST_FILE = ThinkingSDKDEMO/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -595,14 +665,16 @@
 		F380B2D322C0E8BC00955FC5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LF3XB637JR;
+				DEVELOPMENT_TEAM = 5TFS5EU5SZ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
 					"$(PROJECT_DIR)",
 				);
+				GCC_PREFIX_HEADER = "$(SRCROOT)/ThinkingSDKDEMO/Global/ThinkingSDKDEMO-PrefixHeader.pch";
 				INFOPLIST_FILE = ThinkingSDKDEMO/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

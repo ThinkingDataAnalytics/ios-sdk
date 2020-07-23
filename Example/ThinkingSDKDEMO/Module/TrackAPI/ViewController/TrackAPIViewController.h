@@ -1,5 +1,5 @@
 //
-//  TrackAPIVC.h
+//  TrackAPIViewController.h
 //  ThinkingSDKDEMO
 //
 //  Created by syj on 2019/6/24.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface TrackAPIVC : UITableViewController
+@interface TrackAPIViewController : UITableViewController
 
 @property (nonatomic, readonly, strong) NSMutableArray *apis;
 @property (nonatomic, copy) NSString * (^getTitleBlock)(UIViewController *controller);
