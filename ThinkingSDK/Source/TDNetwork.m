@@ -6,6 +6,11 @@
 #import "TDSecurityPolicy.h"
 #import "TDToastView.h"
 
+static NSString *kTAIntegrationType = @"TA-Integration-Type";
+static NSString *kTAIntegrationVersion = @"TA-Integration-Version";
+static NSString *kTAIntegrationCount = @"TA-Integration-Count";
+static NSString *kTAIntegrationExtra = @"TA-Integration-Extra";
+
 @implementation TDNetwork
 
 - (NSURLSession *)sharedURLSession {
@@ -108,6 +113,12 @@
     
     NSString *jsonString = [TDJSONUtil JSONStringForObject:flushDic];
     NSMutableURLRequest *request = [self buildRequestWithJSONString:jsonString];
+    
+    [request addValue:[TDDeviceInfo sharedManager].libName forHTTPHeaderField:kTAIntegrationType];
+    [request addValue:[TDDeviceInfo sharedManager].libVersion forHTTPHeaderField:kTAIntegrationVersion];
+    [request addValue:@(recordArray.count).stringValue forHTTPHeaderField:kTAIntegrationCount];
+    [request addValue:@"iOS" forHTTPHeaderField:kTAIntegrationExtra];
+    
     dispatch_semaphore_t flushSem = dispatch_semaphore_create(0);
 
     void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
