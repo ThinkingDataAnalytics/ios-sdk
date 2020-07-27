@@ -455,6 +455,13 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
 - (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties withTime:(NSDate * _Nullable)time;
 
 /**
+ 谨慎调用此接口, 此接口用于使用第三方框架或者游戏引擎的场景中, 更准确的设置上报方式.
+ @param libName     对应事件表中 #lib预制属性, 默认为 "iOS".
+ @param libVersion  对应事件表中 #lib_version 预制属性, 默认为当前SDK版本号.
+ */
+- (void)setCustomerLibInfoWithLibName:(NSString *)libName libVersion:(NSString *)libVersion;
+
+/**
  设置公共事件属性
 
  @param properties 公共事件属性

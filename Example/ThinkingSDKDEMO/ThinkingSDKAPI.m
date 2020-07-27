@@ -59,6 +59,11 @@
     [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
 }
 
++ (void)testChangeLibNameAndLibVersion {
+    [[ThinkingAnalyticsSDK sharedInstance] setCustomerLibInfoWithLibName:@"custom_lib_name" libVersion:@"custom_lib_version"];
+    [[ThinkingAnalyticsSDK sharedInstance] track:@"change_custom_lib_info"];
+}
+
 + (void)testUserSet {
     [[ThinkingAnalyticsSDK sharedInstance] user_set:@{
                                                      @"UserName":@"TA1",

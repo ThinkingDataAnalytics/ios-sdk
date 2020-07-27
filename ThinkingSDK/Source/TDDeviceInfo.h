@@ -2,6 +2,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+FOUNDATION_EXTERN NSString *const VERSION;
+
 @interface TDDeviceInfo : NSObject
 
 + (TDDeviceInfo *)sharedManager;
@@ -11,6 +13,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *appVersion;
 @property (nonatomic, strong) NSDictionary *automaticData;
 @property (nonatomic) BOOL isFirstOpen;
+
+@property (nonatomic, copy) NSString *libName;
+@property (nonatomic, copy) NSString *libVersion;
+- (void)updateAutomaticData;
 
 + (NSString *)libVersion;
 - (NSDictionary *)collectAutomaticProperties;

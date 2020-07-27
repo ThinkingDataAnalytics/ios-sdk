@@ -7,7 +7,7 @@
 
 #import "TDKeychainItemWrapper.h"
 
-#define VERSION @"2.5.5"
+NSString *const VERSION = @"2.5.5";
 
 @interface TDDeviceInfo ()
 
@@ -29,6 +29,9 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
+        self.libName = @"iOS";
+        self.libVersion = VERSION;
+
         NSDictionary *deviceInfo = [self getDeviceUniqueId];
         _uniqueId = [deviceInfo objectForKey:@"uniqueId"];
         _deviceId = [deviceInfo objectForKey:@"deviceId"];
@@ -39,7 +42,11 @@
 }
 
 + (NSString *)libVersion {
-    return VERSION;
+    return [self sharedManager].libVersion;
+}
+
+- (void)updateAutomaticData {
+    _automaticData = [self collectAutomaticProperties];
 }
 
 - (NSDictionary *)collectAutomaticProperties {
@@ -60,15 +67,15 @@
     [p setValue:carrier.carrierName forKey:@"#carrier"];
     CGSize size = [UIScreen mainScreen].bounds.size;
     [p addEntriesFromDictionary:@{
-                                  @"#lib": @"iOS",
-                                  @"#lib_version": [TDDeviceInfo libVersion],
-                                  @"#manufacturer": @"Apple",
-                                  @"#device_model": [self iphoneType],
-                                  @"#os": @"iOS",
-                                  @"#os_version": [device systemVersion],
-                                  @"#screen_height": @((NSInteger)size.height),
-                                  @"#screen_width": @((NSInteger)size.width)
-                                  }];
+        @"#lib": self.libName,
+        @"#lib_version": self.libVersion,
+        @"#manufacturer": @"Apple",
+        @"#device_model": [self iphoneType],
+        @"#os": @"iOS",
+        @"#os_version": [device systemVersion],
+        @"#screen_height": @((NSInteger)size.height),
+        @"#screen_width": @((NSInteger)size.width),
+    }];
     
     NSString *preferredLanguages = [[NSLocale preferredLanguages] firstObject];
     if (preferredLanguages && preferredLanguages.length > 0) {

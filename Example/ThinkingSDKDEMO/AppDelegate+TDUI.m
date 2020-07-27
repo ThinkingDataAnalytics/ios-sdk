@@ -183,6 +183,15 @@
     
     // MARK: options
     NSMutableArray *optionArray = [NSMutableArray array];
+    
+    [optionArray addObject:
+     [APIEntry commandWithName:@"Change Customer LibName & LibVersion"
+                 accessoryType:UITableViewCellAccessoryNone
+                         block:^(UIViewController *controller)
+      {
+        [ThinkingSDKAPI testChangeLibNameAndLibVersion];
+    }]];
+
     [optionArray addObject:
      [APIEntry commandWithName:@"Set SuperProperty"
                  accessoryType:UITableViewCellAccessoryNone

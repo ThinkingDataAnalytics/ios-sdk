@@ -962,12 +962,24 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_APPEND withTime:time];
 }
 
+- (void)setCustomerLibInfoWithLibName:(NSString *)libName libVersion:(NSString *)libVersion {
+    if (libName.length > 0) {
+        [TDDeviceInfo sharedManager].libName = libName;
+    }
+    if (libVersion.length > 0) {
+        [TDDeviceInfo sharedManager].libVersion = libVersion;
+    }
+    
+    [[TDDeviceInfo sharedManager] updateAutomaticData];
+    _network.automaticData = _deviceInfo.automaticData;
+}
+
 - (NSString *)getDistinctId {
     return [self.identifyId copy];
 }
 
 + (NSString *)getSDKVersion {
-    return [TDDeviceInfo libVersion];
+    return VERSION;
 }
 
 - (NSString *)getDeviceId {

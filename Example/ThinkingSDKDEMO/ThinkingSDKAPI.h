@@ -41,6 +41,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)testTrackUpdate;
 + (void)testTrackOverwrite;
 
++ (void)testChangeLibNameAndLibVersion;
+
 @end
 
 NS_ASSUME_NONNULL_END
