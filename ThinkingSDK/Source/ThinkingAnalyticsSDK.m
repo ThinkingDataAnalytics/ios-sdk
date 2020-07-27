@@ -969,9 +969,12 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if (libVersion.length > 0) {
         [TDDeviceInfo sharedManager].libVersion = libVersion;
     }
-    
     [[TDDeviceInfo sharedManager] updateAutomaticData];
-    _network.automaticData = _deviceInfo.automaticData;
+    
+    for (NSString *key in instances.allKeys) {
+        ThinkingAnalyticsSDK *instance = instances[key];
+        instance.network.automaticData = instance.deviceInfo.automaticData;
+    }
 }
 
 - (NSString *)getDistinctId {
