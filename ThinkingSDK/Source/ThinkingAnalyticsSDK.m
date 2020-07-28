@@ -837,14 +837,28 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 #pragma mark - Private
 
-- (void)h5track:(NSString *)event properties:(NSDictionary *)propertieDict withType:(NSString *)type withTime:(NSString *)time {
+- (void)h5track:(NSString *)eventName
+        extraID:(NSString *)extraID
+     properties:(NSDictionary *)propertieDict
+           type:(NSString *)type
+           time:(NSString *)time {
+    
     if ([self hasDisabled])
         return;
-    propertieDict = [self processParameters:propertieDict withType:type withEventName:event withAutoTrack:NO withH5:YES];
+    propertieDict = [self processParameters:propertieDict withType:type withEventName:eventName withAutoTrack:NO withH5:YES];
     TDEventModel *eventData = [[TDEventModel alloc] init];
-    eventData.eventName = event;
+    eventData.eventName = eventName;
     eventData.properties = [propertieDict copy];
     eventData.eventType = type;
+    
+    if (extraID.length > 0) {
+        if ([type isEqualToString:TD_EVENT_TYPE_TRACK]) {
+            eventData.firstCheckID = extraID;
+        } else {
+            eventData.eventID = extraID;
+        }
+    }
+
     if ([propertieDict objectForKey:@"#zone_offset"]) {
         eventData.zoneOffset = [[propertieDict objectForKey:@"#zone_offset"] doubleValue];
         eventData.timeValueType = TDTimeValueTypeAll;
@@ -1205,6 +1219,15 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             NSString *event_name = [dataInfo objectForKey:@"#event_name"];
             NSString *time = [dataInfo objectForKey:@"#time"];
             NSDictionary *properties = [dataInfo objectForKey:@"properties"];
+            
+            NSString *extraID;
+            
+            if ([type isEqualToString:TD_EVENT_TYPE_TRACK]) {
+                extraID = [dataInfo objectForKey:@"#first_check_id"];
+            } else {
+                extraID = [dataInfo objectForKey:@"#event_id"];
+            }
+            
             NSMutableDictionary *dic = [properties mutableCopy];
             [dic removeObjectForKey:@"#account_id"];
             [dic removeObjectForKey:@"#distinct_id"];
@@ -1217,11 +1240,19 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:appid];
             if (instance) {
                 dispatch_async(serialQueue, ^{
-                    [instance h5track:event_name properties:dic withType:type withTime:time];
+                    [instance h5track:event_name
+                              extraID:extraID
+                           properties:dic
+                                 type:type
+                                 time:time];
                 });
             } else {
                 dispatch_async(serialQueue, ^{
-                    [self h5track:event_name properties:dic withType:type withTime:time];
+                    [self h5track:event_name
+                          extraID:extraID
+                       properties:dic
+                             type:type
+                             time:time];
                 });
             }
         }
