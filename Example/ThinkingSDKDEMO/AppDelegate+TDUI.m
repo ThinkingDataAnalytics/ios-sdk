@@ -68,14 +68,6 @@
     }]];
     
     [trackArray addObject:
-     [APIEntry commandWithName:@"Track_EventID"
-                 accessoryType:UITableViewCellAccessoryNone
-                         block:^(UIViewController *controller)
-      {
-        [ThinkingSDKAPI testTrackWithEventID];
-    }]];
-    
-    [trackArray addObject:
      [APIEntry commandWithName:@"Track_FirstCheckID"
                  accessoryType:UITableViewCellAccessoryNone
                          block:^(UIViewController *controller)

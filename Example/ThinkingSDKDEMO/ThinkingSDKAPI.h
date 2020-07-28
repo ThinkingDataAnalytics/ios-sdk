@@ -36,7 +36,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)optInTracking;
 + (void)testFlush;
 
-+ (void)testTrackWithEventID;
 + (void)testTrackWithFirstCheckID;
 + (void)testTrackUpdate;
 + (void)testTrackOverwrite;

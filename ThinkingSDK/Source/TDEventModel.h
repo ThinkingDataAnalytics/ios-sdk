@@ -23,10 +23,15 @@ FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE;
 
 @interface TDEventModel : NSObject
 
-@property (nonatomic, copy) NSString *eventID;
 @property (nonatomic, copy) NSString *eventName;
 @property (nonatomic, copy) kEDEventTypeName eventType; // Default is TD_EVENT_TYPE_TRACK
-@property (nonatomic, copy) NSString *firstCheckID;
+
+/**
+ 额外参数
+ 当 eventType 为 TD_EVENT_TYPE_TRACK 时, 会添加此字段为 #first_check_id
+ 当 eventType 为 TD_EVENT_TYPE_TRACK_UPDATE 或 TD_EVENT_TYPE_TRACK_OVERWRITE 时, 为添加此字段为 #event_id
+ */
+@property (nonatomic, copy) NSString *extraID;
 
 @property (nonatomic, strong) NSDictionary *properties;
 

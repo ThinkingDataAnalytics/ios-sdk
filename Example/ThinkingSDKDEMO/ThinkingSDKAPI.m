@@ -23,38 +23,28 @@
     [[ThinkingAnalyticsSDK sharedInstance] track:@"test" properties:nil time:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
 }
 
-+ (void)testTrackWithEventID {
-    TDEventModel *eventModel = [[TDEventModel alloc] init];
-    eventModel.eventName = @"testTrack_eventID";
-    eventModel.eventID = @"eventIDxxx";
-    eventModel.properties = @{ @"testTrack_eventID_property": @"property"};
-    [eventModel configTime:[NSDate date] timeZone:nil];
-    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
-}
-
 + (void)testTrackWithFirstCheckID {
     TDEventModel *eventModel = [[TDEventModel alloc] init];
-    eventModel.eventName = @"testTrack_firstCheckID";
-    eventModel.eventID = @"testTrack_firstCheckID_EventID";
-    eventModel.firstCheckID = @"firstCheckIDxxx";
-    eventModel.properties = @{ @"testTrack_firstCheckID_property": @"property"};
+    eventModel.eventName = @"test_track_hahaha2";
+    eventModel.extraID = @"event_id_hahaha2";
+    eventModel.properties = @{ @"testTrack_firstCheckID_property2": @"property2"};
     [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
 }
 
 + (void)testTrackUpdate {
     TDEventModel *eventModel = [[TDEventModel alloc] init];
-    eventModel.eventName = @"testTrack_eventID";
-    eventModel.eventID = @"eventIDxxx";
     eventModel.eventType = TD_EVENT_TYPE_TRACK_UPDATE;
+    eventModel.eventName = @"testTrack_eventID";
+    eventModel.extraID = @"eventIDxxx";
     eventModel.properties = @{ @"testTrack_eventID_property": @"property_update2"};
     [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
 }
 
 + (void)testTrackOverwrite {
     TDEventModel *eventModel = [[TDEventModel alloc] init];
-    eventModel.eventName = @"testTrack_eventID";
-    eventModel.eventID = @"eventIDxxx";
     eventModel.eventType = TD_EVENT_TYPE_TRACK_OVERWRITE;
+    eventModel.eventName = @"testTrack_eventID";
+    eventModel.extraID = @"eventIDxxx";
     eventModel.properties = @{ @"testTrack_eventID_property_overwrite": @"property_overwrite123"};
     [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
 }

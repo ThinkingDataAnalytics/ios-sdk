@@ -850,14 +850,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     eventData.eventName = eventName;
     eventData.properties = [propertieDict copy];
     eventData.eventType = type;
-    
-    if (extraID.length > 0) {
-        if ([type isEqualToString:TD_EVENT_TYPE_TRACK]) {
-            eventData.firstCheckID = extraID;
-        } else {
-            eventData.eventID = extraID;
-        }
-    }
+    eventData.extraID = extraID;
 
     if ([propertieDict objectForKey:@"#zone_offset"]) {
         eventData.zoneOffset = [[propertieDict objectForKey:@"#zone_offset"] doubleValue];
@@ -1333,12 +1326,16 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if (eventData.eventName) {
         dataDic[@"#event_name"] = eventData.eventName;
     }
-    if (eventData.eventID) {
-        dataDic[@"#event_id"] = eventData.eventID;
+    
+    if (eventData.extraID.length > 0) {
+        if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK]) {
+            dataDic[@"#first_check_id"] = eventData.extraID;
+        } else if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK_UPDATE]
+                   || [eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK_OVERWRITE]) {
+            dataDic[@"#event_id"] = eventData.extraID;
+        }
     }
-    if (eventData.firstCheckID) {
-        dataDic[@"#first_check_id"] = eventData.firstCheckID;
-    }
+    
     if (self.accountId) {
         dataDic[@"#account_id"] = self.accountId;
     }
