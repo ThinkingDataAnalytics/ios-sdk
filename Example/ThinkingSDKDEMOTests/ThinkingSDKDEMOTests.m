@@ -89,7 +89,7 @@
         XCTAssertNotNil(dataDic[@"#uuid"]);
         XCTAssertEqualObjects(dataDic[@"#event_name"], @"test");
         XCTAssertEqualObjects(dataDic[@"#type"], @"track");
-        XCTAssertTrue([[properties allKeys] count] == 7);
+        XCTAssertTrue([properties allKeys].count == 7);
         
         XCTAssertNotNil(properties[@"#app_version"]);
         XCTAssertTrue([properties[@"#app_version"] isKindOfClass:[NSString class]]);
@@ -716,6 +716,78 @@
     
     [_mockCalibrateTime stopMocking];
     _mockCalibrateTime = nil;
+}
+
+/**
+ track_update
+ track_overwrite
+ */
+- (void)test24SpecialTrackAction {
+    void (^saveEventsDataInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
+        __weak NSDictionary *dataDic;
+        [invocation getArgument:&dataDic atIndex:2];
+        
+        NSString *timeStr = dataDic[@"#time"];
+        NSDateFormatter *timeFormatter = [[NSDateFormatter alloc]init];
+        timeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+        NSDate *date = [timeFormatter dateFromString:timeStr];
+        NSDictionary *properties = dataDic[@"properties"];
+        
+        XCTAssertNotNil(date);
+        XCTAssertNotNil(timeStr);
+        XCTAssertNotNil(dataDic);
+        XCTAssertNotNil(dataDic[@"#uuid"]);
+        
+        XCTAssertEqualObjects(dataDic[@"#type"], @"track");
+        
+        XCTAssertNotNil(properties[@"#app_version"]);
+        XCTAssertTrue([properties[@"#app_version"] isKindOfClass:[NSString class]]);
+        if (properties[@"#network_type"]) {
+            NSArray *network = @[@"WIFI", @"2G", @"3G", @"4G", @"NULL"];
+            XCTAssertTrue([network containsObject:properties[@"#network_type"]]);
+        }
+        
+        if ([dataDic[@"#event_type"] isEqualToString:@"track"]) {
+            XCTAssertNotNil(dataDic[@"#first_check_id"]);
+            XCTAssertEqualObjects(dataDic[@"#first_check_id"], @"test_first_check_id");
+            XCTAssertEqualObjects(dataDic[@"#event_name"], @"test_event_name_first_check_id");
+        } else if ([dataDic[@"#event_type"] isEqualToString:@"track_update"]) {
+            XCTAssertNotNil(dataDic[@"#event_id"]);
+            XCTAssertEqualObjects(dataDic[@"#event_id"], @"test_update_event_id");
+            XCTAssertEqualObjects(dataDic[@"#event_name"], @"test_name_trackUpdate");
+        } else if ([dataDic[@"#event_type"] isEqualToString:@"track_overwrite"]) {
+            XCTAssertNotNil(dataDic[@"#event_id"]);
+            XCTAssertEqualObjects(dataDic[@"#event_id"], @"test_overwrite_event_id");
+            XCTAssertEqualObjects(dataDic[@"#event_name"], @"test_name_trackOverwrite");
+        }
+    };
+    OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
+
+    TDEventModel *eventModel_firstCheckID = [TDEventModel new];
+    eventModel_firstCheckID.extraID = @"test_first_check_id";
+    eventModel_firstCheckID.eventName = @"test_event_name_first_check_id";
+    eventModel_firstCheckID.properties = @{
+        @"key_first_check_id": @"value_first_check_id",
+    };
+    [_mockThinkingInstance trackWithEventModel:eventModel_firstCheckID];
+    
+    TDEventModel *eventModel_update = [TDEventModel new];
+    eventModel_update.extraID = @"test_update_event_id";
+    eventModel_update.eventName = @"test_name_trackUpdate";
+    eventModel_update.properties = @{
+        @"key_update": @"value_update",
+    };
+    [_mockThinkingInstance trackWithEventModel:eventModel_update];
+
+    TDEventModel *eventModel_overwrite = [TDEventModel new];
+    eventModel_overwrite.extraID = @"test_overwrite_event_id";
+    eventModel_overwrite.eventName = @"test_name_trackOverwrite";
+    eventModel_overwrite.properties = @{
+        @"key_overwrite": @"value_overwrite",
+    };
+    [_mockThinkingInstance trackWithEventModel:eventModel_overwrite];
+
+    [self waitForThinkingQueues];
 }
 
 @end
