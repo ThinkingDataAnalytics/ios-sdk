@@ -41,7 +41,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     static dispatch_once_t once;
     static TDAutoTrackManager *instance = nil;
     dispatch_once(&once, ^{
-        instance = [[TDAutoTrackManager alloc] init];
+        instance = [[[TDAutoTrackManager class] alloc] init];
         instance.autoTrackOptions = [NSMutableDictionary new];
         instance.trackOptionLock = dispatch_semaphore_create(1);
     });
