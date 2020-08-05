@@ -21,11 +21,13 @@
         NSString *formattedMessage = [[NSString alloc] initWithFormat:messageFormat arguments:formatList];
         va_end(formatList);
         
+#ifdef __IPHONE_10_0
         if (@available(iOS 10.0, *)) {
             [TDOSLog log:NO message:formattedMessage type:type];
-        } else {
-            NSLog(@"[THINKING] %@", formattedMessage);
         }
+#else
+        NSLog(@"[THINKING] %@", formattedMessage);
+#endif
     }
 }
 

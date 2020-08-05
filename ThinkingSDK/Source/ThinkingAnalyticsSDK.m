@@ -181,6 +181,7 @@ static dispatch_queue_t networkQueue;
         
         [self sceneSupportSetting];
         
+#ifdef __IPHONE_13_0
         if (@available(iOS 13.0, *)) {
             if (!_isEnableSceneSupport) {
                 [self launchedIntoBackground];
@@ -189,9 +190,10 @@ static dispatch_queue_t networkQueue;
             } else {
                 _relaunchInBackGround = NO;
             }
-        } else {
-            [self launchedIntoBackground];
         }
+#else
+        [self launchedIntoBackground];
+#endif
         
         [self startFlushTimer];
         [self setApplicationListeners];
@@ -1583,11 +1585,13 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
         NSString *eventName = _relaunchInBackGround?TD_APP_START_BACKGROUND_EVENT:TD_APP_START_EVENT;
+#ifdef __IPHONE_13_0
         if (@available(iOS 13.0, *)) {
             if (_isEnableSceneSupport) {
                 eventName = TD_APP_START_EVENT;
             }
         }
+#endif
         [self autotrack:eventName properties:@{TD_RESUME_FROM_BACKGROUND:@(_appRelaunched)} withTime:nil];
     }
     

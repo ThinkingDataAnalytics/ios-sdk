@@ -510,6 +510,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
         }
     }
     
+#ifdef __IPHONE_13_0
     if (@available(iOS 13.0, tvOS 13, *)) {
         NSSet *scenes = [[UIApplication sharedApplication] valueForKey:@"connectedScenes"];
         for (id scene in scenes) {
@@ -533,6 +534,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
             }
         }
     }
+#endif
     return window;
 }
 

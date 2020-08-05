@@ -56,9 +56,11 @@ NSString *const VERSION = @"2.5.5";
     _telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
     CTCarrier *carrier = nil;
 
+#ifdef __IPHONE_12_1
     if (@available(iOS 12.1, *)) {
         carrier = _telephonyInfo.serviceSubscriberCellularProviders.allValues.firstObject; 
     }
+#endif
     
     if (!carrier) {
         carrier = [_telephonyInfo subscriberCellularProvider];

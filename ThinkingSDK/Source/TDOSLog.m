@@ -169,6 +169,7 @@ static TDAbstractLogger *sharedInstance;
 }
 
 - (void)logMessage:(TDLogMessage *)logMessage {
+#ifdef __IPHONE_10_0
     if (@available(iOS 10.0, *)) {
         NSString *message = logMessage->_message;
         if (message != nil) {
@@ -190,6 +191,7 @@ static TDAbstractLogger *sharedInstance;
             }
         }
     }
+#endif
 }
 
 @end
