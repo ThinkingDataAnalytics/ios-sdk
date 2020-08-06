@@ -35,7 +35,6 @@ FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE;
 
 @property (nonatomic, strong) NSDictionary *properties;
 
-@property (nonatomic, assign) BOOL autotrack;
 @property (nonatomic, assign) BOOL persist;
 
 - (void)configTime:(NSDate *)time timeZone:(NSTimeZone * _Nullable)timeZone;

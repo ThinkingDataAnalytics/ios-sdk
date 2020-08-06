@@ -11,7 +11,6 @@ kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE    = @"track_overwrite";
 - (instancetype)init {
     if (self = [super init]) {
         self.persist = YES;
-        self.autotrack = NO;
         self.eventType = TD_EVENT_TYPE_TRACK;
     }
     return self;

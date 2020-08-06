@@ -872,7 +872,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     eventData.eventName = event;
     eventData.properties = [propertieDict copy];
     eventData.eventType = TD_EVENT_TYPE_TRACK;
-    eventData.autotrack = YES;
     eventData.timeString = [_timeFormatter stringFromDate:time];
     eventData.timeValueType = TDTimeValueTypeNone;
     [self tdInternalTrack:eventData];

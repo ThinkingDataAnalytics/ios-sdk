@@ -2,66 +2,97 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    </head>
+            </head>
     <body>
         <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
         <script type="text/javascript">
             
             !function (e) { if (!window.ThinkingDataAnalyticalTool) { var n = e.sdkUrl, t = e.name, r = window, a = document, i = "script", l = null, s = null; r.ThinkingDataAnalyticalTool = t; var o = ["track", "quick", "login", "identify", "logout", "trackLink", "userSet", "userSetOnce", "userAdd", "userDel", "setPageProperty", "setSuperProperties", "setDynamicSuperProperties", "clearSuperProperties", "timeEvent", "unsetSuperProperties", "initInstance"]; r[t] = function (e) { return function () { if (this.name) (r[t]._q = r[t]._q || []).push([e, arguments, this.name]); else if ("initInstance" === e) { var n = arguments[0]; r[t][n] = { name: n }; for (var a = 0; a < o.length; a++)r[t][n][o[a]] = r[t].call(r[t][n], o[a]); (r[t]._q1 = r[t]._q1 || []).push([e, arguments]) } else (r[t]._q = r[t]._q || []).push([e, arguments]) } }; for (var u = 0; u < o.length; u++)r[t][o[u]] = r[t].call(null, o[u]); r[t].param = e, r[t].__SV = 1.1, l = a.createElement(i), s = a.getElementsByTagName(i)[0], l.async = 1, l.src = n, s.parentNode.insertBefore(l, s) } }(
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     appId:'APP_ID', //系统分配的APPID
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     name: 'tg', //全局的调用变量名，可以任意设置，后续的调用使用该名称即可
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     sdkUrl:'./thinkingdata.min.js', //统计脚本URL
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     serverUrl:'http://receiver.ta.thinkingdata.cn:9080/sync_js', //数据上传的URL
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     send_method:'image', //数据上传方式
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     useAppTrack: true, // 打通 APP 与 H5
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     showLog: true, //是否打印上报数据
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     loaded: function(ta) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     var currentId = ta.getDistinctId();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     tg.identify(currentId + '_1');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     tg.quick('autoTrack');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     });
-
-            tg.quick('autoTrack');
-           
-            function trackAction()
-            {
-                tg.track('h5test');
-            }
-
-            function  loginAction()
-            {
-                tg.login('h5login');
-            }
-
-            function logoutAction()
-            {
-                tg.logout();
-            }
-
-            function  usersetAction() {
-                tg.userSet({email: 'xxx@xx'});
-            }
+                appId:'APP_ID', //系统分配的APPID
+                name: 'tg', //全局的调用变量名，可以任意设置，后续的调用使用该名称即可
+                sdkUrl:'./thinkingdata.min.js', //统计脚本URL
+                serverUrl:'http://receiver.ta.thinkingdata.cn:9080/sync_js', //数据上传的URL
+                send_method:'image', //数据上传方式
+                useAppTrack: true, // 打通 APP 与 H5
+                showLog: true, //是否打印上报数据
+                loaded: function(ta) {
+                    var currentId = ta.getDistinctId();
+                    tg.identify(currentId + '_1');
+                    tg.quick('autoTrack');
+                } });
         
-            function  userSetOnceAction() {
-                tg.userSetOnce({email: 'xxx@xx'});
-            }
+        tg.quick('autoTrack');
         
-            function  userAddAction() {
-                tg.userAdd({level: 4});
-            }
+        function trackAction()
+        {
+            tg.track('h5test');
+        }
         
-            function  userDelAction() {
-                tg.userDel();
-            }
-
-            function  setPagePropertyAction() {
-                tg.setPageProperty({phone: '423'});
-            }
-
-        </script>
-
+        function  loginAction()
+        {
+            tg.login('h5login');
+        }
+        
+        function logoutAction()
+        {
+            tg.logout();
+        }
+        
+        function  usersetAction() {
+            tg.userSet({email: 'xxx@xx'});
+        }
+        
+        function  userSetOnceAction() {
+            tg.userSetOnce({email: 'xxx@xx'});
+        }
+        
+        function  userAddAction() {
+            tg.userAdd({level: 4});
+        }
+        
+        function  userDelAction() {
+            tg.userDel();
+        }
+        
+        function  setPagePropertyAction() {
+            tg.setPageProperty({phone: '423'});
+        }
+        
+        
+        function trackFirstCheckID() {
+            tg.trackFirstEvent({
+                enentName: 'js_eventName_track_first_check_id',
+                firstCheckId: 'js_first_check_id',
+                properties: {
+                    js_test_key: 'js_test_value'
+                }
+            });
+        }
+        
+        function trackUpdate() {
+            tg.trackUpdate({
+                eventName: 'js_test_edit_event_name',
+                eventId: 'js_test_edit_event_id',
+                properties: {
+                    js_test_key: 'js_test_value_update',
+                    js_test_key2: 'js_test_value_update2'
+                }
+            });
+        }
+        
+        function trackOverwrite() {
+            tg.trackOverwrite({
+                eventName: 'js_test_edit_event_name',
+                eventId: 'js_test_edit_event_id',
+                properties: {
+                    js_test_key: 'js_test_value_overwrite'
+                }
+            });
+        }
+        
+            </script>
+        
         <p>Hello world! This is HTML5 Demo.</p>
         <button type="submit" id="track" onclick="trackAction()"> track </button>
         <button type="submit" id="login" onclick="loginAction()"> loginAction </button>
@@ -71,6 +102,10 @@
         <button type="submit" id="userAdd" onclick="userAddAction()"> userAddAction </button>
         <button type="submit" id="userDel" onclick="userDelAction()"> userDelAction </button>
         <button type="submit" id="setPageProperty" onclick="setPagePropertyAction()"> setPagePropertyAction </button>
-
+        
+        <button type="submit" id="first_check_id" onclick="trackFirstCheckID()"> trackFirstCheckID </button>
+        <button type="submit" id="track_update" onclick="trackUpdate()"> trackUpdate </button>
+        <button type="submit" id="track_overwrite" onclick="trackOverwrite()"> trackOverwrite </button>
+        
     </body>
 </html>
