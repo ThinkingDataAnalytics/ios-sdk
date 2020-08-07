@@ -11,14 +11,11 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 
 typedef NSString *kEDEventTypeName;
 
-/// @"track"
-FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK;
+FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK; /// @"track"
 
-/// @"track_update"
-FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_UPDATE;
+FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_UPDATE; /// @"track_update"
 
-/// @"track_overwrite"
-FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE;
+FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE; /// @"track_overwrite"
 
 
 @interface TDEventModel : NSObject
