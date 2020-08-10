@@ -688,7 +688,8 @@
 }
 
 - (void)test23CalibrateTimeWithNtp {
-    id _mockCalibrateTime = OCMPartialMock([TDCalibratedTimeWithNTP sharedInstanceWithNtpServerHost:@[@"ntp.aliyun.com"]]);
+    [[TDCalibratedTimeWithNTP sharedInstance] recalibrationWithNtps:@[@"ntp.aliyun.com"]];
+    id _mockCalibrateTime = OCMPartialMock([TDCalibratedTimeWithNTP sharedInstance]);
     void (^serverTimeInvocation)(NSInvocation *) = ^(NSInvocation *invocation) {
         NSTimeInterval value = 100;
         [invocation setReturnValue:&value];
