@@ -1719,20 +1719,17 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 #pragma mark - Calibrate time
-+ (void)calibrateTimeWithNtp:(NSString *)ntpServer {
-    if ([ntpServer isKindOfClass:[NSString class]] && ntpServer.length > 0) {
-        [ThinkingAnalyticsSDK calibrateTimeWithNtps:@[ntpServer]];
-    }
-}
-
-+ (void)calibrateTimeWithNtps:(NSArray *)ntpServer {
-    if (ntpServer) {
-        calibratedTime = [TDCalibratedTimeWithNTP sharedInstanceWithNtpServerHost:ntpServer];
-    }
-}
 
 + (void)calibrateTime:(NSTimeInterval)timestamp {
-    calibratedTime = [TDCalibratedTime sharedInstanceWithTimeInterval:timestamp/1000.0];
+    calibratedTime = [TDCalibratedTime sharedInstance];
+    [[TDCalibratedTime sharedInstance] recalibrationWithTimeInterval:timestamp/1000.];
+}
+
++ (void)calibrateTimeWithNtp:(NSString *)ntpServer {
+    if ([ntpServer isKindOfClass:[NSString class]] && ntpServer.length > 0) {
+        calibratedTime = [TDCalibratedTimeWithNTP sharedInstance];
+        [[TDCalibratedTimeWithNTP sharedInstance] recalibrationWithNtps:@[ntpServer]];
+    }
 }
 
 // for UNITY

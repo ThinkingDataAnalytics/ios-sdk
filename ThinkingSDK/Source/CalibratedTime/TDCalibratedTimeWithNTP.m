@@ -15,31 +15,19 @@
     static dispatch_once_t once;
     static id sharedInstance;
     dispatch_once(&once, ^{
-        sharedInstance = [[self alloc] initWithNtpServerHost:nil];
+        sharedInstance = [[TDCalibratedTimeWithNTP alloc] init];
     });
     return sharedInstance;
 }
 
-+ (instancetype)sharedInstanceWithNtpServerHost:(NSArray *)host {
-    static dispatch_once_t once;
-    static id sharedInstance;
-    dispatch_once(&once, ^{
-        sharedInstance = [[self alloc] initWithNtpServerHost:host];
+- (void)recalibrationWithNtps:(NSArray *)ntpServers {
+    _ntpGroup = dispatch_group_create();
+    NSString *queuelabel = [NSString stringWithFormat:@"cn.thinkingdata.ntp.%p", (void *)self];
+    dispatch_queue_t ntpSerialQueue = dispatch_queue_create([queuelabel UTF8String], DISPATCH_QUEUE_SERIAL);
+    
+    dispatch_group_async(_ntpGroup, ntpSerialQueue, ^{
+        [self startNtp:ntpServers];
     });
-    return sharedInstance;
-}
-
-- (instancetype)initWithNtpServerHost:(NSArray *)host {
-    if (self = [super init]) {
-        _ntpGroup = dispatch_group_create();
-        NSString *queuelabel = [NSString stringWithFormat:@"cn.thinkingdata.ntp.%p", (void *)self];
-        dispatch_queue_t ntpSerialQueue = dispatch_queue_create([queuelabel UTF8String], DISPATCH_QUEUE_SERIAL);
-        
-        dispatch_group_async(_ntpGroup, ntpSerialQueue, ^{
-            [self startNtp:host];
-        });
-    }
-    return self;
 }
 
 - (NSTimeInterval)serverTime {

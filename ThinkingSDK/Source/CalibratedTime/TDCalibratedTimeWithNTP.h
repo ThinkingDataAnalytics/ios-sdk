@@ -6,8 +6,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TDCalibratedTimeWithNTP : TDCalibratedTime
 
-+ (instancetype)sharedInstance;
-+ (instancetype)sharedInstanceWithNtpServerHost:(NSArray *)host;
+- (void)recalibrationWithNtps:(NSArray *)ntpServers;
 
 @end
 
