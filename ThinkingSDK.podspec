@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'ThinkingSDK'
-  s.version          = '2.5.5'
+  s.version          = '2.5.6'
   s.summary          = 'Official ThinkingData SDK for iOS.'
 
   s.homepage         = 'https://github.com/ThinkingDataAnalytics/ios-sdk'
