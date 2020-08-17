@@ -82,7 +82,6 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (nonatomic, strong) CTTelephonyNetworkInfo *telephonyInfo;
 @property (nonatomic, copy) NSDictionary<NSString *, id> *(^dynamicSuperProperties)(void);
 
-@property (atomic, strong) TDDeviceInfo *deviceInfo;
 @property (atomic, strong) TDSqliteDataQueue *dataQueue;
 @property (nonatomic, copy) TDConfig *config;
 @property (nonatomic, strong) NSDateFormatter *timeFormatter;

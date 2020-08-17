@@ -50,8 +50,8 @@
 }
 
 + (void)testChangeLibNameAndLibVersion {
-    [[ThinkingAnalyticsSDK sharedInstance] setCustomerLibInfoWithLibName:@"custom_lib_name" libVersion:@"custom_lib_version"];
-    [[ThinkingAnalyticsSDK sharedInstance] track:@"change_custom_lib_info"];
+    [ThinkingAnalyticsSDK setCustomerLibInfoWithLibName:@"changeLibName" libVersion:@"0.00.001"];
+    [[ThinkingAnalyticsSDK sharedInstance] track:@"trackNameCustomLibName"];
 }
 
 + (void)testUserSet {

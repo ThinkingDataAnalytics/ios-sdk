@@ -33,11 +33,11 @@ static NSString *kTAIntegrationExtra = @"TA-Integration-Extra";
     NSMutableDictionary *recordDic = [record mutableCopy];
     NSMutableDictionary *properties = [[recordDic objectForKey:@"properties"] mutableCopy];
     if ([[record objectForKey:@"#type"] isEqualToString:@"track"]) {
-        [properties addEntriesFromDictionary:self.automaticData];
+        [properties addEntriesFromDictionary:[TDDeviceInfo sharedManager].automaticData];
     }
     [recordDic setObject:properties forKey:@"properties"];
     NSString *jsonString = [TDJSONUtil JSONStringForObject:recordDic];
-    NSMutableURLRequest *request = [self buildDebugRequestWithJSONString:jsonString withAppid:appid withDeviceId:[self.automaticData objectForKey:@"#device_id"]];
+    NSMutableURLRequest *request = [self buildDebugRequestWithJSONString:jsonString withAppid:appid withDeviceId:[[TDDeviceInfo sharedManager].automaticData objectForKey:@"#device_id"]];
     dispatch_semaphore_t flushSem = dispatch_semaphore_create(0);
 
     void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -106,10 +106,10 @@ static NSString *kTAIntegrationExtra = @"TA-Integration-Extra";
     __block BOOL flushSucc = YES;
     
     NSDictionary *flushDic = @{
-                    @"data": recordArray,
-                    @"automaticData": self.automaticData,
-                    @"#app_id": self.appid,
-                    };
+        @"data": recordArray,
+        @"automaticData": [TDDeviceInfo sharedManager].automaticData,
+        @"#app_id": self.appid,
+    };
     
     NSString *jsonString = [TDJSONUtil JSONStringForObject:flushDic];
     NSMutableURLRequest *request = [self buildRequestWithJSONString:jsonString];

@@ -459,7 +459,7 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsAutoTrackEventType) {
  @param libName     对应事件表中 #lib预制属性, 默认为 "iOS".
  @param libVersion  对应事件表中 #lib_version 预制属性, 默认为当前SDK版本号.
  */
-- (void)setCustomerLibInfoWithLibName:(NSString *)libName libVersion:(NSString *)libVersion;
++ (void)setCustomerLibInfoWithLibName:(NSString *)libName libVersion:(NSString *)libVersion;
 
 /**
  设置公共事件属性

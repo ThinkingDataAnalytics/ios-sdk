@@ -91,7 +91,6 @@ static dispatch_queue_t networkQueue;
         _appid = appid;
         _isEnabled = YES;
         _config = [config copy];
-        self.deviceInfo = [TDDeviceInfo sharedManager];
         
         self.trackTimer = [NSMutableDictionary dictionary];
         _timeFormatter = [[NSDateFormatter alloc] init];
@@ -117,7 +116,6 @@ static dispatch_queue_t networkQueue;
         if (config.debugMode == ThinkingAnalyticsDebugOnly || config.debugMode == ThinkingAnalyticsDebug) {
             _network.serverDebugURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/data_debug", serverURL]];
         }
-        _network.automaticData = _deviceInfo.automaticData;
         _network.securityPolicy = config.securityPolicy;
     }
     return self;
@@ -136,7 +134,6 @@ static dispatch_queue_t networkQueue;
         _config.appid = appid;
         _config.configureURL = [NSString stringWithFormat:@"%@/config",serverURL];
         
-        self.deviceInfo = [TDDeviceInfo sharedManager];
         [self retrievePersistedData];
         [_config updateConfig];
         
@@ -176,7 +173,6 @@ static dispatch_queue_t networkQueue;
             _network.serverDebugURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/data_debug",serverURL]];
         }
         _network.serverURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/sync",serverURL]];
-        _network.automaticData = _deviceInfo.automaticData;
         _network.securityPolicy = config.securityPolicy;
         
         [self sceneSupportSetting];
@@ -255,7 +251,7 @@ static dispatch_queue_t networkQueue;
     }
     
     @synchronized (self.identifyId) {
-        self.identifyId = self.deviceInfo.uniqueId;
+        self.identifyId = [TDDeviceInfo sharedManager].uniqueId;
     }
     
     @synchronized (self.accountId) {
@@ -292,7 +288,7 @@ static dispatch_queue_t networkQueue;
 #pragma mark - LightInstance
 - (ThinkingAnalyticsSDK *)createLightInstance {
     ThinkingAnalyticsSDK *lightInstance = [[LightThinkingAnalyticsSDK alloc] initWithAPPID:self.appid withServerURL:self.serverURL withConfig:self.config];
-    lightInstance.identifyId = self.deviceInfo.uniqueId;
+    lightInstance.identifyId = [TDDeviceInfo sharedManager].uniqueId;
     lightInstance.relaunchInBackGround = self.relaunchInBackGround;
     lightInstance.isEnableSceneSupport = self.isEnableSceneSupport;
     return lightInstance;
@@ -309,7 +305,7 @@ static dispatch_queue_t networkQueue;
     [self unarchiveUploadInterval];
     
     if (self.identifyId.length == 0) {
-        self.identifyId = self.deviceInfo.uniqueId;
+        self.identifyId = [TDDeviceInfo sharedManager].uniqueId;
     }
     
     // 兼容老版本
@@ -970,7 +966,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [self track:nil withProperties:properties withType:TD_EVENT_TYPE_USER_APPEND withTime:time];
 }
 
-- (void)setCustomerLibInfoWithLibName:(NSString *)libName libVersion:(NSString *)libVersion {
++ (void)setCustomerLibInfoWithLibName:(NSString *)libName libVersion:(NSString *)libVersion {
     if (libName.length > 0) {
         [TDDeviceInfo sharedManager].libName = libName;
     }
@@ -978,11 +974,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         [TDDeviceInfo sharedManager].libVersion = libVersion;
     }
     [[TDDeviceInfo sharedManager] updateAutomaticData];
-    
-    for (NSString *key in instances.allKeys) {
-        ThinkingAnalyticsSDK *instance = instances[key];
-        instance.network.automaticData = instance.deviceInfo.automaticData;
-    }
 }
 
 - (NSString *)getDistinctId {
@@ -994,7 +985,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (NSString *)getDeviceId {
-    return _deviceInfo.deviceId;
+    return [TDDeviceInfo sharedManager].deviceId;
 }
 
 - (void)registerDynamicSuperProperties:(NSDictionary<NSString *, id> *(^)(void)) dynamicSuperProperties {
@@ -1277,7 +1268,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
     
     if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK]) {
-        properties[@"#app_version"] = self.deviceInfo.appVersion;
+        properties[@"#app_version"] = [TDDeviceInfo sharedManager].appVersion;
         properties[@"#network_type"] = [[self class] getNetWorkStates];
         
         if (_relaunchInBackGround) {
@@ -1574,7 +1565,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         return;
     
     _config.autoTrackEventType = eventType;
-    if (_deviceInfo.isFirstOpen && (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppInstall)) {
+    if ([TDDeviceInfo sharedManager].isFirstOpen && (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppInstall)) {
         [self autotrack:TD_APP_INSTALL_EVENT properties:nil withTime:nil];
     }
     
