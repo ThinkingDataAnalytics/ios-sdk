@@ -21,8 +21,9 @@ kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE    = @"track_overwrite";
 
 - (instancetype)initWithEventName:(NSString *)eventName eventType:(kEDEventTypeName)eventType {
     if (self = [[[TDEventModel class] alloc] init]) {
-        self.eventName = eventName;
-        self.eventType = eventType;
+        self.eventName = eventName ?: @"";
+        self.eventType = eventType ?: @"";
+        self.extraID = [TDDeviceInfo sharedManager].deviceId ?: @"";
     }
     return self;
 }
