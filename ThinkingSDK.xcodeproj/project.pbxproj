@@ -234,6 +234,7 @@
 			children = (
 				F35B130A242EFB9B00C630FC /* CalibratedTime */,
 				F3D1903E230137600043D595 /* AutoTrack */,
+				F3D1903D230137600043D595 /* ThinkingAnalyticsSDKPrivate.h */,
 				6E58D58824C7F06200DD11C1 /* TDEventModel.h */,
 				6E58D58924C7F06200DD11C1 /* TDEventModel.m */,
 				F3D1902F230137600043D595 /* TDKeychainItemWrapper.h */,
@@ -252,7 +253,6 @@
 				F3D1904F230137600043D595 /* TDNetwork.m */,
 				F3D1904C230137600043D595 /* TDConfig.h */,
 				F3D19031230137600043D595 /* TDConfig.m */,
-				F3D1903D230137600043D595 /* ThinkingAnalyticsSDKPrivate.h */,
 				F3D19017230136B30043D595 /* ThinkingSDK.h */,
 				F3D19054230137600043D595 /* ThinkingAnalyticsSDK.h */,
 				F3D1903A230137600043D595 /* ThinkingAnalyticsSDK.m */,

@@ -11,29 +11,31 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 
 typedef NSString *kEDEventTypeName;
 
-FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK; /// @"track"
+/**
+ 当eventType为 TD_EVENT_TYPE_TRACK_UNIQUE 时,
+ track事件会添加extraID为: #first_check_id
+ */
+FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_UNIQUE;
 
-FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_UPDATE; /// @"track_update"
-
-FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE; /// @"track_overwrite"
-
+/**
+ 当eventType为 TD_EVENT_TYPE_TRACK_UPDATE 或 TD_EVENT_TYPE_TRACK_OVERWRITE 时,
+ track事件会添加extraID为: #event_id
+ */
+FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_UPDATE;
+FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE;
 
 @interface TDEventModel : NSObject
 
-@property (nonatomic, copy) NSString *eventName;
-@property (nonatomic, copy) kEDEventTypeName eventType; // Default is TD_EVENT_TYPE_TRACK
+- (instancetype)init NS_UNAVAILABLE;
 
-/**
- 额外参数
- 当 eventType 为 TD_EVENT_TYPE_TRACK 时, 会添加此字段为 #first_check_id
- 当 eventType 为 TD_EVENT_TYPE_TRACK_UPDATE 或 TD_EVENT_TYPE_TRACK_OVERWRITE 时, 为添加此字段为 #event_id
- */
+- (instancetype)initWithEventName:(NSString * _Nullable)eventName eventType:(kEDEventTypeName)eventType;
+
+@property (nonatomic, copy, readonly) NSString *eventName;
+@property (nonatomic, copy, readonly) kEDEventTypeName eventType; // Default is TD_EVENT_TYPE_TRACK
+
 @property (nonatomic, copy) NSString *extraID;
-
 @property (nonatomic, strong) NSDictionary *properties;
-
 @property (nonatomic, assign) BOOL persist;
-
 - (void)configTime:(NSDate *)time timeZone:(NSTimeZone * _Nullable)timeZone;
 
 @end

@@ -26,12 +26,14 @@ static NSString * const TD_APP_INSTALL_EVENT                = @"ta_app_install";
 static NSString * const TD_CRASH_REASON                     = @"#app_crashed_reason";
 static NSString * const TD_RESUME_FROM_BACKGROUND           = @"#resume_from_background";
 
-static NSString * const TD_EVENT_TYPE_USER_DEL              = @"user_del";
-static NSString * const TD_EVENT_TYPE_USER_ADD              = @"user_add";
-static NSString * const TD_EVENT_TYPE_USER_SET              = @"user_set";
-static NSString * const TD_EVENT_TYPE_USER_SETONCE          = @"user_setOnce";
-static NSString * const TD_EVENT_TYPE_USER_UNSET            = @"user_unset";
-static NSString * const TD_EVENT_TYPE_USER_APPEND           = @"user_append";
+static kEDEventTypeName const TD_EVENT_TYPE_TRACK           = @"track";
+
+static kEDEventTypeName const TD_EVENT_TYPE_USER_DEL        = @"user_del";
+static kEDEventTypeName const TD_EVENT_TYPE_USER_ADD        = @"user_add";
+static kEDEventTypeName const TD_EVENT_TYPE_USER_SET        = @"user_set";
+static kEDEventTypeName const TD_EVENT_TYPE_USER_SETONCE    = @"user_setOnce";
+static kEDEventTypeName const TD_EVENT_TYPE_USER_UNSET      = @"user_unset";
+static kEDEventTypeName const TD_EVENT_TYPE_USER_APPEND     = @"user_append";
 
 static NSString * const TD_EVENT_START                      = @"eventStart";
 static NSString * const TD_EVENT_DURATION                   = @"eventDuration";
@@ -113,6 +115,8 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (nonatomic, copy) NSString *timeString;
 @property (nonatomic, assign) double zoneOffset;
 @property (nonatomic, assign) TimeValueType timeValueType;
+
+- (instancetype)initWithEventName:(NSString * _Nullable)eventName;
 
 @end
 

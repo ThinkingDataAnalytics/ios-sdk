@@ -2,16 +2,27 @@
 #import "TDEventModel.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 
-kEDEventTypeName const TD_EVENT_TYPE_TRACK              = @"track";
+kEDEventTypeName const TD_EVENT_TYPE_TRACK_UNIQUE       = @"track";
 kEDEventTypeName const TD_EVENT_TYPE_TRACK_UPDATE       = @"track_update";
 kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE    = @"track_overwrite";
 
+@interface TDEventModel ()
+
+@property (nonatomic, copy) NSString *eventName;
+@property (nonatomic, copy) kEDEventTypeName eventType;
+
+@end
+
 @implementation TDEventModel
 
-- (instancetype)init {
-    if (self = [super init]) {
-        self.persist = YES;
-        self.eventType = TD_EVENT_TYPE_TRACK;
+- (instancetype)initWithEventName:(NSString *)eventName {
+    return [self initWithEventName:eventName eventType:TD_EVENT_TYPE_TRACK];
+}
+
+- (instancetype)initWithEventName:(NSString *)eventName eventType:(kEDEventTypeName)eventType {
+    if (self = [[[TDEventModel class] alloc] init]) {
+        self.eventName = eventName;
+        self.eventType = eventType;
     }
     return self;
 }

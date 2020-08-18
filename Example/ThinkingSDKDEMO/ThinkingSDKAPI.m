@@ -24,28 +24,23 @@
 }
 
 + (void)testTrackWithFirstCheckID {
-    TDEventModel *eventModel = [[TDEventModel alloc] init];
-    eventModel.eventName = @"test_track_hahaha2";
+    TDEventModel *eventModel = [[TDEventModel alloc] initWithEventName:@"eventName_unique" eventType:TD_EVENT_TYPE_TRACK_UNIQUE];
     eventModel.extraID = @"event_id_hahaha2";
     eventModel.properties = @{ @"testTrack_firstCheckID_property2": @"property2"};
     [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
 }
 
 + (void)testTrackUpdate {
-    TDEventModel *eventModel = [[TDEventModel alloc] init];
-    eventModel.eventType = TD_EVENT_TYPE_TRACK_UPDATE;
-    eventModel.eventName = @"testTrack_eventID";
+    TDEventModel *eventModel = [[TDEventModel alloc] initWithEventName:@"eventName_edit" eventType:TD_EVENT_TYPE_TRACK_UPDATE];
     eventModel.extraID = @"eventIDxxx";
-    eventModel.properties = @{ @"testTrack_eventID_property": @"property_update2"};
+    eventModel.properties = @{ @"eventKeyEdit": @"eventKeyEdit_update", @"eventKeyEdit2": @"eventKeyEdit_update2" };
     [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
 }
 
 + (void)testTrackOverwrite {
-    TDEventModel *eventModel = [[TDEventModel alloc] init];
-    eventModel.eventType = TD_EVENT_TYPE_TRACK_OVERWRITE;
-    eventModel.eventName = @"testTrack_eventID";
+    TDEventModel *eventModel = [[TDEventModel alloc] initWithEventName:@"eventName_edit" eventType:TD_EVENT_TYPE_TRACK_OVERWRITE];
     eventModel.extraID = @"eventIDxxx";
-    eventModel.properties = @{ @"testTrack_eventID_property_overwrite": @"property_overwrite123"};
+    eventModel.properties = @{ @"eventKeyEdit": @"eventKeyEdit_overwrite"};
     [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
 }
 
