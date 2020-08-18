@@ -23,7 +23,9 @@ kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE    = @"track_overwrite";
     if (self = [[[TDEventModel class] alloc] init]) {
         self.eventName = eventName ?: @"";
         self.eventType = eventType ?: @"";
-        self.extraID = [TDDeviceInfo sharedManager].deviceId ?: @"";
+        if ([self.eventType isEqualToString:TD_EVENT_TYPE_TRACK_UNIQUE]) {
+            _extraID = [TDDeviceInfo sharedManager].deviceId ?: @"";
+        }
     }
     return self;
 }
@@ -46,6 +48,20 @@ kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE    = @"track_overwrite";
             timeFormatter.timeZone = [NSTimeZone localTimeZone];
         }
         self.timeString = [timeFormatter stringFromDate:time];
+    }
+}
+
+#pragma mark - Setter
+
+- (void)setExtraID:(NSString *)extraID {
+    if (extraID.length > 0) {
+        _extraID = extraID;
+    } else {
+        if ([self.eventType isEqualToString:TD_EVENT_TYPE_TRACK_UNIQUE]) {
+            TDLogError(@"Invalid firstCheckId. Use device Id");
+        } else {
+            TDLogError(@"Invalid eventId");
+        }
     }
 }
 
