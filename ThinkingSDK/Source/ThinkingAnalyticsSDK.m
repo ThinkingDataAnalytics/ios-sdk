@@ -1294,8 +1294,14 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     
     NSMutableDictionary *dataDic = [NSMutableDictionary dictionary];
     dataDic[@"#time"] = timeString;
-    dataDic[@"#type"] = eventData.eventType;
     dataDic[@"#uuid"] = [[NSUUID UUID] UUIDString];
+    if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK_UNIQUE]) {
+        /** 首次事件的eventType也是track, 但是会有#first_check_id,
+         所以初始化的时候首次事件的eventType是 track_unique, 用来判断是否需要extraID */
+        dataDic[@"#type"] = TD_EVENT_TYPE_TRACK;
+    } else {
+        dataDic[@"#type"] = eventData.eventType;
+    }
     
     if (self.identifyId) {
         dataDic[@"#distinct_id"] = self.identifyId;
@@ -1308,7 +1314,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
     
     if (eventData.extraID.length > 0) {
-        if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK]) {
+        if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK_UNIQUE]) {
             dataDic[@"#first_check_id"] = eventData.extraID;
         } else if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK_UPDATE]
                    || [eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK_OVERWRITE]) {

@@ -2,7 +2,7 @@
 #import "TDEventModel.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 
-kEDEventTypeName const TD_EVENT_TYPE_TRACK_UNIQUE       = @"track";
+kEDEventTypeName const TD_EVENT_TYPE_TRACK_UNIQUE       = @"track_unique";
 kEDEventTypeName const TD_EVENT_TYPE_TRACK_UPDATE       = @"track_update";
 kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE    = @"track_overwrite";
 
