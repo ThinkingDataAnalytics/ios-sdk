@@ -24,6 +24,8 @@
 }
 
 + (void)testTrackWithFirstCheckID {
+    [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"eventName_unique"];
+    sleep(1);
     TDEventModel *eventModel = [[TDEventModel alloc] initWithEventName:@"eventName_unique" eventType:TD_EVENT_TYPE_TRACK_UNIQUE];
     eventModel.extraID = @"event_id_hahaha2";
     eventModel.properties = @{ @"testTrack_firstCheckID_property2": @"property2"};
@@ -31,6 +33,8 @@
 }
 
 + (void)testTrackUpdate {
+    [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"eventName_edit"];
+    sleep(1);
     TDEventModel *eventModel = [[TDEventModel alloc] initWithEventName:@"eventName_edit" eventType:TD_EVENT_TYPE_TRACK_UPDATE];
     eventModel.extraID = @"eventIDxxx";
     eventModel.properties = @{ @"eventKeyEdit": @"eventKeyEdit_update", @"eventKeyEdit2": @"eventKeyEdit_update2" };
