@@ -1386,8 +1386,14 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (NSDictionary<NSString *,id> *)processParameters:(NSDictionary<NSString *,id> *)propertiesDict withType:(NSString *)eventType withEventName:(NSString *)eventName withAutoTrack:(BOOL)autotrack withH5:(BOOL)isH5 {
+    
+    BOOL isTrackEvent = [eventType isEqualToString:TD_EVENT_TYPE_TRACK]
+    || [eventType isEqualToString:TD_EVENT_TYPE_TRACK_UNIQUE]
+    || [eventType isEqualToString:TD_EVENT_TYPE_TRACK_UPDATE]
+    || [eventType isEqualToString:TD_EVENT_TYPE_TRACK_OVERWRITE];
+    
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
-    if ([eventType isEqualToString:TD_EVENT_TYPE_TRACK]) {
+    if (isTrackEvent) {
         [properties addEntriesFromDictionary:self.superProperty];
         NSDictionary *dynamicSuperPropertiesDict = self.dynamicSuperProperties?[self.dynamicSuperProperties() copy]:nil;
         if (dynamicSuperPropertiesDict && [dynamicSuperPropertiesDict isKindOfClass:[NSDictionary class]]) {
@@ -1402,7 +1408,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         }
     }
     
-    if ([eventType isEqualToString:TD_EVENT_TYPE_TRACK] && !isH5) {
+    if (isTrackEvent && !isH5) {
         if (![eventName isKindOfClass:[NSString class]] || eventName.length == 0) {
             NSString *errMsg = [NSString stringWithFormat:@"Event name is invalid. Event name must be NSString. got: %@ %@", [eventName class], eventName];
             TDLogError(errMsg);
