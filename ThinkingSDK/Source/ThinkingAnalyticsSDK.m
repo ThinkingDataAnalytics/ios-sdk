@@ -837,9 +837,19 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if ([self hasDisabled])
         return;
     propertieDict = [self processParameters:propertieDict withType:type withEventName:eventName withAutoTrack:NO withH5:YES];
-    TDEventModel *eventData = [[TDEventModel alloc] initWithEventName:eventName eventType:type];
+    TDEventModel *eventData;
+    
+    if (extraID.length > 0) {
+        if ([type isEqualToString:TD_EVENT_TYPE_TRACK]) {
+            eventData = [[TDEventModel alloc] initWithEventName:eventName eventType:TD_EVENT_TYPE_TRACK_UNIQUE];
+        } else {
+            eventData = [[TDEventModel alloc] initWithEventName:eventName eventType:type];
+        }
+        eventData.extraID = extraID;
+    } else {
+        eventData = [[TDEventModel alloc] initWithEventName:eventName];
+    }
     eventData.properties = [propertieDict copy];
-    eventData.extraID = extraID;
 
     if ([propertieDict objectForKey:@"#zone_offset"]) {
         eventData.zoneOffset = [[propertieDict objectForKey:@"#zone_offset"] doubleValue];
@@ -886,6 +896,14 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         eventData.timeValueType = TDTimeValueTypeNone;
     }
     [self tdInternalTrack:eventData];
+}
+
++ (BOOL)isTrackEvent:(NSString *)eventType {
+    return [TD_EVENT_TYPE_TRACK isEqualToString:eventType]
+    || [TD_EVENT_TYPE_TRACK_UNIQUE isEqualToString:eventType]
+    || [TD_EVENT_TYPE_TRACK_UPDATE isEqualToString:eventType]
+    || [TD_EVENT_TYPE_TRACK_OVERWRITE isEqualToString:eventType]
+    ;
 }
 
 #pragma mark -
@@ -1254,8 +1272,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         offset = eventData.zoneOffset;
     }
     
-    if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK]
-        || [eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK_UNIQUE]) {
+    if ([ThinkingAnalyticsSDK isTrackEvent:eventData.eventType]) {
         properties[@"#app_version"] = [TDDeviceInfo sharedManager].appVersion;
         properties[@"#network_type"] = [[self class] getNetWorkStates];
         
@@ -1372,7 +1389,8 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     calibratedData[@"#time"] = timeString;
     NSMutableDictionary *properties = [NSMutableDictionary dictionaryWithDictionary:[calibratedData objectForKey:@"properties"]];
 
-    if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK] && eventData.timeValueType != TDTimeValueTypeTimeOnly) {
+    if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK]
+        && eventData.timeValueType != TDTimeValueTypeTimeOnly) {
         properties[@"#zone_offset"] = @(offset);
     }
     calibratedData[@"properties"] = properties;
@@ -1387,10 +1405,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 - (NSDictionary<NSString *,id> *)processParameters:(NSDictionary<NSString *,id> *)propertiesDict withType:(NSString *)eventType withEventName:(NSString *)eventName withAutoTrack:(BOOL)autotrack withH5:(BOOL)isH5 {
     
-    BOOL isTrackEvent = [eventType isEqualToString:TD_EVENT_TYPE_TRACK]
-    || [eventType isEqualToString:TD_EVENT_TYPE_TRACK_UNIQUE]
-    || [eventType isEqualToString:TD_EVENT_TYPE_TRACK_UPDATE]
-    || [eventType isEqualToString:TD_EVENT_TYPE_TRACK_OVERWRITE];
+    BOOL isTrackEvent = [ThinkingAnalyticsSDK isTrackEvent:eventType];
     
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
     if (isTrackEvent) {

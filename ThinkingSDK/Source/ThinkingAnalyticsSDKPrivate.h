@@ -103,6 +103,7 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 - (NSInteger)saveEventsData:(NSDictionary *)data;
 - (void)flushImmediately:(NSDictionary *)dataDic;
 - (BOOL)hasDisabled;
++ (BOOL)isTrackEvent:(NSString *)eventType;
 - (BOOL)checkEventProperties:(NSDictionary *)properties withEventType:(NSString *)eventType haveAutoTrackEvents:(BOOL)haveAutoTrackEvents;
 - (void)archiveUploadSize:(NSNumber *)uploadSize;
 - (void)archiveUploadInterval:(NSNumber *)uploadInterval;

@@ -32,7 +32,8 @@ static NSString *kTAIntegrationExtra = @"TA-Integration-Extra";
     __block int debugResult = -1;
     NSMutableDictionary *recordDic = [record mutableCopy];
     NSMutableDictionary *properties = [[recordDic objectForKey:@"properties"] mutableCopy];
-    if ([[record objectForKey:@"#type"] isEqualToString:@"track"]) {
+    
+    if ([ThinkingAnalyticsSDK isTrackEvent:[record objectForKey:@"#type"]]) {
         [properties addEntriesFromDictionary:[TDDeviceInfo sharedManager].automaticData];
     }
     [recordDic setObject:properties forKey:@"properties"];
