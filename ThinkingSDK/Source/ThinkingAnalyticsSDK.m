@@ -1320,13 +1320,13 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         dataDic[@"#type"] = eventData.eventType;
     }
     
-    if (self.identifyId) {
+    if (self.identifyId.length > 0) {
         dataDic[@"#distinct_id"] = self.identifyId;
     }
     if (properties) {
         dataDic[@"properties"] = [NSDictionary dictionaryWithDictionary:properties];
     }
-    if (eventData.eventName) {
+    if (eventData.eventName.length > 0) {
         dataDic[@"#event_name"] = eventData.eventName;
     }
     
@@ -1339,7 +1339,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         }
     }
     
-    if (self.accountId) {
+    if (self.accountId.length > 0) {
         dataDic[@"#account_id"] = self.accountId;
     }
     
