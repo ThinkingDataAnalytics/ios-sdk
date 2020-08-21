@@ -116,8 +116,12 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (nonatomic, copy) NSString *timeString;
 @property (nonatomic, assign) double zoneOffset;
 @property (nonatomic, assign) TimeValueType timeValueType;
+@property (nonatomic, copy) NSString *extraID;
+@property (nonatomic, assign) BOOL persist;
 
 - (instancetype)initWithEventName:(NSString * _Nullable)eventName;
+
+- (instancetype _Nonnull )initWithEventName:(NSString * _Nullable)eventName eventType:(kEDEventTypeName _Nonnull )eventType;
 
 @end
 

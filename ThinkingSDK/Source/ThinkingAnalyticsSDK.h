@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "TDEventModel.h"
+#import "TDUniqueEventModel.h"
+#import "TDEditableEventModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -50,6 +51,8 @@ typedef NS_OPTIONS(NSInteger, TDSSLPinningMode) {
  自定义 HTTPS 认证
 */
 typedef NSURLSessionAuthChallengeDisposition (^TDURLSessionDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential *_Nullable __autoreleasing *_Nullable credential);
+
+@class TDEventModel;
 
 /**
  HTTPS 请求进行证书验证的策略

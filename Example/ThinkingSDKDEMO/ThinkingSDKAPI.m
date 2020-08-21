@@ -23,29 +23,34 @@
     [[ThinkingAnalyticsSDK sharedInstance] track:@"test" properties:nil time:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
 }
 
++ (void)testTrackWithDefaultFirstCheckID {
+    [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"eventName_unique_default"];
+    TDUniqueEventModel *uniqueModel = [[TDUniqueEventModel alloc] initWithEventName:@"eventName_unique_default"];
+    uniqueModel.properties = @{ @"TestProKey": @"TestProValue"};
+    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:uniqueModel];
+}
+
 + (void)testTrackWithFirstCheckID {
     [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"eventName_unique"];
     sleep(1);
-    TDEventModel *eventModel = [[TDEventModel alloc] initWithEventName:@"eventName_unique" eventType:TD_EVENT_TYPE_TRACK_UNIQUE];
-    eventModel.extraID = @"event_id_hahaha2";
-    eventModel.properties = @{ @"testTrack_firstCheckID_property2": @"property2"};
-    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
+    TDUniqueEventModel *uniqueModel = [[TDUniqueEventModel alloc] initWithEventName:@"eventName_unique" firstCheckID:@"customFirstCheckID"];
+    uniqueModel.properties = @{ @"TestProKey": @"TestProValue"};
+    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:uniqueModel];
 }
 
 + (void)testTrackUpdate {
     [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"eventName_edit"];
     sleep(1);
-    TDEventModel *eventModel = [[TDEventModel alloc] initWithEventName:@"eventName_edit" eventType:TD_EVENT_TYPE_TRACK_UPDATE];
-    eventModel.extraID = @"eventIDxxx";
-    eventModel.properties = @{ @"eventKeyEdit": @"eventKeyEdit_update", @"eventKeyEdit2": @"eventKeyEdit_update2" };
-    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
+    
+    TDUpdateEventModel *updateModel = [[TDUpdateEventModel alloc] initWithEventName:@"eventName_edit" eventID:@"eventIDxxx"];
+    updateModel.properties = @{ @"eventKeyEdit": @"eventKeyEdit_update", @"eventKeyEdit2": @"eventKeyEdit_update2" };
+    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:updateModel];
 }
 
 + (void)testTrackOverwrite {
-    TDEventModel *eventModel = [[TDEventModel alloc] initWithEventName:@"eventName_edit" eventType:TD_EVENT_TYPE_TRACK_OVERWRITE];
-    eventModel.extraID = @"eventIDxxx";
-    eventModel.properties = @{ @"eventKeyEdit": @"eventKeyEdit_overwrite"};
-    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:eventModel];
+    TDOverwriteEventModel *overwriteModel = [[TDOverwriteEventModel alloc] initWithEventName:@"eventName_edit" eventID:@"eventIDxxx"];
+    overwriteModel.properties = @{ @"eventKeyEdit": @"eventKeyEdit_overwrite" };
+    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:overwriteModel];
 }
 
 + (void)testChangeLibNameAndLibVersion {

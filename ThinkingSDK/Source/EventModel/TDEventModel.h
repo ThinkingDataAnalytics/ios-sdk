@@ -1,4 +1,3 @@
-
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -27,15 +26,13 @@ FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE;
 @interface TDEventModel : NSObject
 
 - (instancetype)init NS_UNAVAILABLE;
-
-- (instancetype)initWithEventName:(NSString * _Nullable)eventName eventType:(kEDEventTypeName)eventType;
++ (instancetype)new NS_UNAVAILABLE;
 
 @property (nonatomic, copy, readonly) NSString *eventName;
 @property (nonatomic, copy, readonly) kEDEventTypeName eventType; // Default is TD_EVENT_TYPE_TRACK
 
-@property (nonatomic, copy) NSString *extraID;
 @property (nonatomic, strong) NSDictionary *properties;
-@property (nonatomic, assign) BOOL persist;
+
 - (void)configTime:(NSDate *)time timeZone:(NSTimeZone * _Nullable)timeZone;
 
 @end
