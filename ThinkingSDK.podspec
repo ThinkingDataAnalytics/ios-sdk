@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.default_subspec  = 'Core'
     
   s.subspec 'Core' do |core|
-     core.source_files        = 'ThinkingSDK/Source/*.{m,h}', 'ThinkingSDK/Source/autotrack/*.{m,h}', 'ThinkingSDK/Source/CalibratedTime/*.{c,m,h}'
+     core.source_files        = 'ThinkingSDK/Source/*.{m,h}', 'ThinkingSDK/Source/autotrack/*.{m,h}', 'ThinkingSDK/Source/CalibratedTime/*.{c,m,h}', 'ThinkingSDK/Source/EventModel/*.{m,h}'
      core.public_header_files = 'ThinkingSDK/Source/ThinkingAnalyticsSDK.h', 'ThinkingSDK/Source/ThinkingSDK.h'
      core.resources           = ['ThinkingSDK/TDAnalyticsSDK.bundle']
   end
