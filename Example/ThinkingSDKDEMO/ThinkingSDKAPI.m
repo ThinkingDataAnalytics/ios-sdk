@@ -25,7 +25,7 @@
 
 + (void)testTrackWithDefaultFirstCheckID {
     [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"eventName_unique_default"];
-    TDUniqueEventModel *uniqueModel = [[TDUniqueEventModel alloc] initWithEventName:@"eventName_unique_default"];
+    TDFirstEventModel *uniqueModel = [[TDFirstEventModel alloc] initWithEventName:@"eventName_unique_default"];
     uniqueModel.properties = @{ @"TestProKey": @"TestProValue"};
     [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:uniqueModel];
 }
@@ -33,7 +33,7 @@
 + (void)testTrackWithFirstCheckID {
     [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"eventName_unique"];
     sleep(1);
-    TDUniqueEventModel *uniqueModel = [[TDUniqueEventModel alloc] initWithEventName:@"eventName_unique" firstCheckID:@"customFirstCheckID"];
+    TDFirstEventModel *uniqueModel = [[TDFirstEventModel alloc] initWithEventName:@"eventName_unique" firstCheckID:@"customFirstCheckID"];
     uniqueModel.properties = @{ @"TestProKey": @"TestProValue"};
     [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:uniqueModel];
 }

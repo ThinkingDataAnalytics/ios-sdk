@@ -841,7 +841,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     
     if (extraID.length > 0) {
         if ([type isEqualToString:TD_EVENT_TYPE_TRACK]) {
-            eventData = [[TDEventModel alloc] initWithEventName:eventName eventType:TD_EVENT_TYPE_TRACK_UNIQUE];
+            eventData = [[TDEventModel alloc] initWithEventName:eventName eventType:TD_EVENT_TYPE_TRACK_FIRST];
         } else {
             eventData = [[TDEventModel alloc] initWithEventName:eventName eventType:type];
         }
@@ -900,7 +900,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 + (BOOL)isTrackEvent:(NSString *)eventType {
     return [TD_EVENT_TYPE_TRACK isEqualToString:eventType]
-    || [TD_EVENT_TYPE_TRACK_UNIQUE isEqualToString:eventType]
+    || [TD_EVENT_TYPE_TRACK_FIRST isEqualToString:eventType]
     || [TD_EVENT_TYPE_TRACK_UPDATE isEqualToString:eventType]
     || [TD_EVENT_TYPE_TRACK_OVERWRITE isEqualToString:eventType]
     ;
@@ -1312,9 +1312,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     NSMutableDictionary *dataDic = [NSMutableDictionary dictionary];
     dataDic[@"#time"] = timeString;
     dataDic[@"#uuid"] = [[NSUUID UUID] UUIDString];
-    if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK_UNIQUE]) {
+    if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK_FIRST]) {
         /** 首次事件的eventType也是track, 但是会有#first_check_id,
-         所以初始化的时候首次事件的eventType是 track_unique, 用来判断是否需要extraID */
+         所以初始化的时候首次事件的eventType是 track_first, 用来判断是否需要extraID */
         dataDic[@"#type"] = TD_EVENT_TYPE_TRACK;
     } else {
         dataDic[@"#type"] = eventData.eventType;
@@ -1331,7 +1331,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
     
     if (eventData.extraID.length > 0) {
-        if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK_UNIQUE]) {
+        if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK_FIRST]) {
             dataDic[@"#first_check_id"] = eventData.extraID;
         } else if ([eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK_UPDATE]
                    || [eventData.eventType isEqualToString:TD_EVENT_TYPE_TRACK_OVERWRITE]) {

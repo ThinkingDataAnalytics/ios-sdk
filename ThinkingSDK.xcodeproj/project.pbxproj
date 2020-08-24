@@ -22,8 +22,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		6E4DF53924EF6ED800BB1AB4 /* TDUniqueEventModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E4DF53724EF6ED800BB1AB4 /* TDUniqueEventModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6E4DF53A24EF6ED800BB1AB4 /* TDUniqueEventModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4DF53824EF6ED800BB1AB4 /* TDUniqueEventModel.m */; };
+		6E4DF53924EF6ED800BB1AB4 /* TDFirstEventModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E4DF53724EF6ED800BB1AB4 /* TDFirstEventModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6E4DF53A24EF6ED800BB1AB4 /* TDFirstEventModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4DF53824EF6ED800BB1AB4 /* TDFirstEventModel.m */; };
 		6E4DF53D24EF6F3F00BB1AB4 /* TDEditableEventModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E4DF53B24EF6F3F00BB1AB4 /* TDEditableEventModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6E4DF53E24EF6F3F00BB1AB4 /* TDEditableEventModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4DF53C24EF6F3F00BB1AB4 /* TDEditableEventModel.m */; };
 		6E58D58A24C7F06200DD11C1 /* TDEventModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E58D58824C7F06200DD11C1 /* TDEventModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -97,8 +97,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6E4DF53724EF6ED800BB1AB4 /* TDUniqueEventModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDUniqueEventModel.h; sourceTree = "<group>"; };
-		6E4DF53824EF6ED800BB1AB4 /* TDUniqueEventModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDUniqueEventModel.m; sourceTree = "<group>"; };
+		6E4DF53724EF6ED800BB1AB4 /* TDFirstEventModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDFirstEventModel.h; sourceTree = "<group>"; };
+		6E4DF53824EF6ED800BB1AB4 /* TDFirstEventModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDFirstEventModel.m; sourceTree = "<group>"; };
 		6E4DF53B24EF6F3F00BB1AB4 /* TDEditableEventModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDEditableEventModel.h; sourceTree = "<group>"; };
 		6E4DF53C24EF6F3F00BB1AB4 /* TDEditableEventModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDEditableEventModel.m; sourceTree = "<group>"; };
 		6E58D58824C7F06200DD11C1 /* TDEventModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDEventModel.h; sourceTree = "<group>"; };
@@ -182,8 +182,8 @@
 			children = (
 				6E58D58824C7F06200DD11C1 /* TDEventModel.h */,
 				6E58D58924C7F06200DD11C1 /* TDEventModel.m */,
-				6E4DF53724EF6ED800BB1AB4 /* TDUniqueEventModel.h */,
-				6E4DF53824EF6ED800BB1AB4 /* TDUniqueEventModel.m */,
+				6E4DF53724EF6ED800BB1AB4 /* TDFirstEventModel.h */,
+				6E4DF53824EF6ED800BB1AB4 /* TDFirstEventModel.m */,
 				6E4DF53B24EF6F3F00BB1AB4 /* TDEditableEventModel.h */,
 				6E4DF53C24EF6F3F00BB1AB4 /* TDEditableEventModel.m */,
 			);
@@ -328,7 +328,7 @@
 				F35B1314242EFB9B00C630FC /* TDNTPTypes.h in Headers */,
 				F3D19073230137610043D595 /* TDDeviceInfo.h in Headers */,
 				F3D19066230137600043D595 /* NSObject+TDSwizzle.h in Headers */,
-				6E4DF53924EF6ED800BB1AB4 /* TDUniqueEventModel.h in Headers */,
+				6E4DF53924EF6ED800BB1AB4 /* TDFirstEventModel.h in Headers */,
 				F35B1316242EFB9B00C630FC /* TDNTPServer.h in Headers */,
 				F30338C023AB57750020C129 /* TDSecurityPolicy.h in Headers */,
 				F35B1315242EFB9B00C630FC /* TDCalibratedTime.h in Headers */,
@@ -476,7 +476,7 @@
 				F30338BC23AA0E600020C129 /* TDToastView.m in Sources */,
 				F3D1906C230137610043D595 /* NSObject+TDSwizzle.m in Sources */,
 				F3D1905A230137600043D595 /* TDOSLog.m in Sources */,
-				6E4DF53A24EF6ED800BB1AB4 /* TDUniqueEventModel.m in Sources */,
+				6E4DF53A24EF6ED800BB1AB4 /* TDFirstEventModel.m in Sources */,
 				F3D19074230137610043D595 /* TDKeychainItemWrapper.m in Sources */,
 				F3D19075230137610043D595 /* TDNetwork.m in Sources */,
 				F3D19060230137600043D595 /* NSData+TDGzip.m in Sources */,

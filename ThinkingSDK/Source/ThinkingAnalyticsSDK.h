@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "TDUniqueEventModel.h"
+#import "TDFirstEventModel.h"
 #import "TDEditableEventModel.h"
 
 NS_ASSUME_NONNULL_BEGIN

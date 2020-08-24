@@ -2,7 +2,7 @@
 #import "TDEventModel.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 
-kEDEventTypeName const TD_EVENT_TYPE_TRACK_UNIQUE       = @"track_unique";
+kEDEventTypeName const TD_EVENT_TYPE_TRACK_FIRST       = @"track_first";
 kEDEventTypeName const TD_EVENT_TYPE_TRACK_UPDATE       = @"track_update";
 kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE    = @"track_overwrite";
 
@@ -24,7 +24,7 @@ kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE    = @"track_overwrite";
         self.persist = YES;
         self.eventName = eventName ?: @"";
         self.eventType = eventType ?: @"";
-        if ([self.eventType isEqualToString:TD_EVENT_TYPE_TRACK_UNIQUE]) {
+        if ([self.eventType isEqualToString:TD_EVENT_TYPE_TRACK_FIRST]) {
             _extraID = [TDDeviceInfo sharedManager].deviceId ?: @"";
         }
     }
@@ -58,7 +58,7 @@ kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE    = @"track_overwrite";
     if (extraID.length > 0) {
         _extraID = extraID;
     } else {
-        if ([self.eventType isEqualToString:TD_EVENT_TYPE_TRACK_UNIQUE]) {
+        if ([self.eventType isEqualToString:TD_EVENT_TYPE_TRACK_FIRST]) {
             TDLogError(@"Invalid firstCheckId. Use device Id");
         } else {
             TDLogError(@"Invalid eventId");
