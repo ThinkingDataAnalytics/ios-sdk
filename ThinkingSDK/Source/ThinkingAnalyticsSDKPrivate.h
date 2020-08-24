@@ -15,6 +15,8 @@
 #import "TDSqliteDataQueue.h"
 #import "TDEventModel.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 static NSString * const TD_APP_START_EVENT                  = @"ta_app_start";
 static NSString * const TD_APP_START_BACKGROUND_EVENT       = @"ta_app_bg_start";
 static NSString * const TD_APP_END_EVENT                    = @"ta_app_end";
@@ -130,3 +132,5 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 - (instancetype)initWithAPPID:(NSString *)appID withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config;
 
 @end
+
+NS_ASSUME_NONNULL_END
