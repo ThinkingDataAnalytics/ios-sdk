@@ -1,4 +1,4 @@
-**v2.6.0** (2020-08-20)
+**v2.6.0** (2020-08-24)
 - 增加新的API. 现在可以提交特殊事件:
     - 首次事件: 带有 `#first_check_id` 字段
     - 更新/重写事件: eventType为`track_update`或`track_overwrite`
