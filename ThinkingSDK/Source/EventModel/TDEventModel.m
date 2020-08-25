@@ -41,7 +41,7 @@ kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE    = @"track_overwrite";
         timeFormatter.dateFormat = kDefaultTimeFormat;
         timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-        if (timeZone || ![timeZone isKindOfClass:[NSTimeZone class]]) {
+        if (timeZone && [timeZone isKindOfClass:[NSTimeZone class]]) {
             self.timeValueType = TDTimeValueTypeAll;
             timeFormatter.timeZone = timeZone;
         } else {

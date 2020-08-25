@@ -7,7 +7,7 @@
 
 #import "TDKeychainItemWrapper.h"
 
-NSString *const VERSION = @"2.6.0";
+NSString *const VERSION = @"2.6.1";
 
 @interface TDDeviceInfo ()
 
