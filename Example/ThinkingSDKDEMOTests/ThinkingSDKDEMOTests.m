@@ -739,8 +739,6 @@
         XCTAssertNotNil(dataDic);
         XCTAssertNotNil(dataDic[@"#uuid"]);
         
-        XCTAssertEqualObjects(dataDic[@"#type"], @"track");
-        
         XCTAssertNotNil(properties[@"#app_version"]);
         XCTAssertTrue([properties[@"#app_version"] isKindOfClass:[NSString class]]);
         if (properties[@"#network_type"]) {
@@ -748,45 +746,43 @@
             XCTAssertTrue([network containsObject:properties[@"#network_type"]]);
         }
         
-        if ([dataDic[@"#event_type"] isEqualToString:@"track"]) {
-            XCTAssertNotNil(dataDic[@"#first_check_id"]);
-            XCTAssertEqualObjects(dataDic[@"#first_check_id"], @"test_first_check_id");
-            XCTAssertEqualObjects(dataDic[@"#event_name"], @"test_event_name_first_check_id");
-        } else if ([dataDic[@"#event_type"] isEqualToString:@"track_update"]) {
-            XCTAssertNotNil(dataDic[@"#event_id"]);
-            XCTAssertEqualObjects(dataDic[@"#event_id"], @"test_update_event_id");
-            XCTAssertEqualObjects(dataDic[@"#event_name"], @"test_name_trackUpdate");
-        } else if ([dataDic[@"#event_type"] isEqualToString:@"track_overwrite"]) {
-            XCTAssertNotNil(dataDic[@"#event_id"]);
-            XCTAssertEqualObjects(dataDic[@"#event_id"], @"test_overwrite_event_id");
-            XCTAssertEqualObjects(dataDic[@"#event_name"], @"test_name_trackOverwrite");
-        }
+//        if ([dataDic[@"#event_type"] isEqualToString:@"track_first"]) {
+//            XCTAssertNotNil(dataDic[@"#first_check_id"]);
+//            XCTAssertEqualObjects(dataDic[@"#first_check_id"], @"test_first_check_id");
+//            XCTAssertEqualObjects(dataDic[@"#event_name"], @"test_event_name_first_check_id");
+//        } else if ([dataDic[@"#event_type"] isEqualToString:@"track_update"]) {
+//            XCTAssertNotNil(dataDic[@"#event_id"]);
+//            XCTAssertEqualObjects(dataDic[@"#event_id"], @"test_update_event_id");
+//            XCTAssertEqualObjects(dataDic[@"#event_name"], @"test_name_trackUpdate");
+//        } else if ([dataDic[@"#event_type"] isEqualToString:@"track_overwrite"]) {
+//            XCTAssertNotNil(dataDic[@"#event_id"]);
+//            XCTAssertEqualObjects(dataDic[@"#event_id"], @"test_overwrite_event_id");
+//            XCTAssertEqualObjects(dataDic[@"#event_name"], @"test_name_trackOverwrite");
+//        }
     };
     OCMStub([_mockThinkingInstance saveEventsData:[OCMArg any]]).andDo(saveEventsDataInvocation);
-
-    TDEventModel *eventModel_firstCheckID = [TDEventModel new];
-    eventModel_firstCheckID.extraID = @"test_first_check_id";
-    eventModel_firstCheckID.eventName = @"test_event_name_first_check_id";
-    eventModel_firstCheckID.properties = @{
+    
+    // #first_check_id
+    TDFirstEventModel *firstModel = [[TDFirstEventModel alloc] initWithEventName:@"EventName_FirstCheckID" firstCheckID:@"event_first_check_id"];
+    firstModel.properties = @{
         @"key_first_check_id": @"value_first_check_id",
     };
-    [_mockThinkingInstance trackWithEventModel:eventModel_firstCheckID];
+    [_mockThinkingInstance trackWithEventModel:firstModel];
     
-    TDEventModel *eventModel_update = [TDEventModel new];
-    eventModel_update.extraID = @"test_update_event_id";
-    eventModel_update.eventName = @"test_name_trackUpdate";
-    eventModel_update.properties = @{
-        @"key_update": @"value_update",
+    // track_update
+    TDUpdateEventModel *updateModel = [[TDUpdateEventModel alloc] initWithEventName:@"EventName_Edit" eventID:@"test_event_id"];
+    updateModel.properties = @{
+        @"custom_edit_key": @"custom_edit_value",
+        @"custom_edit_key2": @"custom_edit_value2",
     };
-    [_mockThinkingInstance trackWithEventModel:eventModel_update];
-
-    TDEventModel *eventModel_overwrite = [TDEventModel new];
-    eventModel_overwrite.extraID = @"test_overwrite_event_id";
-    eventModel_overwrite.eventName = @"test_name_trackOverwrite";
-    eventModel_overwrite.properties = @{
-        @"key_overwrite": @"value_overwrite",
+    [_mockThinkingInstance trackWithEventModel:updateModel];
+    
+    // track_overwrite
+    TDOverwriteEventModel *overwriteModel = [[TDOverwriteEventModel alloc] initWithEventName:@"EventName_Edit" eventID:@"test_event_id"];
+    overwriteModel.properties = @{
+        @"custom_edit_key": @"custom_edit_value_overwrite",
     };
-    [_mockThinkingInstance trackWithEventModel:eventModel_overwrite];
+    [_mockThinkingInstance trackWithEventModel:overwriteModel];
 
     [self waitForThinkingQueues];
 }

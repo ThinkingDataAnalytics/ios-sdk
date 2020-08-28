@@ -697,7 +697,12 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
 				);
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/../ThinkingSDK/Source";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../ThinkingSDK/Source",
+					"$(SRCROOT)/../ThinkingSDK/Source/EventModel",
+					"$(SRCROOT)/../ThinkingSDK/Source/CalibratedTime",
+					"$(SRCROOT)/../ThinkingSDK/Source/AutoTrack",
+				);
 				INFOPLIST_FILE = ThinkingSDKDEMOTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -721,7 +726,12 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
 				);
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/../ThinkingSDK/Source";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../ThinkingSDK/Source",
+					"$(SRCROOT)/../ThinkingSDK/Source/EventModel",
+					"$(SRCROOT)/../ThinkingSDK/Source/CalibratedTime",
+					"$(SRCROOT)/../ThinkingSDK/Source/AutoTrack",
+				);
 				INFOPLIST_FILE = ThinkingSDKDEMOTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
