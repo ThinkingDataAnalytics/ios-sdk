@@ -17,18 +17,15 @@
 @end
 
 @implementation NTPViewController
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    self.view.backgroundColor = [UIColor whiteColor];
+- (void)setView
+{
     [self startCalibrateTime];
 }
-
 - (void)startCalibrateTime {
     netAssociation = [[NetAssociation alloc] initWithServerName:[NetAssociation ipAddrFromName:@"time.asia.apple.com"]];
     netAssociation.delegate = self;
     [netAssociation sendTimeQuery];
+//    [ThinkingAnalyticsSDK calibrateTimeWithNtp:@"time.asia.apple.com"];
 }
 
 - (void)reportFromDelegate {

@@ -1,0 +1,12 @@
+#ifndef ThinkingSDKDEMO_PrefixHeader_pch
+#define ThinkingSDKDEMO_PrefixHeader_pch
+
+#ifdef __OBJC__
+
+#import "TDMacro.h"
+#import "UIColor+TDUtil.h"
+#import "Masonry.h"
+
+
+#endif /* __OBJC__ */
+#endif /* ThinkingSDKDEMO_PrefixHeader_pch */
