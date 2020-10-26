@@ -569,8 +569,8 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyGPRS]) {
         newtworkType = @"2G";
     }
-#ifdef __IPHONE_14_0
-        if (@available(iOS 14.0, *)) {
+#ifdef __IPHONE_14_1
+        if (@available(iOS 14.1, *)) {
             if([currentRadioAccessTechnology isEqual:CTRadioAccessTechnologyNRNSA]||[currentRadioAccessTechnology isEqual:CTRadioAccessTechnologyNR])
             {
                 newtworkType = @"5G";

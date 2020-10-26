@@ -108,6 +108,7 @@
 //    [ThinkingAnalyticsSDK startWithAppId:_appidTF.text withUrl:_serverTF.text];
     [ThinkingAnalyticsSDK startWithAppId:_appidTF.text withUrl:_serverTF.text withConfig:config];
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAppStart|ThinkingAnalyticsEventTypeAppEnd|ThinkingAnalyticsEventTypeAppInstall|ThinkingAnalyticsEventTypeAppClick|ThinkingAnalyticsEventTypeAppViewCrash];
     [self.navigationController popViewControllerAnimated:true];
     if(_callback != nil)
     {
