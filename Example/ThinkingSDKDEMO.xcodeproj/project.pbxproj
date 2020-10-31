@@ -7,11 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E3B49E8250603520021B467 /* ActionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3B49E7250603520021B467 /* ActionModel.m */; };
+		6E3B49EB250603CC0021B467 /* TDUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3B49EA250603CC0021B467 /* TDUtil.m */; };
+		6E4936242514CBD800F27296 /* TDUserIDVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4936232514CBD800F27296 /* TDUserIDVC.m */; };
+		6E49362C251872F100F27296 /* TDH5VC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E49362B251872F100F27296 /* TDH5VC.m */; };
+		6E493633251892B700F27296 /* TDColCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E493632251892B700F27296 /* TDColCell.m */; };
 		6EA0E35A24C84B5D008FCF11 /* SpaceMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6EA0E35824C84B5D008FCF11 /* SpaceMono-Bold.ttf */; };
 		6EA0E35B24C84B5D008FCF11 /* SpaceMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6EA0E35924C84B5D008FCF11 /* SpaceMono-Regular.ttf */; };
 		6EA0E35D24C84C74008FCF11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6EA0E35C24C84C74008FCF11 /* Assets.xcassets */; };
 		6EA0E36024C8515F008FCF11 /* UIColor+TDUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EA0E35F24C8515F008FCF11 /* UIColor+TDUtil.m */; };
 		6EA0E36724C85456008FCF11 /* TDTrackAPIListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EA0E36624C85456008FCF11 /* TDTrackAPIListCell.m */; };
+		6ED61FB82514862000F0E41D /* TDInitVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FB72514862000F0E41D /* TDInitVC.m */; };
+		6ED61FDB2514988900F0E41D /* NSLayoutConstraint+MASDebugAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FC22514988900F0E41D /* NSLayoutConstraint+MASDebugAdditions.m */; };
+		6ED61FDC2514988900F0E41D /* ViewController+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FCB2514988900F0E41D /* ViewController+MASAdditions.m */; };
+		6ED61FDD2514988900F0E41D /* MASCompositeConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FCF2514988900F0E41D /* MASCompositeConstraint.m */; };
+		6ED61FDE2514988900F0E41D /* MASConstraintMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FD02514988900F0E41D /* MASConstraintMaker.m */; };
+		6ED61FDF2514988900F0E41D /* MASLayoutConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FD12514988900F0E41D /* MASLayoutConstraint.m */; };
+		6ED61FE02514988900F0E41D /* NSArray+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FD22514988900F0E41D /* NSArray+MASAdditions.m */; };
+		6ED61FE12514988900F0E41D /* View+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FD32514988900F0E41D /* View+MASAdditions.m */; };
+		6ED61FE22514988900F0E41D /* MASConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FD62514988900F0E41D /* MASConstraint.m */; };
+		6ED61FE32514988900F0E41D /* MASViewConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FD82514988900F0E41D /* MASViewConstraint.m */; };
+		6ED61FE42514988900F0E41D /* MASViewAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FD92514988900F0E41D /* MASViewAttribute.m */; };
+		6EEDD2B525061B1B001E07BC /* TDBaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEDD2B425061B1B001E07BC /* TDBaseVC.m */; };
+		6EEDD2B725062BF6001E07BC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6EEDD2B625062BF6001E07BC /* Launch Screen.storyboard */; };
+		6EEDD2BA25063086001E07BC /* TDUserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEDD2B925063086001E07BC /* TDUserVC.m */; };
+		6EEDD2BD25063099001E07BC /* TDOtherVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEDD2BC25063099001E07BC /* TDOtherVC.m */; };
+		6EEDD2C0250630A8001E07BC /* TDEventVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEDD2BF250630A8001E07BC /* TDEventVC.m */; };
+		6EEDD2C325063552001E07BC /* TDAutoTrackVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEDD2C225063552001E07BC /* TDAutoTrackVC.m */; };
 		F34CAAD222C5B26C00A8FF82 /* WKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */; };
 		F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */; };
 		F34CAB0122C730D400A8FF82 /* AutoCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAB0022C730D400A8FF82 /* AutoCollectionViewController.m */; };
@@ -24,7 +46,7 @@
 		F380B2C222C0E8BC00955FC5 /* ThinkingSDKDEMOTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2C122C0E8BC00955FC5 /* ThinkingSDKDEMOTests.m */; };
 		F380B2CD22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2CC22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.m */; };
 		F380B2DF22C0E99D00955FC5 /* AppDelegate+TDUI.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2DE22C0E99D00955FC5 /* AppDelegate+TDUI.m */; };
-		F380B2E222C0EA0100955FC5 /* TrackAPIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2E122C0EA0100955FC5 /* TrackAPIViewController.m */; };
+		F380B2E222C0EA0100955FC5 /* TDHomeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2E122C0EA0100955FC5 /* TDHomeVC.m */; };
 		F380B2E522C0EAC400955FC5 /* APIEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2E422C0EAC400955FC5 /* APIEntry.m */; };
 		F380B31B22C0EF5900955FC5 /* ThinkingSDKAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B31A22C0EF5900955FC5 /* ThinkingSDKAPI.m */; };
 		F380B3C922C23FA500955FC5 /* AutoTrackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */; };
@@ -81,6 +103,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6E3B49E6250603520021B467 /* ActionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionModel.h; sourceTree = "<group>"; };
+		6E3B49E7250603520021B467 /* ActionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionModel.m; sourceTree = "<group>"; };
+		6E3B49E9250603CC0021B467 /* TDUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDUtil.h; sourceTree = "<group>"; };
+		6E3B49EA250603CC0021B467 /* TDUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDUtil.m; sourceTree = "<group>"; };
+		6E4936222514CBD800F27296 /* TDUserIDVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDUserIDVC.h; sourceTree = "<group>"; };
+		6E4936232514CBD800F27296 /* TDUserIDVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDUserIDVC.m; sourceTree = "<group>"; };
+		6E49362A251872F100F27296 /* TDH5VC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDH5VC.h; sourceTree = "<group>"; };
+		6E49362B251872F100F27296 /* TDH5VC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDH5VC.m; sourceTree = "<group>"; };
+		6E493631251892B700F27296 /* TDColCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDColCell.h; sourceTree = "<group>"; };
+		6E493632251892B700F27296 /* TDColCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDColCell.m; sourceTree = "<group>"; };
 		6EA0E35624C8421A008FCF11 /* ThinkingSDKDEMO-PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ThinkingSDKDEMO-PrefixHeader.pch"; sourceTree = "<group>"; };
 		6EA0E35724C8430D008FCF11 /* TDMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDMacro.h; sourceTree = "<group>"; };
 		6EA0E35824C84B5D008FCF11 /* SpaceMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpaceMono-Bold.ttf"; sourceTree = "<group>"; };
@@ -90,6 +122,44 @@
 		6EA0E35F24C8515F008FCF11 /* UIColor+TDUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+TDUtil.m"; sourceTree = "<group>"; };
 		6EA0E36524C85456008FCF11 /* TDTrackAPIListCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDTrackAPIListCell.h; sourceTree = "<group>"; };
 		6EA0E36624C85456008FCF11 /* TDTrackAPIListCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDTrackAPIListCell.m; sourceTree = "<group>"; };
+		6ED61FB62514862000F0E41D /* TDInitVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDInitVC.h; sourceTree = "<group>"; };
+		6ED61FB72514862000F0E41D /* TDInitVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDInitVC.m; sourceTree = "<group>"; };
+		6ED61FC12514988900F0E41D /* MASCompositeConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASCompositeConstraint.h; sourceTree = "<group>"; };
+		6ED61FC22514988900F0E41D /* NSLayoutConstraint+MASDebugAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSLayoutConstraint+MASDebugAdditions.m"; sourceTree = "<group>"; };
+		6ED61FC32514988900F0E41D /* MASConstraint+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MASConstraint+Private.h"; sourceTree = "<group>"; };
+		6ED61FC42514988900F0E41D /* MASLayoutConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASLayoutConstraint.h; sourceTree = "<group>"; };
+		6ED61FC52514988900F0E41D /* NSArray+MASShorthandAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+MASShorthandAdditions.h"; sourceTree = "<group>"; };
+		6ED61FC62514988900F0E41D /* MASConstraintMaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASConstraintMaker.h; sourceTree = "<group>"; };
+		6ED61FC72514988900F0E41D /* View+MASAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "View+MASAdditions.h"; sourceTree = "<group>"; };
+		6ED61FC82514988900F0E41D /* NSArray+MASAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+MASAdditions.h"; sourceTree = "<group>"; };
+		6ED61FC92514988900F0E41D /* MASUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASUtilities.h; sourceTree = "<group>"; };
+		6ED61FCA2514988900F0E41D /* MASViewAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASViewAttribute.h; sourceTree = "<group>"; };
+		6ED61FCB2514988900F0E41D /* ViewController+MASAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ViewController+MASAdditions.m"; sourceTree = "<group>"; };
+		6ED61FCC2514988900F0E41D /* MASViewConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASViewConstraint.h; sourceTree = "<group>"; };
+		6ED61FCD2514988900F0E41D /* MASConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASConstraint.h; sourceTree = "<group>"; };
+		6ED61FCE2514988900F0E41D /* NSLayoutConstraint+MASDebugAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSLayoutConstraint+MASDebugAdditions.h"; sourceTree = "<group>"; };
+		6ED61FCF2514988900F0E41D /* MASCompositeConstraint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASCompositeConstraint.m; sourceTree = "<group>"; };
+		6ED61FD02514988900F0E41D /* MASConstraintMaker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASConstraintMaker.m; sourceTree = "<group>"; };
+		6ED61FD12514988900F0E41D /* MASLayoutConstraint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASLayoutConstraint.m; sourceTree = "<group>"; };
+		6ED61FD22514988900F0E41D /* NSArray+MASAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+MASAdditions.m"; sourceTree = "<group>"; };
+		6ED61FD32514988900F0E41D /* View+MASAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "View+MASAdditions.m"; sourceTree = "<group>"; };
+		6ED61FD42514988900F0E41D /* View+MASShorthandAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "View+MASShorthandAdditions.h"; sourceTree = "<group>"; };
+		6ED61FD52514988900F0E41D /* Masonry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Masonry.h; sourceTree = "<group>"; };
+		6ED61FD62514988900F0E41D /* MASConstraint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASConstraint.m; sourceTree = "<group>"; };
+		6ED61FD72514988900F0E41D /* ViewController+MASAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ViewController+MASAdditions.h"; sourceTree = "<group>"; };
+		6ED61FD82514988900F0E41D /* MASViewConstraint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASViewConstraint.m; sourceTree = "<group>"; };
+		6ED61FD92514988900F0E41D /* MASViewAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASViewAttribute.m; sourceTree = "<group>"; };
+		6EEDD2B325061B1B001E07BC /* TDBaseVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDBaseVC.h; sourceTree = "<group>"; };
+		6EEDD2B425061B1B001E07BC /* TDBaseVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDBaseVC.m; sourceTree = "<group>"; };
+		6EEDD2B625062BF6001E07BC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		6EEDD2B825063086001E07BC /* TDUserVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDUserVC.h; sourceTree = "<group>"; };
+		6EEDD2B925063086001E07BC /* TDUserVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDUserVC.m; sourceTree = "<group>"; };
+		6EEDD2BB25063099001E07BC /* TDOtherVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDOtherVC.h; sourceTree = "<group>"; };
+		6EEDD2BC25063099001E07BC /* TDOtherVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDOtherVC.m; sourceTree = "<group>"; };
+		6EEDD2BE250630A8001E07BC /* TDEventVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDEventVC.h; sourceTree = "<group>"; };
+		6EEDD2BF250630A8001E07BC /* TDEventVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDEventVC.m; sourceTree = "<group>"; };
+		6EEDD2C125063552001E07BC /* TDAutoTrackVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDAutoTrackVC.h; sourceTree = "<group>"; };
+		6EEDD2C225063552001E07BC /* TDAutoTrackVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDAutoTrackVC.m; sourceTree = "<group>"; };
 		F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CocoaAsyncSocket.framework; sourceTree = "<group>"; };
 		F34CAAD022C5B26C00A8FF82 /* WKWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WKWebViewController.h; sourceTree = "<group>"; };
 		F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WKWebViewController.m; sourceTree = "<group>"; };
@@ -117,8 +187,8 @@
 		F380B2CE22C0E8BC00955FC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F380B2DD22C0E99D00955FC5 /* AppDelegate+TDUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+TDUI.h"; sourceTree = "<group>"; };
 		F380B2DE22C0E99D00955FC5 /* AppDelegate+TDUI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+TDUI.m"; sourceTree = "<group>"; };
-		F380B2E022C0EA0100955FC5 /* TrackAPIViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrackAPIViewController.h; sourceTree = "<group>"; };
-		F380B2E122C0EA0100955FC5 /* TrackAPIViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrackAPIViewController.m; sourceTree = "<group>"; };
+		F380B2E022C0EA0100955FC5 /* TDHomeVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDHomeVC.h; sourceTree = "<group>"; };
+		F380B2E122C0EA0100955FC5 /* TDHomeVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDHomeVC.m; sourceTree = "<group>"; };
 		F380B2E322C0EAC400955FC5 /* APIEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APIEntry.h; sourceTree = "<group>"; };
 		F380B2E422C0EAC400955FC5 /* APIEntry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APIEntry.m; sourceTree = "<group>"; };
 		F380B31922C0EF5900955FC5 /* ThinkingSDKAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThinkingSDKAPI.h; sourceTree = "<group>"; };
@@ -160,7 +230,48 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6EA0E35524C841FB008FCF11 /* Global */ = {
+		6E3B49E125021AC80021B467 /* home */ = {
+			isa = PBXGroup;
+			children = (
+				6E3B49E425021AF30021B467 /* model */,
+				6E3B49E225021AF30021B467 /* vc */,
+				6E3B49E325021AF30021B467 /* view */,
+			);
+			path = home;
+			sourceTree = "<group>";
+		};
+		6E3B49E225021AF30021B467 /* vc */ = {
+			isa = PBXGroup;
+			children = (
+				F380B2E022C0EA0100955FC5 /* TDHomeVC.h */,
+				F380B2E122C0EA0100955FC5 /* TDHomeVC.m */,
+			);
+			path = vc;
+			sourceTree = "<group>";
+		};
+		6E3B49E325021AF30021B467 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				6EA0E36524C85456008FCF11 /* TDTrackAPIListCell.h */,
+				6EA0E36624C85456008FCF11 /* TDTrackAPIListCell.m */,
+			);
+			path = view;
+			sourceTree = "<group>";
+		};
+		6E3B49E425021AF30021B467 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				F380B2E322C0EAC400955FC5 /* APIEntry.h */,
+				F380B2E422C0EAC400955FC5 /* APIEntry.m */,
+				F380B31922C0EF5900955FC5 /* ThinkingSDKAPI.h */,
+				F380B31A22C0EF5900955FC5 /* ThinkingSDKAPI.m */,
+				6E3B49E6250603520021B467 /* ActionModel.h */,
+				6E3B49E7250603520021B467 /* ActionModel.m */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
+		6E3B49E52505FD7C0021B467 /* common */ = {
 			isa = PBXGroup;
 			children = (
 				6EA0E35E24C8515F008FCF11 /* UIColor+TDUtil.h */,
@@ -169,49 +280,105 @@
 				6EA0E35924C84B5D008FCF11 /* SpaceMono-Regular.ttf */,
 				6EA0E35624C8421A008FCF11 /* ThinkingSDKDEMO-PrefixHeader.pch */,
 				6EA0E35724C8430D008FCF11 /* TDMacro.h */,
-				6EA0E35C24C84C74008FCF11 /* Assets.xcassets */,
+				6E3B49E9250603CC0021B467 /* TDUtil.h */,
+				6E3B49EA250603CC0021B467 /* TDUtil.m */,
+				6EEDD2B325061B1B001E07BC /* TDBaseVC.h */,
+				6EEDD2B425061B1B001E07BC /* TDBaseVC.m */,
 			);
-			path = Global;
+			path = common;
 			sourceTree = "<group>";
 		};
-		6EA0E36124C853D0008FCF11 /* Module */ = {
+		6ED61FB4251485F600F0E41D /* init */ = {
 			isa = PBXGroup;
 			children = (
-				6EA0E36224C853EA008FCF11 /* TrackAPI */,
+				6ED61FB52514860600F0E41D /* vc */,
 			);
-			path = Module;
+			path = init;
 			sourceTree = "<group>";
 		};
-		6EA0E36224C853EA008FCF11 /* TrackAPI */ = {
+		6ED61FB52514860600F0E41D /* vc */ = {
 			isa = PBXGroup;
 			children = (
-				6EA0E36424C8543C008FCF11 /* View */,
-				6EA0E36324C85435008FCF11 /* ViewController */,
+				6ED61FB62514862000F0E41D /* TDInitVC.h */,
+				6ED61FB72514862000F0E41D /* TDInitVC.m */,
 			);
-			path = TrackAPI;
+			path = vc;
 			sourceTree = "<group>";
 		};
-		6EA0E36324C85435008FCF11 /* ViewController */ = {
+		6ED61FBF2514988200F0E41D /* libs */ = {
 			isa = PBXGroup;
 			children = (
-				F380B2E022C0EA0100955FC5 /* TrackAPIViewController.h */,
-				F380B2E122C0EA0100955FC5 /* TrackAPIViewController.m */,
+				6ED61FC02514988900F0E41D /* Masonry */,
 			);
-			path = ViewController;
+			path = libs;
 			sourceTree = "<group>";
 		};
-		6EA0E36424C8543C008FCF11 /* View */ = {
+		6ED61FC02514988900F0E41D /* Masonry */ = {
 			isa = PBXGroup;
 			children = (
-				6EA0E36524C85456008FCF11 /* TDTrackAPIListCell.h */,
-				6EA0E36624C85456008FCF11 /* TDTrackAPIListCell.m */,
+				6ED61FC12514988900F0E41D /* MASCompositeConstraint.h */,
+				6ED61FC22514988900F0E41D /* NSLayoutConstraint+MASDebugAdditions.m */,
+				6ED61FC32514988900F0E41D /* MASConstraint+Private.h */,
+				6ED61FC42514988900F0E41D /* MASLayoutConstraint.h */,
+				6ED61FC52514988900F0E41D /* NSArray+MASShorthandAdditions.h */,
+				6ED61FC62514988900F0E41D /* MASConstraintMaker.h */,
+				6ED61FC72514988900F0E41D /* View+MASAdditions.h */,
+				6ED61FC82514988900F0E41D /* NSArray+MASAdditions.h */,
+				6ED61FC92514988900F0E41D /* MASUtilities.h */,
+				6ED61FCA2514988900F0E41D /* MASViewAttribute.h */,
+				6ED61FCB2514988900F0E41D /* ViewController+MASAdditions.m */,
+				6ED61FCC2514988900F0E41D /* MASViewConstraint.h */,
+				6ED61FCD2514988900F0E41D /* MASConstraint.h */,
+				6ED61FCE2514988900F0E41D /* NSLayoutConstraint+MASDebugAdditions.h */,
+				6ED61FCF2514988900F0E41D /* MASCompositeConstraint.m */,
+				6ED61FD02514988900F0E41D /* MASConstraintMaker.m */,
+				6ED61FD12514988900F0E41D /* MASLayoutConstraint.m */,
+				6ED61FD22514988900F0E41D /* NSArray+MASAdditions.m */,
+				6ED61FD32514988900F0E41D /* View+MASAdditions.m */,
+				6ED61FD42514988900F0E41D /* View+MASShorthandAdditions.h */,
+				6ED61FD52514988900F0E41D /* Masonry.h */,
+				6ED61FD62514988900F0E41D /* MASConstraint.m */,
+				6ED61FD72514988900F0E41D /* ViewController+MASAdditions.h */,
+				6ED61FD82514988900F0E41D /* MASViewConstraint.m */,
+				6ED61FD92514988900F0E41D /* MASViewAttribute.m */,
 			);
-			path = View;
+			path = Masonry;
 			sourceTree = "<group>";
 		};
-		F34CAAD622C5B91500A8FF82 /* AutoTrack */ = {
+		6EEDD2B0250619FC001E07BC /* event */ = {
 			isa = PBXGroup;
 			children = (
+				6EEDD2BE250630A8001E07BC /* TDEventVC.h */,
+				6EEDD2BF250630A8001E07BC /* TDEventVC.m */,
+			);
+			path = event;
+			sourceTree = "<group>";
+		};
+		6EEDD2B125061A0C001E07BC /* user */ = {
+			isa = PBXGroup;
+			children = (
+				6EEDD2B825063086001E07BC /* TDUserVC.h */,
+				6EEDD2B925063086001E07BC /* TDUserVC.m */,
+				6E4936222514CBD800F27296 /* TDUserIDVC.h */,
+				6E4936232514CBD800F27296 /* TDUserIDVC.m */,
+			);
+			path = user;
+			sourceTree = "<group>";
+		};
+		6EEDD2B225061A17001E07BC /* other */ = {
+			isa = PBXGroup;
+			children = (
+				6EEDD2BB25063099001E07BC /* TDOtherVC.h */,
+				6EEDD2BC25063099001E07BC /* TDOtherVC.m */,
+			);
+			path = other;
+			sourceTree = "<group>";
+		};
+		F34CAAD622C5B91500A8FF82 /* autotrack */ = {
+			isa = PBXGroup;
+			children = (
+				6EEDD2C125063552001E07BC /* TDAutoTrackVC.h */,
+				6EEDD2C225063552001E07BC /* TDAutoTrackVC.m */,
 				F380B3C722C23FA500955FC5 /* AutoTrackViewController.h */,
 				F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */,
 				F3ECE9F2230D55FD00670FBD /* AutoTrackSecViewController.h */,
@@ -220,19 +387,23 @@
 				F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */,
 				F34CAAFF22C730D400A8FF82 /* AutoCollectionViewController.h */,
 				F34CAB0022C730D400A8FF82 /* AutoCollectionViewController.m */,
+				6E493631251892B700F27296 /* TDColCell.h */,
+				6E493632251892B700F27296 /* TDColCell.m */,
 			);
-			path = AutoTrack;
+			path = autotrack;
 			sourceTree = "<group>";
 		};
-		F34CAAD722C5B92200A8FF82 /* WebView */ = {
+		F34CAAD722C5B92200A8FF82 /* h5 */ = {
 			isa = PBXGroup;
 			children = (
 				F37AE90022C49007005D64F8 /* WEBViewController.h */,
 				F37AE90122C49007005D64F8 /* WEBViewController.m */,
 				F34CAAD022C5B26C00A8FF82 /* WKWebViewController.h */,
 				F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */,
+				6E49362A251872F100F27296 /* TDH5VC.h */,
+				6E49362B251872F100F27296 /* TDH5VC.m */,
 			);
-			path = WebView;
+			path = h5;
 			sourceTree = "<group>";
 		};
 		F34D3DA92306C973006FEDCC /* NTP */ = {
@@ -287,22 +458,25 @@
 		F380B2A722C0E8BB00955FC5 /* ThinkingSDKDEMO */ = {
 			isa = PBXGroup;
 			children = (
-				6EA0E36124C853D0008FCF11 /* Module */,
+				6ED61FBF2514988200F0E41D /* libs */,
+				6ED61FB4251485F600F0E41D /* init */,
+				6EEDD2B225061A17001E07BC /* other */,
+				6EEDD2B125061A0C001E07BC /* user */,
+				6EEDD2B0250619FC001E07BC /* event */,
+				6EA0E35C24C84C74008FCF11 /* Assets.xcassets */,
+				6E3B49E52505FD7C0021B467 /* common */,
+				6E3B49E125021AC80021B467 /* home */,
 				F380B2A822C0E8BB00955FC5 /* AppDelegate.h */,
 				F380B2A922C0E8BB00955FC5 /* AppDelegate.m */,
-				F380B31922C0EF5900955FC5 /* ThinkingSDKAPI.h */,
-				F380B31A22C0EF5900955FC5 /* ThinkingSDKAPI.m */,
 				F380B2DD22C0E99D00955FC5 /* AppDelegate+TDUI.h */,
 				F380B2DE22C0E99D00955FC5 /* AppDelegate+TDUI.m */,
-				F380B2E322C0EAC400955FC5 /* APIEntry.h */,
-				F380B2E422C0EAC400955FC5 /* APIEntry.m */,
-				6EA0E35524C841FB008FCF11 /* Global */,
 				F34D3DA92306C973006FEDCC /* NTP */,
-				F34CAAD622C5B91500A8FF82 /* AutoTrack */,
-				F34CAAD722C5B92200A8FF82 /* WebView */,
+				F34CAAD622C5B91500A8FF82 /* autotrack */,
+				F34CAAD722C5B92200A8FF82 /* h5 */,
 				F37AE90322C49367005D64F8 /* html */,
 				F380B2B622C0E8BC00955FC5 /* Info.plist */,
 				F380B2B722C0E8BC00955FC5 /* main.m */,
+				6EEDD2B625062BF6001E07BC /* Launch Screen.storyboard */,
 			);
 			path = ThinkingSDKDEMO;
 			sourceTree = "<group>";
@@ -445,6 +619,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6EEDD2B725062BF6001E07BC /* Launch Screen.storyboard in Resources */,
 				F37AE90622C493A9005D64F8 /* index.html in Resources */,
 				6EA0E35B24C84B5D008FCF11 /* SpaceMono-Regular.ttf in Resources */,
 				6EA0E35A24C84B5D008FCF11 /* SpaceMono-Bold.ttf in Resources */,
@@ -474,22 +649,43 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6ED61FB82514862000F0E41D /* TDInitVC.m in Sources */,
 				F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */,
+				6ED61FE12514988900F0E41D /* View+MASAdditions.m in Sources */,
+				6ED61FE02514988900F0E41D /* NSArray+MASAdditions.m in Sources */,
+				6E4936242514CBD800F27296 /* TDUserIDVC.m in Sources */,
 				F37AE90222C49007005D64F8 /* WEBViewController.m in Sources */,
 				6EA0E36724C85456008FCF11 /* TDTrackAPIListCell.m in Sources */,
 				F380B2E522C0EAC400955FC5 /* APIEntry.m in Sources */,
 				F3ECE9F4230D55FD00670FBD /* AutoTrackSecViewController.m in Sources */,
-				F380B2E222C0EA0100955FC5 /* TrackAPIViewController.m in Sources */,
+				F380B2E222C0EA0100955FC5 /* TDHomeVC.m in Sources */,
 				F34CAAD222C5B26C00A8FF82 /* WKWebViewController.m in Sources */,
+				6ED61FDC2514988900F0E41D /* ViewController+MASAdditions.m in Sources */,
 				F380B3C922C23FA500955FC5 /* AutoTrackViewController.m in Sources */,
+				6ED61FE32514988900F0E41D /* MASViewConstraint.m in Sources */,
 				F380B31B22C0EF5900955FC5 /* ThinkingSDKAPI.m in Sources */,
+				6ED61FDF2514988900F0E41D /* MASLayoutConstraint.m in Sources */,
+				6EEDD2BA25063086001E07BC /* TDUserVC.m in Sources */,
+				6EEDD2B525061B1B001E07BC /* TDBaseVC.m in Sources */,
+				6ED61FE22514988900F0E41D /* MASConstraint.m in Sources */,
 				6EA0E36024C8515F008FCF11 /* UIColor+TDUtil.m in Sources */,
 				F380B2B822C0E8BC00955FC5 /* main.m in Sources */,
 				F34CAB0122C730D400A8FF82 /* AutoCollectionViewController.m in Sources */,
+				6ED61FE42514988900F0E41D /* MASViewAttribute.m in Sources */,
+				6E49362C251872F100F27296 /* TDH5VC.m in Sources */,
+				6EEDD2BD25063099001E07BC /* TDOtherVC.m in Sources */,
 				F380B2AA22C0E8BB00955FC5 /* AppDelegate.m in Sources */,
+				6E3B49EB250603CC0021B467 /* TDUtil.m in Sources */,
+				6ED61FDB2514988900F0E41D /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				F380B2DF22C0E99D00955FC5 /* AppDelegate+TDUI.m in Sources */,
+				6ED61FDE2514988900F0E41D /* MASConstraintMaker.m in Sources */,
+				6E3B49E8250603520021B467 /* ActionModel.m in Sources */,
+				6ED61FDD2514988900F0E41D /* MASCompositeConstraint.m in Sources */,
+				6EEDD2C325063552001E07BC /* TDAutoTrackVC.m in Sources */,
+				6EEDD2C0250630A8001E07BC /* TDEventVC.m in Sources */,
 				F34D3DAF2306C973006FEDCC /* NTPViewController.m in Sources */,
 				F34D3DB02306C973006FEDCC /* NetAssociation.m in Sources */,
+				6E493633251892B700F27296 /* TDColCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -643,13 +839,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5TFS5EU5SZ;
+				DEVELOPMENT_TEAM = SV8R54PUAN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
 					"$(PROJECT_DIR)",
 				);
-				GCC_PREFIX_HEADER = "$(SRCROOT)/ThinkingSDKDEMO/Global/ThinkingSDKDEMO-PrefixHeader.pch";
+				GCC_PREFIX_HEADER = "$(SRCROOT)/ThinkingSDKDEMO/common/ThinkingSDKDEMO-PrefixHeader.pch";
 				INFOPLIST_FILE = ThinkingSDKDEMO/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -668,13 +864,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5TFS5EU5SZ;
+				DEVELOPMENT_TEAM = SV8R54PUAN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
 					"$(PROJECT_DIR)",
 				);
-				GCC_PREFIX_HEADER = "$(SRCROOT)/ThinkingSDKDEMO/Global/ThinkingSDKDEMO-PrefixHeader.pch";
+				GCC_PREFIX_HEADER = "$(SRCROOT)/ThinkingSDKDEMO/common/ThinkingSDKDEMO-PrefixHeader.pch";
 				INFOPLIST_FILE = ThinkingSDKDEMO/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -692,7 +888,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LF3XB637JR;
+				DEVELOPMENT_TEAM = SV8R54PUAN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
@@ -721,7 +917,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LF3XB637JR;
+				DEVELOPMENT_TEAM = SV8R54PUAN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
@@ -749,7 +945,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LF3XB637JR;
+				DEVELOPMENT_TEAM = SV8R54PUAN;
 				INFOPLIST_FILE = ThinkingSDKDEMOUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -767,7 +963,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LF3XB637JR;
+				DEVELOPMENT_TEAM = SV8R54PUAN;
 				INFOPLIST_FILE = ThinkingSDKDEMOUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -22,15 +22,22 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		6E05F0F82507715900A8613C /* TDPublicConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E05F0F62507715900A8613C /* TDPublicConfig.h */; };
+		6E05F0F92507715900A8613C /* TDPublicConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E05F0F72507715900A8613C /* TDPublicConfig.m */; };
+		6E05F0FC25077DA200A8613C /* TDSDKUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E05F0FA25077DA200A8613C /* TDSDKUtil.h */; };
+		6E05F0FD25077DA200A8613C /* TDSDKUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E05F0FB25077DA200A8613C /* TDSDKUtil.m */; };
 		6E4DF53924EF6ED800BB1AB4 /* TDFirstEventModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E4DF53724EF6ED800BB1AB4 /* TDFirstEventModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6E4DF53A24EF6ED800BB1AB4 /* TDFirstEventModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4DF53824EF6ED800BB1AB4 /* TDFirstEventModel.m */; };
 		6E4DF53D24EF6F3F00BB1AB4 /* TDEditableEventModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E4DF53B24EF6F3F00BB1AB4 /* TDEditableEventModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6E4DF53E24EF6F3F00BB1AB4 /* TDEditableEventModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4DF53C24EF6F3F00BB1AB4 /* TDEditableEventModel.m */; };
 		6E58D58A24C7F06200DD11C1 /* TDEventModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E58D58824C7F06200DD11C1 /* TDEventModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6E58D58B24C7F06200DD11C1 /* TDEventModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E58D58924C7F06200DD11C1 /* TDEventModel.m */; };
+		6EA4D8CF250753FC0035D575 /* TDConstant.h in Headers */ = {isa = PBXBuildFile; fileRef = 6EA4D8CD250753FC0035D575 /* TDConstant.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6EA4D8D92507632F0035D575 /* TDFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 6EA4D8D72507632F0035D575 /* TDFile.h */; };
+		6EA4D8DA2507632F0035D575 /* TDFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EA4D8D82507632F0035D575 /* TDFile.m */; };
 		F30338BC23AA0E600020C129 /* TDToastView.m in Sources */ = {isa = PBXBuildFile; fileRef = F30338BA23AA0E5F0020C129 /* TDToastView.m */; };
 		F30338BD23AA0E600020C129 /* TDToastView.h in Headers */ = {isa = PBXBuildFile; fileRef = F30338BB23AA0E5F0020C129 /* TDToastView.h */; };
-		F30338C023AB57750020C129 /* TDSecurityPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = F30338BE23AB57740020C129 /* TDSecurityPolicy.h */; };
+		F30338C023AB57750020C129 /* TDSecurityPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = F30338BE23AB57740020C129 /* TDSecurityPolicy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F30338C123AB57750020C129 /* TDSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = F30338BF23AB57750020C129 /* TDSecurityPolicy.m */; };
 		F3247C9B23176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = F3247C9923176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m */; };
 		F35B1313242EFB9B00C630FC /* TDCalibratedTimeWithNTP.m in Sources */ = {isa = PBXBuildFile; fileRef = F35B130B242EFB9B00C630FC /* TDCalibratedTimeWithNTP.m */; };
@@ -68,7 +75,7 @@
 		F3D1906E230137610043D595 /* UIApplication+AutoTrack.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D19048230137600043D595 /* UIApplication+AutoTrack.h */; };
 		F3D19070230137610043D595 /* TDOSLog.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D1904A230137600043D595 /* TDOSLog.h */; };
 		F3D19071230137610043D595 /* TDJSONUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D1904B230137600043D595 /* TDJSONUtil.m */; };
-		F3D19072230137610043D595 /* TDConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D1904C230137600043D595 /* TDConfig.h */; };
+		F3D19072230137610043D595 /* TDConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D1904C230137600043D595 /* TDConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F3D19073230137610043D595 /* TDDeviceInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = F3D1904D230137600043D595 /* TDDeviceInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F3D19074230137610043D595 /* TDKeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D1904E230137600043D595 /* TDKeychainItemWrapper.m */; };
 		F3D19075230137610043D595 /* TDNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D1904F230137600043D595 /* TDNetwork.m */; };
@@ -97,17 +104,23 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6E05F0F62507715900A8613C /* TDPublicConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDPublicConfig.h; sourceTree = "<group>"; };
+		6E05F0F72507715900A8613C /* TDPublicConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDPublicConfig.m; sourceTree = "<group>"; };
+		6E05F0FA25077DA200A8613C /* TDSDKUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDSDKUtil.h; sourceTree = "<group>"; };
+		6E05F0FB25077DA200A8613C /* TDSDKUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDSDKUtil.m; sourceTree = "<group>"; };
 		6E4DF53724EF6ED800BB1AB4 /* TDFirstEventModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDFirstEventModel.h; sourceTree = "<group>"; };
 		6E4DF53824EF6ED800BB1AB4 /* TDFirstEventModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDFirstEventModel.m; sourceTree = "<group>"; };
 		6E4DF53B24EF6F3F00BB1AB4 /* TDEditableEventModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDEditableEventModel.h; sourceTree = "<group>"; };
 		6E4DF53C24EF6F3F00BB1AB4 /* TDEditableEventModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDEditableEventModel.m; sourceTree = "<group>"; };
 		6E58D58824C7F06200DD11C1 /* TDEventModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDEventModel.h; sourceTree = "<group>"; };
 		6E58D58924C7F06200DD11C1 /* TDEventModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDEventModel.m; sourceTree = "<group>"; };
+		6EA4D8CD250753FC0035D575 /* TDConstant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDConstant.h; sourceTree = "<group>"; };
+		6EA4D8D72507632F0035D575 /* TDFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDFile.h; sourceTree = "<group>"; };
+		6EA4D8D82507632F0035D575 /* TDFile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDFile.m; sourceTree = "<group>"; };
 		F30338BA23AA0E5F0020C129 /* TDToastView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDToastView.m; sourceTree = "<group>"; };
 		F30338BB23AA0E5F0020C129 /* TDToastView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDToastView.h; sourceTree = "<group>"; };
 		F30338BE23AB57740020C129 /* TDSecurityPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDSecurityPolicy.h; sourceTree = "<group>"; };
 		F30338BF23AB57750020C129 /* TDSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDSecurityPolicy.m; sourceTree = "<group>"; };
-		F30FC040231428B7003335F8 /* TDAnalyticsSDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TDAnalyticsSDK.bundle; path = ThinkingSDK/TDAnalyticsSDK.bundle; sourceTree = "<group>"; };
 		F3247C9923176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightThinkingAnalyticsSDK.m; sourceTree = "<group>"; };
 		F35B130B242EFB9B00C630FC /* TDCalibratedTimeWithNTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDCalibratedTimeWithNTP.m; sourceTree = "<group>"; };
 		F35B130C242EFB9B00C630FC /* TDNTPTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDNTPTypes.h; sourceTree = "<group>"; };
@@ -177,6 +190,46 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6E05F13F2508703E00A8613C /* category */ = {
+			isa = PBXGroup;
+			children = (
+				F3D19055230137600043D595 /* NSData+TDGzip.h */,
+				F3D19039230137600043D595 /* NSData+TDGzip.m */,
+			);
+			path = category;
+			sourceTree = "<group>";
+		};
+		6E05F140250870E900A8613C /* view */ = {
+			isa = PBXGroup;
+			children = (
+				F3D19048230137600043D595 /* UIApplication+AutoTrack.h */,
+				F3D19043230137600043D595 /* UIApplication+AutoTrack.m */,
+			);
+			path = view;
+			sourceTree = "<group>";
+		};
+		6E05F141250870F900A8613C /* vc */ = {
+			isa = PBXGroup;
+			children = (
+				F3D19045230137600043D595 /* UIViewController+AutoTrack.h */,
+				F3D19041230137600043D595 /* UIViewController+AutoTrack.m */,
+			);
+			path = vc;
+			sourceTree = "<group>";
+		};
+		6E05F1422508710600A8613C /* model */ = {
+			isa = PBXGroup;
+			children = (
+				F3D19042230137600043D595 /* TDSwizzler.h */,
+				F3D19047230137600043D595 /* TDSwizzler.m */,
+				F3D19040230137600043D595 /* NSObject+TDSwizzle.h */,
+				F3D19046230137600043D595 /* NSObject+TDSwizzle.m */,
+				F3D1903F230137600043D595 /* TDAutoTrackManager.h */,
+				F3D19044230137600043D595 /* TDAutoTrackManager.m */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
 		6E4DF53624EF6EB300BB1AB4 /* EventModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -190,12 +243,101 @@
 			path = EventModel;
 			sourceTree = "<group>";
 		};
-		F30FC03F231428B7003335F8 /* Frameworks */ = {
+		6EA4D8CB25072B7E0035D575 /* main */ = {
 			isa = PBXGroup;
 			children = (
-				F30FC040231428B7003335F8 /* TDAnalyticsSDK.bundle */,
+				F3D1903D230137600043D595 /* ThinkingAnalyticsSDKPrivate.h */,
+				F3247C9923176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m */,
+				F3D19054230137600043D595 /* ThinkingAnalyticsSDK.h */,
+				F3D1903A230137600043D595 /* ThinkingAnalyticsSDK.m */,
+				F3D19017230136B30043D595 /* ThinkingSDK.h */,
 			);
-			name = Frameworks;
+			path = main;
+			sourceTree = "<group>";
+		};
+		6EA4D8CC25072B9D0035D575 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				6E05F13F2508703E00A8613C /* category */,
+				6EA4D8D6250756C60035D575 /* exception */,
+				6EA4D8D5250756960035D575 /* util */,
+				6EA4D8D4250756820035D575 /* logger */,
+				6EA4D8D32507566D0035D575 /* config */,
+				6EA4D8D22507564B0035D575 /* file */,
+				6EA4D8D1250754B40035D575 /* network */,
+				F3D1904D230137600043D595 /* TDDeviceInfo.h */,
+				F3D19030230137600043D595 /* TDDeviceInfo.m */,
+				F30338BB23AA0E5F0020C129 /* TDToastView.h */,
+				F30338BA23AA0E5F0020C129 /* TDToastView.m */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
+		6EA4D8D1250754B40035D575 /* network */ = {
+			isa = PBXGroup;
+			children = (
+				F30338BE23AB57740020C129 /* TDSecurityPolicy.h */,
+				F30338BF23AB57750020C129 /* TDSecurityPolicy.m */,
+				F3D19038230137600043D595 /* TDNetwork.h */,
+				F3D1904F230137600043D595 /* TDNetwork.m */,
+			);
+			path = network;
+			sourceTree = "<group>";
+		};
+		6EA4D8D22507564B0035D575 /* file */ = {
+			isa = PBXGroup;
+			children = (
+				F3D1902F230137600043D595 /* TDKeychainItemWrapper.h */,
+				F3D1904E230137600043D595 /* TDKeychainItemWrapper.m */,
+				F3D19050230137600043D595 /* TDSqliteDataQueue.h */,
+				F3D19037230137600043D595 /* TDSqliteDataQueue.m */,
+				6EA4D8D72507632F0035D575 /* TDFile.h */,
+				6EA4D8D82507632F0035D575 /* TDFile.m */,
+			);
+			path = file;
+			sourceTree = "<group>";
+		};
+		6EA4D8D32507566D0035D575 /* config */ = {
+			isa = PBXGroup;
+			children = (
+				F3D1904C230137600043D595 /* TDConfig.h */,
+				F3D19031230137600043D595 /* TDConfig.m */,
+				6EA4D8CD250753FC0035D575 /* TDConstant.h */,
+				6E05F0F62507715900A8613C /* TDPublicConfig.h */,
+				6E05F0F72507715900A8613C /* TDPublicConfig.m */,
+			);
+			path = config;
+			sourceTree = "<group>";
+		};
+		6EA4D8D4250756820035D575 /* logger */ = {
+			isa = PBXGroup;
+			children = (
+				F3D19053230137600043D595 /* TDLogging.h */,
+				F3D1903B230137600043D595 /* TDLogging.m */,
+				F3D1904A230137600043D595 /* TDOSLog.h */,
+				F3D19033230137600043D595 /* TDOSLog.m */,
+			);
+			path = logger;
+			sourceTree = "<group>";
+		};
+		6EA4D8D5250756960035D575 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				F3D19032230137600043D595 /* TDJSONUtil.h */,
+				F3D1904B230137600043D595 /* TDJSONUtil.m */,
+				6E05F0FA25077DA200A8613C /* TDSDKUtil.h */,
+				6E05F0FB25077DA200A8613C /* TDSDKUtil.m */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
+		6EA4D8D6250756C60035D575 /* exception */ = {
+			isa = PBXGroup;
+			children = (
+				F3D19051230137600043D595 /* ThinkingExceptionHandler.h */,
+				F3D19036230137600043D595 /* ThinkingExceptionHandler.m */,
+			);
+			path = exception;
 			sourceTree = "<group>";
 		};
 		F35B130A242EFB9B00C630FC /* CalibratedTime */ = {
@@ -219,7 +361,6 @@
 				F3D19016230136B30043D595 /* ThinkingSDK */,
 				F3D19021230136B30043D595 /* ThinkingSDKTests */,
 				F3D19015230136B30043D595 /* Products */,
-				F30FC03F231428B7003335F8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -253,38 +394,11 @@
 		F3D1902E230137600043D595 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6EA4D8CC25072B9D0035D575 /* common */,
+				6EA4D8CB25072B7E0035D575 /* main */,
 				6E4DF53624EF6EB300BB1AB4 /* EventModel */,
 				F35B130A242EFB9B00C630FC /* CalibratedTime */,
 				F3D1903E230137600043D595 /* AutoTrack */,
-				F3D1903D230137600043D595 /* ThinkingAnalyticsSDKPrivate.h */,
-				F3D1902F230137600043D595 /* TDKeychainItemWrapper.h */,
-				F3D1904E230137600043D595 /* TDKeychainItemWrapper.m */,
-				F3D1904D230137600043D595 /* TDDeviceInfo.h */,
-				F3D19030230137600043D595 /* TDDeviceInfo.m */,
-				F3D19032230137600043D595 /* TDJSONUtil.h */,
-				F3D1904B230137600043D595 /* TDJSONUtil.m */,
-				F3D1904A230137600043D595 /* TDOSLog.h */,
-				F3D19033230137600043D595 /* TDOSLog.m */,
-				F3D19050230137600043D595 /* TDSqliteDataQueue.h */,
-				F3D19037230137600043D595 /* TDSqliteDataQueue.m */,
-				F30338BE23AB57740020C129 /* TDSecurityPolicy.h */,
-				F30338BF23AB57750020C129 /* TDSecurityPolicy.m */,
-				F3D19038230137600043D595 /* TDNetwork.h */,
-				F3D1904F230137600043D595 /* TDNetwork.m */,
-				F3D1904C230137600043D595 /* TDConfig.h */,
-				F3D19031230137600043D595 /* TDConfig.m */,
-				F3D19017230136B30043D595 /* ThinkingSDK.h */,
-				F3D19054230137600043D595 /* ThinkingAnalyticsSDK.h */,
-				F3D1903A230137600043D595 /* ThinkingAnalyticsSDK.m */,
-				F3247C9923176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m */,
-				F3D19053230137600043D595 /* TDLogging.h */,
-				F3D1903B230137600043D595 /* TDLogging.m */,
-				F3D19051230137600043D595 /* ThinkingExceptionHandler.h */,
-				F3D19036230137600043D595 /* ThinkingExceptionHandler.m */,
-				F3D19055230137600043D595 /* NSData+TDGzip.h */,
-				F3D19039230137600043D595 /* NSData+TDGzip.m */,
-				F30338BB23AA0E5F0020C129 /* TDToastView.h */,
-				F30338BA23AA0E5F0020C129 /* TDToastView.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -292,16 +406,9 @@
 		F3D1903E230137600043D595 /* AutoTrack */ = {
 			isa = PBXGroup;
 			children = (
-				F3D1903F230137600043D595 /* TDAutoTrackManager.h */,
-				F3D19044230137600043D595 /* TDAutoTrackManager.m */,
-				F3D19040230137600043D595 /* NSObject+TDSwizzle.h */,
-				F3D19046230137600043D595 /* NSObject+TDSwizzle.m */,
-				F3D19042230137600043D595 /* TDSwizzler.h */,
-				F3D19047230137600043D595 /* TDSwizzler.m */,
-				F3D19045230137600043D595 /* UIViewController+AutoTrack.h */,
-				F3D19041230137600043D595 /* UIViewController+AutoTrack.m */,
-				F3D19048230137600043D595 /* UIApplication+AutoTrack.h */,
-				F3D19043230137600043D595 /* UIApplication+AutoTrack.m */,
+				6E05F1422508710600A8613C /* model */,
+				6E05F141250870F900A8613C /* vc */,
+				6E05F140250870E900A8613C /* view */,
 			);
 			path = AutoTrack;
 			sourceTree = "<group>";
@@ -313,11 +420,14 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6EA4D8CF250753FC0035D575 /* TDConstant.h in Headers */,
+				F3D19072230137610043D595 /* TDConfig.h in Headers */,
 				F3D19059230137600043D595 /* TDJSONUtil.h in Headers */,
 				F3D1907A230137610043D595 /* ThinkingAnalyticsSDK.h in Headers */,
-				F3D19072230137610043D595 /* TDConfig.h in Headers */,
 				F3D19064230137600043D595 /* ThinkingAnalyticsSDKPrivate.h in Headers */,
 				F3D1905F230137600043D595 /* TDNetwork.h in Headers */,
+				F30338C023AB57750020C129 /* TDSecurityPolicy.h in Headers */,
+				6E05F0F82507715900A8613C /* TDPublicConfig.h in Headers */,
 				F30338BD23AA0E600020C129 /* TDToastView.h in Headers */,
 				F3D1907B230137610043D595 /* NSData+TDGzip.h in Headers */,
 				F35B1318242EFB9B00C630FC /* TDCalibratedTimeWithNTP.h in Headers */,
@@ -330,16 +440,17 @@
 				F3D19066230137600043D595 /* NSObject+TDSwizzle.h in Headers */,
 				6E4DF53924EF6ED800BB1AB4 /* TDFirstEventModel.h in Headers */,
 				F35B1316242EFB9B00C630FC /* TDNTPServer.h in Headers */,
-				F30338C023AB57750020C129 /* TDSecurityPolicy.h in Headers */,
 				F35B1315242EFB9B00C630FC /* TDCalibratedTime.h in Headers */,
 				F3D19065230137600043D595 /* TDAutoTrackManager.h in Headers */,
 				6E58D58A24C7F06200DD11C1 /* TDEventModel.h in Headers */,
+				6EA4D8D92507632F0035D575 /* TDFile.h in Headers */,
 				F3D19079230137610043D595 /* TDLogging.h in Headers */,
 				F3D1906B230137600043D595 /* UIViewController+AutoTrack.h in Headers */,
 				F3D19076230137610043D595 /* TDSqliteDataQueue.h in Headers */,
 				F3D19025230136B30043D595 /* ThinkingSDK.h in Headers */,
 				F3D19070230137610043D595 /* TDOSLog.h in Headers */,
 				F3D19056230137600043D595 /* TDKeychainItemWrapper.h in Headers */,
+				6E05F0FC25077DA200A8613C /* TDSDKUtil.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -467,14 +578,17 @@
 				F35B1317242EFB9B00C630FC /* TDNTPTypes.c in Sources */,
 				F35B1319242EFB9B00C630FC /* TDCalibratedTime.m in Sources */,
 				F30338C123AB57750020C129 /* TDSecurityPolicy.m in Sources */,
+				6EA4D8DA2507632F0035D575 /* TDFile.m in Sources */,
 				F3247C9B23176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m in Sources */,
 				6E58D58B24C7F06200DD11C1 /* TDEventModel.m in Sources */,
+				6E05F0FD25077DA200A8613C /* TDSDKUtil.m in Sources */,
 				F3D19057230137600043D595 /* TDDeviceInfo.m in Sources */,
 				F3D1906A230137600043D595 /* TDAutoTrackManager.m in Sources */,
 				F3D1906D230137610043D595 /* TDSwizzler.m in Sources */,
 				6E4DF53E24EF6F3F00BB1AB4 /* TDEditableEventModel.m in Sources */,
 				F30338BC23AA0E600020C129 /* TDToastView.m in Sources */,
 				F3D1906C230137610043D595 /* NSObject+TDSwizzle.m in Sources */,
+				6E05F0F92507715900A8613C /* TDPublicConfig.m in Sources */,
 				F3D1905A230137600043D595 /* TDOSLog.m in Sources */,
 				6E4DF53A24EF6ED800BB1AB4 /* TDFirstEventModel.m in Sources */,
 				F3D19074230137610043D595 /* TDKeychainItemWrapper.m in Sources */,
@@ -670,6 +784,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACH_O_TYPE = staticlib;
+				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thinkingdata.sdk.ThinkingSDK;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -694,6 +809,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACH_O_TYPE = staticlib;
+				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thinkingdata.sdk.ThinkingSDK;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;

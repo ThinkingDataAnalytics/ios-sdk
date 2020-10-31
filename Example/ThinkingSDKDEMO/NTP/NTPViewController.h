@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "TDBaseVC.h"
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NTPViewController : UIViewController
+@interface NTPViewController :TDBaseVC
 
 @end
 

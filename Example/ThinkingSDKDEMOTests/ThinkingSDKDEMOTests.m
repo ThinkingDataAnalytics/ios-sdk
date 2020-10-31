@@ -10,7 +10,7 @@
 #import <OCMock/OCMock.h>
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import <objc/message.h>
-#import "TDJSONUtil.h"
+//#import "TDJSONUtil.h"
 #import "CalibratedTime/TDCalibratedTimeWithNTP.h"
 
 @interface ThinkingSDKDEMOTests : XCTestCase
