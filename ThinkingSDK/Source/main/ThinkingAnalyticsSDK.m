@@ -104,7 +104,7 @@ static dispatch_queue_t networkQueue;
         _timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
         _timeFormatter.timeZone = config.defaultTimeZone;
         self.file = [[TDFile alloc] initWithAppid:appid];
-        self.telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
+//        self.telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
         
         NSString *keyPattern = @"^[a-zA-Z][a-zA-Z\\d_]{0,49}$";
         self.regexKey = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", keyPattern];
@@ -156,7 +156,7 @@ static dispatch_queue_t networkQueue;
         _ignoredViewTypeList = [[NSMutableSet alloc] init];
         
         self.taskId = UIBackgroundTaskInvalid;
-        self.telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
+//        self.telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
         
         NSString *keyPattern = @"^[a-zA-Z][a-zA-Z\\d_]{0,49}$";
         self.regexKey = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", keyPattern];
@@ -544,10 +544,17 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 - (void)reachabilityChanged:(SCNetworkReachabilityFlags)flags {
     isWifi = (flags & kSCNetworkReachabilityFlagsReachable) && !(flags & kSCNetworkReachabilityFlagsIsWWAN);
 }
-
+- (CTTelephonyNetworkInfo*)telephonyNetworkInfo
+{
+    if(_telephonyInfo == nil)
+    {
+        _telephonyInfo = [CTTelephonyNetworkInfo new];
+    }
+    return _telephonyInfo;
+}
 - (NSString *)currentRadio {
     NSString *newtworkType = @"NULL";;
-    NSString *currentRadioAccessTechnology = _telephonyInfo.currentRadioAccessTechnology;
+    NSString *currentRadioAccessTechnology = [self telephonyNetworkInfo].currentRadioAccessTechnology;
     if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyLTE]) {
         newtworkType = @"4G";
     } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyeHRPD]) {
