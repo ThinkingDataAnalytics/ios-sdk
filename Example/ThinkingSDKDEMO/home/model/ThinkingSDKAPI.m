@@ -8,156 +8,164 @@
 
 #import "ThinkingSDKAPI.h"
 #import <ThinkingSDK/ThinkingAnalyticsSDK.h>
-
+ThinkingAnalyticsSDK* _instance;
 @implementation ThinkingSDKAPI
 
++ (void)setInstance:(ThinkingAnalyticsSDK*)instance
+{
+    _instance = instance;
+}
++ (ThinkingAnalyticsSDK*)getInstance
+{
+    return _instance;
+}
 + (void)testTrack {
-    [[ThinkingAnalyticsSDK sharedInstance] track:@"TA"];
+    [_instance track:@"TA"];
 
 }
 
 + (void)testTrackWithProperty {
-    [[ThinkingAnalyticsSDK sharedInstance] track:@"testProperty" properties:@{@"properKey":@"properValue", @"arrKey":@[@1, @2],@"event_time":@"2020-10-20 18:00:51.125"}];
+    [_instance track:@"testProperty" properties:@{@"properKey":@"properValue", @"arrKey":@[@1, @2],@"event_time":@"2020-10-20 18:00:51.125",@"xx":@NO}];
 }
 
 + (void)testTrackWithTimezone {
-    [[ThinkingAnalyticsSDK sharedInstance] track:@"test" properties:nil time:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
+    [_instance track:@"test" properties:nil time:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
 }
 
 + (void)testTrackWithDefaultFirstCheckID {
-    [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"eventName_unique_default"];
+    [_instance timeEvent:@"eventName_unique_default"];
     TDFirstEventModel *uniqueModel = [[TDFirstEventModel alloc] initWithEventName:@"eventName_unique_default"];
     uniqueModel.properties = @{ @"TestProKey": @"TestProValue"};
-    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:uniqueModel];
+    [_instance trackWithEventModel:uniqueModel];
 }
 
 + (void)testTrackWithFirstCheckID {
-    [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"eventName_unique"];
+    [_instance timeEvent:@"eventName_unique"];
     sleep(1);
     TDFirstEventModel *uniqueModel = [[TDFirstEventModel alloc] initWithEventName:@"eventName_unique" firstCheckID:@"customFirstCheckID"];
     uniqueModel.properties = @{ @"TestProKey": @"TestProValue"};
-    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:uniqueModel];
+    [_instance trackWithEventModel:uniqueModel];
 }
 
 + (void)testTrackUpdate {
-    [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"eventName_edit"];
+    [_instance timeEvent:@"eventName_edit"];
     sleep(1);
     
     TDUpdateEventModel *updateModel = [[TDUpdateEventModel alloc] initWithEventName:@"eventName_edit" eventID:@"eventIDxxx"];
     updateModel.properties = @{ @"eventKeyEdit": @"eventKeyEdit_update", @"eventKeyEdit2": @"eventKeyEdit_update2" };
-    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:updateModel];
+    [_instance trackWithEventModel:updateModel];
 }
 
 + (void)testTrackOverwrite {
     TDOverwriteEventModel *overwriteModel = [[TDOverwriteEventModel alloc] initWithEventName:@"eventName_edit" eventID:@"eventIDxxx"];
     overwriteModel.properties = @{ @"eventKeyEdit": @"eventKeyEdit_overwrite" };
-    [[ThinkingAnalyticsSDK sharedInstance] trackWithEventModel:overwriteModel];
+    [_instance trackWithEventModel:overwriteModel];
 }
 
 + (void)testChangeLibNameAndLibVersion {
     [ThinkingAnalyticsSDK setCustomerLibInfoWithLibName:@"changeLibName" libVersion:@"0.00.001"];
-    [[ThinkingAnalyticsSDK sharedInstance] track:@"trackNameCustomLibName"];
+    [_instance track:@"trackNameCustomLibName"];
 }
 
 + (void)testUserSet {
-    [[ThinkingAnalyticsSDK sharedInstance] user_set:@{
+    [_instance user_set:@{
                                                      @"UserName":@"TA1",
                                                      @"Age":[NSNumber numberWithInt:20]
                                                      }];
-    [[ThinkingAnalyticsSDK sharedInstance] user_set:@{
+    [_instance user_set:@{
                                                       @"UserName":@"TA1",
                                                       @"Age":[NSNumber numberWithInt:20]
                                                       } withTime:[NSDate date]];
 }
 
 + (void)testUserUnset {
-    [[ThinkingAnalyticsSDK sharedInstance] user_unset:@"key1"];
-    [[ThinkingAnalyticsSDK sharedInstance] user_unset:@"key1" withTime:[NSDate date]];
+    [_instance user_unset:@"key1"];
+    [_instance user_unset:@"key1" withTime:[NSDate date]];
 }
 
 + (void)testUserSetonce {
-    [[ThinkingAnalyticsSDK sharedInstance] user_setOnce:@{@"setOnce":@"setonevalue1"}];
-    [[ThinkingAnalyticsSDK sharedInstance] user_setOnce:@{@"setOnce":@"setonevalue1"} withTime:[NSDate date]];
+    [_instance user_setOnce:@{@"setOnce":@"setonevalue1"}];
+    [_instance user_setOnce:@{@"setOnce":@"setonevalue1"} withTime:[NSDate date]];
 }
 
 + (void)testUserDel {
-    [[ThinkingAnalyticsSDK sharedInstance] user_delete];
-    [[ThinkingAnalyticsSDK sharedInstance] user_delete:[NSDate date]];
+    [_instance user_delete];
+    [_instance user_delete:[NSDate date]];
 }
 
 + (void)testUserAdd {
-    [[ThinkingAnalyticsSDK sharedInstance] user_add:@{@"key1":[NSNumber numberWithInt:6]}];
-    [[ThinkingAnalyticsSDK sharedInstance] user_add:@{@"key1":[NSNumber numberWithInt:6]} withTime:[NSDate date]];
-    [[ThinkingAnalyticsSDK sharedInstance] user_add:@"key1" andPropertyValue:[NSNumber numberWithInt:6]];
-    [[ThinkingAnalyticsSDK sharedInstance] user_add:@"key1" andPropertyValue:[NSNumber numberWithInt:6] withTime:[NSDate date]];
+    [_instance user_add:@{@"key1":[NSNumber numberWithInt:6]}];
+    [_instance user_add:@{@"key1":[NSNumber numberWithInt:6]} withTime:[NSDate date]];
+    [_instance user_add:@"key1" andPropertyValue:[NSNumber numberWithInt:6]];
+    [_instance user_add:@"key1" andPropertyValue:[NSNumber numberWithInt:6] withTime:[NSDate date]];
 }
 
 + (void)testUserAppend {
-    [[ThinkingAnalyticsSDK sharedInstance] user_append:@{@"product_buy": @[@"product_name1", @"product_name2"]}];
-    [[ThinkingAnalyticsSDK sharedInstance] user_append:@{@"product_buy": @[@"product_name1", @"product_name2"]} withTime:[NSDate date]];
+    [_instance user_append:@{@"product_buy": @[@"product_name1", @"product_name2"]}];
+    [_instance user_append:@{@"product_buy": @[@"product_name1", @"product_name2"]} withTime:[NSDate date]];
 }
 
 + (void)testLogin {
-    [[ThinkingAnalyticsSDK sharedInstance] login:@"logintest"];
+    [_instance login:@"logintest"];
 }
 
 + (void)testLogout {
-    [[ThinkingAnalyticsSDK sharedInstance] logout];
+    [_instance logout];
 }
 
 + (void)testSetsuper {
-    [[ThinkingAnalyticsSDK sharedInstance] setSuperProperties:@{@"superkey":@"supervalue1",@"superkey2":@"supervalue3"}];
+    [_instance setSuperProperties:@{@"superkey":@"supervalue1",@"superkey2":@"supervalue3"}];
 }
 
 + (void)testUnsetsuper {
-    [[ThinkingAnalyticsSDK sharedInstance] unsetSuperProperty:@"superkey"];
-    [[ThinkingAnalyticsSDK sharedInstance] unsetSuperProperty:@""];
+    [_instance unsetSuperProperty:@"superkey"];
+    [_instance unsetSuperProperty:@""];
 }
 
 + (void)testClearsuper {
-    [[ThinkingAnalyticsSDK sharedInstance] clearSuperProperties];
+    [_instance clearSuperProperties];
 }
 
 + (void)testTimedEvent {
-    [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"TimedEvent"];
+    [_instance timeEvent:@"TimedEvent"];
 }
 
 + (void)testTrackEventEnd {
-    [[ThinkingAnalyticsSDK sharedInstance] track:@"TimedEvent"];
+    [_instance track:@"TimedEvent"];
 }
 
 + (void)testIdentify {
-    [[ThinkingAnalyticsSDK sharedInstance] identify:@"testIdentify1"];
+    [_instance identify:@"testIdentify1"];
 }
 
 + (void)testFlush {
-    [[ThinkingAnalyticsSDK sharedInstance] flush];
+    [_instance flush];
 }
 
 + (void)testEnable {
-    [[ThinkingAnalyticsSDK sharedInstance] enableTracking:YES];
+    [_instance enableTracking:YES];
 }
 
 + (void)testDisEnable {
-    [[ThinkingAnalyticsSDK sharedInstance] enableTracking:NO];
+    [_instance enableTracking:NO];
 }
 
 + (void)optOutTracking {
-    [[ThinkingAnalyticsSDK sharedInstance] optOutTracking];
+    [_instance optOutTracking];
 }
 
 + (void)optOutTrackingAndDeleteUser {
-    [[ThinkingAnalyticsSDK sharedInstance] optOutTrackingAndDeleteUser];
+    [_instance optOutTrackingAndDeleteUser];
 }
 
 + (void)optInTracking {
-    [[ThinkingAnalyticsSDK sharedInstance] optInTracking];
+    [_instance optInTracking];
 }
 
 // H5 打通 jsSDK 需要配置 useAppTrack: true,
 // UIWebView 具体查看 WEBViewController.m 文件
 + (void)testAgent {
-    [[ThinkingAnalyticsSDK sharedInstance] addWebViewUserAgent];
+    [_instance addWebViewUserAgent];
 }
 
 @end

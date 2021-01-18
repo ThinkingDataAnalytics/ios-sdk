@@ -12,11 +12,14 @@
 		6E4936242514CBD800F27296 /* TDUserIDVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4936232514CBD800F27296 /* TDUserIDVC.m */; };
 		6E49362C251872F100F27296 /* TDH5VC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E49362B251872F100F27296 /* TDH5VC.m */; };
 		6E493633251892B700F27296 /* TDColCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E493632251892B700F27296 /* TDColCell.m */; };
+		6E5B85ED256F40FF0067B408 /* ThinkingSDKDemoTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E5B85EC256F40FF0067B408 /* ThinkingSDKDemoTestCase.m */; };
 		6EA0E35A24C84B5D008FCF11 /* SpaceMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6EA0E35824C84B5D008FCF11 /* SpaceMono-Bold.ttf */; };
 		6EA0E35B24C84B5D008FCF11 /* SpaceMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6EA0E35924C84B5D008FCF11 /* SpaceMono-Regular.ttf */; };
 		6EA0E35D24C84C74008FCF11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6EA0E35C24C84C74008FCF11 /* Assets.xcassets */; };
 		6EA0E36024C8515F008FCF11 /* UIColor+TDUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EA0E35F24C8515F008FCF11 /* UIColor+TDUtil.m */; };
 		6EA0E36724C85456008FCF11 /* TDTrackAPIListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EA0E36624C85456008FCF11 /* TDTrackAPIListCell.m */; };
+		6EAA8EBF256E04F400A2E7D1 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EAA8EBE256E04F400A2E7D1 /* libOCMock.a */; };
+		6EAA8EC2256E0BBD00A2E7D1 /* ThinkingAnalyticsSDK+Hook.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EAA8EC1256E0BBD00A2E7D1 /* ThinkingAnalyticsSDK+Hook.m */; };
 		6ED61FB82514862000F0E41D /* TDInitVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FB72514862000F0E41D /* TDInitVC.m */; };
 		6ED61FDB2514988900F0E41D /* NSLayoutConstraint+MASDebugAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FC22514988900F0E41D /* NSLayoutConstraint+MASDebugAdditions.m */; };
 		6ED61FDC2514988900F0E41D /* ViewController+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED61FCB2514988900F0E41D /* ViewController+MASAdditions.m */; };
@@ -50,8 +53,6 @@
 		F380B2E522C0EAC400955FC5 /* APIEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B2E422C0EAC400955FC5 /* APIEntry.m */; };
 		F380B31B22C0EF5900955FC5 /* ThinkingSDKAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B31A22C0EF5900955FC5 /* ThinkingSDKAPI.m */; };
 		F380B3C922C23FA500955FC5 /* AutoTrackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */; };
-		F383E120230268B600E08658 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F383E11F230268B600E08658 /* OCMock.framework */; };
-		F383E1222302698500E08658 /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F383E11F230268B600E08658 /* OCMock.framework */; };
 		F3BA58A12301388D00D6D7DE /* ThinkingSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */; };
 		F3BA58A22301388D00D6D7DE /* ThinkingSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F3C86D30230CF2B200FBD07E /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */; };
@@ -84,7 +85,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				F383E1222302698500E08658 /* OCMock.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,6 +113,8 @@
 		6E49362B251872F100F27296 /* TDH5VC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDH5VC.m; sourceTree = "<group>"; };
 		6E493631251892B700F27296 /* TDColCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDColCell.h; sourceTree = "<group>"; };
 		6E493632251892B700F27296 /* TDColCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDColCell.m; sourceTree = "<group>"; };
+		6E5B85EB256F40FF0067B408 /* ThinkingSDKDemoTestCase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThinkingSDKDemoTestCase.h; sourceTree = "<group>"; };
+		6E5B85EC256F40FF0067B408 /* ThinkingSDKDemoTestCase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThinkingSDKDemoTestCase.m; sourceTree = "<group>"; };
 		6EA0E35624C8421A008FCF11 /* ThinkingSDKDEMO-PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ThinkingSDKDEMO-PrefixHeader.pch"; sourceTree = "<group>"; };
 		6EA0E35724C8430D008FCF11 /* TDMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDMacro.h; sourceTree = "<group>"; };
 		6EA0E35824C84B5D008FCF11 /* SpaceMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpaceMono-Bold.ttf"; sourceTree = "<group>"; };
@@ -122,6 +124,19 @@
 		6EA0E35F24C8515F008FCF11 /* UIColor+TDUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+TDUtil.m"; sourceTree = "<group>"; };
 		6EA0E36524C85456008FCF11 /* TDTrackAPIListCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDTrackAPIListCell.h; sourceTree = "<group>"; };
 		6EA0E36624C85456008FCF11 /* TDTrackAPIListCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDTrackAPIListCell.m; sourceTree = "<group>"; };
+		6EAA8EB3256E04F400A2E7D1 /* OCMockObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockObject.h; sourceTree = "<group>"; };
+		6EAA8EB4256E04F400A2E7D1 /* OCMMacroState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMMacroState.h; sourceTree = "<group>"; };
+		6EAA8EB5256E04F400A2E7D1 /* OCMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMock.h; sourceTree = "<group>"; };
+		6EAA8EB6256E04F400A2E7D1 /* NSNotificationCenter+OCMAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotificationCenter+OCMAdditions.h"; sourceTree = "<group>"; };
+		6EAA8EB7256E04F400A2E7D1 /* OCMFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMFunctions.h; sourceTree = "<group>"; };
+		6EAA8EB8256E04F400A2E7D1 /* OCMStubRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMStubRecorder.h; sourceTree = "<group>"; };
+		6EAA8EB9256E04F400A2E7D1 /* OCMRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMRecorder.h; sourceTree = "<group>"; };
+		6EAA8EBA256E04F400A2E7D1 /* OCMLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMLocation.h; sourceTree = "<group>"; };
+		6EAA8EBB256E04F400A2E7D1 /* OCMConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMConstraint.h; sourceTree = "<group>"; };
+		6EAA8EBC256E04F400A2E7D1 /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
+		6EAA8EBE256E04F400A2E7D1 /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOCMock.a; sourceTree = "<group>"; };
+		6EAA8EC0256E0BBD00A2E7D1 /* ThinkingAnalyticsSDK+Hook.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ThinkingAnalyticsSDK+Hook.h"; sourceTree = "<group>"; };
+		6EAA8EC1256E0BBD00A2E7D1 /* ThinkingAnalyticsSDK+Hook.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ThinkingAnalyticsSDK+Hook.m"; sourceTree = "<group>"; };
 		6ED61FB62514862000F0E41D /* TDInitVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDInitVC.h; sourceTree = "<group>"; };
 		6ED61FB72514862000F0E41D /* TDInitVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDInitVC.m; sourceTree = "<group>"; };
 		6ED61FC12514988900F0E41D /* MASCompositeConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASCompositeConstraint.h; sourceTree = "<group>"; };
@@ -195,7 +210,6 @@
 		F380B31A22C0EF5900955FC5 /* ThinkingSDKAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThinkingSDKAPI.m; sourceTree = "<group>"; };
 		F380B3C722C23FA500955FC5 /* AutoTrackViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoTrackViewController.h; sourceTree = "<group>"; };
 		F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoTrackViewController.m; sourceTree = "<group>"; };
-		F383E11F230268B600E08658 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = ThinkingSDKDEMO/OCMock.framework; sourceTree = "<group>"; };
 		F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ThinkingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3ECE9F2230D55FD00670FBD /* AutoTrackSecViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoTrackSecViewController.h; sourceTree = "<group>"; };
 		F3ECE9F3230D55FD00670FBD /* AutoTrackSecViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoTrackSecViewController.m; sourceTree = "<group>"; };
@@ -216,7 +230,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F383E120230268B600E08658 /* OCMock.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,6 +237,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6EAA8EBF256E04F400A2E7D1 /* libOCMock.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,6 +300,48 @@
 				6EEDD2B425061B1B001E07BC /* TDBaseVC.m */,
 			);
 			path = common;
+			sourceTree = "<group>";
+		};
+		6EAA8EB0256E04F400A2E7D1 /* usr */ = {
+			isa = PBXGroup;
+			children = (
+				6EAA8EB1256E04F400A2E7D1 /* include */,
+				6EAA8EBD256E04F400A2E7D1 /* lib */,
+			);
+			path = usr;
+			sourceTree = "<group>";
+		};
+		6EAA8EB1256E04F400A2E7D1 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				6EAA8EB2256E04F400A2E7D1 /* OCMock */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		6EAA8EB2256E04F400A2E7D1 /* OCMock */ = {
+			isa = PBXGroup;
+			children = (
+				6EAA8EB3256E04F400A2E7D1 /* OCMockObject.h */,
+				6EAA8EB4256E04F400A2E7D1 /* OCMMacroState.h */,
+				6EAA8EB5256E04F400A2E7D1 /* OCMock.h */,
+				6EAA8EB6256E04F400A2E7D1 /* NSNotificationCenter+OCMAdditions.h */,
+				6EAA8EB7256E04F400A2E7D1 /* OCMFunctions.h */,
+				6EAA8EB8256E04F400A2E7D1 /* OCMStubRecorder.h */,
+				6EAA8EB9256E04F400A2E7D1 /* OCMRecorder.h */,
+				6EAA8EBA256E04F400A2E7D1 /* OCMLocation.h */,
+				6EAA8EBB256E04F400A2E7D1 /* OCMConstraint.h */,
+				6EAA8EBC256E04F400A2E7D1 /* OCMArg.h */,
+			);
+			path = OCMock;
+			sourceTree = "<group>";
+		};
+		6EAA8EBD256E04F400A2E7D1 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				6EAA8EBE256E04F400A2E7D1 /* libOCMock.a */,
+			);
+			path = lib;
 			sourceTree = "<group>";
 		};
 		6ED61FB4251485F600F0E41D /* init */ = {
@@ -493,8 +549,13 @@
 		F380B2CB22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests */ = {
 			isa = PBXGroup;
 			children = (
+				6EAA8EB0256E04F400A2E7D1 /* usr */,
 				F380B2CC22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.m */,
 				F380B2CE22C0E8BC00955FC5 /* Info.plist */,
+				6EAA8EC0256E0BBD00A2E7D1 /* ThinkingAnalyticsSDK+Hook.h */,
+				6EAA8EC1256E0BBD00A2E7D1 /* ThinkingAnalyticsSDK+Hook.m */,
+				6E5B85EB256F40FF0067B408 /* ThinkingSDKDemoTestCase.h */,
+				6E5B85EC256F40FF0067B408 /* ThinkingSDKDemoTestCase.m */,
 			);
 			path = ThinkingSDKDEMOUITests;
 			sourceTree = "<group>";
@@ -503,7 +564,6 @@
 			isa = PBXGroup;
 			children = (
 				F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */,
-				F383E11F230268B600E08658 /* OCMock.framework */,
 				F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */,
 			);
 			name = Frameworks;
@@ -701,7 +761,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6EAA8EC2256E0BBD00A2E7D1 /* ThinkingAnalyticsSDK+Hook.m in Sources */,
 				F380B2CD22C0E8BC00955FC5 /* ThinkingSDKDEMOUITests.m in Sources */,
+				6E5B85ED256F40FF0067B408 /* ThinkingSDKDemoTestCase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -838,6 +900,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -854,7 +917,9 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.thinking.ThinkingSDKDEMO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_WORKSPACE = YES;
 			};
 			name = Debug;
 		};
@@ -863,6 +928,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -879,7 +945,9 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.thinking.ThinkingSDKDEMO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_WORKSPACE = YES;
 			};
 			name = Release;
 		};
@@ -892,6 +960,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
+					"$(PROJECT_DIR)",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../ThinkingSDK/Source",
@@ -921,6 +990,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
+					"$(PROJECT_DIR)",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../ThinkingSDK/Source",
@@ -946,12 +1016,18 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/ThinkingSDKDEMOUITests/usr/include";
 				INFOPLIST_FILE = ThinkingSDKDEMOUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThinkingSDKDEMOUITests/usr/lib",
+				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thinking.ThinkingSDKDEMOUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -964,12 +1040,18 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/ThinkingSDKDEMOUITests/usr/include";
 				INFOPLIST_FILE = ThinkingSDKDEMOUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThinkingSDKDEMOUITests/usr/lib",
+				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thinking.ThinkingSDKDEMOUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

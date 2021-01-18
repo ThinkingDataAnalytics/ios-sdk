@@ -26,6 +26,7 @@
 		6E05F0F92507715900A8613C /* TDPublicConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E05F0F72507715900A8613C /* TDPublicConfig.m */; };
 		6E05F0FC25077DA200A8613C /* TDSDKUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E05F0FA25077DA200A8613C /* TDSDKUtil.h */; };
 		6E05F0FD25077DA200A8613C /* TDSDKUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E05F0FB25077DA200A8613C /* TDSDKUtil.m */; };
+		6E43B76D25651E2B004F4F87 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E43B76C25651E2B004F4F87 /* libOCMock.a */; };
 		6E4DF53924EF6ED800BB1AB4 /* TDFirstEventModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E4DF53724EF6ED800BB1AB4 /* TDFirstEventModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6E4DF53A24EF6ED800BB1AB4 /* TDFirstEventModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4DF53824EF6ED800BB1AB4 /* TDFirstEventModel.m */; };
 		6E4DF53D24EF6F3F00BB1AB4 /* TDEditableEventModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E4DF53B24EF6F3F00BB1AB4 /* TDEditableEventModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -108,6 +109,18 @@
 		6E05F0F72507715900A8613C /* TDPublicConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDPublicConfig.m; sourceTree = "<group>"; };
 		6E05F0FA25077DA200A8613C /* TDSDKUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDSDKUtil.h; sourceTree = "<group>"; };
 		6E05F0FB25077DA200A8613C /* TDSDKUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDSDKUtil.m; sourceTree = "<group>"; };
+		6E43B75025651983004F4F87 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = Example/ThinkingSDKDEMO/OCMock.framework; sourceTree = "<group>"; };
+		6E43B76125651E2B004F4F87 /* OCMockObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockObject.h; sourceTree = "<group>"; };
+		6E43B76225651E2B004F4F87 /* OCMMacroState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMMacroState.h; sourceTree = "<group>"; };
+		6E43B76325651E2B004F4F87 /* OCMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMock.h; sourceTree = "<group>"; };
+		6E43B76425651E2B004F4F87 /* NSNotificationCenter+OCMAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotificationCenter+OCMAdditions.h"; sourceTree = "<group>"; };
+		6E43B76525651E2B004F4F87 /* OCMFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMFunctions.h; sourceTree = "<group>"; };
+		6E43B76625651E2B004F4F87 /* OCMStubRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMStubRecorder.h; sourceTree = "<group>"; };
+		6E43B76725651E2B004F4F87 /* OCMRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMRecorder.h; sourceTree = "<group>"; };
+		6E43B76825651E2B004F4F87 /* OCMLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMLocation.h; sourceTree = "<group>"; };
+		6E43B76925651E2B004F4F87 /* OCMConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMConstraint.h; sourceTree = "<group>"; };
+		6E43B76A25651E2B004F4F87 /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
+		6E43B76C25651E2B004F4F87 /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOCMock.a; sourceTree = "<group>"; };
 		6E4DF53724EF6ED800BB1AB4 /* TDFirstEventModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDFirstEventModel.h; sourceTree = "<group>"; };
 		6E4DF53824EF6ED800BB1AB4 /* TDFirstEventModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDFirstEventModel.m; sourceTree = "<group>"; };
 		6E4DF53B24EF6F3F00BB1AB4 /* TDEditableEventModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDEditableEventModel.h; sourceTree = "<group>"; };
@@ -184,6 +197,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3D1901E230136B30043D595 /* ThinkingSDK.framework in Frameworks */,
+				6E43B76D25651E2B004F4F87 /* libOCMock.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +242,63 @@
 				F3D19044230137600043D595 /* TDAutoTrackManager.m */,
 			);
 			path = model;
+			sourceTree = "<group>";
+		};
+		6E43B74F25651983004F4F87 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6E43B75025651983004F4F87 /* OCMock.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6E43B75525651C36004F4F87 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
+		6E43B75E25651E2B004F4F87 /* usr */ = {
+			isa = PBXGroup;
+			children = (
+				6E43B75F25651E2B004F4F87 /* include */,
+				6E43B76B25651E2B004F4F87 /* lib */,
+			);
+			path = usr;
+			sourceTree = "<group>";
+		};
+		6E43B75F25651E2B004F4F87 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				6E43B76025651E2B004F4F87 /* OCMock */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		6E43B76025651E2B004F4F87 /* OCMock */ = {
+			isa = PBXGroup;
+			children = (
+				6E43B76125651E2B004F4F87 /* OCMockObject.h */,
+				6E43B76225651E2B004F4F87 /* OCMMacroState.h */,
+				6E43B76325651E2B004F4F87 /* OCMock.h */,
+				6E43B76425651E2B004F4F87 /* NSNotificationCenter+OCMAdditions.h */,
+				6E43B76525651E2B004F4F87 /* OCMFunctions.h */,
+				6E43B76625651E2B004F4F87 /* OCMStubRecorder.h */,
+				6E43B76725651E2B004F4F87 /* OCMRecorder.h */,
+				6E43B76825651E2B004F4F87 /* OCMLocation.h */,
+				6E43B76925651E2B004F4F87 /* OCMConstraint.h */,
+				6E43B76A25651E2B004F4F87 /* OCMArg.h */,
+			);
+			path = OCMock;
+			sourceTree = "<group>";
+		};
+		6E43B76B25651E2B004F4F87 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				6E43B76C25651E2B004F4F87 /* libOCMock.a */,
+			);
+			path = lib;
 			sourceTree = "<group>";
 		};
 		6E4DF53624EF6EB300BB1AB4 /* EventModel */ = {
@@ -361,6 +432,7 @@
 				F3D19016230136B30043D595 /* ThinkingSDK */,
 				F3D19021230136B30043D595 /* ThinkingSDKTests */,
 				F3D19015230136B30043D595 /* Products */,
+				6E43B74F25651983004F4F87 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -385,6 +457,8 @@
 		F3D19021230136B30043D595 /* ThinkingSDKTests */ = {
 			isa = PBXGroup;
 			children = (
+				6E43B75E25651E2B004F4F87 /* usr */,
+				6E43B75525651C36004F4F87 /* Headers */,
 				F3D19022230136B30043D595 /* ThinkingSDKTests.m */,
 				F3D19024230136B30043D595 /* Info.plist */,
 			);
@@ -770,9 +844,10 @@
 		F3D19029230136B30043D595 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -787,6 +862,7 @@
 				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thinkingdata.sdk.ThinkingSDK;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -795,9 +871,10 @@
 		F3D1902A230136B30043D595 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -812,6 +889,7 @@
 				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thinkingdata.sdk.ThinkingSDK;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -821,12 +899,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = SV8R54PUAN;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Example/ThinkingSDKDEMO",
+				);
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/ThinkingSDKTests/usr/include";
 				INFOPLIST_FILE = ThinkingSDKTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThinkingSDKTests",
+					"$(PROJECT_DIR)/ThinkingSDKTests/usr/lib",
+				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thinkingdata.sdk.ThinkingSDKTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -837,12 +927,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = SV8R54PUAN;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Example/ThinkingSDKDEMO",
+				);
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/ThinkingSDKTests/usr/include";
 				INFOPLIST_FILE = ThinkingSDKTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThinkingSDKTests",
+					"$(PROJECT_DIR)/ThinkingSDKTests/usr/lib",
+				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thinkingdata.sdk.ThinkingSDKTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

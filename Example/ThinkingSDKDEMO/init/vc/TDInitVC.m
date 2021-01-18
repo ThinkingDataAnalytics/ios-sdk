@@ -8,6 +8,7 @@
 
 #import "TDInitVC.h"
 #import <ThinkingSDK/ThinkingSDK.h>
+#import "ThinkingSDKAPI.h"
 @interface TDInitVC ()
 @property(strong,nonatomic) UITextField *appidTF;
 @property(strong,nonatomic) UITextField *serverTF;
@@ -103,16 +104,21 @@
 }
 - (void)touchBtn
 {
-    TDConfig *config = [TDConfig new];
-//    [config setDebugMode:ThinkingAnalyticsDebug];
-//    [ThinkingAnalyticsSDK startWithAppId:_appidTF.text withUrl:_serverTF.text];
-    [ThinkingAnalyticsSDK startWithAppId:_appidTF.text withUrl:_serverTF.text withConfig:config];
-    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     [self.navigationController popViewControllerAnimated:true];
-    if(_callback != nil)
+    if([ThinkingSDKAPI getInstance] == nil)
     {
-        _callback();
+        TDConfig *config = [TDConfig new];
+//        config.debugMode = ThinkingAnalyticsDebug;
+        ThinkingAnalyticsSDK* instance =  [ThinkingAnalyticsSDK startWithAppId:_appidTF.text withUrl:_serverTF.text withConfig:config];
+        [ThinkingSDKAPI setInstance:instance];
+        [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+        [[ThinkingAnalyticsSDK sharedInstance] track:@"TA"];
+        if(_callback != nil)
+        {
+            _callback();
+        }
     }
+    
 }
 
 @end

@@ -5,13 +5,13 @@
 #import "TDConfig.h"
 #import "TDPublicConfig.h"
 #import "TDFile.h"
+#import "TDNetwork.h"
 
 #if !__has_feature(objc_arc)
 #error The ThinkingSDK library must be compiled with ARC enabled
 #endif
 
 @interface ThinkingAnalyticsSDK ()
-
 @property (atomic, strong)   TDNetwork *network;
 @property (atomic, strong)   TDAutoTrackManager *autoTrackManager;
 @property (strong,nonatomic) TDFile *file;
@@ -93,7 +93,9 @@ static dispatch_queue_t networkQueue;
     if (self = [self init]) {
         _appid = appid;
         _isEnabled = YES;
+        _serverURL = serverURL;
         _config = [config copy];
+        _config.configureURL = serverURL;
         
         self.trackTimer = [NSMutableDictionary dictionary];
         _timeFormatter = [[NSDateFormatter alloc] init];
@@ -828,7 +830,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 - (void)registerDynamicSuperProperties:(NSDictionary<NSString *, id> *(^)(void)) dynamicSuperProperties {
     if ([self hasDisabled])
         return;
-    
     self.dynamicSuperProperties = dynamicSuperProperties;
 }
 
@@ -1196,6 +1197,10 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                 count = [self.dataQueue sqliteCountForAppid:self.appid];
             } else {
                 TDLogDebug(@"queueing data:%@", finalDic);
+//                NSError *parseError;
+//                NSData  *jsonData = [NSJSONSerialization dataWithJSONObject:finalDic options:NSJSONWritingPrettyPrinted error:&parseError];
+//                NSString * str = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+//                TDLogDebug(@"queueing data:%@", str);
                 count = [self saveEventsData:finalDic];
             }
             if (count >= [self.config.uploadSize integerValue]) {

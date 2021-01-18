@@ -8,6 +8,7 @@
 
 #import "WKWebViewController.h"
 #import <WebKit/WebKit.h>
+#import "ThinkingSDKAPI.h"
 #import <ThinkingSDK/ThinkingAnalyticsSDK.h>
 
 @interface WKWebViewController ()<UIWebViewDelegate,WKUIDelegate,WKNavigationDelegate>
@@ -42,7 +43,7 @@
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
   
-    if ([[ThinkingAnalyticsSDK sharedInstance] showUpWebView:webView WithRequest:navigationAction.request]) {
+    if ([[ThinkingSDKAPI getInstance] showUpWebView:webView WithRequest:navigationAction.request]) {
         decisionHandler(WKNavigationActionPolicyCancel);
         return;
     }

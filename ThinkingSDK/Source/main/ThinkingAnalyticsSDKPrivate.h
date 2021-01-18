@@ -9,7 +9,6 @@
 
 #import "TDLogging.h"
 #import "ThinkingExceptionHandler.h"
-#import "TDNetwork.h"
 #import "TDDeviceInfo.h"
 #import "TDConfig.h"
 #import "TDSqliteDataQueue.h"
@@ -99,15 +98,18 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 - (BOOL)isViewControllerIgnored:(UIViewController *)viewController;
 - (BOOL)isAutoTrackEventTypeIgnored:(ThinkingAnalyticsAutoTrackEventType)eventType;
 - (BOOL)isViewTypeIgnored:(Class)aClass;
+- (void)retrievePersistedData;
 + (dispatch_queue_t)serialQueue;
 + (dispatch_queue_t)networkQueue;
 + (UIApplication *)sharedUIApplication;
 - (NSInteger)saveEventsData:(NSDictionary *)data;
 - (void)flushImmediately:(NSDictionary *)dataDic;
 - (BOOL)hasDisabled;
+- (BOOL)isValidName:(NSString *)name isAutoTrack:(BOOL)isAutoTrack;
 + (BOOL)isTrackEvent:(NSString *)eventType;
 - (BOOL)checkEventProperties:(NSDictionary *)properties withEventType:(NSString *_Nullable)eventType haveAutoTrackEvents:(BOOL)haveAutoTrackEvents;
 - (void)startFlushTimer;
+- (double)getTimezoneOffset:(NSDate *)date timeZone:(NSTimeZone *)timeZone;
 
 @end
 

@@ -8,7 +8,7 @@
 
 #import "WEBViewController.h"
 #import <ThinkingSDK/ThinkingAnalyticsSDK.h>
-
+#import "ThinkingSDKAPI.h"
 @interface WEBViewController () <UIWebViewDelegate>
 
 @property (strong) UIWebView *webView;
@@ -35,10 +35,9 @@
     return @"UIWebview测试";
 }
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    if ([[ThinkingAnalyticsSDK sharedInstance] showUpWebView:webView WithRequest:request]) {
+    if ([[ThinkingSDKAPI getInstance] showUpWebView:webView WithRequest:request]) {
         return NO;
     }
-    
     /*
         other code
     */

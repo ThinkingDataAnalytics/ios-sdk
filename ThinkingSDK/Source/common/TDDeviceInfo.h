@@ -20,6 +20,7 @@ FOUNDATION_EXTERN NSString *const VERSION;
 
 + (NSString *)libVersion;
 - (NSDictionary *)collectAutomaticProperties;
++ (NSString*)bundleId;
 
 @end
 

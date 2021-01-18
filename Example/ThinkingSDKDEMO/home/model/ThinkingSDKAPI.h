@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import <ThinkingSDK/ThinkingSDK.h>
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ThinkingSDKAPI : NSObject
@@ -42,7 +42,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)testTrackOverwrite;
 
 + (void)testChangeLibNameAndLibVersion;
-
++ (void)setInstance:(ThinkingAnalyticsSDK*)instance;
++ (ThinkingAnalyticsSDK*)getInstance;
 @end
 
 NS_ASSUME_NONNULL_END
