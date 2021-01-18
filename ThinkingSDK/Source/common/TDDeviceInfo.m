@@ -85,7 +85,10 @@
     
     return [p copy];
 }
-
++ (NSString*)bundleId
+{
+     return [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
+}
 //TODO
 - (NSString *)iphoneType {
     struct utsname systemInfo;

@@ -2,7 +2,6 @@
 
 #import "ThinkingAnalyticsSDKPrivate.h"
 
-NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^TDFlushConfigBlock)(NSDictionary *result, NSError * _Nullable error);
 
@@ -27,4 +26,3 @@ typedef void (^TDFlushConfigBlock)(NSDictionary *result, NSError * _Nullable err
 
 @end
 
-NS_ASSUME_NONNULL_END

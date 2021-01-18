@@ -36,6 +36,9 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    NSString *homePath = NSHomeDirectory();
+    
+    NSLog(@"Home目录：%@",homePath);  
 }
 
 //- (TrackAPIViewController *)trackAPIVCWithApis:(NSArray *)commands {
