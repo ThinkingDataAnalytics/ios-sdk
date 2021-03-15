@@ -553,40 +553,53 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     return _telephonyInfo;
 }
 - (NSString *)currentRadio {
-    NSString *newtworkType = @"NULL";;
-    NSString *currentRadioAccessTechnology = [self telephonyNetworkInfo].currentRadioAccessTechnology;
-    if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyLTE]) {
-        newtworkType = @"4G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyeHRPD]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORevB]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORevA]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORev0]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMA1x]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyHSUPA]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyHSDPA]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyWCDMA]) {
-        newtworkType = @"3G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyEdge]) {
-        newtworkType = @"2G";
-    } else if ([currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyGPRS]) {
-        newtworkType = @"2G";
-    }
-#ifdef __IPHONE_14_1
-        if (@available(iOS 14.1, *)) {
-            if([currentRadioAccessTechnology isEqual:CTRadioAccessTechnologyNRNSA]||[currentRadioAccessTechnology isEqual:CTRadioAccessTechnologyNR])
-            {
-                newtworkType = @"5G";
+    NSString *networkType = @"NULL";
+    @try {
+        NSString *currentRadio = nil;
+        CTTelephonyNetworkInfo *info = [self telephonyNetworkInfo];
+        
+#ifdef __IPHONE_12_0
+        if (@available(iOS 12.0, *)) {
+            NSDictionary *serviceCurrentRadioAccessTechnology = [info serviceCurrentRadioAccessTechnology];
+            if (serviceCurrentRadioAccessTechnology!=nil && serviceCurrentRadioAccessTechnology.allValues.count>0) {
+                currentRadio = serviceCurrentRadioAccessTechnology.allValues[0];
             }
         }
 #endif
-    return newtworkType;
+
+        if (currentRadio == nil) {
+            currentRadio = info.currentRadioAccessTechnology;
+        }
+        
+        if ([currentRadio isEqualToString:CTRadioAccessTechnologyLTE]) {
+            networkType = @"4G";
+        } else if ([currentRadio isEqualToString:CTRadioAccessTechnologyeHRPD] ||
+                   [currentRadio isEqualToString:CTRadioAccessTechnologyCDMAEVDORevB] ||
+                   [currentRadio isEqualToString:CTRadioAccessTechnologyCDMAEVDORevA] ||
+                   [currentRadio isEqualToString:CTRadioAccessTechnologyCDMAEVDORev0] ||
+                   [currentRadio isEqualToString:CTRadioAccessTechnologyCDMA1x] ||
+                   [currentRadio isEqualToString:CTRadioAccessTechnologyHSUPA] ||
+                   [currentRadio isEqualToString:CTRadioAccessTechnologyHSDPA] ||
+                   [currentRadio isEqualToString:CTRadioAccessTechnologyWCDMA]) {
+            networkType = @"3G";
+        } else if ([currentRadio isEqualToString:CTRadioAccessTechnologyEdge] ||
+                   [currentRadio isEqualToString:CTRadioAccessTechnologyGPRS]) {
+            networkType = @"2G";
+        }
+        
+#ifdef __IPHONE_14_1
+        if (@available(iOS 14.1, *)) {
+            if([currentRadio isEqualToString:CTRadioAccessTechnologyNRNSA] ||
+               [currentRadio isEqualToString:CTRadioAccessTechnologyNR]) {
+                networkType = @"5G";
+            }
+        }
+#endif
+    } @catch (NSException *exception) {
+        TDLogError(@"%@: %@", self, exception);
+    }
+    
+    return networkType;
 }
 
 + (NSString *)getNetWorkStates {
@@ -1115,6 +1128,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     
     if ([ThinkingAnalyticsSDK isTrackEvent:eventData.eventType]) {
         properties[@"#app_version"] = [TDDeviceInfo sharedManager].appVersion;
+        properties[@"#bundle_id"] = [TDDeviceInfo bundleId];
         properties[@"#network_type"] = [[self class] getNetWorkStates];
         [properties addEntriesFromDictionary:[TDDeviceInfo sharedManager].automaticData];
         
@@ -1201,7 +1215,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             if (self.config.debugMode == ThinkingAnalyticsDebugOnly || self.config.debugMode == ThinkingAnalyticsDebug) {
                 TDLogDebug(@"queueing debug data:%@", finalDic);
                 [self flushDebugEvent:finalDic];
-                count = [self.dataQueue sqliteCountForAppid:self.appid];
+                @synchronized (instances) {
+                    count = [self.dataQueue sqliteCountForAppid:self.appid];
+                }
             } else {
                 TDLogDebug(@"queueing data:%@", finalDic);
 //                NSError *parseError;
@@ -1367,29 +1383,31 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if (!([self convertNetworkType:networkType] & self.config.networkTypePolicy)) {
         return;
     }
-    
-    NSArray *recordArray;
-    
-    @synchronized (instances) {
-        recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:self.appid];
-    }
-    
-    BOOL flushSucc = YES;
-    while (recordArray.count > 0 && flushSucc) {
-        NSUInteger sendSize = recordArray.count;
-        flushSucc = [self.network flushEvents:recordArray];
-        if (flushSucc) {
-            @synchronized (instances) {
-                BOOL ret = [self.dataQueue removeFirstRecords:sendSize withAppid:self.appid];
-                if (!ret) {
-                    break;
-                }
-                recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:self.appid];
-            }
-        } else {
-            break;
+
+    dispatch_async(serialQueue, ^{
+        NSArray *recordArray;
+        
+        @synchronized (instances) {
+            recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:self.appid];
         }
-    }
+        
+        BOOL flushSucc = YES;
+        while (recordArray.count > 0 && flushSucc) {
+            NSUInteger sendSize = recordArray.count;
+            flushSucc = [self.network flushEvents:recordArray];
+            if (flushSucc) {
+                @synchronized (instances) {
+                    BOOL ret = [self.dataQueue removeFirstRecords:sendSize withAppid:self.appid];
+                    if (!ret) {
+                        break;
+                    }
+                    recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:self.appid];
+                }
+            } else {
+                break;
+            }
+        }
+    });
 }
 
 - (void)dispatchOnNetworkQueue:(void (^)(void))dispatchBlock {
