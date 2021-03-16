@@ -646,11 +646,11 @@ typedef void(^MHandle)(NSInvocation *);
     [_mock trackWithEventModel:overWritableEvent];
     [NSThread sleepForTimeInterval:WAIT_TIME];
     NSLog(@"Data=%@",[self dicToStr:data]);
-    [self assertDefaultTrackContent:data mock:_mock length:SIZE_OF_EVENT_DATA];
+    [self assertDefaultTrackContent:data mock:_mock length:SIZE_OF_EVENT_DATA+1];
     [self assertTrackProperty:data instance:_mock date:date];
     XCTAssertEqualObjects(data[@"#type"], @"track_overwrite");
     XCTAssertEqualObjects(data[@"#event_name"], EVENT_NAME);
-    XCTAssertNil(data[@"#event_id"]);
+    XCTAssertNotNil(data[@"#event_id"]);
     [self assertTrackProperty:data instance:_mock date:date];
     
     
@@ -677,11 +677,11 @@ typedef void(^MHandle)(NSInvocation *);
     [_mock trackWithEventModel:overWritableEvent];
     [NSThread sleepForTimeInterval:WAIT_TIME];
    NSLog(@"Data=%@",[self dicToStr:data]);
-    [self assertDefaultTrackContent:data mock:_mock length:SIZE_OF_EVENT_DATA];
+    [self assertDefaultTrackContent:data mock:_mock length:SIZE_OF_EVENT_DATA+1];
     [self assertTrackProperty:data instance:_mock date:date];
     XCTAssertEqualObjects(data[@"#type"], @"track_update");
     XCTAssertEqualObjects(data[@"#event_name"], EVENT_NAME);
-    XCTAssertNil(data[@"#event_id"]);
+    XCTAssertNotNil(data[@"#event_id"]);
     [self assertTrackProperty:data instance:_mock date:date];
     
     
@@ -989,6 +989,7 @@ typedef void(^MHandle)(NSInvocation *);
         NSLog(@"OK");
     };
     OCMStub([_lightMock saveEventsData:[OCMArg any]]).andDo(handle);
+    [NSThread sleepForTimeInterval:WAIT_TIME];
     [self sendUserProperty:_lightMock properties:@{}];
     [_lightMock track:EVENT_NAME];
     [NSThread sleepForTimeInterval:WAIT_TIME];

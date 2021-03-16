@@ -21,7 +21,7 @@
 - (void)prepareUI {
     self.contentView.backgroundColor = UIColor.clearColor;
     self.backgroundColor = UIColor.clearColor;
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    self.selectionStyle = UITableViewCellSelectionStyleBlue;
     
     UIView *bgView = [UIView new];
     bgView.layer.masksToBounds = YES;
