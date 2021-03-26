@@ -27,6 +27,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)unarchiveOptOut;
 - (void)archiveIsEnabled:(BOOL)isEnabled;
 - (BOOL)unarchiveEnabled;
+- (void)archiveDeviceId:(NSString *)deviceId;
+- (NSString *)unarchiveDeviceId;
+- (void)archiveInstallTimes:(NSString *)installTimes;
+- (NSString *)unarchiveInstallTimes;
 - (BOOL)archiveObject:(id)object withFilePath:(NSString *)filePath;
 - (BOOL)addSkipBackupAttributeToItemAtPath:(NSString *)filePathString;
 // 兼容老版本
