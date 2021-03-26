@@ -22,7 +22,7 @@
 static NSMutableDictionary *instances;
 static NSString *defaultProjectAppid;
 static BOOL isWifi;
-static NSString *radioInfo;
+static BOOL isWwan;
 static TDCalibratedTime *calibratedTime;
 static dispatch_queue_t serialQueue;
 static dispatch_queue_t networkQueue;
@@ -91,6 +91,7 @@ static dispatch_queue_t networkQueue;
 
 - (instancetype)initLight:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config {
     if (self = [self init]) {
+        serverURL = [self checkServerURL:serverURL];
         _appid = appid;
         _isEnabled = YES;
         _serverURL = serverURL;
@@ -104,7 +105,6 @@ static dispatch_queue_t networkQueue;
         _timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
         _timeFormatter.timeZone = config.defaultTimeZone;
         self.file = [[TDFile alloc] initWithAppid:appid];
-//        self.telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
         
         NSString *keyPattern = @"^[a-zA-Z][a-zA-Z\\d_]{0,49}$";
         self.regexKey = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", keyPattern];
@@ -128,6 +128,7 @@ static dispatch_queue_t networkQueue;
 
 - (instancetype)initWithAppkey:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config {
     if (self = [self init:appid]) {
+        serverURL = [self checkServerURL:serverURL];
         self.serverURL = serverURL;
         self.appid = appid;
         
@@ -156,7 +157,6 @@ static dispatch_queue_t networkQueue;
         _ignoredViewTypeList = [[NSMutableSet alloc] init];
         
         self.taskId = UIBackgroundTaskInvalid;
-//        self.telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
         
         NSString *keyPattern = @"^[a-zA-Z][a-zA-Z\\d_]{0,49}$";
         self.regexKey = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", keyPattern];
@@ -364,6 +364,12 @@ static dispatch_queue_t networkQueue;
 
 - (void)setNetRadioListeners {
     if ((_reachability = SCNetworkReachabilityCreateWithName(NULL,"thinkingdata.cn")) != NULL) {
+        SCNetworkReachabilityFlags flags;
+        BOOL didRetrieveFlags = SCNetworkReachabilityGetFlags(_reachability, &flags);
+        if (didRetrieveFlags) {
+            isWifi = (flags & kSCNetworkReachabilityFlagsReachable) && !(flags & kSCNetworkReachabilityFlagsIsWWAN);
+            isWwan = (flags & kSCNetworkReachabilityFlagsIsWWAN);
+        }
         SCNetworkReachabilityContext context = {0, (__bridge void *)self, NULL, NULL, NULL};
         if (SCNetworkReachabilitySetCallback(_reachability, ThinkingReachabilityCallback, &context)) {
             if (!SCNetworkReachabilitySetDispatchQueue(_reachability, serialQueue)) {
@@ -371,15 +377,6 @@ static dispatch_queue_t networkQueue;
             }
         }
     }
-    
-    [self setCurrentRadio];
-    
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    
-    [notificationCenter addObserver:self
-                           selector:@selector(setCurrentRadio)
-                               name:CTRadioAccessTechnologyDidChangeNotification
-                             object:nil];
 }
 
 - (void)applicationWillEnterForeground:(NSNotification *)notification {
@@ -543,31 +540,27 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 - (void)reachabilityChanged:(SCNetworkReachabilityFlags)flags {
     isWifi = (flags & kSCNetworkReachabilityFlagsReachable) && !(flags & kSCNetworkReachabilityFlagsIsWWAN);
+    isWwan = (flags & kSCNetworkReachabilityFlagsIsWWAN);
 }
-- (CTTelephonyNetworkInfo*)telephonyNetworkInfo
-{
-    if(_telephonyInfo == nil)
-    {
-        _telephonyInfo = [CTTelephonyNetworkInfo new];
-    }
-    return _telephonyInfo;
-}
-- (NSString *)currentRadio {
+
++ (NSString *)currentRadio {
     NSString *networkType = @"NULL";
     @try {
+        static CTTelephonyNetworkInfo *info = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            info = [[CTTelephonyNetworkInfo alloc] init];
+        });
         NSString *currentRadio = nil;
-        CTTelephonyNetworkInfo *info = [self telephonyNetworkInfo];
-        
 #ifdef __IPHONE_12_0
         if (@available(iOS 12.0, *)) {
-            NSDictionary *serviceCurrentRadioAccessTechnology = [info serviceCurrentRadioAccessTechnology];
-            if (serviceCurrentRadioAccessTechnology!=nil && serviceCurrentRadioAccessTechnology.allValues.count>0) {
-                currentRadio = serviceCurrentRadioAccessTechnology.allValues[0];
+            NSDictionary *serviceCurrentRadio = [info serviceCurrentRadioAccessTechnology];
+            if ([serviceCurrentRadio isKindOfClass:[NSDictionary class]] && serviceCurrentRadio.allValues.count>0) {
+                currentRadio = serviceCurrentRadio.allValues[0];
             }
         }
 #endif
-
-        if (currentRadio == nil) {
+        if (currentRadio == nil && [info.currentRadioAccessTechnology isKindOfClass:[NSString class]]) {
             currentRadio = info.currentRadioAccessTechnology;
         }
         
@@ -586,12 +579,13 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                    [currentRadio isEqualToString:CTRadioAccessTechnologyGPRS]) {
             networkType = @"2G";
         }
-        
 #ifdef __IPHONE_14_1
-        if (@available(iOS 14.1, *)) {
-            if([currentRadio isEqualToString:CTRadioAccessTechnologyNRNSA] ||
-               [currentRadio isEqualToString:CTRadioAccessTechnologyNR]) {
-                networkType = @"5G";
+        else if (@available(iOS 14.1, *)) {
+            if ([currentRadio isKindOfClass:[NSString class]]) {
+                if([currentRadio isEqualToString:CTRadioAccessTechnologyNRNSA] ||
+                   [currentRadio isEqualToString:CTRadioAccessTechnologyNR]) {
+                    networkType = @"5G";
+                }
             }
         }
 #endif
@@ -605,15 +599,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 + (NSString *)getNetWorkStates {
     if (isWifi) {
         return @"WIFI";
+    } else if (isWwan) {
+        return [self currentRadio];
     } else {
-        return radioInfo;
+        return @"NULL";
     }
-}
-
-- (void)setCurrentRadio {
-    dispatch_async(serialQueue, ^{
-        radioInfo = [self currentRadio];
-    });
 }
 
 #pragma mark - Public
@@ -681,6 +671,23 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 #pragma mark - Private
+
+- (NSString *)checkServerURL:(NSString *)urlString {
+    urlString = [urlString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSString *scheme = [url scheme];
+    NSString *host = [url host];
+    NSNumber *port = [url port];
+    
+    if (scheme && scheme.length>0 && host && host.length>0) {
+        urlString = [NSString stringWithFormat:@"%@://%@", scheme, host];
+        if (port && [port stringValue]) {
+            urlString = [urlString stringByAppendingFormat:@":%@", [port stringValue]];
+        }
+    }
+    return urlString;
+}
 
 - (void)h5track:(NSString *)eventName
         extraID:(NSString *)extraID
@@ -760,7 +767,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     ;
 }
 
-#pragma mark -
+#pragma mark - User
 
 - (void)user_add:(NSString *)propertyName andPropertyValue:(NSNumber *)propertyValue {
     [self user_add:propertyName andPropertyValue:propertyValue withTime:nil];
@@ -1112,7 +1119,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
     
     NSDictionary *propertiesDict = eventData.properties;
-    NSMutableDictionary<NSString *, id> *properties = [NSMutableDictionary dictionaryWithDictionary:propertiesDict];
+    NSMutableDictionary<NSString *, id> *properties = [NSMutableDictionary dictionary];
     
     NSString *timeString;
     NSDate *nowDate = [NSDate date];
@@ -1125,21 +1132,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         timeString = eventData.timeString;
         offset = eventData.zoneOffset;
     }
-    
-    if ([ThinkingAnalyticsSDK isTrackEvent:eventData.eventType]) {
-        properties[@"#app_version"] = [TDDeviceInfo sharedManager].appVersion;
-        properties[@"#bundle_id"] = [TDDeviceInfo bundleId];
-        properties[@"#network_type"] = [[self class] getNetWorkStates];
-        [properties addEntriesFromDictionary:[TDDeviceInfo sharedManager].automaticData];
         
-        if (_relaunchInBackGround) {
-            properties[@"#relaunched_in_background"] = @YES;
-        }
-        if (eventData.timeValueType != TDTimeValueTypeTimeOnly) {
-            properties[@"#zone_offset"] = @(offset);
-        }
-    }
-    
     //增加duration
     NSDictionary *eventTimer;
     @synchronized (self.trackTimer) {
@@ -1165,6 +1158,23 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             properties[@"#duration"] = @([[NSString stringWithFormat:@"%.3f", usedTime] floatValue]);
         }
     }
+        
+    if ([ThinkingAnalyticsSDK isTrackEvent:eventData.eventType]) {
+        properties[@"#app_version"] = [TDDeviceInfo sharedManager].appVersion;
+        properties[@"#bundle_id"] = [TDDeviceInfo bundleId];
+        properties[@"#network_type"] = [[self class] getNetWorkStates];
+        
+        if (_relaunchInBackGround) {
+            properties[@"#relaunched_in_background"] = @YES;
+        }
+        if (eventData.timeValueType != TDTimeValueTypeTimeOnly) {
+            properties[@"#zone_offset"] = @(offset);
+        }
+        
+        [properties addEntriesFromDictionary:[TDDeviceInfo sharedManager].automaticData];
+    }
+
+    [properties addEntriesFromDictionary:propertiesDict];
     
     NSMutableDictionary *dataDic = [NSMutableDictionary dictionary];
     dataDic[@"#time"] = timeString;
@@ -1446,25 +1456,34 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     
     _config.autoTrackEventType = eventType;
     if ([TDDeviceInfo sharedManager].isFirstOpen && (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppInstall)) {
-        [self autotrack:TD_APP_INSTALL_EVENT properties:nil withTime:nil];
-        [self flush];
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            [self autotrack:TD_APP_INSTALL_EVENT properties:nil withTime:nil];
+            [self flush];
+        });
     }
     
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
-        [self timeEvent:TD_APP_END_EVENT];
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            [self timeEvent:TD_APP_END_EVENT];
+        });
     }
 
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
-        NSString *eventName = _relaunchInBackGround?TD_APP_START_BACKGROUND_EVENT:TD_APP_START_EVENT;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            NSString *eventName = _relaunchInBackGround?TD_APP_START_BACKGROUND_EVENT:TD_APP_START_EVENT;
 #ifdef __IPHONE_13_0
-        if (@available(iOS 13.0, *)) {
-            if (_isEnableSceneSupport) {
-                eventName = TD_APP_START_EVENT;
+            if (@available(iOS 13.0, *)) {
+                if (_isEnableSceneSupport) {
+                    eventName = TD_APP_START_EVENT;
+                }
             }
-        }
 #endif
-        [self autotrack:eventName properties:@{TD_RESUME_FROM_BACKGROUND:@(_appRelaunched)} withTime:nil];
-        [self flush];
+            [self autotrack:eventName properties:@{TD_RESUME_FROM_BACKGROUND:@(_appRelaunched)} withTime:nil];
+            [self flush];
+        });
     }
     
     [_autoTrackManager trackWithAppid:self.appid withOption:eventType];

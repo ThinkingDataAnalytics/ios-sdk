@@ -49,7 +49,7 @@
     
     
     // 配置初始化方法
-    TDConfig *config = [[TDConfig alloc] init];
+//    TDConfig *config = [[TDConfig alloc] init];
 //    config.trackRelaunchedInBackgroundEvents = YES;
 //    config.debugMode = ThinkingAnalyticsDebugOnly;
 //    config.debugMode = ThinkingAnalyticsDebug;

@@ -22,6 +22,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		69F3D7F1260323CB0004986A /* NSDictionary+TDJsonOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 69F3D7EF260323CB0004986A /* NSDictionary+TDJsonOutput.h */; };
+		69F3D7F2260323CB0004986A /* NSDictionary+TDJsonOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 69F3D7F0260323CB0004986A /* NSDictionary+TDJsonOutput.m */; };
 		6E05F0F82507715900A8613C /* TDPublicConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E05F0F62507715900A8613C /* TDPublicConfig.h */; };
 		6E05F0F92507715900A8613C /* TDPublicConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E05F0F72507715900A8613C /* TDPublicConfig.m */; };
 		6E05F0FC25077DA200A8613C /* TDSDKUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E05F0FA25077DA200A8613C /* TDSDKUtil.h */; };
@@ -105,6 +107,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		69F3D7EF260323CB0004986A /* NSDictionary+TDJsonOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+TDJsonOutput.h"; sourceTree = "<group>"; };
+		69F3D7F0260323CB0004986A /* NSDictionary+TDJsonOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+TDJsonOutput.m"; sourceTree = "<group>"; };
 		6E05F0F62507715900A8613C /* TDPublicConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDPublicConfig.h; sourceTree = "<group>"; };
 		6E05F0F72507715900A8613C /* TDPublicConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDPublicConfig.m; sourceTree = "<group>"; };
 		6E05F0FA25077DA200A8613C /* TDSDKUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDSDKUtil.h; sourceTree = "<group>"; };
@@ -209,6 +213,8 @@
 			children = (
 				F3D19055230137600043D595 /* NSData+TDGzip.h */,
 				F3D19039230137600043D595 /* NSData+TDGzip.m */,
+				69F3D7EF260323CB0004986A /* NSDictionary+TDJsonOutput.h */,
+				69F3D7F0260323CB0004986A /* NSDictionary+TDJsonOutput.m */,
 			);
 			path = category;
 			sourceTree = "<group>";
@@ -516,6 +522,7 @@
 				F35B1316242EFB9B00C630FC /* TDNTPServer.h in Headers */,
 				F35B1315242EFB9B00C630FC /* TDCalibratedTime.h in Headers */,
 				F3D19065230137600043D595 /* TDAutoTrackManager.h in Headers */,
+				69F3D7F1260323CB0004986A /* NSDictionary+TDJsonOutput.h in Headers */,
 				6E58D58A24C7F06200DD11C1 /* TDEventModel.h in Headers */,
 				6EA4D8D92507632F0035D575 /* TDFile.h in Headers */,
 				F3D19079230137610043D595 /* TDLogging.h in Headers */,
@@ -672,6 +679,7 @@
 				F3D1905D230137600043D595 /* ThinkingExceptionHandler.m in Sources */,
 				F35B131A242EFB9B00C630FC /* TDNTPServer.m in Sources */,
 				F3D19069230137600043D595 /* UIApplication+AutoTrack.m in Sources */,
+				69F3D7F2260323CB0004986A /* NSDictionary+TDJsonOutput.m in Sources */,
 				F3D19071230137610043D595 /* TDJSONUtil.m in Sources */,
 				F3D19062230137600043D595 /* TDLogging.m in Sources */,
 				F35B1313242EFB9B00C630FC /* TDCalibratedTimeWithNTP.m in Sources */,

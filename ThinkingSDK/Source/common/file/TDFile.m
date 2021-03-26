@@ -108,6 +108,28 @@
     }
 }
 
+- (void)archiveDeviceId:(NSString *)deviceId {
+    NSString *filePath = [self deviceIdFilePath];
+    if (![self archiveObject:[deviceId copy] withFilePath:filePath]) {
+        TDLogError(@"%@ unable to archive deviceId", self);
+    }
+}
+
+- (NSString *)unarchiveDeviceId {
+    return [self unarchiveFromFile:[self deviceIdFilePath] asClass:[NSString class]];
+}
+
+- (void)archiveInstallTimes:(NSString *)installTimes {
+    NSString *filePath = [self installTimesFilePath];
+    if (![self archiveObject:[installTimes copy] withFilePath:filePath]) {
+        TDLogError(@"%@ unable to archive installTimes", self);
+    }
+}
+
+- (NSString *)unarchiveInstallTimes {
+    return [self unarchiveFromFile:[self installTimesFilePath] asClass:[NSString class]];
+}
+
 - (BOOL)archiveObject:(id)object withFilePath:(NSString *)filePath {
     @try {
         if (![NSKeyedArchiver archiveRootObject:object toFile:filePath]) {
@@ -181,6 +203,14 @@
 
 - (NSString *)optOutFilePath {
     return [self persistenceFilePath:@"optOut"];
+}
+
+- (NSString *)deviceIdFilePath {
+    return [self persistenceFilePath:@"deviceId"];
+}
+
+- (NSString *)installTimesFilePath {
+    return [self persistenceFilePath:@"installTimes"];
 }
 
 - (NSString *)persistenceFilePath:(NSString *)data{
