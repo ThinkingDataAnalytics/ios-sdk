@@ -27,11 +27,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (strong, nonatomic) NSArray *disableEvents;
 /**
- 最多缓存事件条数
+ 最多缓存事件条数,默认10000条,最小为5000条
  */
 @property (class,  nonatomic) NSInteger maxNumEvents;
 /**
- 数据缓存过期时间,最长为10天
+ 数据缓存过期时间,默认10天,最长为10天
  */
 @property (class,  nonatomic) NSInteger expirationDays;
 /**
