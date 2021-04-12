@@ -725,9 +725,13 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 - (void)autotrack:(NSString *)event properties:(NSDictionary *)propertieDict withTime:(NSDate *)time {
     if ([self hasDisabled])
         return;
-    propertieDict = [self processParameters:propertieDict withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:YES withH5:NO];
+    NSMutableDictionary *properties = [NSMutableDictionary dictionary];
+    [properties addEntriesFromDictionary:propertieDict];
+    NSDictionary *superProperty = [NSDictionary dictionary];
+    superProperty = [self processParameters:superProperty withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:YES withH5:NO];
+    [properties addEntriesFromDictionary:superProperty];
     TDEventModel *eventData = [[TDEventModel alloc] initWithEventName:event];
-    eventData.properties = [propertieDict copy];
+    eventData.properties = [properties copy];
     eventData.timeString = [_timeFormatter stringFromDate:time];
     eventData.timeValueType = TDTimeValueTypeNone;
     [self tdInternalTrack:eventData];
