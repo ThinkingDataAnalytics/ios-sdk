@@ -22,6 +22,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		3BE0E9012623EB380012A4E6 /* ThinkingAnalyticsCocosAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BE0E8FF2623EB380012A4E6 /* ThinkingAnalyticsCocosAPI.m */; };
+		3BE0E9022623EB380012A4E6 /* ThinkingAnalyticsCocosAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 3BE0E9002623EB380012A4E6 /* ThinkingAnalyticsCocosAPI.h */; };
 		69F3D7F1260323CB0004986A /* NSDictionary+TDJsonOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 69F3D7EF260323CB0004986A /* NSDictionary+TDJsonOutput.h */; };
 		69F3D7F2260323CB0004986A /* NSDictionary+TDJsonOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 69F3D7F0260323CB0004986A /* NSDictionary+TDJsonOutput.m */; };
 		6E05F0F82507715900A8613C /* TDPublicConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E05F0F62507715900A8613C /* TDPublicConfig.h */; };
@@ -107,6 +109,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3BE0E8FF2623EB380012A4E6 /* ThinkingAnalyticsCocosAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThinkingAnalyticsCocosAPI.m; sourceTree = "<group>"; };
+		3BE0E9002623EB380012A4E6 /* ThinkingAnalyticsCocosAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThinkingAnalyticsCocosAPI.h; sourceTree = "<group>"; };
 		69F3D7EF260323CB0004986A /* NSDictionary+TDJsonOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+TDJsonOutput.h"; sourceTree = "<group>"; };
 		69F3D7F0260323CB0004986A /* NSDictionary+TDJsonOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+TDJsonOutput.m"; sourceTree = "<group>"; };
 		6E05F0F62507715900A8613C /* TDPublicConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDPublicConfig.h; sourceTree = "<group>"; };
@@ -323,6 +327,8 @@
 		6EA4D8CB25072B7E0035D575 /* main */ = {
 			isa = PBXGroup;
 			children = (
+				3BE0E9002623EB380012A4E6 /* ThinkingAnalyticsCocosAPI.h */,
+				3BE0E8FF2623EB380012A4E6 /* ThinkingAnalyticsCocosAPI.m */,
 				F3D1903D230137600043D595 /* ThinkingAnalyticsSDKPrivate.h */,
 				F3247C9923176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m */,
 				F3D19054230137600043D595 /* ThinkingAnalyticsSDK.h */,
@@ -508,6 +514,7 @@
 				F3D1905F230137600043D595 /* TDNetwork.h in Headers */,
 				F30338C023AB57750020C129 /* TDSecurityPolicy.h in Headers */,
 				6E05F0F82507715900A8613C /* TDPublicConfig.h in Headers */,
+				3BE0E9022623EB380012A4E6 /* ThinkingAnalyticsCocosAPI.h in Headers */,
 				F30338BD23AA0E600020C129 /* TDToastView.h in Headers */,
 				F3D1907B230137610043D595 /* NSData+TDGzip.h in Headers */,
 				F35B1318242EFB9B00C630FC /* TDCalibratedTimeWithNTP.h in Headers */,
@@ -662,6 +669,7 @@
 				6EA4D8DA2507632F0035D575 /* TDFile.m in Sources */,
 				F3247C9B23176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m in Sources */,
 				6E58D58B24C7F06200DD11C1 /* TDEventModel.m in Sources */,
+				3BE0E9012623EB380012A4E6 /* ThinkingAnalyticsCocosAPI.m in Sources */,
 				6E05F0FD25077DA200A8613C /* TDSDKUtil.m in Sources */,
 				F3D19057230137600043D595 /* TDDeviceInfo.m in Sources */,
 				F3D1906A230137600043D595 /* TDAutoTrackManager.m in Sources */,
