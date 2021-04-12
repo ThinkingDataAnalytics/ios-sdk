@@ -63,6 +63,14 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  初始化方法
 
+ @param config 初始化配置
+ @return SDK实例
+ */
++ (ThinkingAnalyticsSDK *)startWithConfig:(nullable TDConfig *)config;
+
+/**
+ 初始化方法
+
  @param appId APP ID
  @param url 接收端地址
  @param config 初始化配置

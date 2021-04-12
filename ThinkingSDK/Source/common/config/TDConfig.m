@@ -55,10 +55,21 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
     return self;
 }
 
+- (instancetype)initWithAppId:(NSString *)appId serverUrl:(NSString *)serverUrl
+{
+    self = [self init];
+    if (self) {
+        _appid = appId;
+        _configureURL = serverUrl;
+    }
+    return self;
+}
+
 
 - (void)updateConfig {
+    NSString *serverUrlStr = [NSString stringWithFormat:@"%@/config",self.configureURL];
     TDNetwork *network = [[TDNetwork alloc] init];
-    network.serverURL = [NSURL URLWithString:self.configureURL];
+    network.serverURL = [NSURL URLWithString:serverUrlStr];
     network.securityPolicy = _securityPolicy;
     
     [network fetchRemoteConfig:self.appid handler:^(NSDictionary * _Nonnull result, NSError * _Nullable error) {

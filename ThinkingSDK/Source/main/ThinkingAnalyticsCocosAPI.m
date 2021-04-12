@@ -19,7 +19,8 @@ static ThinkingAnalyticsSDK* instance;
 }
 + (ThinkingAnalyticsSDK*)shareInstance:(TDConfig *)config
 {
-    instance = [ThinkingAnalyticsSDK startWithAppId:config.appid withUrl:config.configureURL withConfig:config];
+    instance = [ThinkingAnalyticsSDK startWithConfig:config];
+    return instance;
 }
 + (void)track:(NSString*) eventName
 {

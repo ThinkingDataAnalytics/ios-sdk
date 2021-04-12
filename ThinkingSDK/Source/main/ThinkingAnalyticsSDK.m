@@ -59,6 +59,10 @@ static dispatch_queue_t networkQueue;
     return [ThinkingAnalyticsSDK startWithAppId:appId withUrl:url withConfig:nil];
 }
 
++ (ThinkingAnalyticsSDK *)startWithConfig:(nullable TDConfig *)config {
+    return [ThinkingAnalyticsSDK startWithAppId:config.appid withUrl:config.configureURL withConfig:config];
+}
+
 - (instancetype)init:(NSString *)appID {
     if (self = [super init]) {
         static dispatch_once_t onceToken;
@@ -138,7 +142,7 @@ static dispatch_queue_t networkQueue;
         
         _config = [config copy];
         _config.appid = appid;
-        _config.configureURL = [NSString stringWithFormat:@"%@/config",serverURL];
+        _config.configureURL = serverURL;
         
         self.file = [[TDFile alloc] initWithAppid:appid];
         [self retrievePersistedData];

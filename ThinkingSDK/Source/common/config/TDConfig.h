@@ -69,6 +69,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSTimeZone *defaultTimeZone;
 
 + (TDConfig *)defaultTDConfig;
+- (instancetype)initWithAppId:(NSString *)appId serverUrl:(NSString *)serverUrl;
 - (void)updateConfig;
 - (void)setNetworkType:(ThinkingAnalyticsNetworkType)type;
 
