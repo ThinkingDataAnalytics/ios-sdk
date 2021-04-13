@@ -6,20 +6,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import "ThinkingAnalyticsSDK.h"
-#import "TDFirstEventModel.h"
-#import "TDEditableEventModel.h"
-#import "TDConfig.h"
+@class ThinkingAnalyticsSDK;
 NS_ASSUME_NONNULL_BEGIN
-
 @interface ThinkingAnalyticsCocosAPI : NSObject
 + (ThinkingAnalyticsSDK*)shareInstance:(NSString*)appid server:(NSString*)server;
-+ (ThinkingAnalyticsSDK*)shareInstance:(TDConfig*)config;
 + (void)track:(NSString*) eventName;
 + (void)track:(NSString *)eventName properties:(nullable NSDictionary *)propertieDict;
-+ (void)track:(NSString*)eventName properties:(nullable NSDictionary*)propertieDict extraId:(NSString*)extraId type:(int)type;
++ (void)track:(NSString*)eventName properties:(nullable NSDictionary*)properties extraId:(NSString*)extraId type:(int)type;
 + (void)timeEvent:(NSString*)eventName;
 + (void)login:(NSString*)accountID;
 + (void)logout;

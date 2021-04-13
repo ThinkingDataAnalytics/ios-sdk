@@ -6,7 +6,10 @@
 //
 
 #import "ThinkingAnalyticsCocosAPI.h"
+#import "ThinkingAnalyticsSDK.h"
 static ThinkingAnalyticsSDK* instance;
+#define LIB_NAME @"Cocos2d-x"
+#define LIB_VERSION @"1.0"
 @implementation ThinkingAnalyticsCocosAPI
 +(ThinkingAnalyticsSDK*)currentInstance
 {
@@ -14,12 +17,8 @@ static ThinkingAnalyticsSDK* instance;
 }
 + (ThinkingAnalyticsSDK*)shareInstance:(NSString*)appid server:(NSString*)server
 {
+    [ThinkingAnalyticsSDK setCustomerLibInfoWithLibName:LIB_NAME libVersion:LIB_VERSION];
     instance = [ThinkingAnalyticsSDK startWithAppId:appid withUrl:server];
-    return instance;
-}
-+ (ThinkingAnalyticsSDK*)shareInstance:(TDConfig *)config
-{
-    instance = [ThinkingAnalyticsSDK startWithConfig:config];
     return instance;
 }
 + (void)track:(NSString*) eventName
@@ -53,7 +52,7 @@ static ThinkingAnalyticsSDK* instance;
             break;
         case  3:
         {
-            eventModel = [[TDEditableEventModel alloc] initWithEventName:eventName eventID:extraId];
+            eventModel = [[TDOverwriteEventModel alloc] initWithEventName:eventName eventID:extraId];
         }
             break;
         default:

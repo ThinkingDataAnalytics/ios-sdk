@@ -3,6 +3,7 @@
 #import "TDFirstEventModel.h"
 #import "TDEditableEventModel.h"
 #import "TDConfig.h"
+#import "ThinkingAnalyticsCocosAPI.h"
 NS_ASSUME_NONNULL_BEGIN
 
 /**
