@@ -191,7 +191,7 @@ static dispatch_queue_t networkQueue;
 #ifdef __IPHONE_13_0
         if (@available(iOS 13.0, *)) {
             if (!_isEnableSceneSupport) {
-                [self launchedIntoBackground];
+                [self launchedIntoBackground:config.launchOptions];
             } else if (config.launchOptions && [config.launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]) {
                 _relaunchInBackGround = YES;
             } else {
@@ -199,7 +199,7 @@ static dispatch_queue_t networkQueue;
             }
         }
 #else
-        [self launchedIntoBackground];
+        [self launchedIntoBackground:config.launchOptions];
 #endif
         
         [self startFlushTimer];
@@ -212,11 +212,13 @@ static dispatch_queue_t networkQueue;
     return self;
 }
 
-- (void)launchedIntoBackground {
+- (void)launchedIntoBackground:(NSDictionary *)launchOptions {
     td_dispatch_main_sync_safe(^{
-        UIApplicationState applicationState = [UIApplication sharedApplication].applicationState;
-        if (applicationState == UIApplicationStateBackground) {
-            self->_relaunchInBackGround = YES;
+        if (launchOptions && [launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]) {
+            UIApplicationState applicationState = [UIApplication sharedApplication].applicationState;
+            if (applicationState == UIApplicationStateBackground) {
+                self->_relaunchInBackGround = YES;
+            }
         }
     });
 }

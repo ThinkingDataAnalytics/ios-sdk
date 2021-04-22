@@ -26,7 +26,13 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsDebugMode) {
     /**
      开启 Debug 模式，并入库
      */
-    ThinkingAnalyticsDebug         = 1 << 1
+    ThinkingAnalyticsDebug         = 1 << 1,
+    
+    /**
+     开启 Debug 模式，并入库，等同于 ThinkingAnalyticsDebug
+     [兼容swift] swift 调用 oc 中的枚举类型，需要遵守 [枚举类型名+枚举值] 的规则。
+     */
+    ThinkingAnalyticsDebugOn = ThinkingAnalyticsDebug,
 };
 
 /**
