@@ -11,16 +11,20 @@
 @implementation NSDictionary (TDJsonOutput)
 
 - (NSString *)descriptionWithLocale:(nullable id)locale {
-    NSString *output = nil;
-    @try {
-        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self options:NSJSONWritingPrettyPrinted error:nil];
-        output = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-        output = [output stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+    if ([NSJSONSerialization isValidJSONObject:self]) {
+        NSString *output = nil;
+        @try {
+            NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self options:NSJSONWritingPrettyPrinted error:nil];
+            output = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+            output = [output stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+        }
+        @catch (NSException *exception) {
+            output = self.description;
+        }
+        return  output;
+    } else {
+        return self.description;
     }
-    @catch (NSException *exception) {
-        output = self.description;
-    }
-    return  output;
 }
 
 @end

@@ -111,7 +111,8 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
         if ([exception callStackSymbols]) {
             crashStr = [NSString stringWithFormat:@"Exception Reason:%@\nException Stack:%@", [exception reason], [exception callStackSymbols]];
         } else {
-            crashStr = [NSString stringWithFormat:@"%@ %@", [exception reason], [NSThread callStackSymbols]];
+            NSString *exceptionStack = [[NSThread callStackSymbols] componentsJoinedByString:@"\n"];
+            crashStr = [NSString stringWithFormat:@"%@ %@", [exception reason], exceptionStack];
         }
         crashStr = [crashStr stringByReplacingOccurrencesOfString:@"\n" withString:@"<br>"];
 
