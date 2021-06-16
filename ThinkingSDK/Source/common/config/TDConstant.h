@@ -58,7 +58,7 @@ typedef NS_OPTIONS(NSInteger, TDSSLPinningMode) {
 /**
  自定义 HTTPS 认证
 */
-typedef NSURLSessionAuthChallengeDisposition (^TDURLSessionDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential *_Nullable __autoreleasing *_Nullable credential);
+typedef NSURLSessionAuthChallengeDisposition (^TDURLSessionDidReceiveAuthenticationChallengeBlock)(NSURLSession *_Nullable session, NSURLAuthenticationChallenge *_Nullable challenge, NSURLCredential *_Nullable __autoreleasing *_Nullable credential);
 
 
 

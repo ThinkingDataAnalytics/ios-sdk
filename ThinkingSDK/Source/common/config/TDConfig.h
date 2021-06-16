@@ -17,11 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  数据上传间隔时间
  */
-@property (nonatomic) NSNumber *uploadInterval;
+@property (nonatomic, strong) NSNumber *uploadInterval;
 /**
  当有数据上传时,数据缓存的条数达到uploadsize时,立即上传数据
  */
-@property (nonatomic) NSNumber *uploadSize;
+@property (nonatomic, strong) NSNumber *uploadSize;
 /**
  事件黑名单,不进行统计的事件名称添加到此处
  */

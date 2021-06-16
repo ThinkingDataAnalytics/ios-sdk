@@ -3,11 +3,11 @@
 #import "TDFirstEventModel.h"
 #import "TDEditableEventModel.h"
 #import "TDConfig.h"
-#import "ThinkingAnalyticsCocosAPI.h"
+#import "TDPresetProperties.h"
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- SDK VERSION = 2.6.5
+ SDK VERSION = 2.7.0
  ThinkingData API
  
  ## 初始化API
@@ -304,6 +304,13 @@ NS_ASSUME_NONNULL_BEGIN
  @param dynamicSuperProperties 动态公共属性
  */
 - (void)registerDynamicSuperProperties:(NSDictionary<NSString *, id> *(^)(void))dynamicSuperProperties;
+
+/**
+ 获取预置属性
+
+ @return  获取预置属性
+ */
+- (TDPresetProperties *)getPresetProperties;
 
 /**
   设置上传的网络条件，默认情况下，SDK 将会网络条件为在 3G、4G 及 Wifi 时上传数据

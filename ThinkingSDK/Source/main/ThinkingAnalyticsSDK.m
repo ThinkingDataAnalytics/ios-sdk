@@ -11,6 +11,13 @@
 #error The ThinkingSDK library must be compiled with ARC enabled
 #endif
 
+@interface TDPresetProperties (ThinkingAnalytics)
+
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (void)updateValuesWithDictionary:(NSDictionary *)dict;
+
+@end
+
 @interface ThinkingAnalyticsSDK ()
 @property (atomic, strong)   TDNetwork *network;
 @property (atomic, strong)   TDAutoTrackManager *autoTrackManager;
@@ -366,6 +373,12 @@ static dispatch_queue_t networkQueue;
                            selector:@selector(applicationDidEnterBackground:)
                                name:UIApplicationDidEnterBackgroundNotification
                              object:nil];
+    
+    [notificationCenter addObserver:self
+                           selector:@selector(applicationWillTerminate:)
+                               name:UIApplicationWillTerminateNotification
+                             object:nil];
+    
 }
 
 - (void)setNetRadioListeners {
@@ -456,6 +469,14 @@ static dispatch_queue_t networkQueue;
             self.taskId = UIBackgroundTaskInvalid;
         }
     });
+    
+    dispatch_sync([ThinkingAnalyticsSDK serialQueue], ^{});
+    dispatch_sync([ThinkingAnalyticsSDK networkQueue], ^{});
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    dispatch_sync([ThinkingAnalyticsSDK serialQueue], ^{});
+    dispatch_sync([ThinkingAnalyticsSDK networkQueue], ^{});
 }
 
 - (void)applicationWillResignActive:(NSNotification *)notification {
@@ -927,6 +948,35 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 - (NSDictionary *)currentSuperProperties {
     return [self.superProperty copy];
+}
+
+- (TDPresetProperties *)getPresetProperties {
+    NSString *bundleId = [TDDeviceInfo bundleId];
+    NSString *networkType = [self.class getNetWorkStates];
+    double offset = [self getTimezoneOffset:[NSDate date] timeZone:_config.defaultTimeZone];
+    NSDictionary *autoDic = [[TDDeviceInfo sharedManager] collectAutomaticProperties];
+    NSMutableDictionary *presetDic = [NSMutableDictionary new];
+    [presetDic setObject:bundleId?:@"" forKey:@"#bundle_id"];
+    [presetDic setObject:autoDic[@"#carrier"]?:@"" forKey:@"#carrier"];
+    [presetDic setObject:autoDic[@"#device_id"]?:@"" forKey:@"#device_id"];
+    [presetDic setObject:autoDic[@"#device_model"]?:@"" forKey:@"#device_model"];
+    [presetDic setObject:autoDic[@"#manufacturer"]?:@"" forKey:@"#manufacturer"];
+    [presetDic setObject:networkType?:@"" forKey:@"#network_type"];
+    [presetDic setObject:autoDic[@"#os"]?:@"" forKey:@"#os"];
+    [presetDic setObject:autoDic[@"#os_version"]?:@"" forKey:@"#os_version"];
+    [presetDic setObject:autoDic[@"#screen_height"]?:@(0) forKey:@"#screen_height"];
+    [presetDic setObject:autoDic[@"#screen_width"]?:@(0) forKey:@"#screen_width"];
+    [presetDic setObject:autoDic[@"#system_language"]?:@"" forKey:@"#system_language"];
+    [presetDic setObject:@(offset)?:@(0) forKey:@"#zone_offset"];
+    
+    static TDPresetProperties *presetProperties = nil;
+    if (presetProperties == nil) {
+        presetProperties = [[TDPresetProperties alloc] initWithDictionary:presetDic];
+    }
+    else {
+        [presetProperties updateValuesWithDictionary:presetDic];
+    }
+    return presetProperties;
 }
 
 - (void)identify:(NSString *)distinctId {
