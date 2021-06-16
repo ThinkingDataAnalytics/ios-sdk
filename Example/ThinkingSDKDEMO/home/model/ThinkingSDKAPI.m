@@ -25,7 +25,7 @@ ThinkingAnalyticsSDK* _instance;
 }
 
 + (void)testTrackWithProperty {
-    [_instance track:@"testProperty" properties:@{@"properKey":@"properValue", @"arrKey":@[@1, @2],@"event_time":@"2020-10-20 18:00:51.125",@"xx":@NO,@"level":@"level-1"}];
+    [_instance track:@"testProperty" properties:@{@"properKey":@"properValue", @"arrKey":@[@1, @2],@"event_time":@"2020-10-20 18:00:51.125",@"xx":@NO}];
 }
 
 + (void)testTrackWithTimezone {
@@ -114,7 +114,7 @@ ThinkingAnalyticsSDK* _instance;
 }
 
 + (void)testSetsuper {
-    [_instance setSuperProperties:@{@"superkey":@"supervalue1",@"superkey2":@"数数科技👍",@"superkey3":@(YES),@"level":@"level-3"}];
+    [_instance setSuperProperties:@{@"superkey":@"supervalue1",@"superkey2":@"supervalue3"}];
 }
 
 + (void)testUnsetsuper {
@@ -124,12 +124,6 @@ ThinkingAnalyticsSDK* _instance;
 
 + (void)testClearsuper {
     [_instance clearSuperProperties];
-}
-
-+ (void)testSetDynamicsuper {
-    [_instance registerDynamicSuperProperties:^NSDictionary<NSString *,id> * _Nonnull{
-        return @{@"dynamicsuperkey":@"dynamicsupervalue",@"level":@"level-2"};
-    }];
 }
 
 + (void)testTimedEvent {

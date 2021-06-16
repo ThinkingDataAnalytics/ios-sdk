@@ -26,7 +26,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)testSetsuper;
 + (void)testUnsetsuper;
 + (void)testClearsuper;
-+ (void)testSetDynamicsuper;
 + (void)testTimedEvent;
 + (void)testTrackEventEnd;
 + (void)testIdentify;
