@@ -1422,28 +1422,35 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)_syncDebug:(NSDictionary *)record {
-    int debugResult = [self.network flushDebugEvents:record withAppid:self.appid];
-    if (debugResult == -1) {
-        // 降级处理
-        if (self.config.debugMode == ThinkingAnalyticsDebug) {
-            dispatch_async(serialQueue, ^{
-                [self saveEventsData:record];
-            });
-            
-            self.config.debugMode = ThinkingAnalyticsDebugOff;
-            self.network.debugMode = ThinkingAnalyticsDebugOff;
-        } else if (self.config.debugMode == ThinkingAnalyticsDebugOnly) {
-            TDLogDebug(@"The data will be discarded due to this device is not allowed to debug:%@", record);
+    if (self.config.debugMode == ThinkingAnalyticsDebug || self.config.debugMode == ThinkingAnalyticsDebugOnly) {
+        int debugResult = [self.network flushDebugEvents:record withAppid:self.appid];
+        if (debugResult == -1) {
+            // 降级处理
+            if (self.config.debugMode == ThinkingAnalyticsDebug) {
+                dispatch_async(serialQueue, ^{
+                    [self saveEventsData:record];
+                });
+                
+                self.config.debugMode = ThinkingAnalyticsDebugOff;
+                self.network.debugMode = ThinkingAnalyticsDebugOff;
+            } else if (self.config.debugMode == ThinkingAnalyticsDebugOnly) {
+                TDLogDebug(@"The data will be discarded due to this device is not allowed to debug:%@", record);
+            }
         }
-    }
-
-    if (debugResult == -2) {
-        TDLogDebug(@"Exception occurred when sending message to Server:%@", record);
-        if (self.config.debugMode == ThinkingAnalyticsDebug) {
-            // 网络异常
-            dispatch_async(serialQueue, ^{
-                [self saveEventsData:record];
-            });
+        else if (debugResult == -2) {
+            TDLogDebug(@"Exception occurred when sending message to Server:%@", record);
+            if (self.config.debugMode == ThinkingAnalyticsDebug) {
+                // 网络异常
+                dispatch_async(serialQueue, ^{
+                    [self saveEventsData:record];
+                });
+            }
+        }
+    } else {
+        //防止并发事件未降级
+        NSInteger count = [self saveEventsData:record];
+        if (count >= [self.config.uploadSize integerValue]) {
+            [self flush];
         }
     }
 }
