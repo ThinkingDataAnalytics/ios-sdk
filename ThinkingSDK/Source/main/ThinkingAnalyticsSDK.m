@@ -11,6 +11,13 @@
 #error The ThinkingSDK library must be compiled with ARC enabled
 #endif
 
+@interface TDPresetProperties (ThinkingAnalytics)
+
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (void)updateValuesWithDictionary:(NSDictionary *)dict;
+
+@end
+
 @interface ThinkingAnalyticsSDK ()
 @property (atomic, strong)   TDNetwork *network;
 @property (atomic, strong)   TDAutoTrackManager *autoTrackManager;
@@ -57,6 +64,10 @@ static dispatch_queue_t networkQueue;
 
 + (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url {
     return [ThinkingAnalyticsSDK startWithAppId:appId withUrl:url withConfig:nil];
+}
+
++ (ThinkingAnalyticsSDK *)startWithConfig:(nullable TDConfig *)config {
+    return [ThinkingAnalyticsSDK startWithAppId:config.appid withUrl:config.configureURL withConfig:config];
 }
 
 - (instancetype)init:(NSString *)appID {
@@ -138,7 +149,7 @@ static dispatch_queue_t networkQueue;
         
         _config = [config copy];
         _config.appid = appid;
-        _config.configureURL = [NSString stringWithFormat:@"%@/config",serverURL];
+        _config.configureURL = serverURL;
         
         self.file = [[TDFile alloc] initWithAppid:appid];
         [self retrievePersistedData];
@@ -187,7 +198,7 @@ static dispatch_queue_t networkQueue;
 #ifdef __IPHONE_13_0
         if (@available(iOS 13.0, *)) {
             if (!_isEnableSceneSupport) {
-                [self launchedIntoBackground];
+                [self launchedIntoBackground:config.launchOptions];
             } else if (config.launchOptions && [config.launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]) {
                 _relaunchInBackGround = YES;
             } else {
@@ -195,7 +206,7 @@ static dispatch_queue_t networkQueue;
             }
         }
 #else
-        [self launchedIntoBackground];
+        [self launchedIntoBackground:config.launchOptions];
 #endif
         
         [self startFlushTimer];
@@ -208,11 +219,13 @@ static dispatch_queue_t networkQueue;
     return self;
 }
 
-- (void)launchedIntoBackground {
+- (void)launchedIntoBackground:(NSDictionary *)launchOptions {
     td_dispatch_main_sync_safe(^{
-        UIApplicationState applicationState = [UIApplication sharedApplication].applicationState;
-        if (applicationState == UIApplicationStateBackground) {
-            self->_relaunchInBackGround = YES;
+        if (launchOptions && [launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]) {
+            UIApplicationState applicationState = [UIApplication sharedApplication].applicationState;
+            if (applicationState == UIApplicationStateBackground) {
+                self->_relaunchInBackGround = YES;
+            }
         }
     });
 }
@@ -360,6 +373,12 @@ static dispatch_queue_t networkQueue;
                            selector:@selector(applicationDidEnterBackground:)
                                name:UIApplicationDidEnterBackgroundNotification
                              object:nil];
+    
+    [notificationCenter addObserver:self
+                           selector:@selector(applicationWillTerminate:)
+                               name:UIApplicationWillTerminateNotification
+                             object:nil];
+    
 }
 
 - (void)setNetRadioListeners {
@@ -450,6 +469,14 @@ static dispatch_queue_t networkQueue;
             self.taskId = UIBackgroundTaskInvalid;
         }
     });
+    
+    dispatch_sync([ThinkingAnalyticsSDK serialQueue], ^{});
+    dispatch_sync([ThinkingAnalyticsSDK networkQueue], ^{});
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    dispatch_sync([ThinkingAnalyticsSDK serialQueue], ^{});
+    dispatch_sync([ThinkingAnalyticsSDK networkQueue], ^{});
 }
 
 - (void)applicationWillResignActive:(NSNotification *)notification {
@@ -725,9 +752,13 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 - (void)autotrack:(NSString *)event properties:(NSDictionary *)propertieDict withTime:(NSDate *)time {
     if ([self hasDisabled])
         return;
-    propertieDict = [self processParameters:propertieDict withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:YES withH5:NO];
+    NSMutableDictionary *properties = [NSMutableDictionary dictionary];
+    [properties addEntriesFromDictionary:propertieDict];
+    NSDictionary *superProperty = [NSDictionary dictionary];
+    superProperty = [self processParameters:superProperty withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:YES withH5:NO];
+    [properties addEntriesFromDictionary:superProperty];
     TDEventModel *eventData = [[TDEventModel alloc] initWithEventName:event];
-    eventData.properties = [propertieDict copy];
+    eventData.properties = [properties copy];
     eventData.timeString = [_timeFormatter stringFromDate:time];
     eventData.timeValueType = TDTimeValueTypeNone;
     [self tdInternalTrack:eventData];
@@ -917,6 +948,35 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 - (NSDictionary *)currentSuperProperties {
     return [self.superProperty copy];
+}
+
+- (TDPresetProperties *)getPresetProperties {
+    NSString *bundleId = [TDDeviceInfo bundleId];
+    NSString *networkType = [self.class getNetWorkStates];
+    double offset = [self getTimezoneOffset:[NSDate date] timeZone:_config.defaultTimeZone];
+    NSDictionary *autoDic = [[TDDeviceInfo sharedManager] collectAutomaticProperties];
+    NSMutableDictionary *presetDic = [NSMutableDictionary new];
+    [presetDic setObject:bundleId?:@"" forKey:@"#bundle_id"];
+    [presetDic setObject:autoDic[@"#carrier"]?:@"" forKey:@"#carrier"];
+    [presetDic setObject:autoDic[@"#device_id"]?:@"" forKey:@"#device_id"];
+    [presetDic setObject:autoDic[@"#device_model"]?:@"" forKey:@"#device_model"];
+    [presetDic setObject:autoDic[@"#manufacturer"]?:@"" forKey:@"#manufacturer"];
+    [presetDic setObject:networkType?:@"" forKey:@"#network_type"];
+    [presetDic setObject:autoDic[@"#os"]?:@"" forKey:@"#os"];
+    [presetDic setObject:autoDic[@"#os_version"]?:@"" forKey:@"#os_version"];
+    [presetDic setObject:autoDic[@"#screen_height"]?:@(0) forKey:@"#screen_height"];
+    [presetDic setObject:autoDic[@"#screen_width"]?:@(0) forKey:@"#screen_width"];
+    [presetDic setObject:autoDic[@"#system_language"]?:@"" forKey:@"#system_language"];
+    [presetDic setObject:@(offset)?:@(0) forKey:@"#zone_offset"];
+    
+    static TDPresetProperties *presetProperties = nil;
+    if (presetProperties == nil) {
+        presetProperties = [[TDPresetProperties alloc] initWithDictionary:presetDic];
+    }
+    else {
+        [presetProperties updateValuesWithDictionary:presetDic];
+    }
+    return presetProperties;
 }
 
 - (void)identify:(NSString *)distinctId {
@@ -1362,28 +1422,35 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)_syncDebug:(NSDictionary *)record {
-    int debugResult = [self.network flushDebugEvents:record withAppid:self.appid];
-    if (debugResult == -1) {
-        // 降级处理
-        if (self.config.debugMode == ThinkingAnalyticsDebug) {
-            dispatch_async(serialQueue, ^{
-                [self saveEventsData:record];
-            });
-            
-            self.config.debugMode = ThinkingAnalyticsDebugOff;
-            self.network.debugMode = ThinkingAnalyticsDebugOff;
-        } else if (self.config.debugMode == ThinkingAnalyticsDebugOnly) {
-            TDLogDebug(@"The data will be discarded due to this device is not allowed to debug:%@", record);
+    if (self.config.debugMode == ThinkingAnalyticsDebug || self.config.debugMode == ThinkingAnalyticsDebugOnly) {
+        int debugResult = [self.network flushDebugEvents:record withAppid:self.appid];
+        if (debugResult == -1) {
+            // 降级处理
+            if (self.config.debugMode == ThinkingAnalyticsDebug) {
+                dispatch_async(serialQueue, ^{
+                    [self saveEventsData:record];
+                });
+                
+                self.config.debugMode = ThinkingAnalyticsDebugOff;
+                self.network.debugMode = ThinkingAnalyticsDebugOff;
+            } else if (self.config.debugMode == ThinkingAnalyticsDebugOnly) {
+                TDLogDebug(@"The data will be discarded due to this device is not allowed to debug:%@", record);
+            }
         }
-    }
-
-    if (debugResult == -2) {
-        TDLogDebug(@"Exception occurred when sending message to Server:%@", record);
-        if (self.config.debugMode == ThinkingAnalyticsDebug) {
-            // 网络异常
-            dispatch_async(serialQueue, ^{
-                [self saveEventsData:record];
-            });
+        else if (debugResult == -2) {
+            TDLogDebug(@"Exception occurred when sending message to Server:%@", record);
+            if (self.config.debugMode == ThinkingAnalyticsDebug) {
+                // 网络异常
+                dispatch_async(serialQueue, ^{
+                    [self saveEventsData:record];
+                });
+            }
+        }
+    } else {
+        //防止并发事件未降级
+        NSInteger count = [self saveEventsData:record];
+        if (count >= [self.config.uploadSize integerValue]) {
+            [self flush];
         }
     }
 }

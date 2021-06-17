@@ -51,6 +51,9 @@
     [self.commands addObject:[[ActionModel alloc]initWithName:@"设置动态公共事件属性" action:^{
         [ThinkingSDKAPI testSetDynamicsuper];
     }]];
+    [self.commands addObject:[[ActionModel alloc]initWithName:@"获取预置事件属性" action:^{
+        [ThinkingSDKAPI testGetPresetProperties];
+    }]];
     [self.commands addObject:[[ActionModel alloc]initWithName:@"记录事件时长" action:^{
         [ThinkingSDKAPI testTimedEvent];
         [self performSelector:@selector(eventEnd) withObject:nil afterDelay:2.];

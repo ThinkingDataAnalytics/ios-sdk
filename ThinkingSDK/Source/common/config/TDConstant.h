@@ -26,7 +26,13 @@ typedef NS_OPTIONS(NSInteger, ThinkingAnalyticsDebugMode) {
     /**
      开启 Debug 模式，并入库
      */
-    ThinkingAnalyticsDebug         = 1 << 1
+    ThinkingAnalyticsDebug         = 1 << 1,
+    
+    /**
+     开启 Debug 模式，并入库，等同于 ThinkingAnalyticsDebug
+     [兼容swift] swift 调用 oc 中的枚举类型，需要遵守 [枚举类型名+枚举值] 的规则。
+     */
+    ThinkingAnalyticsDebugOn = ThinkingAnalyticsDebug,
 };
 
 /**
@@ -52,7 +58,7 @@ typedef NS_OPTIONS(NSInteger, TDSSLPinningMode) {
 /**
  自定义 HTTPS 认证
 */
-typedef NSURLSessionAuthChallengeDisposition (^TDURLSessionDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential *_Nullable __autoreleasing *_Nullable credential);
+typedef NSURLSessionAuthChallengeDisposition (^TDURLSessionDidReceiveAuthenticationChallengeBlock)(NSURLSession *_Nullable session, NSURLAuthenticationChallenge *_Nullable challenge, NSURLCredential *_Nullable __autoreleasing *_Nullable credential);
 
 
 

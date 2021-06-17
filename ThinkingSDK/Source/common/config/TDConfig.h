@@ -17,21 +17,21 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  数据上传间隔时间
  */
-@property (nonatomic) NSNumber *uploadInterval;
+@property (nonatomic, strong) NSNumber *uploadInterval;
 /**
  当有数据上传时,数据缓存的条数达到uploadsize时,立即上传数据
  */
-@property (nonatomic) NSNumber *uploadSize;
+@property (nonatomic, strong) NSNumber *uploadSize;
 /**
  事件黑名单,不进行统计的事件名称添加到此处
  */
 @property (strong, nonatomic) NSArray *disableEvents;
 /**
- 最多缓存事件条数
+ 最多缓存事件条数,默认10000条,最小为5000条
  */
 @property (class,  nonatomic) NSInteger maxNumEvents;
 /**
- 数据缓存过期时间,最长为10天
+ 数据缓存过期时间,默认10天,最长为10天
  */
 @property (class,  nonatomic) NSInteger expirationDays;
 /**
@@ -69,6 +69,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSTimeZone *defaultTimeZone;
 
 + (TDConfig *)defaultTDConfig;
+- (instancetype)initWithAppId:(NSString *)appId serverUrl:(NSString *)serverUrl;
 - (void)updateConfig;
 - (void)setNetworkType:(ThinkingAnalyticsNetworkType)type;
 

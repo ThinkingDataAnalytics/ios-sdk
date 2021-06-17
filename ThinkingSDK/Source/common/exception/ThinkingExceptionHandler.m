@@ -40,6 +40,7 @@ static const atomic_int_fast32_t UncaughtExceptionMaximum = 10;
     return self;
 }
 
+static int signals[] = {SIGILL, SIGABRT, SIGBUS, SIGSEGV, SIGFPE, SIGPIPE, SIGTRAP};
 - (void)setupHandlers {
     _defaultExceptionHandler = NSGetUncaughtExceptionHandler();
     NSSetUncaughtExceptionHandler(&TDHandleException);
@@ -48,7 +49,6 @@ static const atomic_int_fast32_t UncaughtExceptionMaximum = 10;
     sigemptyset(&action.sa_mask);
     action.sa_flags = SA_SIGINFO;
     action.sa_sigaction = &TDSignalHandler;
-    int signals[] = {SIGABRT, SIGILL, SIGSEGV, SIGFPE, SIGBUS};
     for (int i = 0; i < sizeof(signals) / sizeof(int); i++) {
         struct sigaction prev_action;
         int err = sigaction(signals[i], &action, &prev_action);
@@ -111,7 +111,8 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
         if ([exception callStackSymbols]) {
             crashStr = [NSString stringWithFormat:@"Exception Reason:%@\nException Stack:%@", [exception reason], [exception callStackSymbols]];
         } else {
-            crashStr = [NSString stringWithFormat:@"%@ %@", [exception reason], [NSThread callStackSymbols]];
+            NSString *exceptionStack = [[NSThread callStackSymbols] componentsJoinedByString:@"\n"];
+            crashStr = [NSString stringWithFormat:@"%@ %@", [exception reason], exceptionStack];
         }
         crashStr = [crashStr stringByReplacingOccurrencesOfString:@"\n" withString:@"<br>"];
 
@@ -137,12 +138,9 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
     dispatch_sync([ThinkingAnalyticsSDK serialQueue], ^{});
     
     NSSetUncaughtExceptionHandler(NULL);
-    signal(SIGABRT, SIG_DFL);
-    signal(SIGILL, SIG_DFL);
-    signal(SIGSEGV, SIG_DFL);
-    signal(SIGFPE, SIG_DFL);
-    signal(SIGBUS, SIG_DFL);
-
+    for (int i = 0; i < sizeof(signals) / sizeof(int); i++) {
+        signal(signals[i], SIG_DFL);
+    }
     TDLogInfo(@"Encountered an uncaught exception.");
 }
 

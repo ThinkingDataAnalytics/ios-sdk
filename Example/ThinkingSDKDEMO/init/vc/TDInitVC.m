@@ -108,8 +108,11 @@
     if([ThinkingSDKAPI getInstance] == nil)
     {
         TDConfig *config = [TDConfig new];
+        config.appid = _appidTF.text;
+        config.configureURL = _serverTF.text;
 //        config.debugMode = ThinkingAnalyticsDebug;
-        ThinkingAnalyticsSDK* instance =  [ThinkingAnalyticsSDK startWithAppId:_appidTF.text withUrl:_serverTF.text withConfig:config];
+        ThinkingAnalyticsSDK* instance =  [ThinkingAnalyticsSDK startWithConfig:config];
+//        ThinkingAnalyticsSDK* instance =  [ThinkingAnalyticsSDK startWithAppId:_appidTF.text withUrl:_serverTF.text withConfig:config];
         [ThinkingSDKAPI setInstance:instance];
         [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
         [[ThinkingAnalyticsSDK sharedInstance] track:@"TA"];

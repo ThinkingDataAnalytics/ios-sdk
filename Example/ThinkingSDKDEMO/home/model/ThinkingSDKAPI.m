@@ -132,6 +132,14 @@ ThinkingAnalyticsSDK* _instance;
     }];
 }
 
++ (void)testGetPresetProperties {
+    TDPresetProperties *presetProperties = [_instance getPresetProperties];
+    //获取某个预置属性
+    NSLog(@"TDPresetProperties.bundle_id: %@", presetProperties.bundle_id);
+    //获取全部预置属性
+    NSLog(@"TDPresetProperties.toEventPresetProperties: %@", presetProperties.toEventPresetProperties);
+}
+
 + (void)testTimedEvent {
     [_instance timeEvent:@"TimedEvent"];
 }

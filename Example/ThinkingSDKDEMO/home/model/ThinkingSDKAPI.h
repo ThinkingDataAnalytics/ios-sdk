@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)testUnsetsuper;
 + (void)testClearsuper;
 + (void)testSetDynamicsuper;
++ (void)testGetPresetProperties;
 + (void)testTimedEvent;
 + (void)testTrackEventEnd;
 + (void)testIdentify;
