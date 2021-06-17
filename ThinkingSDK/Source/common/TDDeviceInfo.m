@@ -7,9 +7,12 @@
 
 #import "TDKeychainItemWrapper.h"
 #import "TDPublicConfig.h"
+#import "ThinkingAnalyticsSDKPrivate.h"
+#import "TDFile.h"
 
 @interface TDDeviceInfo ()
 
+@property (nonatomic, readwrite) BOOL isFirstOpen;
 @property (nonatomic, strong) CTTelephonyNetworkInfo *telephonyInfo;
 
 @end
@@ -152,8 +155,8 @@
     TDKeychainItemWrapper *wrapper = [[TDKeychainItemWrapper alloc] init];
     NSString *deviceIdKeychain = [wrapper readDeviceId];
     NSString *installTimesKeychain = [wrapper readInstallTimes];
-    BOOL isNotfirst = [[[NSUserDefaults standardUserDefaults] objectForKey:@"thinking_isfirst"] boolValue];
-    if (!isNotfirst) {
+    BOOL isExistFirstRecord = [[[NSUserDefaults standardUserDefaults] objectForKey:@"thinking_isfirst"] boolValue];
+    if (!isExistFirstRecord) {
         _isFirstOpen = YES;
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"thinking_isfirst"];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -167,11 +170,17 @@
         installTimesKeychain = [wrapper getInstallTimesOld];
     }
     
+    TDFile *file = [[TDFile alloc] initWithAppid:[ThinkingAnalyticsSDK sharedInstance].appid];
+    if (deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
+        deviceIdKeychain = [file unarchiveDeviceId];
+        installTimesKeychain = [file unarchiveInstallTimes];
+    }
+    
     if (deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
         deviceId = defaultDistinctId;
         installTimesKeychain = @"1";
     } else {
-        if (!isNotfirst) {
+        if (!isExistFirstRecord) {
             int setup_int = [installTimesKeychain intValue];
             setup_int++;
             
@@ -189,6 +198,8 @@
     
     [wrapper saveDeviceId:deviceId];
     [wrapper saveInstallTimes:installTimesKeychain];
+    [file archiveDeviceId:deviceId];
+    [file archiveInstallTimes:installTimesKeychain];
     return @{@"uniqueId":uniqueId, @"deviceId":deviceId};
 }
 

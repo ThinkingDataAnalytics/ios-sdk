@@ -48,6 +48,9 @@
     [self.commands addObject:[[ActionModel alloc]initWithName:@"清空所有公共事件属性" action:^{
         [ThinkingSDKAPI testClearsuper];
     }]];
+    [self.commands addObject:[[ActionModel alloc]initWithName:@"设置动态公共事件属性" action:^{
+        [ThinkingSDKAPI testSetDynamicsuper];
+    }]];
     [self.commands addObject:[[ActionModel alloc]initWithName:@"记录事件时长" action:^{
         [ThinkingSDKAPI testTimedEvent];
         [self performSelector:@selector(eventEnd) withObject:nil afterDelay:2.];
