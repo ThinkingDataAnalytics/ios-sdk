@@ -469,14 +469,9 @@ static dispatch_queue_t networkQueue;
             self.taskId = UIBackgroundTaskInvalid;
         }
     });
-    
-    dispatch_sync([ThinkingAnalyticsSDK serialQueue], ^{});
-    dispatch_sync([ThinkingAnalyticsSDK networkQueue], ^{});
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    dispatch_sync([ThinkingAnalyticsSDK serialQueue], ^{});
-    dispatch_sync([ThinkingAnalyticsSDK networkQueue], ^{});
 }
 
 - (void)applicationWillResignActive:(NSNotification *)notification {
