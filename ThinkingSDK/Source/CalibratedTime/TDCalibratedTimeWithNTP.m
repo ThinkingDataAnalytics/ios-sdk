@@ -21,10 +21,15 @@
 }
 
 - (void)recalibrationWithNtps:(NSArray *)ntpServers {
-    _ntpGroup = dispatch_group_create();
-    NSString *queuelabel = [NSString stringWithFormat:@"cn.thinkingdata.ntp.%p", (void *)self];
-    dispatch_queue_t ntpSerialQueue = dispatch_queue_create([queuelabel UTF8String], DISPATCH_QUEUE_SERIAL);
-    
+    static dispatch_once_t onceToken;
+    static NSString *queuelabel;
+    static dispatch_queue_t ntpSerialQueue;
+    dispatch_once(&onceToken, ^{
+        _ntpGroup = dispatch_group_create();
+        queuelabel = [NSString stringWithFormat:@"cn.thinkingdata.ntp.%p", (void *)self];
+        ntpSerialQueue= dispatch_queue_create([queuelabel UTF8String], DISPATCH_QUEUE_SERIAL);
+    });
+
     dispatch_group_async(_ntpGroup, ntpSerialQueue, ^{
         [self startNtp:ntpServers];
     });
