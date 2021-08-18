@@ -50,7 +50,7 @@
 
 
 
-typedef void (^TDCallBack)();
+typedef void (^TDCallBack)(void);
 
 
 

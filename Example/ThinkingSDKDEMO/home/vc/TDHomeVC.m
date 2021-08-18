@@ -253,7 +253,7 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
     //      }]];
     
     // MARK: options
-    NSMutableArray *optionArray = [NSMutableArray array];
+//    NSMutableArray *optionArray = [NSMutableArray array];
 //    [optionArray addObject:[[ActionModel alloc]initWithName:@"Change Customer LibName & LibVersion" action:^{
 //        [ThinkingSDKAPI testChangeLibNameAndLibVersion];
 //    }]];
