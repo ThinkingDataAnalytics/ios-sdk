@@ -6,6 +6,7 @@
 #import "TDPublicConfig.h"
 #import "TDFile.h"
 #import "TDNetwork.h"
+#import "TDValidator.h"
 
 #if !__has_feature(objc_arc)
 #error The ThinkingSDK library must be compiled with ARC enabled
@@ -44,6 +45,7 @@ static dispatch_queue_t networkQueue;
 }
 
 + (ThinkingAnalyticsSDK *)sharedInstanceWithAppid:(NSString *)appid {
+    appid = [TDValidator td_checkToAppid:appid];
     if (instances[appid]) {
         return instances[appid];
     } else {
@@ -53,6 +55,7 @@ static dispatch_queue_t networkQueue;
 }
 
 + (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url withConfig:(TDConfig *)config {
+    appId = [TDValidator td_checkToAppid:appId];
     if (instances[appId]) {
         return instances[appId];
     } else if (![url isKindOfClass:[NSString class]] || url.length == 0) {
@@ -301,7 +304,11 @@ static dispatch_queue_t networkQueue;
 - (void)optInTracking {
     TDLogDebug(@"%@ optInTracking...", self);
     self.isOptOut = NO;
-    [self.file archiveOptOut:NO];
+    
+    dispatch_async(serialQueue, ^{
+        [self.file archiveOptOut:NO];
+    });
+    
 }
 
 #pragma mark - LightInstance
@@ -427,7 +434,7 @@ static dispatch_queue_t networkQueue;
 
     dispatch_group_enter(bgGroup);
     dispatch_async(serialQueue, ^{
-        NSNumber *currentTimeStamp = @([[NSDate date] timeIntervalSince1970]);
+        NSNumber *currentTimeStamp = [NSNumber numberWithLongLong:(long long)NSProcessInfo.processInfo.systemUptime];
         @synchronized (self.trackTimer) {
             NSArray *keys = [self.trackTimer allKeys];
             for (NSString *key in keys) {
@@ -436,15 +443,15 @@ static dispatch_queue_t networkQueue;
                 }
                 NSMutableDictionary *eventTimer = [[NSMutableDictionary alloc] initWithDictionary:self.trackTimer[key]];
                 if (eventTimer) {
-                    NSNumber *eventBegin = [eventTimer valueForKey:TD_EVENT_START];
-                    NSNumber *eventDuration = [eventTimer valueForKey:TD_EVENT_DURATION];
-                    double usedTime;
+                    NSNumber *eventBegin = [eventTimer objectForKey:TD_EVENT_START];
+                    NSNumber *eventDuration = [eventTimer objectForKey:TD_EVENT_DURATION];
+                    long long usedTime;
                     if (eventDuration) {
-                        usedTime = [currentTimeStamp doubleValue] - [eventBegin doubleValue] + [eventDuration doubleValue];
+                        usedTime = [currentTimeStamp longLongValue] - [eventBegin longLongValue] + [eventDuration longLongValue];
                     } else {
-                        usedTime = [currentTimeStamp doubleValue] - [eventBegin doubleValue];
+                        usedTime = [currentTimeStamp longLongValue] - [eventBegin longLongValue];
                     }
-                    [eventTimer setObject:[NSNumber numberWithDouble:usedTime] forKey:TD_EVENT_DURATION];
+                    [eventTimer setObject:[NSNumber numberWithLongLong:usedTime] forKey:TD_EVENT_DURATION];
                     self.trackTimer[key] = eventTimer;
                 }
             }
@@ -497,7 +504,7 @@ static dispatch_queue_t networkQueue;
             for (NSString *key in keys) {
                 NSMutableDictionary *eventTimer = [[NSMutableDictionary alloc] initWithDictionary:self.trackTimer[key]];
                 if (eventTimer) {
-                    [eventTimer setValue:currentTime forKey:TD_EVENT_START];
+                    [eventTimer setObject:currentTime forKey:TD_EVENT_START];
                     self.trackTimer[key] = eventTimer;
                 }
             }
@@ -1031,9 +1038,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         return;
     }
     
-    NSNumber *eventBegin = @([[NSDate date] timeIntervalSince1970]);
     @synchronized (self.trackTimer) {
-        self.trackTimer[event] = @{TD_EVENT_START:eventBegin, TD_EVENT_DURATION:[NSNumber numberWithDouble:0]};
+        self.trackTimer[event] = @{TD_EVENT_START:[NSNumber numberWithLongLong:(long long)NSProcessInfo.processInfo.systemUptime],
+                                   TD_EVENT_DURATION:@(0)};
     };
 }
 
@@ -1203,19 +1210,19 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 
     if (eventTimer) {
-        NSNumber *eventBegin = [eventTimer valueForKey:TD_EVENT_START];
-        NSNumber *eventDuration = [eventTimer valueForKey:TD_EVENT_DURATION];
+        NSNumber *eventBegin = [eventTimer objectForKey:TD_EVENT_START];
+        NSNumber *eventDuration = [eventTimer objectForKey:TD_EVENT_DURATION];
         
-        double usedTime;
-        NSNumber *currentTimeStamp = @([[NSDate date] timeIntervalSince1970]);
+        long long usedTime;
+        NSNumber *currentTimeStamp = [NSNumber numberWithLongLong:(long long)NSProcessInfo.processInfo.systemUptime];
         if (eventDuration) {
-            usedTime = [currentTimeStamp doubleValue] - [eventBegin doubleValue] + [eventDuration doubleValue];
+            usedTime = [currentTimeStamp longLongValue] - [eventBegin longLongValue] + [eventDuration longLongValue];
         } else {
-            usedTime = [currentTimeStamp doubleValue] - [eventBegin doubleValue];
+            usedTime = [currentTimeStamp longLongValue] - [eventBegin longLongValue];
         }
         
         if (usedTime > 0) {
-            properties[@"#duration"] = @([[NSString stringWithFormat:@"%.3f", usedTime] floatValue]);
+            properties[@"#duration"] = @([[NSString stringWithFormat:@"%lld", usedTime] floatValue]);
         }
     }
         
@@ -1374,22 +1381,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
     
     if (properties) {
-        NSMutableDictionary<NSString *, id> *propertiesDic = [NSMutableDictionary dictionaryWithDictionary:properties];
-        for (NSString *key in [properties keyEnumerator]) {
-            if ([properties[key] isKindOfClass:[NSDate class]]) {
-                NSString *dateStr = [_timeFormatter stringFromDate:(NSDate *)properties[key]];
-                propertiesDic[key] = dateStr;
-            } else if ([properties[key] isKindOfClass:[NSArray class]]) {
-                NSMutableArray *arrayItem = [properties[key] mutableCopy];
-                for (int i = 0; i < arrayItem.count ; i++) {
-                    if ([arrayItem[i] isKindOfClass:[NSDate class]]) {
-                        NSString *dateStr = [_timeFormatter stringFromDate:(NSDate *)arrayItem[i]];
-                        arrayItem[i] = dateStr;
-                    }
-                }
-                propertiesDic[key] = arrayItem;
-            }
-        }
+        NSDictionary *propertiesDic = [TDValidator td_checkToJSONObjectRecursive:properties timeFormatter:_timeFormatter];
         
         return [propertiesDic copy];
     }

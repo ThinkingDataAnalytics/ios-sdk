@@ -108,6 +108,7 @@ static NSString *kTAIntegrationExtra = @"TA-Integration-Extra";
     NSDictionary *flushDic = @{
         @"data": recordArray,
         @"#app_id": self.appid,
+        @"#flush_time": [NSNumber numberWithLongLong:[[NSDate date] timeIntervalSince1970] * 1000],
     };
 //    NSDictionary *flushDic = @{
 //        @"data": recordArray,

@@ -22,6 +22,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		2EBAACAB26EF7043007BF33A /* TDValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBAACA926EF7043007BF33A /* TDValidator.m */; };
+		2EBAACAC26EF7043007BF33A /* TDValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 2EBAACAA26EF7043007BF33A /* TDValidator.h */; };
 		69F0D6C1265CDE5500D1CD4B /* TDPresetProperties.h in Headers */ = {isa = PBXBuildFile; fileRef = 69F0D6BF265CDE5500D1CD4B /* TDPresetProperties.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		69F0D6C2265CDE5500D1CD4B /* TDPresetProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 69F0D6C0265CDE5500D1CD4B /* TDPresetProperties.m */; };
 		69F3D7F1260323CB0004986A /* NSDictionary+TDJsonOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 69F3D7EF260323CB0004986A /* NSDictionary+TDJsonOutput.h */; };
@@ -109,6 +111,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2EBAACA926EF7043007BF33A /* TDValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDValidator.m; sourceTree = "<group>"; };
+		2EBAACAA26EF7043007BF33A /* TDValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDValidator.h; sourceTree = "<group>"; };
 		69F0D6BF265CDE5500D1CD4B /* TDPresetProperties.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDPresetProperties.h; sourceTree = "<group>"; };
 		69F0D6C0265CDE5500D1CD4B /* TDPresetProperties.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDPresetProperties.m; sourceTree = "<group>"; };
 		69F3D7EF260323CB0004986A /* NSDictionary+TDJsonOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+TDJsonOutput.h"; sourceTree = "<group>"; };
@@ -406,6 +410,8 @@
 		6EA4D8D5250756960035D575 /* util */ = {
 			isa = PBXGroup;
 			children = (
+				2EBAACAA26EF7043007BF33A /* TDValidator.h */,
+				2EBAACA926EF7043007BF33A /* TDValidator.m */,
 				F3D19032230137600043D595 /* TDJSONUtil.h */,
 				F3D1904B230137600043D595 /* TDJSONUtil.m */,
 				6E05F0FA25077DA200A8613C /* TDSDKUtil.h */,
@@ -533,6 +539,7 @@
 				6E58D58A24C7F06200DD11C1 /* TDEventModel.h in Headers */,
 				6EA4D8D92507632F0035D575 /* TDFile.h in Headers */,
 				F3D19079230137610043D595 /* TDLogging.h in Headers */,
+				2EBAACAC26EF7043007BF33A /* TDValidator.h in Headers */,
 				F3D1906B230137600043D595 /* UIViewController+AutoTrack.h in Headers */,
 				F3D19076230137610043D595 /* TDSqliteDataQueue.h in Headers */,
 				F3D19025230136B30043D595 /* ThinkingSDK.h in Headers */,
@@ -669,6 +676,7 @@
 				6EA4D8DA2507632F0035D575 /* TDFile.m in Sources */,
 				F3247C9B23176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m in Sources */,
 				6E58D58B24C7F06200DD11C1 /* TDEventModel.m in Sources */,
+				2EBAACAB26EF7043007BF33A /* TDValidator.m in Sources */,
 				69F0D6C2265CDE5500D1CD4B /* TDPresetProperties.m in Sources */,
 				6E05F0FD25077DA200A8613C /* TDSDKUtil.m in Sources */,
 				F3D19057230137600043D595 /* TDDeviceInfo.m in Sources */,
