@@ -7,6 +7,9 @@
 #import "TDFile.h"
 #import "TDNetwork.h"
 #import "TDValidator.h"
+#import "TDAppLaunchManager.h"
+#import "TDJSONUtil.h"
+#import "TDToastView.h"
 
 #if !__has_feature(objc_arc)
 #error The ThinkingSDK library must be compiled with ARC enabled
@@ -34,6 +37,61 @@ static BOOL isWwan;
 static TDCalibratedTime *calibratedTime;
 static dispatch_queue_t serialQueue;
 static dispatch_queue_t networkQueue;
+
+
++ (void)setLaunchOptions:(id)launchOptions {
+    [[TDAppLaunchManager sharedInstance] setLaunchOptions:launchOptions];
+}
+
+// ios(2.0, 9.0)
++ (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    [[TDAppLaunchManager sharedInstance] setLaunchOptions:url launchType:TDAppLaunchTypeScheme];
+    return YES;
+}
+
+// ios(9.0)
++ (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    [[TDAppLaunchManager sharedInstance] setLaunchOptions:url launchType:TDAppLaunchTypeScheme];
+    return YES;
+}
+
+// ios(8.0)
++ (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler {
+    [[TDAppLaunchManager sharedInstance] setLaunchOptions:userActivity launchType:TDAppLaunchTypeULink];
+    return YES;
+}
+
+// ios(3.0, 10.0)，ios10以后使用的是UNUserNotification框架
++ (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [[TDAppLaunchManager sharedInstance] setLaunchOptions:userInfo launchType:TDAppLaunchTypePush];
+}
+
+
+// ios(4.0, 10.0)，ios10以后使用的是UNUserNotification框架
++ (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    [[TDAppLaunchManager sharedInstance] setLaunchOptions:notification launchType:TDAppLaunchTypePush];
+}
+
+// ios(10.0), ios10以后使用的是UNUserNotification框架
++ (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
+    [[TDAppLaunchManager sharedInstance] setLaunchOptions:response.notification.request.content launchType:TDAppLaunchTypePush];
+}
+
+// ios(9.0)
++ (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler API_AVAILABLE(ios(9.0)) {
+    [[TDAppLaunchManager sharedInstance] setLaunchOptions:shortcutItem launchType:TDAppLaunchType3DTouch];
+}
+
+// ios(4.2, 9.0)，共享文件，小于IOS9走这里，大于IOS9走application:openURL:options:
++ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(id)annotation {
+    [[TDAppLaunchManager sharedInstance] setLaunchOptions:url launchType:TDAppLaunchTypeScheme];
+    return YES;
+}
+
+// VOIP
++ (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type {
+    [[TDAppLaunchManager sharedInstance] setLaunchOptions:payload.dictionaryPayload launchType:TDAppLaunchTypePush];
+}
 
 + (nullable ThinkingAnalyticsSDK *)sharedInstance {
     if (instances.count == 0) {
@@ -421,9 +479,13 @@ static dispatch_queue_t networkQueue;
 }
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
+    
+    NSTimeInterval time = UIApplication.sharedApplication.backgroundTimeRemaining;
     TDLogDebug(@"%@ application did enter background", self);
     _relaunchInBackGround = NO;
     _applicationWillResignActive = NO;
+    
+    [[TDAppLaunchManager sharedInstance] clearData];
     
     __block UIBackgroundTaskIdentifier backgroundTask = [[ThinkingAnalyticsSDK sharedUIApplication] beginBackgroundTaskWithExpirationHandler:^{
         [[ThinkingAnalyticsSDK sharedUIApplication] endBackgroundTask:backgroundTask];
@@ -513,7 +575,7 @@ static dispatch_queue_t networkQueue;
     
     if (_appRelaunched) {
         if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
-            [self autotrack:TD_APP_START_EVENT properties:@{TD_RESUME_FROM_BACKGROUND:@(_appRelaunched)} withTime:nil];
+            [self autotrack:TD_APP_START_EVENT properties:[self getStartEventPresetProperties] withTime:nil];
         }
         if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
             [self timeEvent:TD_APP_END_EVENT];
@@ -1540,7 +1602,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                 }
             }
 #endif
-            [self autotrack:eventName properties:@{TD_RESUME_FROM_BACKGROUND:@(_appRelaunched)} withTime:nil];
+            [self autotrack:eventName properties:[self getStartEventPresetProperties] withTime:nil];
             [self flush];
         });
     }
@@ -1686,6 +1748,23 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 // for UNITY
 - (NSString *)getTimeString:(NSDate *)date {
     return [_timeFormatter stringFromDate:date];
+}
+
+#pragma mark - Start Event
+
+- (NSDictionary *)getStartEventPresetProperties {
+    NSMutableDictionary *dicProperties = [NSMutableDictionary dictionary];
+    dicProperties[TD_RESUME_FROM_BACKGROUND] = @(_appRelaunched);
+    
+    NSDictionary *launchDic = [[TDAppLaunchManager sharedInstance] getLaunchDic];
+    if (launchDic) {
+        [dicProperties setObject:launchDic forKey:@"#start_reason"];
+        [TDToastView showInWindow:UIApplication.sharedApplication.keyWindow
+                             text:[TDJSONUtil JSONStringForObject:launchDic]
+                         duration:3];
+    }
+    
+    return dicProperties;
 }
 
 @end
