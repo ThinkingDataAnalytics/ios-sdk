@@ -41,6 +41,14 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
     NSLog(@"Home目录：%@",homePath);  
 }
 
+- (NSDictionary *)getTrackPropertiesWithAppid {
+    return @{@"instanceName1" : @{@"auto_key1" : @"auto_value1"},
+             @"instanceName2" : @{@"auto_key2" : @"auto_value2"},
+             @"instanceName3" : @{@"auto_key3" : @"auto_value3"},
+             @"22e445595b0f42bd8c5fe35bc44b88d6" : @{@"auto_key" : @"auto_value"},
+            };
+}
+
 //- (TrackAPIViewController *)trackAPIVCWithApis:(NSArray *)commands {
 //    TrackAPIViewController *apiController = [[TrackAPIViewController alloc] init];
 //    [apiController.commands addObjectsFromArray:commands];

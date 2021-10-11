@@ -77,26 +77,29 @@
     
     TDConfig *config1 = [[TDConfig alloc] init];
     config1.instanceName = @"instanceName1";
-    self.instance1 = [ThinkingAnalyticsSDK startWithAppId:@"7a055a4bd7ec423fa5294b4a2c1eff28"
-                                 withUrl:@"https://receiver-ta-dev.thinkingdata.cn"
-                              withConfig:config1];
+    [ThinkingAnalyticsSDK startWithAppId:@"xxxx" withUrl:@"xxx" withConfig:config1];
     
     TDConfig *config2 = [[TDConfig alloc] init];
     config2.instanceName = @"instanceName2";
-    self.instance2 = [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
+    [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
                                  withUrl:@"http://receiver.ta.thinkingdata.cn/"
                               withConfig:config2];
     
     TDConfig *config3 = [[TDConfig alloc] init];
     config3.instanceName = @"instanceName3";
-    self.instance3 = [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
+    [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
                                  withUrl:@"https://receiver-ta-dev.thinkingdata.cn"
                               withConfig:config3];
     
     TDConfig *config4 = [[TDConfig alloc] init];
-    self.instance4 = [ThinkingAnalyticsSDK startWithAppId:@"22e445595b0f42bd8c5fe35bc44b88d6"
+    [ThinkingAnalyticsSDK startWithAppId:@"22e445595b0f42bd8c5fe35bc44b88d6"
                                  withUrl:@"https://receiver-ta-dev.thinkingdata.cn"
                               withConfig:config4];
+    
+    self.instance1 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"instanceName1"];
+    self.instance2 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"instanceName2"];
+    self.instance3 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"instanceName3"];
+    self.instance4 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"22e445595b0f42bd8c5fe35bc44b88d6"];
     
     // login
     [self.instance1 login:@"account_1"];
@@ -121,6 +124,8 @@
     [self.instance2 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
     [self.instance3 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
     [self.instance4 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+    
+    
     
 //    [self.instance1 flush];
 //    [self.instance2 flush];
