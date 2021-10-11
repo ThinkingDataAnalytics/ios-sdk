@@ -12,12 +12,20 @@
 
 @interface AppDelegate ()
 
+@property(nonatomic, strong) ThinkingAnalyticsSDK *instance1;
+@property(nonatomic, strong) ThinkingAnalyticsSDK *instance2;
+@property(nonatomic, strong) ThinkingAnalyticsSDK *instance3;
+@property(nonatomic, strong) ThinkingAnalyticsSDK *instance4;
+
 @end
 
 @implementation AppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    NSLog(@"home: %@", NSHomeDirectory());
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = [self createRootViewController];
     [self.window makeKeyAndVisible];
@@ -29,16 +37,6 @@
 //    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     // 初始化
     // 配置初始化方法
-//    TDConfig *config = [[TDConfig alloc] init];
-//    config.launchOptions = launchOptions;
-//    config.trackRelaunchedInBackgroundEvents = YES;
-//    //    config.debugMode = ThinkingAnalyticsDebugOnly;
-//    //    config.debugMode = ThinkingAnalyticsDebug;
-//    config.defaultTimeZone = [NSTimeZone timeZoneWithName:@"UTC+0900"];
-    
-//    [ThinkingAnalyticsSDK startWithAppId:@"7a055a4bd7ec423fa5294b4a2c1eff28"
-//                                 withUrl:@"https://receiver-ta-dev.thinkingdata.cn"
-//                              withConfig:config];
 //    [ThinkingAnalyticsSDK startWithAppId:@"debug-appid"
 //                                 withUrl:@"http://47.112.250.224"
 //                             ];
@@ -46,7 +44,6 @@
 //    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAppEnd];
 //    [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"test"];
 
-    
     
     // 配置初始化方法
 //    TDConfig *config = [[TDConfig alloc] init];
@@ -68,9 +65,84 @@
     
     // H5 需要打通时  需要配置
 //    [[ThinkingAnalyticsSDK sharedInstance] addWebViewUserAgent];
+    
+    [self instanceNameTest];
  
     return YES;
 }
+
+- (void)instanceNameTest {
+    
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    
+    TDConfig *config1 = [[TDConfig alloc] init];
+    config1.instanceName = @"instanceName1";
+    self.instance1 = [ThinkingAnalyticsSDK startWithAppId:@"7a055a4bd7ec423fa5294b4a2c1eff28"
+                                 withUrl:@"https://receiver-ta-dev.thinkingdata.cn"
+                              withConfig:config1];
+    
+    TDConfig *config2 = [[TDConfig alloc] init];
+    config2.instanceName = @"instanceName2";
+    self.instance2 = [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
+                                 withUrl:@"http://receiver.ta.thinkingdata.cn/"
+                              withConfig:config2];
+    
+    TDConfig *config3 = [[TDConfig alloc] init];
+    config3.instanceName = @"instanceName3";
+    self.instance3 = [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
+                                 withUrl:@"https://receiver-ta-dev.thinkingdata.cn"
+                              withConfig:config3];
+    
+    TDConfig *config4 = [[TDConfig alloc] init];
+    self.instance4 = [ThinkingAnalyticsSDK startWithAppId:@"22e445595b0f42bd8c5fe35bc44b88d6"
+                                 withUrl:@"https://receiver-ta-dev.thinkingdata.cn"
+                              withConfig:config4];
+    
+    // login
+    [self.instance1 login:@"account_1"];
+    [self.instance2 login:@"account_2"];
+    [self.instance3 login:@"account_3"];
+    [self.instance4 login:@"account_4"];
+    
+    // distinctid
+    [self.instance1 identify:@"distinctId_1"];
+    [self.instance2 identify:@"distinctId_2"];
+    [self.instance3 identify:@"distinctId_3"];
+    [self.instance4 identify:@"distinctId_4"];
+    
+    // 事件
+    [self.instance1 track:@"instanceName1_event"];
+    [self.instance2 track:@"instanceName2_event"];
+    [self.instance3 track:@"instanceName3_event"];
+    [self.instance4 track:@"instance4_event"];
+    
+    // 自动化采集
+    [self.instance1 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+    [self.instance2 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+    [self.instance3 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+    [self.instance4 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+    
+//    [self.instance1 flush];
+//    [self.instance2 flush];
+//    [self.instance3 flush];
+//    [self.instance4 flush];
+    
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self.instance1 track:@"instance_event_1"];
+//    });
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self.instance2 track:@"instance_event_2"];
+//    });
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self.instance3 track:@"instance_event_3"];
+//    });
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self.instance4 track:@"instance_event_4"];
+//    });
+    
+//    [self.instance1 optInTracking];
+}
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     NSLog(@"%@_%@",@"DEMO_",NSStringFromSelector(_cmd));

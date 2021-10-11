@@ -67,9 +67,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable ThinkingAnalyticsSDK *)sharedInstance;
 
 /**
- 根据 APPID 获取实例
+ 根据 APPID 或者 instanceName 获取实例
 
- @param appid APP ID
+ @param appid APP ID 或者 instanceName
  @return SDK 实例
  */
 + (ThinkingAnalyticsSDK *)sharedInstanceWithAppid:(NSString *)appid;

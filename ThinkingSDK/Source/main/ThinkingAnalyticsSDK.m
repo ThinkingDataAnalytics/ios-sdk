@@ -151,7 +151,7 @@ static dispatch_queue_t networkQueue;
         _config.appid = appid;
         _config.configureURL = serverURL;
         
-        self.file = [[TDFile alloc] initWithAppid:appid];
+        self.file = [[TDFile alloc] initWithAppid:[self td_getMapInstanceTag]];
         [self retrievePersistedData];
         //次序不能调整
         [_config updateConfig];
@@ -174,7 +174,7 @@ static dispatch_queue_t networkQueue;
         NSString *keyAutoTrackPattern = @"^([a-zA-Z][a-zA-Z\\d_]{0,49}|\\#(resume_from_background|app_crashed_reason|screen_name|referrer|title|url|element_id|element_type|element_content|element_position))$";
         self.regexAutoTrackKey = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", keyAutoTrackPattern];
         
-        self.dataQueue = [TDSqliteDataQueue sharedInstanceWithAppid:appid];
+        self.dataQueue = [TDSqliteDataQueue sharedInstanceWithAppid:[self td_getMapInstanceTag]];
         if (self.dataQueue == nil) {
             TDLogError(@"SqliteException: init SqliteDataQueue failed");
         }
@@ -212,11 +212,28 @@ static dispatch_queue_t networkQueue;
         [self startFlushTimer];
         [self setApplicationListeners];
         
-        instances[appid] = self;
+        instances[[self td_getMapInstanceTag]] = self;
         
-        TDLogInfo(@"Thinking Analytics SDK %@ instance initialized successfully with mode: %@, APP ID: %@, server url: %@, device ID: %@", [TDDeviceInfo libVersion], [self modeEnumToString:config.debugMode], appid, serverURL, [self getDeviceId]);
+        if ([self ableMapInstanceTag]) {
+            TDLogInfo(@"Thinking Analytics SDK %@ instance initialized successfully with mode: %@, Instance Name: %@,  APP ID: %@, server url: %@, device ID: %@", [TDDeviceInfo libVersion], [self modeEnumToString:config.debugMode], _config.instanceName, appid, serverURL, [self getDeviceId]);
+        } else {
+            TDLogInfo(@"Thinking Analytics SDK %@ instance initialized successfully with mode: %@, APP ID: %@, server url: %@, device ID: %@", [TDDeviceInfo libVersion], [self modeEnumToString:config.debugMode], appid, serverURL, [self getDeviceId]);
+        }
+        
     }
     return self;
+}
+
+- (BOOL)ableMapInstanceTag {
+    return _config.instanceName && [_config.instanceName isKindOfClass:[NSString class]] && _config.instanceName.length;
+}
+
+- (NSString *)td_getMapInstanceTag {
+    if ([self ableMapInstanceTag]) {
+        return self.config.instanceName;
+    } else {
+        return self.appid;
+    }
 }
 
 - (void)launchedIntoBackground:(NSDictionary *)launchOptions {
@@ -231,7 +248,11 @@ static dispatch_queue_t networkQueue;
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - appid: %@ serverUrl: %@>", (void *)self, self.appid, self.serverURL];
+    if ([self ableMapInstanceTag]) {
+        return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - instanceName: %@ appid: %@ serverUrl: %@>", (void *)self, _config.instanceName, self.appid, self.serverURL];
+    } else {
+        return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - appid: %@ serverUrl: %@>", (void *)self, self.appid, self.serverURL];
+    }
 }
 
 + (UIApplication *)sharedUIApplication {
@@ -280,7 +301,7 @@ static dispatch_queue_t networkQueue;
     
     dispatch_async(serialQueue, ^{
         @synchronized (instances) {
-            [self.dataQueue deleteAll:self.appid];
+            [self.dataQueue deleteAll:[self td_getMapInstanceTag]];
         }
         
         [self.file archiveAccountID:nil];
@@ -337,7 +358,7 @@ static dispatch_queue_t networkQueue;
     NSMutableDictionary *event = [[NSMutableDictionary alloc] initWithDictionary:data];
     NSInteger count;
     @synchronized (instances) {
-        count = [self.dataQueue addObject:event withAppid:self.appid];
+        count = [self.dataQueue addObject:event withAppid:[self td_getMapInstanceTag]];
     }
     return count;
 }
@@ -345,7 +366,7 @@ static dispatch_queue_t networkQueue;
 - (void)deleteAll {
     dispatch_async(serialQueue, ^{
         @synchronized (instances) {
-            [self.dataQueue deleteAll:self.appid];
+            [self.dataQueue deleteAll:[self td_getMapInstanceTag]];
         }
     });
 }
@@ -1286,7 +1307,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                 TDLogDebug(@"queueing debug data:%@", finalDic);
                 [self flushDebugEvent:finalDic];
                 @synchronized (instances) {
-                    count = [self.dataQueue sqliteCountForAppid:self.appid];
+                    count = [self.dataQueue sqliteCountForAppid:[self td_getMapInstanceTag]];
                 }
             } else {
                 TDLogDebug(@"queueing data:%@", finalDic);
@@ -1465,7 +1486,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         NSArray *recordArray;
         
         @synchronized (instances) {
-            recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:self.appid];
+            recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:[self td_getMapInstanceTag]];
         }
         
         BOOL flushSucc = YES;
@@ -1474,11 +1495,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             flushSucc = [self.network flushEvents:recordArray];
             if (flushSucc) {
                 @synchronized (instances) {
-                    BOOL ret = [self.dataQueue removeFirstRecords:sendSize withAppid:self.appid];
+                    BOOL ret = [self.dataQueue removeFirstRecords:sendSize withAppid:[self td_getMapInstanceTag]];
                     if (!ret) {
                         break;
                     }
-                    recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:self.appid];
+                    recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:[self td_getMapInstanceTag]];
                 }
             } else {
                 break;
@@ -1553,7 +1574,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         });
     }
     
-    [_autoTrackManager trackWithAppid:self.appid withOption:eventType];
+    [_autoTrackManager trackWithAppid:[self td_getMapInstanceTag] withOption:eventType];
     
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppViewCrash) {
         [self trackCrash];
