@@ -32,7 +32,7 @@ static float _thinkingdata_fps = -1;
 }
 
 - (NSNumber *)getPFS {
-    return [NSNumber numberWithFloat:_thinkingdata_fps];
+    return [NSNumber numberWithInt:(int)_thinkingdata_fps];
 }
 
 - (void)dealloc {
@@ -47,6 +47,7 @@ static float _thinkingdata_fps = -1;
     
     _thinkingdata_fps = -1;
     _link = [CADisplayLink displayLinkWithTarget:[TDWeakProxy proxyWithTarget:self] selector:@selector(tick:)];
+//    _link.preferredFrameRateRange = CAFrameRateRangeMake(60, 120, 120);
     [_link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
 }
 
@@ -65,7 +66,7 @@ static float _thinkingdata_fps = -1;
     
     _count++;
     NSTimeInterval delta = link.timestamp - _lastTime;
-    if (delta < 1) return;
+    if (delta < 1.0) return;
     _lastTime = link.timestamp;
     _thinkingdata_fps = _count / delta;
     _count = 0;

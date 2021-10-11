@@ -31,11 +31,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TDValidator : NSObject
 
-/// 检查APPID
-/// @note 移除appid中的空格
-+ (NSString *)td_checkToAppid:(NSString *)appid;
-
-
 /// 遍历每个属性（递归）
 /// @param properties 需要遍历的字典
 /// @param timeFormatter 时间格式

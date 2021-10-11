@@ -39,7 +39,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- SDK VERSION = 2.7.2
+ SDK VERSION = 2.7.3
  ThinkingData API
  
  ## 初始化API
@@ -397,6 +397,12 @@ NS_ASSUME_NONNULL_BEGIN
  详细文档 http://doc.thinkingdata.cn/tgamanual/installation/ios_sdk_installation/ios_sdk_autotrack.html
  */
 - (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType;
+
+/**
+ 开启自动采集事件功能， 带自定义参数
+
+ */
+- (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType params:(NSDictionary<NSNumber *, NSDictionary *> *)params;
 
 /**
  获取设备 ID

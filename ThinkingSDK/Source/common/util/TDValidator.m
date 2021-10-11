@@ -11,18 +11,6 @@
 
 @implementation TDValidator
 
-+ (NSString *)td_checkToAppid:(NSString *)appid {
-    if (TD_Valid_NSString(appid)) {
-        NSString *string = [appid stringByReplacingOccurrencesOfString:@" " withString:@""];
-        string = [string stringByReplacingOccurrencesOfString:@"\r" withString:@""];
-        string = [string stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-        return string;
-    } else {
-        TDLogError(@"appid  must be NSString and cannot null");
-        return @"";
-    }
-}
-
 + (NSDictionary *)td_checkToJSONObjectRecursive:(NSDictionary *)properties timeFormatter:(NSDateFormatter *)timeFormatter {
     return (NSDictionary *)[self td_checkToObjectRecursive:properties timeFormatter:timeFormatter];
 }

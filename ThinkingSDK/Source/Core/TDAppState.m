@@ -10,7 +10,6 @@
 
 NSString *_td_lastKnownState;
 
-
 @implementation TDAppState
 
 + (TDAppState *)_appState {
@@ -36,7 +35,6 @@ NSString *_td_lastKnownState;
   return [[[[NSBundle mainBundle] bundlePath] pathExtension] isEqualToString:@"appex"];
 }
 
-
 + (NSString *)currentAppState
 {
     static NSDictionary *states;
@@ -54,7 +52,6 @@ NSString *_td_lastKnownState;
     
     return states[@([TDAppState sharedApplication].applicationState)] ?: TDApplicationStateUnknown;
 }
-
 
 + (NSString *)lastAppState {
     return _td_lastKnownState;

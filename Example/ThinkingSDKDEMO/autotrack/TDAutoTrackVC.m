@@ -29,7 +29,7 @@
 
 - (void)setData
 {
-    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll params:@{@(ThinkingAnalyticsEventTypeAll): @{@"auto_track_custom_key": @"auto_track_custom_value"}}];
     self.commands = [NSMutableArray array];
     [self.commands addObject:[[ActionModel alloc]initWithName:@"UIViewController自动埋点" action:^{
         AutoTrackViewController *autoTrackVc = [[AutoTrackViewController alloc] init];

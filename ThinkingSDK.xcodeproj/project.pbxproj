@@ -34,6 +34,8 @@
 		2E55A17F2700D2CD00A938FC /* TDWeakProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E55A17D2700D2CD00A938FC /* TDWeakProxy.h */; };
 		2EBAACAB26EF7043007BF33A /* TDValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBAACA926EF7043007BF33A /* TDValidator.m */; };
 		2EBAACAC26EF7043007BF33A /* TDValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 2EBAACAA26EF7043007BF33A /* TDValidator.h */; };
+		2EBFF9C02713E80500B17D4F /* NSString+TDString.h in Headers */ = {isa = PBXBuildFile; fileRef = 2EBFF9BE2713E80500B17D4F /* NSString+TDString.h */; };
+		2EBFF9C12713E80500B17D4F /* NSString+TDString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBFF9BF2713E80500B17D4F /* NSString+TDString.m */; };
 		69F0D6C1265CDE5500D1CD4B /* TDPresetProperties.h in Headers */ = {isa = PBXBuildFile; fileRef = 69F0D6BF265CDE5500D1CD4B /* TDPresetProperties.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		69F0D6C2265CDE5500D1CD4B /* TDPresetProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 69F0D6C0265CDE5500D1CD4B /* TDPresetProperties.m */; };
 		69F3D7F1260323CB0004986A /* NSDictionary+TDJsonOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 69F3D7EF260323CB0004986A /* NSDictionary+TDJsonOutput.h */; };
@@ -134,6 +136,8 @@
 		2E55A17D2700D2CD00A938FC /* TDWeakProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDWeakProxy.h; sourceTree = "<group>"; };
 		2EBAACA926EF7043007BF33A /* TDValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDValidator.m; sourceTree = "<group>"; };
 		2EBAACAA26EF7043007BF33A /* TDValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDValidator.h; sourceTree = "<group>"; };
+		2EBFF9BE2713E80500B17D4F /* NSString+TDString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+TDString.h"; sourceTree = "<group>"; };
+		2EBFF9BF2713E80500B17D4F /* NSString+TDString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+TDString.m"; sourceTree = "<group>"; };
 		69F0D6BF265CDE5500D1CD4B /* TDPresetProperties.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDPresetProperties.h; sourceTree = "<group>"; };
 		69F0D6C0265CDE5500D1CD4B /* TDPresetProperties.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDPresetProperties.m; sourceTree = "<group>"; };
 		69F3D7EF260323CB0004986A /* NSDictionary+TDJsonOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+TDJsonOutput.h"; sourceTree = "<group>"; };
@@ -274,6 +278,8 @@
 				F3D19039230137600043D595 /* NSData+TDGzip.m */,
 				69F3D7EF260323CB0004986A /* NSDictionary+TDJsonOutput.h */,
 				69F3D7F0260323CB0004986A /* NSDictionary+TDJsonOutput.m */,
+				2EBFF9BE2713E80500B17D4F /* NSString+TDString.h */,
+				2EBFF9BF2713E80500B17D4F /* NSString+TDString.m */,
 			);
 			path = category;
 			sourceTree = "<group>";
@@ -588,6 +594,7 @@
 				6E4DF53D24EF6F3F00BB1AB4 /* TDEditableEventModel.h in Headers */,
 				2E55A17F2700D2CD00A938FC /* TDWeakProxy.h in Headers */,
 				F35B1314242EFB9B00C630FC /* TDNTPTypes.h in Headers */,
+				2EBFF9C02713E80500B17D4F /* NSString+TDString.h in Headers */,
 				F3D19073230137610043D595 /* TDDeviceInfo.h in Headers */,
 				2E12879727004DE4007089F2 /* TDRuntime.h in Headers */,
 				F3D19066230137600043D595 /* NSObject+TDSwizzle.h in Headers */,
@@ -760,6 +767,7 @@
 				F3D19061230137600043D595 /* ThinkingAnalyticsSDK.m in Sources */,
 				F3D1905D230137600043D595 /* ThinkingExceptionHandler.m in Sources */,
 				F35B131A242EFB9B00C630FC /* TDNTPServer.m in Sources */,
+				2EBFF9C12713E80500B17D4F /* NSString+TDString.m in Sources */,
 				F3D19069230137600043D595 /* UIApplication+AutoTrack.m in Sources */,
 				69F3D7F2260323CB0004986A /* NSDictionary+TDJsonOutput.m in Sources */,
 				F3D19071230137610043D595 /* TDJSONUtil.m in Sources */,
@@ -943,6 +951,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = YES;
+				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = ThinkingSDK/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -972,6 +981,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = YES;
+				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = ThinkingSDK/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

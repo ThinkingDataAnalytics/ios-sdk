@@ -125,7 +125,7 @@
     if (disk && disk.length) {
         [p setObject:disk forKey:@"#disk"];
     }
-    [p setObject:[self is_simulator] forKey:@"#is_simulator"];
+    [p setObject:[self is_simulator] forKey:@"#simulator"];
     [p setObject:[_fpsMonitor getPFS] forKey:@"#fps"];
 }
 
@@ -343,5 +343,15 @@
     return isSimulator;
 }
 
+#pragma mark -  安装时间
++ (NSDate *)td_getInstallTime {
+    NSURL* urlToDocumentsFolder = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    __autoreleasing NSError *error;
+    NSDate *installDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:urlToDocumentsFolder.path error:&error] objectForKey:NSFileCreationDate];
+    if (!error) {
+        return installDate;
+    }
+    return [NSDate date];
+}
 
 @end

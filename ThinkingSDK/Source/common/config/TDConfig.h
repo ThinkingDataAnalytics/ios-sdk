@@ -79,6 +79,11 @@ NS_ASSUME_NONNULL_BEGIN
 */
 @property (nonatomic, strong) NSTimeZone *defaultTimeZone;
 
+/**
+ 多实例的唯一标识
+*/
+@property (nonatomic, copy) NSString *instanceName;
+
 + (TDConfig *)defaultTDConfig;
 - (instancetype)initWithAppId:(NSString *)appId serverUrl:(NSString *)serverUrl;
 - (void)updateConfig;

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E7E2EB927059D26002F26BC /* TDDemoLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7E2EB827059D26002F26BC /* TDDemoLocation.m */; };
 		6E3B49E8250603520021B467 /* ActionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3B49E7250603520021B467 /* ActionModel.m */; };
 		6E3B49EB250603CC0021B467 /* TDUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3B49EA250603CC0021B467 /* TDUtil.m */; };
 		6E4936242514CBD800F27296 /* TDUserIDVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4936232514CBD800F27296 /* TDUserIDVC.m */; };
@@ -103,6 +104,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2E7E2EB727059D26002F26BC /* TDDemoLocation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDDemoLocation.h; sourceTree = "<group>"; };
+		2E7E2EB827059D26002F26BC /* TDDemoLocation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDDemoLocation.m; sourceTree = "<group>"; };
 		2EB5D0C227030C1C002FAECF /* ThinkingSDKDEMO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ThinkingSDKDEMO.entitlements; sourceTree = "<group>"; };
 		6E3B49E6250603520021B467 /* ActionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionModel.h; sourceTree = "<group>"; };
 		6E3B49E7250603520021B467 /* ActionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionModel.m; sourceTree = "<group>"; };
@@ -245,9 +248,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2E7E2EB627059CFF002F26BC /* launch */ = {
+			isa = PBXGroup;
+			children = (
+				2E7E2EB727059D26002F26BC /* TDDemoLocation.h */,
+				2E7E2EB827059D26002F26BC /* TDDemoLocation.m */,
+			);
+			path = launch;
+			sourceTree = "<group>";
+		};
 		6E3B49E125021AC80021B467 /* home */ = {
 			isa = PBXGroup;
 			children = (
+				2E7E2EB627059CFF002F26BC /* launch */,
 				6E3B49E425021AF30021B467 /* model */,
 				6E3B49E225021AF30021B467 /* vc */,
 				6E3B49E325021AF30021B467 /* view */,
@@ -746,6 +759,7 @@
 				6EEDD2C325063552001E07BC /* TDAutoTrackVC.m in Sources */,
 				6EEDD2C0250630A8001E07BC /* TDEventVC.m in Sources */,
 				F34D3DAF2306C973006FEDCC /* NTPViewController.m in Sources */,
+				2E7E2EB927059D26002F26BC /* TDDemoLocation.m in Sources */,
 				F34D3DB02306C973006FEDCC /* NetAssociation.m in Sources */,
 				6E493633251892B700F27296 /* TDColCell.m in Sources */,
 			);
@@ -905,7 +919,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
-				EXCLUDED_ARCHS = "";
+				EXCLUDED_ARCHS = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
@@ -934,7 +948,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
-				EXCLUDED_ARCHS = "";
+				EXCLUDED_ARCHS = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
@@ -1020,6 +1034,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
+				EXCLUDED_ARCHS = "";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/ThinkingSDKDEMOUITests/usr/include";
 				INFOPLIST_FILE = ThinkingSDKDEMOUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1044,6 +1059,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
+				EXCLUDED_ARCHS = "";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/ThinkingSDKDEMOUITests/usr/include";
 				INFOPLIST_FILE = ThinkingSDKDEMOUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

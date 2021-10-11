@@ -39,6 +39,9 @@ static kEDEventTypeName const TD_EVENT_TYPE_USER_APPEND     = @"user_append";
 static NSString * const TD_EVENT_START                      = @"eventStart";
 static NSString * const TD_EVENT_DURATION                   = @"eventDuration";
 
+static NSString * const TD_EVENT_BACKGROUND_DURATION        = @"event_background_duration";
+static NSString * const TD_EVENT_ENTERBACKGROUND_TIME       = @"event_enter_background_time";
+
 static char TD_AUTOTRACK_VIEW_ID;
 static char TD_AUTOTRACK_VIEW_ID_APPID;
 static char TD_AUTOTRACK_VIEW_IGNORE;
@@ -71,6 +74,7 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (atomic, copy, nullable) NSString *accountId;
 @property (atomic, copy) NSString *identifyId;
 @property (atomic, strong) NSDictionary *superProperty;
+@property (atomic, strong) NSDictionary *autoCustomProperty;// 自动采集属性
 @property (atomic, strong) NSMutableSet *ignoredViewTypeList;
 @property (atomic, strong) NSMutableSet *ignoredViewControllers;
 @property (nonatomic, assign) BOOL relaunchInBackGround;

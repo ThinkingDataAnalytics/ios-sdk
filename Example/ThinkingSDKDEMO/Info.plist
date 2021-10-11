@@ -228,12 +228,14 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>thinkingdata-蓝牙</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>bb</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>aa</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>cc</string>
+	<string>thinkingdata-定位</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SpaceMono-Regular.ttf</string>
