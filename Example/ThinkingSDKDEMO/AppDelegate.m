@@ -76,17 +76,17 @@
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     
     TDConfig *config1 = [[TDConfig alloc] init];
-    config1.instanceName = @"instanceName1";
+    config1.name = @"instanceName1";
     [ThinkingAnalyticsSDK startWithAppId:@"xxxx" withUrl:@"xxx" withConfig:config1];
     
     TDConfig *config2 = [[TDConfig alloc] init];
-    config2.instanceName = @"instanceName2";
+    config2.name = @"instanceName2";
     [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
                                  withUrl:@"http://receiver.ta.thinkingdata.cn/"
                               withConfig:config2];
     
     TDConfig *config3 = [[TDConfig alloc] init];
-    config3.instanceName = @"instanceName3";
+    config3.name = @"instanceName3";
     [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
                                  withUrl:@"https://receiver-ta-dev.thinkingdata.cn"
                               withConfig:config3];

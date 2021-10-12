@@ -82,7 +82,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  实例的标识
 */
-@property (nonatomic, copy) NSString *instanceName;
+@property (nonatomic, copy) NSString *name;
 
 + (TDConfig *)defaultTDConfig;
 - (instancetype)initWithAppId:(NSString *)appId serverUrl:(NSString *)serverUrl;

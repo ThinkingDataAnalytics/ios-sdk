@@ -215,7 +215,7 @@ static dispatch_queue_t networkQueue;
         instances[[self td_getMapInstanceTag]] = self;
         
         if ([self ableMapInstanceTag]) {
-            TDLogInfo(@"Thinking Analytics SDK %@ instance initialized successfully with mode: %@, Instance Name: %@,  APP ID: %@, server url: %@, device ID: %@", [TDDeviceInfo libVersion], [self modeEnumToString:config.debugMode], _config.instanceName, appid, serverURL, [self getDeviceId]);
+            TDLogInfo(@"Thinking Analytics SDK %@ instance initialized successfully with mode: %@, Instance Name: %@,  APP ID: %@, server url: %@, device ID: %@", [TDDeviceInfo libVersion], [self modeEnumToString:config.debugMode], _config.name, appid, serverURL, [self getDeviceId]);
         } else {
             TDLogInfo(@"Thinking Analytics SDK %@ instance initialized successfully with mode: %@, APP ID: %@, server url: %@, device ID: %@", [TDDeviceInfo libVersion], [self modeEnumToString:config.debugMode], appid, serverURL, [self getDeviceId]);
         }
@@ -225,12 +225,12 @@ static dispatch_queue_t networkQueue;
 }
 
 - (BOOL)ableMapInstanceTag {
-    return _config.instanceName && [_config.instanceName isKindOfClass:[NSString class]] && _config.instanceName.length;
+    return _config.name && [_config.name isKindOfClass:[NSString class]] && _config.name.length;
 }
 
 - (NSString *)td_getMapInstanceTag {
     if ([self ableMapInstanceTag]) {
-        return self.config.instanceName;
+        return self.config.name;
     } else {
         return self.appid;
     }
@@ -249,7 +249,7 @@ static dispatch_queue_t networkQueue;
 
 - (NSString *)description {
     if ([self ableMapInstanceTag]) {
-        return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - instanceName: %@ appid: %@ serverUrl: %@>", (void *)self, _config.instanceName, self.appid, self.serverURL];
+        return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - instanceName: %@ appid: %@ serverUrl: %@>", (void *)self, _config.name, self.appid, self.serverURL];
     } else {
         return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - appid: %@ serverUrl: %@>", (void *)self, self.appid, self.serverURL];
     }
