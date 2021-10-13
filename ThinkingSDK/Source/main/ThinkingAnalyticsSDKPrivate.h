@@ -77,7 +77,7 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (atomic, strong) NSDictionary *autoCustomProperty;// 自动采集属性
 @property (atomic, strong) NSMutableSet *ignoredViewTypeList;
 @property (atomic, strong) NSMutableSet *ignoredViewControllers;
-@property (nonatomic, assign) BOOL relaunchInBackGround;
+@property (nonatomic, assign) BOOL relaunchInBackGround;// 标识是否是后台自启动事件
 @property (nonatomic, assign) BOOL isEnabled;
 @property (nonatomic, assign) BOOL isOptOut;
 @property (nonatomic, strong, nullable) NSTimer *timer;
@@ -94,7 +94,7 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (nonatomic, strong) NSDateFormatter *timeFormatter;
 @property (nonatomic, assign) BOOL applicationWillResignActive;
 @property (nonatomic, assign) BOOL appRelaunched;
-@property (nonatomic, assign) BOOL isEnableSceneSupport;
+@property (nonatomic, assign) BOOL isEnableSceneSupport;// 标识APP是不是Scene方法启动，IOS13以后版本才需要用到
 @property (nonatomic, strong) WKWebView *wkWebView;
 
 - (instancetype)initLight:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config;

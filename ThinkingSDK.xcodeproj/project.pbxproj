@@ -22,6 +22,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+
 		2E12879727004DE4007089F2 /* TDRuntime.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E12879027004DE4007089F2 /* TDRuntime.h */; };
 		2E12879827004DE4007089F2 /* TDAppState.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E12879127004DE4007089F2 /* TDAppState.m */; };
 		2E12879927004DE4007089F2 /* TDRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E12879227004DE4007089F2 /* TDRuntime.m */; };
@@ -36,6 +37,10 @@
 		2EBAACAC26EF7043007BF33A /* TDValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 2EBAACAA26EF7043007BF33A /* TDValidator.h */; };
 		2EBFF9C02713E80500B17D4F /* NSString+TDString.h in Headers */ = {isa = PBXBuildFile; fileRef = 2EBFF9BE2713E80500B17D4F /* NSString+TDString.h */; };
 		2EBFF9C12713E80500B17D4F /* NSString+TDString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBFF9BF2713E80500B17D4F /* NSString+TDString.m */; };
+		2E24A21F2716B50A008343AD /* TDStartTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E24A21D2716B50A008343AD /* TDStartTracker.h */; };
+		2E24A2202716B50A008343AD /* TDStartTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E24A21E2716B50A008343AD /* TDStartTracker.m */; };
+		2E24A2232716B910008343AD /* TDAutoTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E24A2212716B910008343AD /* TDAutoTracker.h */; };
+		2E24A2242716B910008343AD /* TDAutoTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E24A2222716B910008343AD /* TDAutoTracker.m */; };
 		69F0D6C1265CDE5500D1CD4B /* TDPresetProperties.h in Headers */ = {isa = PBXBuildFile; fileRef = 69F0D6BF265CDE5500D1CD4B /* TDPresetProperties.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		69F0D6C2265CDE5500D1CD4B /* TDPresetProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 69F0D6C0265CDE5500D1CD4B /* TDPresetProperties.m */; };
 		69F3D7F1260323CB0004986A /* NSDictionary+TDJsonOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 69F3D7EF260323CB0004986A /* NSDictionary+TDJsonOutput.h */; };
@@ -123,6 +128,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+
 		2E12879027004DE4007089F2 /* TDRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDRuntime.h; sourceTree = "<group>"; };
 		2E12879127004DE4007089F2 /* TDAppState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDAppState.m; sourceTree = "<group>"; };
 		2E12879227004DE4007089F2 /* TDRuntime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDRuntime.m; sourceTree = "<group>"; };
@@ -138,6 +144,12 @@
 		2EBAACAA26EF7043007BF33A /* TDValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDValidator.h; sourceTree = "<group>"; };
 		2EBFF9BE2713E80500B17D4F /* NSString+TDString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+TDString.h"; sourceTree = "<group>"; };
 		2EBFF9BF2713E80500B17D4F /* NSString+TDString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+TDString.m"; sourceTree = "<group>"; };
+
+		2E24A21D2716B50A008343AD /* TDStartTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDStartTracker.h; sourceTree = "<group>"; };
+		2E24A21E2716B50A008343AD /* TDStartTracker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDStartTracker.m; sourceTree = "<group>"; };
+		2E24A2212716B910008343AD /* TDAutoTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDAutoTracker.h; sourceTree = "<group>"; };
+		2E24A2222716B910008343AD /* TDAutoTracker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDAutoTracker.m; sourceTree = "<group>"; };
+
 		69F0D6BF265CDE5500D1CD4B /* TDPresetProperties.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDPresetProperties.h; sourceTree = "<group>"; };
 		69F0D6C0265CDE5500D1CD4B /* TDPresetProperties.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDPresetProperties.m; sourceTree = "<group>"; };
 		69F3D7EF260323CB0004986A /* NSDictionary+TDJsonOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+TDJsonOutput.h"; sourceTree = "<group>"; };
@@ -311,6 +323,10 @@
 				F3D19046230137600043D595 /* NSObject+TDSwizzle.m */,
 				F3D1903F230137600043D595 /* TDAutoTrackManager.h */,
 				F3D19044230137600043D595 /* TDAutoTrackManager.m */,
+				2E24A21D2716B50A008343AD /* TDStartTracker.h */,
+				2E24A21E2716B50A008343AD /* TDStartTracker.m */,
+				2E24A2212716B910008343AD /* TDAutoTracker.h */,
+				2E24A2222716B910008343AD /* TDAutoTracker.m */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -579,6 +595,7 @@
 				F3D19072230137610043D595 /* TDConfig.h in Headers */,
 				2E12879C27004DE4007089F2 /* TDAppLaunchManager.h in Headers */,
 				F3D1907A230137610043D595 /* ThinkingAnalyticsSDK.h in Headers */,
+				2E24A2232716B910008343AD /* TDAutoTracker.h in Headers */,
 				F3D19064230137600043D595 /* ThinkingAnalyticsSDKPrivate.h in Headers */,
 				F3D1905F230137600043D595 /* TDNetwork.h in Headers */,
 				F30338C023AB57750020C129 /* TDSecurityPolicy.h in Headers */,
@@ -605,6 +622,7 @@
 				69F3D7F1260323CB0004986A /* NSDictionary+TDJsonOutput.h in Headers */,
 				6E58D58A24C7F06200DD11C1 /* TDEventModel.h in Headers */,
 				6EA4D8D92507632F0035D575 /* TDFile.h in Headers */,
+				2E24A21F2716B50A008343AD /* TDStartTracker.h in Headers */,
 				F3D19079230137610043D595 /* TDLogging.h in Headers */,
 				2EBAACAC26EF7043007BF33A /* TDValidator.h in Headers */,
 				F3D1906B230137600043D595 /* UIViewController+AutoTrack.h in Headers */,
@@ -748,8 +766,12 @@
 				F3247C9B23176BEB00F2FBBB /* LightThinkingAnalyticsSDK.m in Sources */,
 				2E55A17A2700D22200A938FC /* TDPMFPSMonitor.m in Sources */,
 				6E58D58B24C7F06200DD11C1 /* TDEventModel.m in Sources */,
+
 				2EBAACAB26EF7043007BF33A /* TDValidator.m in Sources */,
 				2E12879927004DE4007089F2 /* TDRuntime.m in Sources */,
+
+				2E24A2242716B910008343AD /* TDAutoTracker.m in Sources */,
+
 				69F0D6C2265CDE5500D1CD4B /* TDPresetProperties.m in Sources */,
 				6E05F0FD25077DA200A8613C /* TDSDKUtil.m in Sources */,
 				F3D19057230137600043D595 /* TDDeviceInfo.m in Sources */,
@@ -775,6 +797,7 @@
 				F35B1313242EFB9B00C630FC /* TDCalibratedTimeWithNTP.m in Sources */,
 				2E12879B27004DE4007089F2 /* TDAppLaunchManager.m in Sources */,
 				F3D19067230137600043D595 /* UIViewController+AutoTrack.m in Sources */,
+				2E24A2202716B50A008343AD /* TDStartTracker.m in Sources */,
 				F3D1905E230137600043D595 /* TDSqliteDataQueue.m in Sources */,
 				F3D19058230137600043D595 /* TDConfig.m in Sources */,
 			);

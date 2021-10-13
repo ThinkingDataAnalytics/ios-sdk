@@ -50,6 +50,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (atomic, copy) NSString *appid;
 /**
+ 获取实例唯一标识
+ */
+@property (atomic, copy) NSString *(^getInstanceName)(void);
+/**
  数据上传的服务器地址
  */
 @property (atomic, copy) NSString *configureURL;
@@ -80,9 +84,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSTimeZone *defaultTimeZone;
 
 /**
- 多实例的唯一标识
+ 实例的标识
 */
-@property (nonatomic, copy) NSString *instanceName;
+@property (nonatomic, copy) NSString *name;
 
 + (TDConfig *)defaultTDConfig;
 - (instancetype)initWithAppId:(NSString *)appId serverUrl:(NSString *)serverUrl;

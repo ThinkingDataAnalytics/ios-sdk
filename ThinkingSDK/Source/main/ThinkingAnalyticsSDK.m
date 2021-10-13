@@ -1,6 +1,7 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 
 #import "TDAutoTrackManager.h"
+#import "TDStartTracker.h"
 #import "TDCalibratedTimeWithNTP.h"
 #import "TDConfig.h"
 #import "TDPublicConfig.h"
@@ -26,6 +27,7 @@
 @interface ThinkingAnalyticsSDK ()
 @property (atomic, strong)   TDNetwork *network;
 @property (atomic, strong)   TDAutoTrackManager *autoTrackManager;
+@property (atomic, strong)   TDColdStartTracker *startInitTracker;
 @property (strong,nonatomic) TDFile *file;
 @end
 
@@ -216,8 +218,14 @@ static double td_enterDidBecomeActiveTime = 0;
         _config.appid = appid;
         _config.configureURL = serverURL;
         
-        self.file = [[TDFile alloc] initWithAppid:appid];
+        self.file = [[TDFile alloc] initWithAppid:[self td_getMapInstanceTag]];
         [self retrievePersistedData];
+        
+        // config获取intanceName
+        NSString *instanceName = [self td_getMapInstanceTag];
+        _config.getInstanceName = ^NSString * _Nonnull{
+            return instanceName;
+        };
         //次序不能调整
         [_config updateConfig];
         
@@ -239,7 +247,7 @@ static double td_enterDidBecomeActiveTime = 0;
         NSString *keyAutoTrackPattern = @"^([a-zA-Z][a-zA-Z\\d_]{0,49}|\\#(resume_from_background|app_crashed_reason|screen_name|referrer|title|url|element_id|element_type|element_content|element_position|background_duration))$";
         self.regexAutoTrackKey = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", keyAutoTrackPattern];
         
-        self.dataQueue = [TDSqliteDataQueue sharedInstanceWithAppid:appid];
+        self.dataQueue = [TDSqliteDataQueue sharedInstanceWithAppid:[self td_getMapInstanceTag]];
         if (self.dataQueue == nil) {
             TDLogError(@"SqliteException: init SqliteDataQueue failed");
         }
@@ -277,11 +285,28 @@ static double td_enterDidBecomeActiveTime = 0;
         [self startFlushTimer];
         [self setApplicationListeners];
         
-        instances[appid] = self;
+        instances[[self td_getMapInstanceTag]] = self;
         
-        TDLogInfo(@"Thinking Analytics SDK %@ instance initialized successfully with mode: %@, APP ID: %@, server url: %@, device ID: %@", [TDDeviceInfo libVersion], [self modeEnumToString:config.debugMode], appid, serverURL, [self getDeviceId]);
+        if ([self ableMapInstanceTag]) {
+            TDLogInfo(@"Thinking Analytics SDK %@ instance initialized successfully with mode: %@, Instance Name: %@,  APP ID: %@, server url: %@, device ID: %@", [TDDeviceInfo libVersion], [self modeEnumToString:config.debugMode], _config.name, appid, serverURL, [self getDeviceId]);
+        } else {
+            TDLogInfo(@"Thinking Analytics SDK %@ instance initialized successfully with mode: %@, APP ID: %@, server url: %@, device ID: %@", [TDDeviceInfo libVersion], [self modeEnumToString:config.debugMode], appid, serverURL, [self getDeviceId]);
+        }
+        
     }
     return self;
+}
+
+- (BOOL)ableMapInstanceTag {
+    return _config.name && [_config.name isKindOfClass:[NSString class]] && _config.name.length;
+}
+
+- (NSString *)td_getMapInstanceTag {
+    if ([self ableMapInstanceTag]) {
+        return self.config.name;
+    } else {
+        return self.appid;
+    }
 }
 
 - (void)launchedIntoBackground:(NSDictionary *)launchOptions {
@@ -296,7 +321,11 @@ static double td_enterDidBecomeActiveTime = 0;
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - appid: %@ serverUrl: %@>", (void *)self, self.appid, self.serverURL];
+    if ([self ableMapInstanceTag]) {
+        return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - instanceName: %@ appid: %@ serverUrl: %@>", (void *)self, _config.name, self.appid, self.serverURL];
+    } else {
+        return [NSString stringWithFormat:@"<ThinkingAnalyticsSDK: %p - appid: %@ serverUrl: %@>", (void *)self, self.appid, self.serverURL];
+    }
 }
 
 + (UIApplication *)sharedUIApplication {
@@ -345,7 +374,7 @@ static double td_enterDidBecomeActiveTime = 0;
     
     dispatch_async(serialQueue, ^{
         @synchronized (instances) {
-            [self.dataQueue deleteAll:self.appid];
+            [self.dataQueue deleteAll:[self td_getMapInstanceTag]];
         }
         
         [self.file archiveAccountID:nil];
@@ -406,7 +435,7 @@ static double td_enterDidBecomeActiveTime = 0;
     NSMutableDictionary *event = [[NSMutableDictionary alloc] initWithDictionary:data];
     NSInteger count;
     @synchronized (instances) {
-        count = [self.dataQueue addObject:event withAppid:self.appid];
+        count = [self.dataQueue addObject:event withAppid:[self td_getMapInstanceTag]];
     }
     return count;
 }
@@ -414,7 +443,7 @@ static double td_enterDidBecomeActiveTime = 0;
 - (void)deleteAll {
     dispatch_async(serialQueue, ^{
         @synchronized (instances) {
-            [self.dataQueue deleteAll:self.appid];
+            [self.dataQueue deleteAll:[self td_getMapInstanceTag]];
         }
     });
 }
@@ -1423,7 +1452,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                 TDLogDebug(@"queueing debug data:%@", finalDic);
                 [self flushDebugEvent:finalDic];
                 @synchronized (instances) {
-                    count = [self.dataQueue sqliteCountForAppid:self.appid];
+                    count = [self.dataQueue sqliteCountForAppid:[self td_getMapInstanceTag]];
                 }
             } else {
                 TDLogDebug(@"queueing data:%@", finalDic);
@@ -1606,7 +1635,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         NSArray *recordArray;
         
         @synchronized (instances) {
-            recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:self.appid];
+            recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:[self td_getMapInstanceTag]];
         }
         
         BOOL flushSucc = YES;
@@ -1615,11 +1644,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             flushSucc = [self.network flushEvents:recordArray];
             if (flushSucc) {
                 @synchronized (instances) {
-                    BOOL ret = [self.dataQueue removeFirstRecords:sendSize withAppid:self.appid];
+                    BOOL ret = [self.dataQueue removeFirstRecords:sendSize withAppid:[self td_getMapInstanceTag]];
                     if (!ret) {
                         break;
                     }
-                    recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:self.appid];
+                    recordArray = [self.dataQueue getFirstRecords:kBatchSize withAppid:[self td_getMapInstanceTag]];
                 }
             } else {
                 break;
@@ -1632,6 +1661,15 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     dispatch_async(serialQueue, ^{
         dispatch_async(networkQueue, dispatchBlock);
     });
+}
+
+#pragma mark - 自动采集类 - 懒加载
+// todo: 此部分会重构到TDAutoTrackManager中
+- (TDColdStartTracker *)startInitTracker {
+    if (!_startInitTracker) {
+        _startInitTracker = [TDColdStartTracker new];
+    }
+    return _startInitTracker;
 }
 
 #pragma mark - Flush control
@@ -1679,102 +1717,29 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            NSString *eventName = _relaunchInBackGround?TD_APP_START_BACKGROUND_EVENT:TD_APP_START_EVENT;
-#ifdef __IPHONE_13_0
-            if (@available(iOS 13.0, *)) {
-                if (_isEnableSceneSupport) {
-                    eventName = TD_APP_START_EVENT;
-                }
-            }
-#endif
-            [self autotrack:eventName properties:[self getStartEventPresetProperties] withTime:nil];
-            [self flush];
-        });
+
+        NSString *eventName = [self getStartEventName];
+        NSDictionary *params = @{TD_RESUME_FROM_BACKGROUND:@(_appRelaunched)};
+        [self.startInitTracker trackWithInstanceTag:[self td_getMapInstanceTag] eventName:eventName params:params];
     }
     
-    [_autoTrackManager trackWithAppid:self.appid withOption:eventType];
+    [_autoTrackManager trackWithAppid:[self td_getMapInstanceTag] withOption:eventType];
     
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppViewCrash) {
         [self trackCrash];
     }
 }
 
-- (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType params:(NSDictionary<NSNumber *, NSDictionary *> *)params {
-    
-    if ([self hasDisabled])
-        return;
-    
-    if (params && [params isKindOfClass:[NSDictionary class]] && params.allKeys.count) {
-    
-        NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-        NSDictionary *params1 = [params copy];
-        [params1 enumerateKeysAndObjectsUsingBlock:^(NSNumber* key, NSDictionary *obj, BOOL * _Nonnull stop) {
-            
-            ThinkingAnalyticsAutoTrackEventType type = key.integerValue;
-            if ((type & ThinkingAnalyticsEventTypeAppStart) == ThinkingAnalyticsEventTypeAppStart) {
-                [dic setObject:obj forKey:TD_APP_START_EVENT];
-                [dic setObject:obj forKey:TD_APP_START_BACKGROUND_EVENT];
-            }
-            if ((type & ThinkingAnalyticsEventTypeAppEnd) == ThinkingAnalyticsEventTypeAppEnd) {
-                [dic setObject:obj forKey:TD_APP_END_EVENT];
-            }
-            if ((type & ThinkingAnalyticsEventTypeAppViewScreen) == ThinkingAnalyticsEventTypeAppViewScreen) {
-                [dic setObject:obj forKey:TD_APP_VIEW_EVENT];
-            }
-            if ((type & ThinkingAnalyticsEventTypeAppClick) == ThinkingAnalyticsEventTypeAppClick) {
-                [dic setObject:obj forKey:TD_APP_CLICK_EVENT];
-            }
-            if ((type & ThinkingAnalyticsEventTypeAppViewCrash) == ThinkingAnalyticsEventTypeAppViewCrash) {
-                [dic setObject:obj forKey:TD_APP_CRASH_EVENT];
-            }
-            if ((type & ThinkingAnalyticsEventTypeAppInstall) == ThinkingAnalyticsEventTypeAppInstall) {
-                [dic setObject:obj forKey:TD_APP_INSTALL_EVENT];
-            }
-            self.autoCustomProperty = dic;
-        }];
-    } else {
-        self.autoCustomProperty = @{};
-    }
-    
-    _config.autoTrackEventType = eventType;
-    if ([TDDeviceInfo sharedManager].isFirstOpen && (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppInstall)) {
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            [self autotrack:TD_APP_INSTALL_EVENT properties:nil withTime:nil];
-            [self flush];
-        });
-    }
-    
-    if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            [self timeEvent:TD_APP_END_EVENT];
-        });
-    }
-
-    if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            NSString *eventName = _relaunchInBackGround?TD_APP_START_BACKGROUND_EVENT:TD_APP_START_EVENT;
+- (NSString *)getStartEventName {
+    NSString *eventName = _relaunchInBackGround?TD_APP_START_BACKGROUND_EVENT:TD_APP_START_EVENT;
 #ifdef __IPHONE_13_0
-            if (@available(iOS 13.0, *)) {
-                if (_isEnableSceneSupport) {
-                    eventName = TD_APP_START_EVENT;
-                }
-            }
+    if (@available(iOS 13.0, *)) {
+        if (_isEnableSceneSupport) {
+            eventName = TD_APP_START_EVENT;
+        }
+    }
 #endif
-            [self autotrack:eventName properties:[self getStartEventPresetProperties] withTime:nil];
-            [self flush];
-        });
-    }
-    
-    [_autoTrackManager trackWithAppid:self.appid withOption:eventType];
-    
-    if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppViewCrash) {
-        [self trackCrash];
-    }
+    return [eventName copy];
 }
 
 - (void)ignoreViewType:(Class)aClass {
