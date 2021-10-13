@@ -50,6 +50,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (atomic, copy) NSString *appid;
 /**
+ 获取实例唯一标识
+ */
+@property (atomic, copy) NSString *(^getInstanceName)(void);
+/**
  数据上传的服务器地址
  */
 @property (atomic, copy) NSString *configureURL;

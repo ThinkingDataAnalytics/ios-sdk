@@ -153,6 +153,12 @@ static dispatch_queue_t networkQueue;
         
         self.file = [[TDFile alloc] initWithAppid:[self td_getMapInstanceTag]];
         [self retrievePersistedData];
+        
+        // config获取intanceName
+        NSString *instanceName = [self td_getMapInstanceTag];
+        _config.getInstanceName = ^NSString * _Nonnull{
+            return instanceName;
+        };
         //次序不能调整
         [_config updateConfig];
         
