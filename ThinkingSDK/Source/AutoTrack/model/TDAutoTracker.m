@@ -32,6 +32,9 @@
 - (void)trackWithInstanceTag:(NSString *)instanceName eventName:(NSString *)eventName params:(NSDictionary *)params {
     if ([self canTrack]) {
         ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:instanceName];
+        if (DEBUG && !instance) {
+            @throw [NSException exceptionWithName:@"Thinkingdata Exception" reason:[NSString stringWithFormat:@"check this thinking instance, instanceTag: %@", instanceName] userInfo:nil];
+        }
         [instance autotrack:eventName properties:params withTime:nil];
         if (self.autoFlush) [instance flush];
     }
