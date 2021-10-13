@@ -33,15 +33,6 @@
 
 @implementation AppDelegate
 
-- (NSString *)td_TDJSONUtil:(NSDictionary *)dic {
-    Class cls = NSClassFromString(@"TDJSONUtil");
-    SEL selector = NSSelectorFromString(@"JSONStringForObject:");
-    IMP imp = [cls methodForSelector:selector];
-    NSString * (*func)(id, SEL, id) = (void *)imp;
-    NSString *string = func(self, selector, dic);
-    return  string;
-}
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     NSLog(@"home: %@", NSHomeDirectory());
@@ -446,6 +437,18 @@
 - (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type {
     // Process the received push
     NSLog(@"%@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+}
+
+
+#pragma mark - 序列化
+
+- (NSString *)td_TDJSONUtil:(NSDictionary *)dic {
+    Class cls = NSClassFromString(@"TDJSONUtil");
+    SEL selector = NSSelectorFromString(@"JSONStringForObject:");
+    IMP imp = [cls methodForSelector:selector];
+    NSString * (*func)(id, SEL, id) = (void *)imp;
+    NSString *string = func(self, selector, dic);
+    return  string;
 }
 
 
