@@ -102,28 +102,33 @@
     self.instance4 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"22e445595b0f42bd8c5fe35bc44b88d6"];
     
     // login
-//    [self.instance1 login:@"account_1"];
-    [self.instance2 login:@"account_2"];
-    [self.instance3 login:@"account_3"];
-    [self.instance4 login:@"account_4"];
-    
+////    [self.instance1 login:@"account_1"];
+//    [self.instance2 login:@"account_2"];
+//    [self.instance3 login:@"account_3"];
+//    [self.instance4 login:@"account_4"];
+//
     // distinctid
 //    [self.instance1 identify:@"distinctId_1"];
     [self.instance2 identify:@"distinctId_2"];
     [self.instance3 identify:@"distinctId_3"];
     [self.instance4 identify:@"distinctId_4"];
-    
-    // 事件
-//    [self.instance1 track:@"instanceName1_event"];
-    [self.instance2 track:@"instanceName2_event"];
-    [self.instance3 track:@"instanceName3_event"];
-    [self.instance4 track:@"instance4_event"];
+//
+//    // 事件
+////    [self.instance1 track:@"instanceName1_event"];
+//    [self.instance2 track:@"instanceName2_event"];
+//    [self.instance3 track:@"instanceName3_event"];
+//    [self.instance4 track:@"instance4_event"];
     
     // 自动化采集
 //    [self.instance1 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
-    [self.instance2 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
-    [self.instance3 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
-    [self.instance4 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+    [self.instance2 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
+    [self.instance3 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
+    [self.instance4 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
+    
+    // 自动化采集多次初始化
+    [self.instance2 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
+    [self.instance3 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
+    [self.instance4 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
     
     
     

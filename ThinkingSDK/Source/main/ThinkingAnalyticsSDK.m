@@ -1,6 +1,7 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 
 #import "TDAutoTrackManager.h"
+#import "TDStartTracker.h"
 #import "TDCalibratedTimeWithNTP.h"
 #import "TDConfig.h"
 #import "TDPublicConfig.h"
@@ -21,6 +22,7 @@
 @interface ThinkingAnalyticsSDK ()
 @property (atomic, strong)   TDNetwork *network;
 @property (atomic, strong)   TDAutoTrackManager *autoTrackManager;
+@property (atomic, strong)   TDColdStartTracker *startInitTracker;
 @property (strong,nonatomic) TDFile *file;
 @end
 
@@ -1520,6 +1522,15 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     });
 }
 
+#pragma mark - 自动采集类 - 懒加载
+// todo: 此部分会重构到TDAutoTrackManager中
+- (TDColdStartTracker *)startInitTracker {
+    if (!_startInitTracker) {
+        _startInitTracker = [TDColdStartTracker new];
+    }
+    return _startInitTracker;
+}
+
 #pragma mark - Flush control
 - (void)startFlushTimer {
     [self stopFlushTimer];
@@ -1565,19 +1576,10 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            NSString *eventName = _relaunchInBackGround?TD_APP_START_BACKGROUND_EVENT:TD_APP_START_EVENT;
-#ifdef __IPHONE_13_0
-            if (@available(iOS 13.0, *)) {
-                if (_isEnableSceneSupport) {
-                    eventName = TD_APP_START_EVENT;
-                }
-            }
-#endif
-            [self autotrack:eventName properties:@{TD_RESUME_FROM_BACKGROUND:@(_appRelaunched)} withTime:nil];
-            [self flush];
-        });
+        
+        NSString *eventName = [self getStartEventName];
+        NSDictionary *params = @{TD_RESUME_FROM_BACKGROUND:@(_appRelaunched)};
+        [self.startInitTracker trackWithInstanceTag:[self td_getMapInstanceTag] eventName:eventName params:params];
     }
     
     [_autoTrackManager trackWithAppid:[self td_getMapInstanceTag] withOption:eventType];
@@ -1585,6 +1587,18 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppViewCrash) {
         [self trackCrash];
     }
+}
+
+- (NSString *)getStartEventName {
+    NSString *eventName = _relaunchInBackGround?TD_APP_START_BACKGROUND_EVENT:TD_APP_START_EVENT;
+#ifdef __IPHONE_13_0
+    if (@available(iOS 13.0, *)) {
+        if (_isEnableSceneSupport) {
+            eventName = TD_APP_START_EVENT;
+        }
+    }
+#endif
+    return [eventName copy];
 }
 
 - (void)ignoreViewType:(Class)aClass {
