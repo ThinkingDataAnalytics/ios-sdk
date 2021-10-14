@@ -1,7 +1,6 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 
 #import "TDAutoTrackManager.h"
-#import "TDStartTracker.h"
 #import "TDCalibratedTimeWithNTP.h"
 #import "TDConfig.h"
 #import "TDPublicConfig.h"
@@ -27,7 +26,9 @@
 @interface ThinkingAnalyticsSDK ()
 @property (atomic, strong)   TDNetwork *network;
 @property (atomic, strong)   TDAutoTrackManager *autoTrackManager;
-@property (atomic, strong)   TDColdStartTracker *startInitTracker;
+@property (nonatomic, strong)   TDColdStartTracker *startInitTracker;
+@property (nonatomic, strong)   TDInstallTracker *installTracker;
+
 @property (strong,nonatomic) TDFile *file;
 @end
 
@@ -1672,6 +1673,15 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     return _startInitTracker;
 }
 
+- (TDInstallTracker *)installTracker {
+    if (!_installTracker) {
+        _installTracker = [TDInstallTracker new];
+    }
+    return _installTracker;
+}
+
+
+
 #pragma mark - Flush control
 - (void)startFlushTimer {
     [self stopFlushTimer];
@@ -1701,12 +1711,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         return;
     
     _config.autoTrackEventType = eventType;
-    if ([TDDeviceInfo sharedManager].isFirstOpen && (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppInstall)) {
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            [self autotrack:TD_APP_INSTALL_EVENT properties:nil withTime:nil];
-            [self flush];
-        });
+    
+    if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppInstall) {
+        [self.installTracker trackWithInstanceTag:[self td_getMapInstanceTag] eventName:TD_APP_INSTALL_EVENT params:nil];
     }
     
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
@@ -1717,7 +1724,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
-
         NSString *eventName = [self getStartEventName];
         NSDictionary *params = @{TD_RESUME_FROM_BACKGROUND:@(_appRelaunched)};
         [self.startInitTracker trackWithInstanceTag:[self td_getMapInstanceTag] eventName:eventName params:params];
@@ -1729,6 +1735,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         [self trackCrash];
     }
 }
+
 
 - (NSString *)getStartEventName {
     NSString *eventName = _relaunchInBackGround?TD_APP_START_BACKGROUND_EVENT:TD_APP_START_EVENT;

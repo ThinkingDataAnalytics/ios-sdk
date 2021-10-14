@@ -25,6 +25,7 @@
         _isOneTime = NO;
         _trackCount = 0;
         _autoFlush = YES;
+        _additionalCondition = YES;
     }
     return self;
 }
@@ -41,6 +42,10 @@
 }
 
 - (BOOL)canTrack {
+    
+    if (!_additionalCondition) {
+        return NO;
+    }
     
     if (self.isOneTime && _trackCount >= 1) {
         return NO;

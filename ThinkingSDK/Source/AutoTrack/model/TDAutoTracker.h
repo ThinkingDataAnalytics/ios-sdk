@@ -19,11 +19,14 @@ NS_ASSUME_NONNULL_BEGIN
 // 事件是否立马发送
 @property (atomic, assign) BOOL autoFlush;
 
+// 事件的额外发送条件
+@property (atomic, assign) BOOL additionalCondition;
+
 /// 发送事件
 /// @param instanceName 实例标识
 /// @param eventName eventName
 /// @param params params
-- (void)trackWithInstanceTag:(NSString *)instanceName eventName:(NSString *)eventName params:(NSDictionary *)params;
+- (void)trackWithInstanceTag:(NSString *)instanceName eventName:(NSString *)eventName params:(nullable NSDictionary *)params;
 
 @end
 

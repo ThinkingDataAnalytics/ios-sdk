@@ -41,6 +41,8 @@
 		2E24A2202716B50A008343AD /* TDStartTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E24A21E2716B50A008343AD /* TDStartTracker.m */; };
 		2E24A2232716B910008343AD /* TDAutoTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E24A2212716B910008343AD /* TDAutoTracker.h */; };
 		2E24A2242716B910008343AD /* TDAutoTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E24A2222716B910008343AD /* TDAutoTracker.m */; };
+		2E24A2272716F9CD008343AD /* TDInstallTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E24A2252716F9CD008343AD /* TDInstallTracker.h */; };
+		2E24A2282716F9CD008343AD /* TDInstallTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E24A2262716F9CD008343AD /* TDInstallTracker.m */; };
 		69F0D6C1265CDE5500D1CD4B /* TDPresetProperties.h in Headers */ = {isa = PBXBuildFile; fileRef = 69F0D6BF265CDE5500D1CD4B /* TDPresetProperties.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		69F0D6C2265CDE5500D1CD4B /* TDPresetProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 69F0D6C0265CDE5500D1CD4B /* TDPresetProperties.m */; };
 		69F3D7F1260323CB0004986A /* NSDictionary+TDJsonOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 69F3D7EF260323CB0004986A /* NSDictionary+TDJsonOutput.h */; };
@@ -149,6 +151,9 @@
 		2E24A21E2716B50A008343AD /* TDStartTracker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDStartTracker.m; sourceTree = "<group>"; };
 		2E24A2212716B910008343AD /* TDAutoTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDAutoTracker.h; sourceTree = "<group>"; };
 		2E24A2222716B910008343AD /* TDAutoTracker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDAutoTracker.m; sourceTree = "<group>"; };
+
+		2E24A2252716F9CD008343AD /* TDInstallTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDInstallTracker.h; sourceTree = "<group>"; };
+		2E24A2262716F9CD008343AD /* TDInstallTracker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDInstallTracker.m; sourceTree = "<group>"; };
 
 		69F0D6BF265CDE5500D1CD4B /* TDPresetProperties.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDPresetProperties.h; sourceTree = "<group>"; };
 		69F0D6C0265CDE5500D1CD4B /* TDPresetProperties.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDPresetProperties.m; sourceTree = "<group>"; };
@@ -323,10 +328,12 @@
 				F3D19046230137600043D595 /* NSObject+TDSwizzle.m */,
 				F3D1903F230137600043D595 /* TDAutoTrackManager.h */,
 				F3D19044230137600043D595 /* TDAutoTrackManager.m */,
-				2E24A21D2716B50A008343AD /* TDStartTracker.h */,
-				2E24A21E2716B50A008343AD /* TDStartTracker.m */,
 				2E24A2212716B910008343AD /* TDAutoTracker.h */,
 				2E24A2222716B910008343AD /* TDAutoTracker.m */,
+				2E24A21D2716B50A008343AD /* TDStartTracker.h */,
+				2E24A21E2716B50A008343AD /* TDStartTracker.m */,
+				2E24A2252716F9CD008343AD /* TDInstallTracker.h */,
+				2E24A2262716F9CD008343AD /* TDInstallTracker.m */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -593,7 +600,11 @@
 			files = (
 				6EA4D8CF250753FC0035D575 /* TDConstant.h in Headers */,
 				F3D19072230137610043D595 /* TDConfig.h in Headers */,
+
 				2E12879C27004DE4007089F2 /* TDAppLaunchManager.h in Headers */,
+
+				F3D19059230137600043D595 /* TDJSONUtil.h in Headers */,
+				2E24A2272716F9CD008343AD /* TDInstallTracker.h in Headers */,
 				F3D1907A230137610043D595 /* ThinkingAnalyticsSDK.h in Headers */,
 				2E24A2232716B910008343AD /* TDAutoTracker.h in Headers */,
 				F3D19064230137600043D595 /* ThinkingAnalyticsSDKPrivate.h in Headers */,
@@ -775,6 +786,7 @@
 				69F0D6C2265CDE5500D1CD4B /* TDPresetProperties.m in Sources */,
 				6E05F0FD25077DA200A8613C /* TDSDKUtil.m in Sources */,
 				F3D19057230137600043D595 /* TDDeviceInfo.m in Sources */,
+				2E24A2282716F9CD008343AD /* TDInstallTracker.m in Sources */,
 				F3D1906A230137600043D595 /* TDAutoTrackManager.m in Sources */,
 				F3D1906D230137610043D595 /* TDSwizzler.m in Sources */,
 				6E4DF53E24EF6F3F00BB1AB4 /* TDEditableEventModel.m in Sources */,
