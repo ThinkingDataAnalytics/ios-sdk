@@ -37,13 +37,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @note 支持解析的类型：列表<String> 、 数值 、布尔 、文本 、时间 、 JSON对象 、列表<JSON对象>， 内部会递归，层级别太深!!!!! 不然复杂度会猛烈升高，你懂得。
 + (NSDictionary *)td_checkToJSONObjectRecursive:(NSDictionary *)properties timeFormatter:(NSDateFormatter *)timeFormatter;
 
-
-/// 遍历每个属性（迭代）
-/// @param properties 需要遍历的字典
-/// @param timeFormatter 时间格式
-/// @note 支持解析的类型：列表<String> 、 数值 、布尔 、文本 、时间 、 JSON对象 、列表<JSON对象>， 内部使用迭代，对应产品的需求，只会遍历到第二层，数据量大的时候使用此方法效率会高很多。
-+ (NSDictionary *)td_checkToJSONObject:(NSDictionary *)properties timeFormatter:(NSDateFormatter *)timeFormatter;
-
 @end
 
 

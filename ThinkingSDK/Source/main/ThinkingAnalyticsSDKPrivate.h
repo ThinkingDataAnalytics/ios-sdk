@@ -74,12 +74,12 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (atomic, copy, nullable) NSString *accountId;
 @property (atomic, copy) NSString *identifyId;
 @property (atomic, strong) NSDictionary *superProperty;
-@property (atomic, strong) NSDictionary *autoCustomProperty;// 自动采集属性
+@property (atomic, strong) NSMutableDictionary *autoCustomProperty;// 自动采集自定义属性
 @property (atomic, strong) NSMutableSet *ignoredViewTypeList;
 @property (atomic, strong) NSMutableSet *ignoredViewControllers;
 @property (nonatomic, assign) BOOL relaunchInBackGround;// 标识是否是后台自启动事件
 @property (nonatomic, assign) BOOL isEnabled;
-@property (nonatomic, assign) BOOL isOptOut;
+@property (atomic, assign) BOOL isOptOut;
 @property (nonatomic, strong, nullable) NSTimer *timer;
 @property (nonatomic, strong) NSPredicate *regexKey;
 @property (nonatomic, strong) NSPredicate *regexAutoTrackKey;

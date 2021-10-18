@@ -26,8 +26,8 @@
 @interface ThinkingAnalyticsSDK ()
 @property (atomic, strong)   TDNetwork *network;
 @property (atomic, strong)   TDAutoTrackManager *autoTrackManager;
-@property (nonatomic, strong)   TDColdStartTracker *startInitTracker;
-@property (nonatomic, strong)   TDInstallTracker *installTracker;
+@property (nonatomic, strong)   TDColdStartTracker *startInitTracker;// 冷启动事件Tracker
+@property (nonatomic, strong)   TDInstallTracker *installTracker;// install事件Tracker
 
 @property (strong,nonatomic) TDFile *file;
 @end
@@ -42,62 +42,8 @@ static TDCalibratedTime *calibratedTime;
 static dispatch_queue_t serialQueue;
 static dispatch_queue_t networkQueue;
 
-static double td_enterBackgroundTime = 0;
-static double td_enterDidBecomeActiveTime = 0;
-
-+ (void)setLaunchOptions:(id)launchOptions {
-    [[TDAppLaunchManager sharedInstance] setLaunchOptions:launchOptions];
-}
-
-// ios(2.0, 9.0)
-+ (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    [[TDAppLaunchManager sharedInstance] setLaunchOptions:url launchType:TDAppLaunchTypeScheme];
-    return YES;
-}
-
-// ios(9.0)
-+ (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-    [[TDAppLaunchManager sharedInstance] setLaunchOptions:url launchType:TDAppLaunchTypeScheme];
-    return YES;
-}
-
-// ios(8.0)
-+ (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler {
-    [[TDAppLaunchManager sharedInstance] setLaunchOptions:userActivity launchType:TDAppLaunchTypeULink];
-    return YES;
-}
-
-// ios(3.0, 10.0)，ios10以后使用的是UNUserNotification框架
-+ (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    [[TDAppLaunchManager sharedInstance] setLaunchOptions:userInfo launchType:TDAppLaunchTypePush];
-}
-
-
-// ios(4.0, 10.0)，ios10以后使用的是UNUserNotification框架
-+ (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-    [[TDAppLaunchManager sharedInstance] setLaunchOptions:notification launchType:TDAppLaunchTypePush];
-}
-
-// ios(10.0), ios10以后使用的是UNUserNotification框架
-+ (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
-    [[TDAppLaunchManager sharedInstance] setLaunchOptions:response.notification.request.content launchType:TDAppLaunchTypePush];
-}
-
-// ios(9.0)
-+ (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler API_AVAILABLE(ios(9.0)) {
-    [[TDAppLaunchManager sharedInstance] setLaunchOptions:shortcutItem launchType:TDAppLaunchType3DTouch];
-}
-
-// ios(4.2, 9.0)，共享文件，小于IOS9走这里，大于IOS9走application:openURL:options:
-+ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(id)annotation {
-    [[TDAppLaunchManager sharedInstance] setLaunchOptions:url launchType:TDAppLaunchTypeScheme];
-    return YES;
-}
-
-// VOIP
-+ (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type {
-    [[TDAppLaunchManager sharedInstance] setLaunchOptions:payload.dictionaryPayload launchType:TDAppLaunchTypePush];
-}
+static double td_enterBackgroundTime = 0; //进入后台时间
+static double td_enterDidBecomeActiveTime = 0;// 进入前台时间
 
 + (nullable ThinkingAnalyticsSDK *)sharedInstance {
     if (instances.count == 0) {
@@ -108,9 +54,9 @@ static double td_enterDidBecomeActiveTime = 0;
     return instances[defaultProjectAppid];
 }
 
-// 在入口处将appid格式化
+
 + (ThinkingAnalyticsSDK *)sharedInstanceWithAppid:(NSString *)appid {
-    appid = appid.td_trim;
+    appid = appid.td_trim;// 去除空格
     if (instances[appid]) {
         return instances[appid];
     } else {
@@ -119,14 +65,26 @@ static double td_enterDidBecomeActiveTime = 0;
     }
 }
 
-// 在入口处将appid格式化
 + (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url withConfig:(TDConfig *)config {
-    appId = appId.td_trim;
+    appId = appId.td_trim; // 去除空格
+    
+    // name存在，先从内存取，取不到再初始化
+    NSString *name = config.name;
+    if (name && [name isKindOfClass:[NSString class]] && name.length) {
+        if (instances[name]) {
+            return  instances[name];
+        } else {
+            return [[self alloc] initWithAppkey:appId withServerURL:url withConfig:config];
+        }
+    }
+    
+    // name不存在，(原逻辑)appid存在，先从内存取，取不到再初始化
     if (instances[appId]) {
         return instances[appId];
     } else if (![url isKindOfClass:[NSString class]] || url.length == 0) {
         return nil;
     }
+    
     return [[self alloc] initWithAppkey:appId withServerURL:url withConfig:config];
 }
 
@@ -513,11 +471,11 @@ static double td_enterDidBecomeActiveTime = 0;
 }
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
-    
     TDLogDebug(@"%@ application did enter background", self);
     _relaunchInBackGround = NO;
     _applicationWillResignActive = NO;
     
+    // 移除启动原因
     [[TDAppLaunchManager sharedInstance] clearData];
     
     __block UIBackgroundTaskIdentifier backgroundTask = [[ThinkingAnalyticsSDK sharedUIApplication] beginBackgroundTaskWithExpirationHandler:^{
@@ -527,11 +485,11 @@ static double td_enterDidBecomeActiveTime = 0;
     self.taskId = backgroundTask;
     dispatch_group_t bgGroup = dispatch_group_create();
 
-    double systemUptime = NSProcessInfo.processInfo.systemUptime;
-    NSNumber *currentTimeStamp = [NSNumber numberWithDouble:systemUptime];
-    td_enterBackgroundTime = systemUptime;
     dispatch_group_enter(bgGroup);
     dispatch_async(serialQueue, ^{
+        double systemUptime = NSProcessInfo.processInfo.systemUptime;
+        td_enterBackgroundTime = systemUptime;// 记录进后台事件
+        NSNumber *currentTimeStamp = [NSNumber numberWithDouble:systemUptime];
         @synchronized (self.trackTimer) {
             NSArray *keys = [self.trackTimer allKeys];
             for (NSString *key in keys) {
@@ -540,16 +498,18 @@ static double td_enterDidBecomeActiveTime = 0;
                 }
                 NSMutableDictionary *eventTimer = [[NSMutableDictionary alloc] initWithDictionary:self.trackTimer[key]];
                 if (eventTimer) {
-                    NSNumber *eventBegin = [eventTimer objectForKey:TD_EVENT_START];
-                    NSNumber *eventDuration = [eventTimer objectForKey:TD_EVENT_DURATION];
-                    double usedTime = 0.0;
+                    // 添加时长
+                    NSNumber *eventBegin = [eventTimer valueForKey:TD_EVENT_START];
+                    NSNumber *eventDuration = [eventTimer valueForKey:TD_EVENT_DURATION];
+                    double usedTime;
                     if (eventDuration) {
                         usedTime = [currentTimeStamp doubleValue] - [eventBegin doubleValue] + [eventDuration doubleValue];
                     } else {
                         usedTime = [currentTimeStamp doubleValue] - [eventBegin doubleValue];
                     }
                     [eventTimer setObject:[NSNumber numberWithDouble:usedTime] forKey:TD_EVENT_DURATION];
-                    [eventTimer setObject:[NSNumber numberWithDouble:td_enterBackgroundTime] forKey:TD_EVENT_ENTERBACKGROUND_TIME];
+                    // 添加进入后台时间
+                    [self addEnterBackgroundTime:eventTimer systemUptime:systemUptime];
                     self.trackTimer[key] = eventTimer;
                 }
             }
@@ -595,32 +555,21 @@ static double td_enterDidBecomeActiveTime = 0;
     }
     _applicationWillResignActive = NO;
     
-    double systemUptime = NSProcessInfo.processInfo.systemUptime;
-    NSNumber *currentTime = [NSNumber numberWithDouble:systemUptime];
-    td_enterDidBecomeActiveTime = systemUptime;
-    td_enterBackgroundTime = 0;
     dispatch_async(serialQueue, ^{
+        double systemUptime = NSProcessInfo.processInfo.systemUptime;
+        td_enterDidBecomeActiveTime = systemUptime;
+        NSNumber *currentTime = [NSNumber numberWithDouble:systemUptime];
         @synchronized (self.trackTimer) {
             NSArray *keys = [self.trackTimer allKeys];
             for (NSString *key in keys) {
                 NSMutableDictionary *eventTimer = [[NSMutableDictionary alloc] initWithDictionary:self.trackTimer[key]];
                 if (eventTimer) {
-                    [eventTimer setObject:currentTime forKey:TD_EVENT_START];
-                    
-                    // 计算APP在后台的时间
-                    NSNumber *enterBackgroundTime = [eventTimer objectForKey:TD_EVENT_ENTERBACKGROUND_TIME];
-                    NSNumber *enterBackgroundDuration = [eventTimer objectForKey:TD_EVENT_BACKGROUND_DURATION];
-                    double backgroundTime = 0.0;
-                    if (enterBackgroundDuration) {
-                        backgroundTime = td_enterDidBecomeActiveTime - [enterBackgroundTime doubleValue] + enterBackgroundDuration.doubleValue;
-                    } else {
-                        backgroundTime = td_enterDidBecomeActiveTime - [enterBackgroundTime doubleValue];
-                    }
-                    [eventTimer setObject:[NSNumber numberWithDouble:backgroundTime] forKey:TD_EVENT_BACKGROUND_DURATION];
-                    if (enterBackgroundTime) {
-                        [eventTimer removeObjectForKey:TD_EVENT_ENTERBACKGROUND_TIME];
-                    }
-                    
+                    // 添加进入前台时间
+                    [eventTimer setValue:currentTime forKey:TD_EVENT_START];
+                    // 计算后台时长
+//                    if (![key isEqualToString:TD_APP_END_EVENT] ) {
+//                        [self calculateEventBGTime:eventTimer systemUptime:systemUptime];
+//                    }
                     self.trackTimer[key] = eventTimer;
                 }
             }
@@ -634,6 +583,32 @@ static double td_enterDidBecomeActiveTime = 0;
         if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
             [self timeEvent:TD_APP_END_EVENT];
         }
+    }
+}
+
+// 进入后台，开始给需要及时的事件添加进入后台的时间
+- (void)addEnterBackgroundTime:(NSMutableDictionary *)eventTimer systemUptime:(double)systemUptime {
+    [eventTimer setObject:[NSNumber numberWithDouble:systemUptime] forKey:TD_EVENT_ENTERBACKGROUND_TIME];
+}
+
+// 进入前台，计算事件在后台的时间
+- (void)calculateEventBGTime:(NSMutableDictionary *)eventTimer systemUptime:(double)systemUptime {
+    
+    NSNumber *enterBackgroundTime = [eventTimer objectForKey:TD_EVENT_ENTERBACKGROUND_TIME]; // 进入后台的时间
+    NSNumber *backgroundDuration = [eventTimer objectForKey:TD_EVENT_BACKGROUND_DURATION];// 在后台经历过多少时间
+    
+    if (enterBackgroundTime == 0) {
+        // 没有经历进入后台的，如APP启动
+        [eventTimer setObject:[NSNumber numberWithDouble:0] forKey:TD_EVENT_BACKGROUND_DURATION];
+    } else {
+        // 经历过进入后台
+        double backgroundTime = 0.0;
+        if (backgroundDuration.doubleValue) {
+            backgroundTime = systemUptime - [enterBackgroundTime doubleValue] + backgroundDuration.doubleValue;
+        } else {
+            backgroundTime = systemUptime - [enterBackgroundTime doubleValue];
+        }
+        [eventTimer setObject:[NSNumber numberWithDouble:backgroundTime] forKey:TD_EVENT_BACKGROUND_DURATION];
     }
 }
 
@@ -871,7 +846,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if ([self hasDisabled])
         return;
     
-    NSMutableDictionary *properties = [NSMutableDictionary dictionary];
+    NSMutableDictionary<NSString *, id> *properties = [NSMutableDictionary dictionary];
     if (propertieDict && [propertieDict isKindOfClass:[NSDictionary class]]) {
         [properties addEntriesFromDictionary:propertieDict];
     }
@@ -923,18 +898,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     || [TD_EVENT_TYPE_TRACK_FIRST isEqualToString:eventType]
     || [TD_EVENT_TYPE_TRACK_UPDATE isEqualToString:eventType]
     || [TD_EVENT_TYPE_TRACK_OVERWRITE isEqualToString:eventType]
-    ;
-}
-
-// 判断是否是自动化采集事件
-+ (BOOL)isAutoEventName:(NSString *)eventName {
-    return [TD_APP_START_EVENT isEqualToString:eventName]
-    || [TD_APP_START_BACKGROUND_EVENT isEqualToString:eventName]
-    || [TD_APP_END_EVENT isEqualToString:eventName]
-    || [TD_APP_VIEW_EVENT isEqualToString:eventName]
-    || [TD_APP_CLICK_EVENT isEqualToString:eventName]
-    || [TD_APP_CRASH_EVENT isEqualToString:eventName]
-    || [TD_APP_INSTALL_EVENT isEqualToString:eventName]
     ;
 }
 
@@ -1108,7 +1071,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     [presetDic setObject:autoDic[@"#screen_width"]?:@(0) forKey:@"#screen_width"];
     [presetDic setObject:autoDic[@"#system_language"]?:@"" forKey:@"#system_language"];
     [presetDic setObject:@(offset)?:@(0) forKey:@"#zone_offset"];
-    [presetDic setObject:[_timeFormatter stringFromDate:[TDDeviceInfo td_getInstallTime]] forKey:@"#install_time"];// 安装时间
+//    [presetDic setObject:[_timeFormatter stringFromDate:[TDDeviceInfo td_getInstallTime]] forKey:@"#install_time"];// 安装时间
     
     static TDPresetProperties *presetProperties = nil;
     if (presetProperties == nil) {
@@ -1355,8 +1318,8 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 
     if (eventTimer) {
-        NSNumber *eventBegin = [eventTimer objectForKey:TD_EVENT_START];
-        NSNumber *eventDuration = [eventTimer objectForKey:TD_EVENT_DURATION];
+        NSNumber *eventBegin = [eventTimer valueForKey:TD_EVENT_START];
+        NSNumber *eventDuration = [eventTimer valueForKey:TD_EVENT_DURATION];
         
         double usedTime = 0.0;
         NSNumber *currentTimeStamp = [NSNumber numberWithDouble:NSProcessInfo.processInfo.systemUptime];
@@ -1367,22 +1330,18 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         }
         
         if (usedTime > 0) {
-            properties[@"#duration"] = @([[NSString stringWithFormat:@"%f", usedTime] doubleValue]);
+            properties[@"#duration"] = @([[NSString stringWithFormat:@"%.3f", usedTime] doubleValue]);
         }
         
-        // 后台时间
-        NSNumber *enterBackgroundTime = eventTimer[TD_EVENT_ENTERBACKGROUND_TIME];
-        NSNumber *enterBackgroundDuration = eventTimer[TD_EVENT_BACKGROUND_DURATION];
-        double backgroundDuration = 0.0;
-        if (enterBackgroundTime) {// 在后台
-            backgroundDuration = NSProcessInfo.processInfo.systemUptime - enterBackgroundTime.doubleValue + enterBackgroundDuration.doubleValue;
-        } else {// 前台
-            backgroundDuration = enterBackgroundDuration.doubleValue;
-        }
-        
-        if (backgroundDuration > 0) {
-            properties[@"#background_duration"] = @([[NSString stringWithFormat:@"%f", backgroundDuration] doubleValue]);
-        }
+//        // 获取后台时间
+//        // 前台track时，TD_EVENT_ENTERBACKGROUND_TIME没有值
+//        // 后台track时，后台触发track时，需要当前后台时间，TD_EVENT_ENTERBACKGROUND_TIME有值
+//        NSMutableDictionary *eventTimer1 = [NSMutableDictionary dictionaryWithDictionary:eventTimer];
+//        [self calculateEventBGTime:eventTimer1 systemUptime:NSProcessInfo.processInfo.systemUptime];
+//        eventTimer = eventTimer1;
+//
+//        NSNumber *bgDuration = eventTimer[TD_EVENT_BACKGROUND_DURATION];
+//        properties[@"#background_duration"] = @([[NSString stringWithFormat:@"%.3f", bgDuration.doubleValue] doubleValue]);
     }
         
     if ([ThinkingAnalyticsSDK isTrackEvent:eventData.eventType]) {
@@ -1398,7 +1357,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         }
         
         [properties addEntriesFromDictionary:[TDDeviceInfo sharedManager].automaticData];
-        [properties setObject:[_timeFormatter stringFromDate:[TDDeviceInfo td_getInstallTime]] forKey:@"#install_time"];// 安装时间
+//        [properties setObject:[_timeFormatter stringFromDate:[TDDeviceInfo td_getInstallTime]] forKey:@"#install_time"];// 安装时间
     }
 
     [properties addEntriesFromDictionary:propertiesDict];
@@ -1552,7 +1511,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         TDLogError(errMsg);
     }
     
-    // 遍历每一个属性，并格式化
     if (properties) {
         NSDictionary *propertiesDic = [TDValidator td_checkToJSONObjectRecursive:properties timeFormatter:_timeFormatter];
         return [propertiesDic copy];
@@ -1586,13 +1544,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)_syncDebug:(NSDictionary *)record {
-    // 添加安装时间
-    if (record) {
-        NSMutableDictionary *record1 = [NSMutableDictionary dictionaryWithDictionary:record];
-        [record1 setObject:[_timeFormatter stringFromDate:[TDDeviceInfo td_getInstallTime]] forKey:@"#install_time"];// 安装时间
-        record = record1;
-    }
-    
     if (self.config.debugMode == ThinkingAnalyticsDebug || self.config.debugMode == ThinkingAnalyticsDebugOnly) {
         int debugResult = [self.network flushDebugEvents:record withAppid:self.appid];
         if (debugResult == -1) {
@@ -1712,10 +1663,12 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     
     _config.autoTrackEventType = eventType;
     
+    //安装事件
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppInstall) {
         [self.installTracker trackWithInstanceTag:[self td_getMapInstanceTag] eventName:TD_APP_INSTALL_EVENT params:nil];
     }
     
+    // 开始记录end事件时长
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppEnd) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
@@ -1723,19 +1676,66 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         });
     }
 
-    if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
-        NSString *eventName = [self getStartEventName];
-        NSDictionary *params = @{TD_RESUME_FROM_BACKGROUND:@(_appRelaunched)};
-        [self.startInitTracker trackWithInstanceTag:[self td_getMapInstanceTag] eventName:eventName params:params];
-    }
+    // 为了收集冷启动原因，等到下一次runloop的时候再去发送start事件
+    // 因为收集冷启动的启动原因是监听了didfinish通知，在收到通知后去处理start参数，enableAutoTrack可能是在didfinish
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self && self.config.autoTrackEventType & ThinkingAnalyticsEventTypeAppStart) {
+            NSString *eventName = [self getStartEventName];
+            [self.startInitTracker trackWithInstanceTag:[self td_getMapInstanceTag] eventName:eventName params:[self getStartEventPresetProperties]];
+        }
+    });
     
+    // 开启监听界面点击、界面浏览事件
     [_autoTrackManager trackWithAppid:[self td_getMapInstanceTag] withOption:eventType];
     
+    // 开启监听crash
     if (_config.autoTrackEventType & ThinkingAnalyticsEventTypeAppViewCrash) {
         [self trackCrash];
     }
 }
 
+- (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType properties:(NSDictionary *)properties {
+    
+    // 整理自动采集自定义属性
+    [self setAutoTrackProperties:eventType properties:properties];
+    
+    // 走原来方法
+    [self enableAutoTrack:eventType];
+}
+
+- (void)setAutoTrackProperties:(ThinkingAnalyticsAutoTrackEventType)eventType properties:(NSDictionary *)properties {
+    
+    if (!_autoCustomProperty) _autoCustomProperty = [NSMutableDictionary dictionary];
+    
+    // 自动采集，枚举值和事件名 映射关系
+    NSArray<NSDictionary<NSNumber *, NSString *> *> *autoTypes = @[@{@(ThinkingAnalyticsEventTypeAppStart):TD_APP_START_EVENT},
+                                                                   @{@(ThinkingAnalyticsEventTypeAppEnd):TD_APP_END_EVENT},
+                                                                   @{@(ThinkingAnalyticsEventTypeAppClick):TD_APP_CLICK_EVENT},
+                                                                   @{@(ThinkingAnalyticsEventTypeAppInstall):TD_APP_INSTALL_EVENT},
+                                                                   @{@(ThinkingAnalyticsEventTypeAppViewCrash):TD_APP_CRASH_EVENT},
+                                                                   @{@(ThinkingAnalyticsEventTypeAppViewScreen):TD_APP_VIEW_EVENT}];
+    
+    __weak typeof(self) weakSelf = self;
+    [autoTypes enumerateObjectsUsingBlock:^(NSDictionary<NSNumber *,NSString *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        ThinkingAnalyticsAutoTrackEventType type = obj.allKeys.firstObject.integerValue;
+        if ((eventType & type) == type) {
+            NSString *eventName = obj.allValues.firstObject;
+            if (properties) {
+                [weakSelf.autoCustomProperty setObject:properties forKey:eventName];
+                
+                // 热启动start事件
+                if (type == ThinkingAnalyticsEventTypeAppStart) {
+                    [weakSelf.autoCustomProperty setObject:properties forKey:TD_APP_START_BACKGROUND_EVENT];
+                }
+                
+            } else {
+                [weakSelf.autoCustomProperty removeObjectForKey:eventName];
+            }
+        }
+    }];
+    
+    TDLogDebug(@"auto custom property :%@", _autoCustomProperty);
+}
 
 - (NSString *)getStartEventName {
     NSString *eventName = _relaunchInBackGround?TD_APP_START_BACKGROUND_EVENT:TD_APP_START_EVENT;
@@ -1891,15 +1891,19 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     NSMutableDictionary *dicProperties = [NSMutableDictionary dictionary];
     dicProperties[TD_RESUME_FROM_BACKGROUND] = @(_appRelaunched);
     
-    NSDictionary *launchDic = [[TDAppLaunchManager sharedInstance] getLaunchDic];
-    if (launchDic) {
-        [dicProperties setObject:launchDic forKey:@"#start_reason"];
-        [TDToastView showInWindow:UIApplication.sharedApplication.keyWindow
-                             text:[TDJSONUtil JSONStringForObject:launchDic]
-                         duration:3];
-    }
-    double bg_duration = td_enterDidBecomeActiveTime - td_enterBackgroundTime;
-    dicProperties[@"#background_duration"] = [NSNumber numberWithDouble:bg_duration];
+//    // 启动原因
+//    NSDictionary *launchDic = [[TDAppLaunchManager sharedInstance] getLaunchDic];
+//    if (launchDic) {
+//        [dicProperties setObject:launchDic forKey:@"#start_reason"];
+//        [TDToastView showInWindow:UIApplication.sharedApplication.keyWindow
+//                             text:[TDJSONUtil JSONStringForObject:launchDic]
+//                         duration:3];
+//    }
+//
+    // 后台时间
+//    double bg_duration = td_enterDidBecomeActiveTime - td_enterBackgroundTime;
+//    if (bg_duration <0) bg_duration = 0;
+//    dicProperties[@"#background_duration"] = [NSNumber numberWithDouble:bg_duration];
     
     return dicProperties;
 }

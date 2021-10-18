@@ -28,6 +28,7 @@
 @property(nonatomic, strong) ThinkingAnalyticsSDK *instance2;
 @property(nonatomic, strong) ThinkingAnalyticsSDK *instance3;
 @property(nonatomic, strong) ThinkingAnalyticsSDK *instance4;
+@property(nonatomic, strong) ThinkingAnalyticsSDK *instance5;
 
 @end
 
@@ -43,8 +44,8 @@
     NSLog(@"%@_%@",@"DEMO_",NSStringFromSelector(_cmd));
     
     [self appLaunchAction:application launchOptions:launchOptions];
-    
-    [self instanceNameTest];
+//
+//    [self instanceNameTest];
     
     return YES;
 }
@@ -58,9 +59,23 @@
     config.configureURL = url;
     config.launchOptions = launchOptions;
     [ThinkingAnalyticsSDK startWithConfig:config];
-    [ThinkingAnalyticsSDK setLaunchOptions:launchOptions];
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
+    
+    
+    [[ThinkingAnalyticsSDK sharedInstance] flush];
+    
+    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAppStart properties:@{@"auto_custom_key1":@"auto_custom_value1"}];
+    
+    
+    [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"aaaa"];
+    
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[ThinkingAnalyticsSDK sharedInstance] track:@"aaaa"];
+    });
+    
+    // 停止上报和重新开启上传同时执行时, 很大概率重新开启执行失败
+//    [self testOutTracking];
     
     // 多语言适配
     // 西班牙语作为value，可以正常上传
@@ -102,6 +117,29 @@
     }
 }
 
+// 停止上报和重新开启上传同时执行时, 很大概率重新开启执行失败
+- (void)testOutTracking {
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+    for (int i=1000; i>0; i--) {
+        [[ThinkingAnalyticsSDK sharedInstance] optOutTracking];
+        [[ThinkingAnalyticsSDK sharedInstance] optInTracking];
+        // 内存的isOptOut是否正确
+        BOOL isOptOut = (BOOL)[[ThinkingAnalyticsSDK sharedInstance] performSelector:@selector(isOptOut)];
+        NSAssert(isOptOut == NO, @"isOptOut must equal to NO");
+        
+        //持久化的isOptOut是否正确
+        dispatch_queue_t serialQueue = [ThinkingAnalyticsSDK performSelector:@selector(serialQueue)];
+        dispatch_async(serialQueue, ^{
+            id file = [[ThinkingAnalyticsSDK sharedInstance] performSelector:@selector(file)];
+            BOOL isOptOut = (BOOL)[file performSelector:@selector(unarchiveOptOut)];
+            NSAssert(isOptOut == NO, @"isOptOut must equal to NO");
+        });
+    }
+#pragma clang diagnostic pop
+}
+
 - (void)addShortCut:(UIApplication *)application {
     if (@available(iOS 9.0, *)) {
         application.shortcutItems=@[];
@@ -118,7 +156,7 @@
         // iOS10+走UNUserNotificationCenter
         UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
         [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert + UNAuthorizationOptionSound) completionHandler:^(BOOL granted, NSError * _Nullable error) {
-            
+
         }];
     } else if (@available(iOS 8.0, *)) {
         // iOS8+ 走老的推送
@@ -140,11 +178,11 @@
                 NSLog(@"远程通知注册失败error-%@", error);
             }
         }];
-        
+
         [notificationCenter getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
             NSLog(@"settings = %@", settings);
         }];
-        
+
     } else if (@available(iOS 8.0, *)) {
         [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeSound | UIUserNotificationTypeBadge categories:nil]];
     }
@@ -158,20 +196,20 @@
     if (@available(iOS 10.0, *)) {
         UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
         UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
-        
+
         content.title = @"本地推送--标题";
         content.subtitle = @"本地推送--副标题";
         content.body = @"本地推送--内容";
         content.sound = [UNNotificationSound defaultSound];
         content.badge = @1;
         NSTimeInterval time = [[NSDate dateWithTimeIntervalSinceNow:10] timeIntervalSinceNow];
-        
+
         UNTimeIntervalNotificationTrigger *trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:time repeats:NO];
-        
+
         // 添加通知的标识符，可以用于移除，更新等操作
         NSString *identifier = @"noticeId";
         UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:identifier content:content trigger:trigger];
-        
+
         [center addNotificationRequest:request withCompletionHandler:^(NSError *_Nullable error) {
             NSLog(@"成功添加推送");
         }];
@@ -194,31 +232,32 @@
     
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     
-//    TDConfig *config1 = [[TDConfig alloc] init];
-//    config1.name = @"instanceName1";
-//    [ThinkingAnalyticsSDK startWithAppId:@"xxxx" withUrl:@"xxx" withConfig:config1];
+    TDConfig *config1 = [[TDConfig alloc] init];
+    config1.name = @"instanceName1";
+    [ThinkingAnalyticsSDK startWithAppId:@"xxxx" withUrl:@"xxx" withConfig:config1];
     
     TDConfig *config2 = [[TDConfig alloc] init];
-    config2.name = @"instanceName2";
+//    config2.name = @"instanceName2";
     [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
                                  withUrl:@"http://receiver.ta.thinkingdata.cn/"
                               withConfig:config2];
     
     TDConfig *config3 = [[TDConfig alloc] init];
-    config3.name = @"instanceName3";
+//    config3.name = @"instanceName3";
     [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
                                  withUrl:@"https://receiver-ta-dev.thinkingdata.cn"
                               withConfig:config3];
-    
+
     TDConfig *config4 = [[TDConfig alloc] init];
     [ThinkingAnalyticsSDK startWithAppId:@"22e445595b0f42bd8c5fe35bc44b88d6"
                                  withUrl:@"https://receiver-ta-dev.thinkingdata.cn"
                               withConfig:config4];
     
-//    self.instance1 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"instanceName1"];
-    self.instance2 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"instanceName2"];
-    self.instance3 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"instanceName3"];
-    self.instance4 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"22e445595b0f42bd8c5fe35bc44b88d6"];
+    _instance1 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"instanceName1"];
+    _instance2 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"instanceName2"];
+    _instance3 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"instanceName3"];
+    _instance4 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"22e445595b0f42bd8c5fe35bc44b88d6"];
+    _instance5 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"1b1c1fef65e3482bad5c9d0e6a823356"];
     
     // login
 ////    [self.instance1 login:@"account_1"];
@@ -240,8 +279,8 @@
     
     // 自动化采集
 //    [self.instance1 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
-    [self.instance2 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
-    [self.instance3 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
+    [_instance2 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
+    [_instance3 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
     [self.instance4 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
     
     // 自动化采集多次初始化
@@ -306,74 +345,48 @@
 
 #pragma mark DeepLink、文件分享
 
-// ios(8.0)
+//// ios(8.0)
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler {
     NSLog(@"%@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-    [ThinkingAnalyticsSDK application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
+//    [ThinkingAnalyticsSDK application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
     return YES;
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
 // ios(9.0)
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
     NSLog(@"%@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-    if (@available(iOS 9.0, *)) {
-        [ThinkingAnalyticsSDK application:app openURL:url options:options];
-    } else {
-        // Fallback on earlier versions
-    }
     return YES;
 }
-#endif
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
 // ios(2.0, 9.0)
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     NSLog(@"%@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-    [ThinkingAnalyticsSDK application:application handleOpenURL:url];
     return YES;
 }
-#endif
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
 // ios(4.2, 9.0)，共享文件，小于IOS9走这里，大于IOS9走application:openURL:options:
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(id)annotation {
-    /NSLog(@"%@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-    [ThinkingAnalyticsSDK application:app openURL:url options:options];
+    NSLog(@"%@_%@",@"DEMO_",NSStringFromSelector(_cmd));
     return YES;
 }
-#endif
 
 #pragma mark 推送
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_10_0
 // ios(4.0, 10.0)
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     NSLog(@"%@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-    [ThinkingAnalyticsSDK application:application didReceiveLocalNotification:notification];
 }
-#endif
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 // ios(10.0)
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler  API_AVAILABLE(ios(10.0)){
     NSLog(@"%@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-    if (@available(iOS 10.0, *)) {
-        [ThinkingAnalyticsSDK userNotificationCenter:center didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
-    } else {
-        // Fallback on earlier versions
-    }
     completionHandler();
 }
-#endif
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_10_0
 // ios(3.0, 10.0) 远程推送
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
     NSLog(@"%@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-    [ThinkingAnalyticsSDK application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 }
-#endif
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     NSString *token;
@@ -400,8 +413,6 @@
 // ios(9.0)
 - (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler  API_AVAILABLE(ios(9.0)){
     NSLog(@"%@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-    
-    [ThinkingAnalyticsSDK application:application performActionForShortcutItem:shortcutItem completionHandler:completionHandler];
 }
 
 #pragma mark VOIP推送

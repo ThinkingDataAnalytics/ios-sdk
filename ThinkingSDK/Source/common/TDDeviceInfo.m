@@ -45,8 +45,7 @@
         self.libName = @"iOS";
         self.libVersion = TDPublicConfig.version;
 
-        _fpsMonitor = [[TDPMFPSMonitor alloc] init];
-        [_fpsMonitor setEnable:YES];
+        [self startCollectAPM];
         
         NSDictionary *deviceInfo = [self getDeviceUniqueId];
         _uniqueId = [deviceInfo objectForKey:@"uniqueId"];
@@ -66,14 +65,14 @@
     _automaticData = [self collectAutomaticProperties];
 }
 
--(NSDictionary *)getAutomaticData {
-    if (_automaticData) {
-        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:_automaticData];
-        [self addAPMParams:dic];
-        _automaticData = dic;
-    }
-    return _automaticData;
-}
+//-(NSDictionary *)getAutomaticData {
+//    if (_automaticData) {
+//        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:_automaticData];
+//        [self addAPMParams:dic];
+//        _automaticData = dic;
+//    }
+//    return _automaticData;
+//}
 
 - (NSDictionary *)collectAutomaticProperties {
     NSMutableDictionary *p = [NSMutableDictionary dictionary];
@@ -110,23 +109,9 @@
         p[@"#system_language"] = [[preferredLanguages componentsSeparatedByString:@"-"] firstObject];;
     }
     
-    [self addAPMParams:p];
+//    p = [self addAPMParams:p];
     
     return [p copy];
-}
-
-// 性能参数
-- (void)addAPMParams:(NSMutableDictionary *)p {
-    NSString *ram = [NSString stringWithFormat:@"%.1f/%.1f", [TDDeviceInfo td_pm_func_getFreeMemory]/TD_PM_UNIT_GB, [TDDeviceInfo td_pm_func_getRamSize]/TD_PM_UNIT_GB];
-    if (ram && ram.length) {
-        [p setObject:ram forKey:@"#ram"];
-    }
-    NSString *disk = [NSString stringWithFormat:@"%.1f/%.1f", [TDDeviceInfo td_get_disk_free_size]/TD_PM_UNIT_GB, [TDDeviceInfo td_get_storage_size]/TD_PM_UNIT_GB];
-    if (disk && disk.length) {
-        [p setObject:disk forKey:@"#disk"];
-    }
-    [p setObject:[self is_simulator] forKey:@"#simulator"];
-    [p setObject:[_fpsMonitor getPFS] forKey:@"#fps"];
 }
 
 + (NSString*)bundleId
@@ -353,5 +338,32 @@
     }
     return [NSDate date];
 }
+
+#pragma mark - APM
+- (void)startCollectAPM {
+//    _fpsMonitor = [[TDPMFPSMonitor alloc] init];
+//    [_fpsMonitor setEnable:YES];
+}
+
+// 性能参数
+- (NSDictionary *)addAPMParams:(NSDictionary *)p {
+
+    if (!p) return p;
+    if (![p isKindOfClass:[NSDictionary class]]) return p;
+    
+    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:p];
+    NSString *ram = [NSString stringWithFormat:@"%.1f/%.1f", [TDDeviceInfo td_pm_func_getFreeMemory]/TD_PM_UNIT_GB, [TDDeviceInfo td_pm_func_getRamSize]/TD_PM_UNIT_GB];
+    if (ram && ram.length) {
+        [dic setObject:ram forKey:@"#ram"];
+    }
+    NSString *disk = [NSString stringWithFormat:@"%.1f/%.1f", [TDDeviceInfo td_get_disk_free_size]/TD_PM_UNIT_GB, [TDDeviceInfo td_get_storage_size]/TD_PM_UNIT_GB];
+    if (disk && disk.length) {
+        [dic setObject:disk forKey:@"#disk"];
+    }
+    [dic setObject:[self is_simulator] forKey:@"#simulator"];
+    [dic setObject:[_fpsMonitor getPFS] forKey:@"#fps"];
+    return dic;
+}
+
 
 @end

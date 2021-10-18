@@ -67,44 +67,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface ThinkingAnalyticsSDK : NSObject
 
-
-+ (void)setLaunchOptions:(id)launchOptions;
-
-#pragma mark - deeplink、应用内文件分享
-
-+ (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options API_AVAILABLE(ios(9.0));
-
-+ (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url API_DEPRECATED_WITH_REPLACEMENT("application:openURL:options:", ios(2.0, 9.0));
-
-+ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(id)annotation API_DEPRECATED_WITH_REPLACEMENT("application:openURL:options:", ios(4.2, 9.0));
-
-// ios(8.0), ulink
-+ (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler;
-
-#pragma mark - 推送
-
-// ios(4.0, 10.0)，内地推送，ios10以后使用的是UNUserNotification框架
-+ (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification API_DEPRECATED("Use  +[ThinkingAnalyticsSDK userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:]", ios(8.0, 10.0)) API_UNAVAILABLE(tvos);
-
-//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo API_DEPRECATED("Use UserNotifications Framework's -[UNUserNotificationCenterDelegate willPresentNotification:withCompletionHandler:] or -[UNUserNotificationCenterDelegate didReceiveNotificationResponse:withCompletionHandler:] for user visible notifications and -[UIApplicationDelegate application:didReceiveRemoteNotification:fetchCompletionHandler:] for silent remote notifications", ios(3.0, 10.0));
-// ios(3.0, 10.0)，远程推送，ios10以后使用的是UNUserNotification框架
-+ (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo;
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-// ios(10.0), 内地推送+远程推送
-+ (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler API_AVAILABLE(ios(10.0));
-#endif
-
-// VOIP
-+ (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type API_AVAILABLE(ios(8.0));
-
-#pragma mark - 3D Touch
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
-// ios(9.0)
-+ (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler API_AVAILABLE(ios(9.0));
-#endif
-
-
 #pragma mark - Tracking
 
 /**
@@ -399,10 +361,21 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType;
 
 /**
- 开启自动采集事件功能， 带自定义参数
+ 开启自动采集事件功能
 
+ @param eventType 枚举 ThinkingAnalyticsAutoTrackEventType 的列表，表示需要开启的自动采集事件类型
+ @param properties 自定义属性
  */
-- (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType params:(NSDictionary<NSNumber *, NSDictionary *> *)params;
+- (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType properties:(NSDictionary *)properties;
+
+/**
+ 设置和更新自动采集事件的自定义属性
+ 可重复设置，设置为空等价于删除对应自定义属性
+ 
+ @param eventType 枚举 ThinkingAnalyticsAutoTrackEventType 的列表，表示需要开启的自动采集事件类型
+ @param properties 自定义属性
+ */
+- (void)setAutoTrackProperties:(ThinkingAnalyticsAutoTrackEventType)eventType properties:(NSDictionary *)properties;
 
 /**
  获取设备 ID
