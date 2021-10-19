@@ -1737,7 +1737,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         }
     }];
     
-    TDLogDebug(@"auto custom property :%@", _autoCustomProperty);
+//    TDLogDebug(@"auto custom property :%@", _autoCustomProperty);
 }
 
 - (NSString *)getStartEventName {
