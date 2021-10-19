@@ -43,7 +43,7 @@
     [self.window makeKeyAndVisible];
     NSLog(@"%@_%@",@"DEMO_",NSStringFromSelector(_cmd));
     
-    [self appLaunchAction:application launchOptions:launchOptions];
+//    [self appLaunchAction:application launchOptions:launchOptions];
 //
 //    [self instanceNameTest];
     
@@ -237,13 +237,13 @@
     [ThinkingAnalyticsSDK startWithAppId:@"xxxx" withUrl:@"xxx" withConfig:config1];
     
     TDConfig *config2 = [[TDConfig alloc] init];
-//    config2.name = @"instanceName2";
+    config2.name = @"instanceName2";
     [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
                                  withUrl:@"http://receiver.ta.thinkingdata.cn/"
                               withConfig:config2];
     
     TDConfig *config3 = [[TDConfig alloc] init];
-//    config3.name = @"instanceName3";
+    config3.name = @"instanceName3";
     [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
                                  withUrl:@"https://receiver-ta-dev.thinkingdata.cn"
                               withConfig:config3];
@@ -259,6 +259,9 @@
     _instance4 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"22e445595b0f42bd8c5fe35bc44b88d6"];
     _instance5 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"1b1c1fef65e3482bad5c9d0e6a823356"];
     
+    
+    [_instance1 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+    [_instance2 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
     // login
 ////    [self.instance1 login:@"account_1"];
 //    [self.instance2 login:@"account_2"];

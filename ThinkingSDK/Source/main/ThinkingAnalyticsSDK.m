@@ -859,7 +859,10 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         }
     }
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-pointer-types"
     properties = [self processParameters:properties withType:TD_EVENT_TYPE_TRACK withEventName:event withAutoTrack:YES withH5:NO];
+#pragma clang diagnostic pop
     TDEventModel *eventData = [[TDEventModel alloc] initWithEventName:event];
     eventData.properties = [properties copy];
     eventData.timeString = [_timeFormatter stringFromDate:time];
