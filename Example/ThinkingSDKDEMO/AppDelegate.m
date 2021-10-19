@@ -64,7 +64,7 @@
     
     [[ThinkingAnalyticsSDK sharedInstance] flush];
     
-    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAppStart properties:@{@"auto_custom_key1":@"auto_custom_value1"}];
+    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll properties:@{@"auto_custom_key1":@"auto_custom_value1"}];
     
     
     [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"aaaa"];

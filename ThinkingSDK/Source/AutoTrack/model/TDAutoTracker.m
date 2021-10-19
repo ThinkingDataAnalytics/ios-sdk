@@ -45,7 +45,7 @@
 
 - (BOOL)canTrack {
     
-    if (!_additionalCondition) {
+    if (!self.additionalCondition) {
         return NO;
     }
     
