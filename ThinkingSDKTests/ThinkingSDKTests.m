@@ -626,6 +626,10 @@ typedef void(^MHandle)(NSInvocation *);
     XCTAssertEqualObjects(data[@"#first_check_id"], [_mock getDeviceId]);
     
     
+    path = [NSHomeDirectory() stringByAppendingString:@"/Desktop/files/text.plist"];
+    NSDictionary *aDict = [NSDictionary dictionaryWithContentsOfFile:path];
+    
+    
     TDEventModel *firstEvent2 = [self createEvent:FIRST_EVENT date:date eventID:@""];
     [_mock trackWithEventModel:firstEvent2];
     [NSThread sleepForTimeInterval:WAIT_TIME];
