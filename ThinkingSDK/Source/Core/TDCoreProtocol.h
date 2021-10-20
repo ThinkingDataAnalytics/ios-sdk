@@ -10,6 +10,5 @@
 #define TDCoreProtocol_h
 
 #import "TDAppState.h"
-#import "TDRuntime.h"
 
 #endif /* TDCoreProtocol_h */
