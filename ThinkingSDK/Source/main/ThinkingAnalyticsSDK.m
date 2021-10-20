@@ -1726,7 +1726,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             if (properties) {
                 [weakSelf.autoCustomProperty setObject:properties forKey:eventName];
                 
-                // 热启动start事件
+                // 后台自启动
                 if (type == ThinkingAnalyticsEventTypeAppStart) {
                     [weakSelf.autoCustomProperty setObject:properties forKey:TD_APP_START_BACKGROUND_EVENT];
                 }
