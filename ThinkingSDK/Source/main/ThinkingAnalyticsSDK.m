@@ -1722,7 +1722,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     
     // 深拷贝传入数据
     if (properties && [properties isKindOfClass:[NSDictionary class]]) {
-        properties = [properties mutableCopy];
+        properties = [properties copy];
     }
     
     @synchronized (self) {
@@ -1751,8 +1751,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                 // 覆盖之前的，先取出之前的属性进行覆盖；之前没有该属性就直接设置
                 NSDictionary *oldProperties = weakSelf.autoCustomProperty[eventName];
                 if (oldProperties && [oldProperties isKindOfClass:[NSDictionary class]]) {
-                    oldProperties = [oldProperties mutableCopy];
-                    NSMutableDictionary *mutiOldProperties = [NSMutableDictionary dictionaryWithDictionary:oldProperties];
+                    NSMutableDictionary *mutiOldProperties = [oldProperties mutableCopy];
                     [mutiOldProperties addEntriesFromDictionary:properties];
                     [weakSelf.autoCustomProperty setObject:mutiOldProperties forKey:eventName];
                 } else {
