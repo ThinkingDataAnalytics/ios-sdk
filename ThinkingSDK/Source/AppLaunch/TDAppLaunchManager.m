@@ -506,38 +506,38 @@ void __td_td_swizzleWithOriSELStr(id target, NSString *oriSELStr, SEL newSEL, IM
     
     return nil;
     
-    if (_launchType == TDAppLaunchTypeUnknown) {
-        return nil;
-    }
-    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-    if ((_launchType & TDAppLaunchTypeLink) == TDAppLaunchTypeLink) {
-        if (_launchLink && _launchLink.length) {
-            [dic setObject:_launchLink forKey:@"url"];
-        }
-    }
-    if ((_launchType & TDAppLaunchTypePush) == TDAppLaunchTypePush && _launchPush) {
-        NSString *string = [TDJSONUtil JSONStringForObject:_launchPush];
-        if (string) {
-            [dic setObject:string forKey:@"data"];
-        }
-    }
-    if ((_launchType & TDAppLaunchType3DTouch) == TDAppLaunchType3DTouch && _touch3DData) {
-        if (@available(iOS 9.0, *)) {
-            NSMutableDictionary *touchDic = [NSMutableDictionary dictionary];
-            if ([_touch3DData isKindOfClass:[UIApplicationShortcutItem class]]) {
-                NSDictionary *userInfo = [_touch3DData valueForKey:@"userInfo"];
-                NSNumber *type = [_touch3DData valueForKey:@"type"];
-                NSString *localizedTitle = [_touch3DData valueForKey:@"localizedTitle"];
-                NSString *localizedSubtitle = [_touch3DData valueForKey:@"localizedSubtitle"];
-                if (userInfo) [touchDic setObject:userInfo forKey:@"userInfo"];
-                if (type) [touchDic setObject:type forKey:@"type"];
-                if (localizedTitle) [touchDic setObject:localizedTitle forKey:@"localizedTitle"];
-                if (localizedSubtitle) [touchDic setObject:localizedSubtitle forKey:@"localizedSubtitle"];
-                [dic setObject:touchDic forKey:@"data"];
-            }
-        }
-    }
-    return dic;
+//    if (_launchType == TDAppLaunchTypeUnknown) {
+//        return nil;
+//    }
+//    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+//    if ((_launchType & TDAppLaunchTypeLink) == TDAppLaunchTypeLink) {
+//        if (_launchLink && _launchLink.length) {
+//            [dic setObject:_launchLink forKey:@"url"];
+//        }
+//    }
+//    if ((_launchType & TDAppLaunchTypePush) == TDAppLaunchTypePush && _launchPush) {
+//        NSString *string = [TDJSONUtil JSONStringForObject:_launchPush];
+//        if (string) {
+//            [dic setObject:string forKey:@"data"];
+//        }
+//    }
+//    if ((_launchType & TDAppLaunchType3DTouch) == TDAppLaunchType3DTouch && _touch3DData) {
+//        if (@available(iOS 9.0, *)) {
+//            NSMutableDictionary *touchDic = [NSMutableDictionary dictionary];
+//            if ([_touch3DData isKindOfClass:[UIApplicationShortcutItem class]]) {
+//                NSDictionary *userInfo = [_touch3DData valueForKey:@"userInfo"];
+//                NSNumber *type = [_touch3DData valueForKey:@"type"];
+//                NSString *localizedTitle = [_touch3DData valueForKey:@"localizedTitle"];
+//                NSString *localizedSubtitle = [_touch3DData valueForKey:@"localizedSubtitle"];
+//                if (userInfo) [touchDic setObject:userInfo forKey:@"userInfo"];
+//                if (type) [touchDic setObject:type forKey:@"type"];
+//                if (localizedTitle) [touchDic setObject:localizedTitle forKey:@"localizedTitle"];
+//                if (localizedSubtitle) [touchDic setObject:localizedSubtitle forKey:@"localizedSubtitle"];
+//                [dic setObject:touchDic forKey:@"data"];
+//            }
+//        }
+//    }
+//    return dic;
 }
 
 - (void)clearData {
