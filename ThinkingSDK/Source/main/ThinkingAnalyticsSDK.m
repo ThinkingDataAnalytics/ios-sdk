@@ -1714,6 +1714,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     
     if (!_autoCustomProperty) _autoCustomProperty = [NSMutableDictionary dictionary];
     
+
     // 自动采集，枚举值和事件名 映射关系
     NSArray<NSDictionary<NSNumber *, NSString *> *> *autoTypes = @[@{@(ThinkingAnalyticsEventTypeAppStart):TD_APP_START_EVENT},
                                                                    @{@(ThinkingAnalyticsEventTypeAppEnd):TD_APP_END_EVENT},
@@ -1728,7 +1729,16 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         if ((eventType & type) == type) {
             NSString *eventName = obj.allValues.firstObject;
             if (properties) {
-                [weakSelf.autoCustomProperty setObject:properties forKey:eventName];
+                
+                // 覆盖之前的，先取出之前的属性进行覆盖；之前没有该属性就直接设置
+                NSDictionary *oldProperties = weakSelf.autoCustomProperty[eventName];
+                if (oldProperties && [oldProperties isKindOfClass:[NSDictionary class]]) {
+                    NSMutableDictionary *mutiOldProperties = [NSMutableDictionary dictionaryWithDictionary:oldProperties];
+                    [mutiOldProperties addEntriesFromDictionary:properties];
+                    [weakSelf.autoCustomProperty setObject:mutiOldProperties forKey:eventName];
+                } else {
+                    [weakSelf.autoCustomProperty setObject:properties forKey:eventName];
+                }
                 
                 // 后台自启动
                 if (type == ThinkingAnalyticsEventTypeAppStart) {
