@@ -1724,6 +1724,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         return;
     }
     
+    if ([TDLogging sharedInstance].loggingLevel != TDLoggingLevelNone && ![self checkEventProperties:properties withEventType:nil haveAutoTrackEvents:NO]) {
+        TDLogError(@"%@ propertieDict error.", properties);
+        return;
+    }
+    
     // 深拷贝传入数据
     if (properties && [properties isKindOfClass:[NSDictionary class]]) {
         properties = [properties copy];
