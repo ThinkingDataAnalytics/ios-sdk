@@ -1053,7 +1053,11 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (NSDictionary *)currentSuperProperties {
-    return [self.superProperty copy];
+    if (self.superProperty) {
+        return [self.superProperty copy];
+    } else {
+        return @{};
+    }
 }
 
 - (TDPresetProperties *)getPresetProperties {
