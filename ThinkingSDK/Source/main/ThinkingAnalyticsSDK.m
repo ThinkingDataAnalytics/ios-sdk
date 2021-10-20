@@ -1718,7 +1718,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                                                                    @{@(ThinkingAnalyticsEventTypeAppViewCrash):TD_APP_CRASH_EVENT},
                                                                    @{@(ThinkingAnalyticsEventTypeAppViewScreen):TD_APP_VIEW_EVENT}];
     
-    __weak typeof(self) weakSelf = self;
+    __weak __typeof(self)weakSelf = self;
     [autoTypes enumerateObjectsUsingBlock:^(NSDictionary<NSNumber *,NSString *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         ThinkingAnalyticsAutoTrackEventType type = obj.allKeys.firstObject.integerValue;
         if ((eventType & type) == type) {
