@@ -27,14 +27,6 @@
 #endif
 
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-#import <UserNotifications/UserNotifications.h>
-#endif
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
-#import <PushKit/PushKit.h>
-#endif
-
 
 NS_ASSUME_NONNULL_BEGIN
 
