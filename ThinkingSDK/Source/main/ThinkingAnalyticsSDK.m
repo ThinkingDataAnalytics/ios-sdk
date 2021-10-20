@@ -1703,6 +1703,10 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 - (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType properties:(NSDictionary *)properties {
     
+    // 未开启不采集
+    if ([self hasDisabled])
+        return;
+    
     // 整理自动采集自定义属性
     [self setAutoTrackProperties:eventType properties:properties];
     
@@ -1712,9 +1716,23 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 - (void)setAutoTrackProperties:(ThinkingAnalyticsAutoTrackEventType)eventType properties:(NSDictionary *)properties {
     
-    if (!_autoCustomProperty) _autoCustomProperty = [NSMutableDictionary dictionary];
+    // 未开启不更新数据
+    if ([self hasDisabled])
+        return;
     
+    // 深拷贝传入数据
+    if (properties && [properties isKindOfClass:[NSDictionary class]]) {
+        properties = [properties mutableCopy];
+    }
+    
+    @synchronized (self) {
+        if (!_autoCustomProperty) _autoCustomProperty = [NSMutableDictionary dictionary];
+        [self _setAutoTrackProperties:eventType properties:properties];
+    }
+}
 
+- (void)_setAutoTrackProperties:(ThinkingAnalyticsAutoTrackEventType)eventType properties:(NSDictionary *)properties {
+   
     // 自动采集，枚举值和事件名 映射关系
     NSArray<NSDictionary<NSNumber *, NSString *> *> *autoTypes = @[@{@(ThinkingAnalyticsEventTypeAppStart):TD_APP_START_EVENT},
                                                                    @{@(ThinkingAnalyticsEventTypeAppEnd):TD_APP_END_EVENT},
@@ -1733,6 +1751,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                 // 覆盖之前的，先取出之前的属性进行覆盖；之前没有该属性就直接设置
                 NSDictionary *oldProperties = weakSelf.autoCustomProperty[eventName];
                 if (oldProperties && [oldProperties isKindOfClass:[NSDictionary class]]) {
+                    oldProperties = [oldProperties mutableCopy];
                     NSMutableDictionary *mutiOldProperties = [NSMutableDictionary dictionaryWithDictionary:oldProperties];
                     [mutiOldProperties addEntriesFromDictionary:properties];
                     [weakSelf.autoCustomProperty setObject:mutiOldProperties forKey:eventName];
@@ -1740,9 +1759,12 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                     [weakSelf.autoCustomProperty setObject:properties forKey:eventName];
                 }
                 
-                // 后台自启动
+                // 后台自启动，
                 if (type == ThinkingAnalyticsEventTypeAppStart) {
-                    [weakSelf.autoCustomProperty setObject:properties forKey:TD_APP_START_BACKGROUND_EVENT];
+                    NSDictionary *startParam = weakSelf.autoCustomProperty[TD_APP_START_EVENT];
+                    if (startParam && [startParam isKindOfClass:[NSDictionary class]]) {
+                        [weakSelf.autoCustomProperty setObject:startParam forKey:TD_APP_START_BACKGROUND_EVENT];
+                    }
                 }
                 
             } else {
@@ -1750,8 +1772,6 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             }
         }
     }];
-    
-//    TDLogDebug(@"auto custom property :%@", _autoCustomProperty);
 }
 
 - (NSString *)getStartEventName {

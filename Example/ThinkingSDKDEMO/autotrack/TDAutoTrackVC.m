@@ -40,6 +40,30 @@
         [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppStart properties: @{@"auto_key3": @"auto_start"}];
         [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppViewScreen properties: @{@"auto_key4": @"auto_view"}];
     });
+
+    
+    if (@available(iOS 10.0, *)) {
+        [[[NSThread alloc] initWithBlock:^{
+            [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppClick properties: @{@"auto_key1": @"auto_click"}];
+        }] start] ;
+        
+        [[[NSThread alloc] initWithBlock:^{
+            [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppEnd properties: @{@"auto_key2": @"auto_end"}];
+        }] start] ;
+        
+        [[[NSThread alloc] initWithBlock:^{
+            [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppStart properties: @{@"auto_key3": @"auto_start"}];
+        }] start] ;
+        
+        [[[NSThread alloc] initWithBlock:^{
+            [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppViewScreen properties: @{@"auto_key4": @"auto_view"}];
+        }] start] ;
+        
+        
+    } else {
+        // Fallback on earlier versions
+    }
+ 
     
     
     self.commands = [NSMutableArray array];
@@ -56,7 +80,7 @@
         [TDUtil.jsd_findVisibleViewController.navigationController pushViewController:autoCollectionVC animated:YES];
     }]];
     
-   
+    
 }
 - (void)setView
 {
@@ -76,20 +100,20 @@
     
     
     // 1. 创建一个点击事件，点击时触发labelClick方法
-//    UITapGestureRecognizer *labelTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(labelTouchUpInside)];
-//    UILabel *label = [[UILabel alloc] init];
-//    label.text = @"数数科技_Label";
-//    label.font = [UIFont systemFontOfSize:kTDFontSize];
-//    label.textColor = UIColor.tc9;
-//    label.backgroundColor = kTDColor;
-//       // 2. 将点击事件添加到label上
-//    [label addGestureRecognizer:labelTapGestureRecognizer];
-//    label.userInteractionEnabled = YES; // 可以理解为设置label可被点击
-//    [self.view addSubview:label];
-//    [label mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.height.left.right.mas_equalTo(testBtn);
-//        make.bottom.mas_equalTo(testBtn.mas_top).offset(-kTDCommonMargin);
-//    }];
+    //    UITapGestureRecognizer *labelTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(labelTouchUpInside)];
+    //    UILabel *label = [[UILabel alloc] init];
+    //    label.text = @"数数科技_Label";
+    //    label.font = [UIFont systemFontOfSize:kTDFontSize];
+    //    label.textColor = UIColor.tc9;
+    //    label.backgroundColor = kTDColor;
+    //       // 2. 将点击事件添加到label上
+    //    [label addGestureRecognizer:labelTapGestureRecognizer];
+    //    label.userInteractionEnabled = YES; // 可以理解为设置label可被点击
+    //    [self.view addSubview:label];
+    //    [label mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.height.left.right.mas_equalTo(testBtn);
+    //        make.bottom.mas_equalTo(testBtn.mas_top).offset(-kTDCommonMargin);
+    //    }];
 }
 
 - (void)touchBtn
