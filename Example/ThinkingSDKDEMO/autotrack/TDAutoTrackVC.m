@@ -36,31 +36,31 @@
     // 更新自动化采集数据自定义属性
     [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppClick properties: @{@"auto_key1": @"auto_click"}];
     [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppEnd properties: @{@"auto_key2": @"auto_end"}];
-    [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppStart properties: @{@"auto_key3": @"auto_start"}];
-    [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppViewScreen properties: @{@"auto_key4": @"auto_view"}];
+    [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppStart properties: @{}];
+    [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppViewScreen properties: nil];
 
     
-    if (@available(iOS 10.0, *)) {
-        [[[NSThread alloc] initWithBlock:^{
-            [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppClick properties: @{@"auto_key1": @"auto_click11"}];
-        }] start] ;
-        
-        [[[NSThread alloc] initWithBlock:^{
-            [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppEnd properties: @{@"auto_key2": @"auto_end11"}];
-        }] start] ;
-        
-        [[[NSThread alloc] initWithBlock:^{
-            [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppStart properties: @{@"auto_key3": @"auto_start11"}];
-        }] start] ;
-        
-        [[[NSThread alloc] initWithBlock:^{
-            [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppViewScreen properties: @{@"auto_key4": @"auto_view11"}];
-        }] start] ;
-        
-        
-    } else {
-        // Fallback on earlier versions
-    }
+//    if (@available(iOS 10.0, *)) {
+//        [[[NSThread alloc] initWithBlock:^{
+//            [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppClick properties: @{@"auto_key1": @"auto_click11"}];
+//        }] start] ;
+//
+//        [[[NSThread alloc] initWithBlock:^{
+//            [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppEnd properties: @{@"auto_key2": @"auto_end11"}];
+//        }] start] ;
+//
+//        [[[NSThread alloc] initWithBlock:^{
+//            [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppStart properties: @{@"auto_key3": @"auto_start11"}];
+//        }] start] ;
+//
+//        [[[NSThread alloc] initWithBlock:^{
+//            [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppViewScreen properties: @{@"auto_key4": @"auto_view11"}];
+//        }] start] ;
+//
+//
+//    } else {
+//        // Fallback on earlier versions
+//    }
  
     
     

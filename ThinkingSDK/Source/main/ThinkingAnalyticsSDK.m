@@ -1720,6 +1720,10 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     if ([self hasDisabled])
         return;
     
+    if (properties == nil) {
+        return;
+    }
+    
     // 深拷贝传入数据
     if (properties && [properties isKindOfClass:[NSDictionary class]]) {
         properties = [properties copy];
@@ -1764,10 +1768,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                     if (startParam && [startParam isKindOfClass:[NSDictionary class]]) {
                         [weakSelf.autoCustomProperty setObject:startParam forKey:TD_APP_START_BACKGROUND_EVENT];
                     }
-                }
-                
-            } else {
-                [weakSelf.autoCustomProperty removeObjectForKey:eventName];
+                } 
             }
         }
     }];

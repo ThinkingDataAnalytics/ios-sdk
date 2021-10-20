@@ -361,8 +361,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType properties:(NSDictionary *)properties;
 
 /**
- 设置和更新自动采集事件的自定义属性
- 可重复设置，设置为空等价于删除对应自定义属性
+ 设置和更新自动采集事件的自定义属性的值
  
  @param eventType 枚举 ThinkingAnalyticsAutoTrackEventType 的列表，表示需要开启的自动采集事件类型
  @param properties 自定义属性
