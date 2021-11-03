@@ -7,7 +7,7 @@
 #import "TDFile.h"
 #import "TDNetwork.h"
 #import "TDValidator.h"
-#import "TDAppLaunchManager.h"
+//#import "TDAppLaunchManager.h"
 #import "TDJSONUtil.h"
 #import "TDToastView.h"
 #import "NSString+TDString.h"
@@ -476,7 +476,7 @@ static double td_enterDidBecomeActiveTime = 0;// 进入前台时间
     _applicationWillResignActive = NO;
     
     // 移除启动原因
-    [[TDAppLaunchManager sharedInstance] clearData];
+//    [[TDAppLaunchManager sharedInstance] clearData];
     
     __block UIBackgroundTaskIdentifier backgroundTask = [[ThinkingAnalyticsSDK sharedUIApplication] beginBackgroundTaskWithExpirationHandler:^{
         [[ThinkingAnalyticsSDK sharedUIApplication] endBackgroundTask:backgroundTask];

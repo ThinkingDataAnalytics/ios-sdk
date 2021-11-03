@@ -35,8 +35,6 @@
 		2E7C289D271D10DE0048521D /* TDValidatorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7C289C271D10DE0048521D /* TDValidatorTest.m */; };
 		2E7C296C271D636A0048521D /* TDAppState.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7C296A271D636A0048521D /* TDAppState.m */; };
 		2E7C296D271D636A0048521D /* TDAppState.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E7C296B271D636A0048521D /* TDAppState.h */; };
-		2E7C29B4272003140048521D /* TDAppLaunchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7C29B2272003140048521D /* TDAppLaunchManager.m */; };
-		2E7C29B5272003140048521D /* TDAppLaunchManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E7C29B3272003140048521D /* TDAppLaunchManager.h */; };
 		2E9D5400271C86CE00F80A12 /* NSObject+TDUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E9D53FE271C86CE00F80A12 /* NSObject+TDUtils.h */; };
 		2E9D5401271C86CE00F80A12 /* NSObject+TDUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D53FF271C86CE00F80A12 /* NSObject+TDUtils.m */; };
 		2EBAACAB26EF7043007BF33A /* TDValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBAACA926EF7043007BF33A /* TDValidator.m */; };
@@ -145,8 +143,6 @@
 		2E7C289C271D10DE0048521D /* TDValidatorTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDValidatorTest.m; sourceTree = "<group>"; };
 		2E7C296A271D636A0048521D /* TDAppState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDAppState.m; sourceTree = "<group>"; };
 		2E7C296B271D636A0048521D /* TDAppState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDAppState.h; sourceTree = "<group>"; };
-		2E7C29B2272003140048521D /* TDAppLaunchManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDAppLaunchManager.m; sourceTree = "<group>"; };
-		2E7C29B3272003140048521D /* TDAppLaunchManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDAppLaunchManager.h; sourceTree = "<group>"; };
 		2E9D53FE271C86CE00F80A12 /* NSObject+TDUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+TDUtils.h"; sourceTree = "<group>"; };
 		2E9D53FF271C86CE00F80A12 /* NSObject+TDUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+TDUtils.m"; sourceTree = "<group>"; };
 		2EBAACA926EF7043007BF33A /* TDValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDValidator.m; sourceTree = "<group>"; };
@@ -273,15 +269,6 @@
 				2E7C296B271D636A0048521D /* TDAppState.h */,
 			);
 			path = AppState;
-			sourceTree = "<group>";
-		};
-		2E7C29B1272003140048521D /* AppLaunch */ = {
-			isa = PBXGroup;
-			children = (
-				2E7C29B2272003140048521D /* TDAppLaunchManager.m */,
-				2E7C29B3272003140048521D /* TDAppLaunchManager.h */,
-			);
-			path = AppLaunch;
 			sourceTree = "<group>";
 		};
 		2E7E2E66270417EF002F26BC /* Categary */ = {
@@ -577,7 +564,6 @@
 		F3D1902E230137600043D595 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				2E7C29B1272003140048521D /* AppLaunch */,
 				2E12878F27004DE4007089F2 /* Core */,
 				6EA4D8CC25072B9D0035D575 /* common */,
 				6EA4D8CB25072B7E0035D575 /* main */,
@@ -638,7 +624,6 @@
 				6E58D58A24C7F06200DD11C1 /* TDEventModel.h in Headers */,
 				6EA4D8D92507632F0035D575 /* TDFile.h in Headers */,
 				2E24A21F2716B50A008343AD /* TDStartTracker.h in Headers */,
-				2E7C29B5272003140048521D /* TDAppLaunchManager.h in Headers */,
 				F3D19079230137610043D595 /* TDLogging.h in Headers */,
 				2EBAACAC26EF7043007BF33A /* TDValidator.h in Headers */,
 				F3D1906B230137600043D595 /* UIViewController+AutoTrack.h in Headers */,
@@ -806,7 +791,6 @@
 				2EBFF9C12713E80500B17D4F /* NSString+TDString.m in Sources */,
 				F3D19069230137600043D595 /* UIApplication+AutoTrack.m in Sources */,
 				69F3D7F2260323CB0004986A /* NSDictionary+TDJsonOutput.m in Sources */,
-				2E7C29B4272003140048521D /* TDAppLaunchManager.m in Sources */,
 				F3D19071230137610043D595 /* TDJSONUtil.m in Sources */,
 				F3D19062230137600043D595 /* TDLogging.m in Sources */,
 				F35B1313242EFB9B00C630FC /* TDCalibratedTimeWithNTP.m in Sources */,
