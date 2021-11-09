@@ -1193,8 +1193,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         if (![obj isKindOfClass:[NSString class]] &&
             ![obj isKindOfClass:[NSNumber class]] &&
             ![obj isKindOfClass:[NSDate class]] &&
-            ![obj isKindOfClass:[NSArray class]]) {
-            NSString *errMsg = [NSString stringWithFormat:@"Property value must be type NSString, NSNumber, NSDate or NSArray. got: %@ %@. ", [obj class], obj];
+            ![obj isKindOfClass:[NSArray class]] &&
+            ![obj isKindOfClass:[NSDictionary class]]) {
+            NSString *errMsg = [NSString stringWithFormat:@"Property value must be type NSString, NSNumber, NSDate, NSDictionary or NSArray. got: %@ %@. ", [obj class], obj];
             TDLogError(errMsg);
             failed = YES;
         }

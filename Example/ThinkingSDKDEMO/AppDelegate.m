@@ -57,6 +57,11 @@
     [[ThinkingAnalyticsSDK sharedInstance] track:@"aaaa" properties:@{@"test":@5.0E-10}];
     [[ThinkingAnalyticsSDK sharedInstance] flush];
     
+    // 复杂数据类型
+    [[ThinkingAnalyticsSDK sharedInstance] setSuperProperties:@{@"a1":@"bb", @"a2":@2, @"a3":@[@12, @"12", @YES], @"a4": @{@"a1":@"bb", @"a2":@2, @"a3":@[@12, @"12", @YES]}}];
+    [[ThinkingAnalyticsSDK sharedInstance] track:@"track"];
+    
+    
 //    [self appLaunchAction:application launchOptions:launchOptions];
 //
 //    [self instanceNameTest];
@@ -304,8 +309,6 @@
     [self.instance2 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
     [self.instance3 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
     [self.instance4 enableAutoTrack:ThinkingAnalyticsEventTypeAppStart];
-    
-    
     
 //    [self.instance1 flush];
 //    [self.instance2 flush];
