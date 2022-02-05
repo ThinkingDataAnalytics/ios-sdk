@@ -1,0 +1,7 @@
+${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKDEMO/Pods-ThinkingSDKDEMO-frameworks.sh
+${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework
+${BUILT_PRODUCTS_DIR}/FBRetainCycleDetector/FBRetainCycleDetector.framework
+${BUILT_PRODUCTS_DIR}/FLEX/FLEX.framework
+${BUILT_PRODUCTS_DIR}/HCClangTrace/HCClangTrace.framework
+${BUILT_PRODUCTS_DIR}/MLeaksFinder/MLeaksFinder.framework
+${BUILT_PRODUCTS_DIR}/ThinkingSDK/ThinkingSDK.framework
