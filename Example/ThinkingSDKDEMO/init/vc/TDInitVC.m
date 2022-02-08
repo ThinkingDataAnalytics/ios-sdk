@@ -38,6 +38,7 @@
     appidTF.layer.borderWidth = kTDBorder;
     //appidTF.text = @"7a055a4bd7ec423fa5294b4a2c1eff28";
     appidTF.text = @"22e445595b0f42bd8c5fe35bc44b88d6";
+//    appidTF.text = @"1b1c1fef65e3482bad5c9d0e6a823356";
     [appidTF setBackgroundColor:[UIColor whiteColor]];
     [appidTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(appidDesLabel.mas_right).offset(kTDCommonPadding);
@@ -73,6 +74,7 @@
 //    serverTF.text = @"https://receiver-ta-dev.thinkingdata.cn";
     
     serverTF.text = @"https://receiver-ta-dev.thinkingdata.cn";
+//    serverTF.text = @"http://receiver.ta.thinkingdata.cn/";
     
     UIButton* submitBtn = [UIButton new];
     [submitBtn setBackgroundColor:[UIColor whiteColor]];
@@ -111,11 +113,12 @@
         config.appid = _appidTF.text;
         config.configureURL = _serverTF.text;
 //        config.debugMode = ThinkingAnalyticsDebug;
+        [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
         ThinkingAnalyticsSDK* instance =  [ThinkingAnalyticsSDK startWithConfig:config];
 //        ThinkingAnalyticsSDK* instance =  [ThinkingAnalyticsSDK startWithAppId:_appidTF.text withUrl:_serverTF.text withConfig:config];
         [ThinkingSDKAPI setInstance:instance];
-        [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-        [[ThinkingAnalyticsSDK sharedInstance] track:@"TA"];
+//        [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+        
         if(_callback != nil)
         {
             _callback();

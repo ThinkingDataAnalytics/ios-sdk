@@ -6,12 +6,13 @@
 //
 
 #import "TDPerformance.h"
-#import "TDFPSMonitor.h"
+#import "TDPMFPSMonitor.h"
 #include <mach/mach.h>
 #include <malloc/malloc.h>
 #import <sys/sysctl.h>
 #include <mach-o/arch.h>
 #import <objc/message.h>
+#import "TDPresetProperties.h"
 #import "TDPresetProperties+TDDisProperties.h"
 
 typedef TDPresetProperties TDAPMPresetProperty;
@@ -27,7 +28,7 @@ static const NSString *kTDPerformanceFPS  = @"#fps";
 #define TD_PM_UNIT_MB (1024.0 * TD_PM_UNIT_KB)
 #define TD_PM_UNIT_GB (1024.0 * TD_PM_UNIT_MB)
 
-TDFPSMonitor *fpsMonitor;
+TDPMFPSMonitor *fpsMonitor;
 
 @implementation TDPerformance
 
@@ -74,7 +75,7 @@ TDFPSMonitor *fpsMonitor;
     // 是否开启FPS
     if (![TDAPMPresetProperty disableFPS]) {
         if (!fpsMonitor) {
-            fpsMonitor = [[TDFPSMonitor alloc] init];
+            fpsMonitor = [[TDPMFPSMonitor alloc] init];
             [fpsMonitor setEnable:YES];
             [dic setObject:[fpsMonitor getPFS] forKey:kTDPerformanceFPS];
         } else {

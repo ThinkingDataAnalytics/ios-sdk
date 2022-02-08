@@ -5,7 +5,7 @@
 //  Created by wwango on 2021/12/7.
 //  不能使用的
 
-#import "TDPresetProperties.h"
+#import <ThinkingSDK/ThinkingSDK.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

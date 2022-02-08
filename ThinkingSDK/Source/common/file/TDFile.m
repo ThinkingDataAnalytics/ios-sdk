@@ -171,12 +171,12 @@
         }
     }
     @catch (NSException *exception) {
-        TDLogError(@"%@ unable to unarchive data in %@, starting fresh", self, filePath);
+        TDLogError(@"Error unarchive in %@", filePath);
         unarchivedData = nil;
         NSError *error = NULL;
         BOOL removed = [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
         if (!removed) {
-            TDLogDebug(@"%@ unable to remove archived file at %@ - %@", self, filePath, error);
+            TDLogDebug(@"Error remove file in %@, error: %@", filePath, error);
         }
     }
     return unarchivedData;

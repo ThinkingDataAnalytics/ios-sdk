@@ -53,7 +53,7 @@
     }]];
     [self.commands addObject:[[ActionModel alloc]initWithName:@"记录事件时长" action:^{
         [ThinkingSDKAPI testTimedEvent];
-        [self performSelector:@selector(eventEnd) withObject:nil afterDelay:2.];
+        [self performSelector:@selector(eventEnd) withObject:nil afterDelay:15.];
         
     }]];
     

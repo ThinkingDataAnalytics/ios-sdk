@@ -7,16 +7,17 @@
 //
 
 #import "TDAppLaunchReason.h"
+#import "TDJSONUtil.h"
 #import <objc/runtime.h>
-#import "NSObject+TDUtil.h"
+#import "NSObject+TDUtils.h"
+#import "TDLogging.h"
 #import "TDPresetProperties+TDDisProperties.h"
-#import "TDCommonUtil.h"
+#import "TDConfigurationMacros.h"
+#import "TDCommonUtility.h"
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 #import <UserNotifications/UserNotifications.h>
 #endif
-
-#define td_force_inline __inline__ __attribute__((always_inline))
 
 static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *oriSELStr, SEL newSEL, IMP newIMP) {
     SEL origSEL = NSSelectorFromString(oriSELStr);
@@ -55,8 +56,6 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
     // 是否需要采集启动原因
     [TDPresetProperties disPresetProperties];
     if ([TDPresetProperties disableStartReason]) return;
-    
-//    NSLog(@" [THINKING] 冷启动 - 监听");
 
     [[NSNotificationCenter defaultCenter] addObserver:[TDAppLaunchReason sharedInstance]
                                              selector:@selector(_applicationDidFinishLaunchingNotification:)
@@ -93,26 +92,21 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
 // 拦截冷启动和热启动的参数
 - (void)_applicationDidFinishLaunchingNotification:(NSNotification *)notification {
     
-//    NSLog(@" [THINKING] 冷启动 - 回调");
     __weak TDAppLaunchReason *weakSelf = self;
     
     NSDictionary *launchOptions = notification.userInfo;
     NSString *url = [self getInitDeeplink:launchOptions];
     NSDictionary *data = [self getInitData:launchOptions];
     
-//    NSLog(@" [THINKING] 冷启动 -_applicationDidFinishLaunchingNotification");
-//    NSLog(@" [THINKING] 冷启动 - url: %@", url);
-//    NSLog(@" [THINKING] 冷启动 - data: %@", data);
-    
     // 获取冷启动原因：
     if (!launchOptions) {
         [self clearAppLaunchParams];
     } else if ([url isKindOfClass:[NSString class]] && url.length) {
-        self.appLaunchParams = @{@"url": [TDCommonUtil string:url],
+        self.appLaunchParams = @{@"url": [TDCommonUtility string:url],
                                  @"data": @{}};
     } else {
         self.appLaunchParams = @{@"url": @"",
-                                 @"data": [TDCommonUtil dictionary:data]};
+                                 @"data": [TDCommonUtility dictionary:data]};
     }
     
     id<UIApplicationDelegate> applicationDelegate = [[UIApplication sharedApplication] delegate];
@@ -131,7 +125,7 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
             isValidPushClick = YES;
         }
         if (!isValidPushClick) {
-//            TDLogDebug(@"Invalid app push callback, PushClick was ignored.");
+            TDLogDebug(@"Invalid app push callback, PushClick was ignored.");
             return;
         }
         NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
@@ -141,7 +135,7 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
         }
         [self clearAppLaunchParams];
         weakSelf.appLaunchParams = @{@"url": @"",
-                                     @"data": [TDCommonUtil dictionary:properties]};
+                                     @"data": [TDCommonUtility dictionary:properties]};
     });
     __td_td_swizzleWithOriSELStr(applicationDelegate, localPushSelString, newLocalPushSel, newLocalPushIMP);
     
@@ -158,12 +152,12 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
             isValidPushClick = YES;
         }
         if (!isValidPushClick) {
-//            TDLogDebug(@"Invalid app push callback, PushClick was ignored.");
+            TDLogDebug(@"Invalid app push callback, PushClick was ignored.");
             return;
         }
         [self clearAppLaunchParams];
         weakSelf.appLaunchParams = @{@"url": @"",
-                                     @"data": [TDCommonUtil dictionary:userInfo]};
+                                     @"data": [TDCommonUtility dictionary:userInfo]};
     });
     __td_td_swizzleWithOriSELStr(applicationDelegate, remotePushSelString, newRemotePushSel, newRemotePushIMP);
     
@@ -191,7 +185,7 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
                 
                 [self clearAppLaunchParams];
                 weakSelf.appLaunchParams = @{@"url": @"",
-                                             @"data": [TDCommonUtil dictionary:properties]};
+                                             @"data": [TDCommonUtility dictionary:properties]};
             });
             __td_td_swizzleWithOriSELStr([UNUserNotificationCenter currentNotificationCenter].delegate, pushSel, newpushSel, newpushSelIMP);
         } else {
@@ -223,7 +217,7 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
                         
                         [self clearAppLaunchParams];
                         weakSelf.appLaunchParams = @{@"url": @"",
-                                                     @"data": [TDCommonUtil dictionary:properties]};
+                                                     @"data": [TDCommonUtility dictionary:properties]};
                     });
                     __td_td_swizzleWithOriSELStr([UNUserNotificationCenter currentNotificationCenter].delegate, pushSel, newpushSel, newpushSelIMP);
                 });
@@ -241,7 +235,7 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
         }
         
         [self clearAppLaunchParams];
-        weakSelf.appLaunchParams = @{@"url": [TDCommonUtil string:url.absoluteString],
+        weakSelf.appLaunchParams = @{@"url": [TDCommonUtility string:url.absoluteString],
                                      @"data":@{}};
     });
     __td_td_swizzleWithOriSELStr(applicationDelegate, deeplinkStr1, newdeeplinkSel1, newdeeplinkIMP1);
@@ -254,7 +248,7 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
         }
         
         [self clearAppLaunchParams];
-        weakSelf.appLaunchParams = @{@"url": [TDCommonUtil string:url.absoluteString],
+        weakSelf.appLaunchParams = @{@"url": [TDCommonUtility string:url.absoluteString],
                                      @"data":@{}};
     });
     __td_td_swizzleWithOriSELStr(applicationDelegate, deeplinkStr2, newdeeplinkSel2, newdeeplinkIMP2);
@@ -267,7 +261,7 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
         }
         
         [self clearAppLaunchParams];
-        weakSelf.appLaunchParams = @{@"url": [TDCommonUtil string: userActivity.webpageURL.absoluteString],
+        weakSelf.appLaunchParams = @{@"url": [TDCommonUtility string: userActivity.webpageURL.absoluteString],
                                      @"data":@{}};
     });
     __td_td_swizzleWithOriSELStr(applicationDelegate, deeplinkStr3, newdeeplinkSel3, newdeeplinkIMP3);
@@ -284,7 +278,7 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
             
             [self clearAppLaunchParams];
             weakSelf.appLaunchParams = @{@"url": @"",
-                                         @"data": [TDCommonUtil dictionary:shortcutItem.userInfo]};
+                                         @"data": [TDCommonUtility dictionary:shortcutItem.userInfo]};
         });
         __td_td_swizzleWithOriSELStr(applicationDelegate, touch3dSel, newtouch3dSel, newtouch3dIMP);
     }

@@ -244,18 +244,27 @@
 	<key>UIApplicationShortcutItems</key>
 	<array>
 		<dict>
-			<key>UIApplicationShortcutItemIconType</key>
-			<string>location</string>
-			<key>UIApplicationShortcutItemSubtitle</key>
-			<string>itemSubtitle</string>
+			<key>UIApplicationShortcutItemIconFile</key>
+			<string>open-favorites</string>
 			<key>UIApplicationShortcutItemTitle</key>
-			<string>itemTitle</string>
+			<string>Favorites</string>
 			<key>UIApplicationShortcutItemType</key>
-			<string>0</string>
+			<string>com.mycompany.myapp.openfavorites</string>
 			<key>UIApplicationShortcutItemUserInfo</key>
 			<dict>
 				<key>key1</key>
 				<string>value1</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeCompose</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>New Message</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.mycompany.myapp.newmessage</string>
+			<key>UIApplicationShortcutItemUserInfo</key>
+			<dict>
 				<key>key2</key>
 				<string>value2</string>
 			</dict>

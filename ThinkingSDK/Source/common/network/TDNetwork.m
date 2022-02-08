@@ -160,7 +160,7 @@ static NSString *kTAIntegrationExtra = @"TA-Integration-Extra";
 }
 
 - (NSMutableURLRequest *)buildRequestWithJSONString:(NSString *)jsonString {
-    NSData *zippedData = [NSData gzipData:[jsonString dataUsingEncoding:NSUTF8StringEncoding]];
+    NSData *zippedData = [NSData td_gzipData:[jsonString dataUsingEncoding:NSUTF8StringEncoding]];
     NSString *postBody = [zippedData base64EncodedStringWithOptions:0];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.serverURL];
     [request setHTTPMethod:@"POST"];

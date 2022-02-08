@@ -38,7 +38,14 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
     [super viewDidLoad];
     NSString *homePath = NSHomeDirectory();
     
-    NSLog(@"Home目录：%@",homePath);  
+    NSLog(@"Home目录：%@",homePath);
+    
+//    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+//        NSLog(@"##########2222");
+//        [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+//        NSLog(@"##########3333");
+//    });
+//    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll];
 }
 
 - (NSDictionary *)getTrackPropertiesWithAppid {

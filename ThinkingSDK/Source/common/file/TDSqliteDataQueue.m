@@ -193,12 +193,12 @@
     sqlite3_stmt *stmt;
 
     if (sqlite3_prepare_v2(_database, query.UTF8String, -1, &stmt, NULL) != SQLITE_OK) {
-        TDLogError(@"Prepare delete records query failure: %s", sqlite3_errmsg(_database));
+        TDLogError(@"Delete records Error: %s", sqlite3_errmsg(_database));
         return NO;
     }
     BOOL success = YES;
     if (sqlite3_step(stmt) != SQLITE_DONE) {
-        TDLogError(@"Failed to delete record from database, error: %s", sqlite3_errmsg(_database));
+        TDLogError(@"Delete records Error: %s", sqlite3_errmsg(_database));
         success = NO;
     }
     sqlite3_finalize(stmt);
@@ -274,11 +274,11 @@
 
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(_database, sql.UTF8String, -1, &stmt, NULL) != SQLITE_OK) {
-        TDLogError(@"Prepare update records query failure: %s", sqlite3_errmsg(_database));
+        TDLogError(@"Update Records Error: %s", sqlite3_errmsg(_database));
         return NO;
     }
     if (sqlite3_step(stmt) != SQLITE_DONE) {
-        TDLogError(@"Failed to update records from database, error: %s", sqlite3_errmsg(_database));
+        TDLogError(@"Update Records Error: %s", sqlite3_errmsg(_database));
         return NO;
     }
     sqlite3_finalize(stmt);

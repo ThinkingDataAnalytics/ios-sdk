@@ -15,7 +15,6 @@
 #import "AutoTrackViewController.h"
 #import "AutoTableViewController.h"
 #import "AutoCollectionViewController.h"
-#import "NTPViewController.h"
 #import <ThinkingSDK/ThinkingAnalyticsSDK.h>
 @interface TDAutoTrackVC ()
 

@@ -1,4 +1,5 @@
 #import "NetAssociation.h"
+#import <CocoaAsyncSocket/GCDAsyncSocket.h>
 
 #import <sys/time.h>
 

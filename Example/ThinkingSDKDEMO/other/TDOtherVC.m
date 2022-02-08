@@ -11,11 +11,11 @@
 #import "ThinkingSDKAPI.h"
 #import "TDAutoTrackVC.h"
 #import "TDUtil.h"
-#import "NTPViewController.h"
+//#import "NTPViewController.h"
 #import <ThinkingSDK/ThinkingSDK.h>
-#import "NetAssociation.h"
+//#import "NetAssociation.h"
 @interface TDOtherVC ()
-@property(strong,nonatomic)NetAssociation *        netAssociation;
+//@property(strong,nonatomic)NetAssociation *        netAssociation;
 @end
 
 @implementation TDOtherVC
@@ -48,9 +48,9 @@
     }]];
     __weak typeof(self) weakSelf = self;
     [self.commands addObject:[[ActionModel alloc]initWithName:@"校准时间" action:^{
-        weakSelf.netAssociation = [[NetAssociation alloc] initWithServerName:[NetAssociation ipAddrFromName:@"time.asia.apple.com"]];
-        weakSelf.netAssociation.delegate = self;
-        [weakSelf.netAssociation sendTimeQuery];
+//        weakSelf.netAssociation = [[NetAssociation alloc] initWithServerName:[NetAssociation ipAddrFromName:@"time.asia.apple.com"]];
+//        weakSelf.netAssociation.delegate = self;
+//        [weakSelf.netAssociation sendTimeQuery];
     }]];
 //    [self.commands addObject:[[ActionModel alloc]initWithName:@"optInTracking" action:^{
 //        [ThinkingSDKAPI optInTracking];
@@ -58,7 +58,7 @@
 }
 
 - (void)reportFromDelegate {
-    NSDate *theDate = [[NSDate date] dateByAddingTimeInterval: self.netAssociation.offset];
-    [[ThinkingAnalyticsSDK sharedInstance] track:@"test_event" properties:@{} time:theDate timeZone:[NSTimeZone localTimeZone]];
+//    NSDate *theDate = [[NSDate date] dateByAddingTimeInterval: self.netAssociation.offset];
+//    [[ThinkingAnalyticsSDK sharedInstance] track:@"test_event" properties:@{} time:theDate timeZone:[NSTimeZone localTimeZone]];
 }
 @end
