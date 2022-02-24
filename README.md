@@ -1,4 +1,4 @@
-# ThinkingData iOS SDK
+# ThinkingData iOS SDK1111
 
 ThinkingData iOS SDK 为 iOS 代码埋点提供了 API. 主要功能包括:
 - 上报事件数据和用户属性数据
@@ -45,6 +45,5 @@ instance.track("some_event");
 ## 感谢
 
 - [mixpanel-ios](https://github.com/mixpanel/mixpanel-iphone.git)
-- [sa-sdk-ios](https://github.com/sensorsdata/sa-sdk-ios)
 
 
