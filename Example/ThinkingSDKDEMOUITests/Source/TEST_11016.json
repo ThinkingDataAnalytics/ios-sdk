@@ -1,0 +1,34 @@
+[
+    {
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_11016_1",
+        "name":"验证停止上报、允许上报的正确性",
+        "input":"{\"eventName\":\"eventName\",\"enable\":false}",
+        "output":"",
+        "step":"暂停传入NO，发送track事件，再调用flush方法，验证暂停状态的持久化、内部事件对象的创建",
+        "expect":"调用了存储暂停状态的持久化方法，入参是NO；不会调用入库方法",
+        "description":"",
+        "result":false
+    },
+    {
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_11016_2",
+        "name":"验证停止上报、允许上报的正确性",
+        "input":"{\"eventName\":\"eventName\",\"enable\":true}",
+        "output":"",
+        "step":"开启传入Yes，发送track事件，再调用flush方法，验证暂停状态的持久化、内部事件对象的创建、事件的上报",
+        "expect":"调用了存储暂停状态的持久化方法，入参是YES； 调用事件对象创建方法；调用入库方法；调用了网络请求方法",
+        "description":"",
+        "result":false
+    }
+]

@@ -1,0 +1,34 @@
+[
+    {
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_11002_1",
+        "name":"验证更新事件的正确性",
+        "input":"{\"eventName\":\"eventName\",\"proprties\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"eventID\":\"eventID\"}",
+        "output":"",
+        "step":"传入eventName、eventID，验证内部创建的事件对象",
+        "expect":"事件对象的事件类型为track_update、event_name和event_id和传入的一致",
+        "description":"",
+        "result":false
+    },
+    {
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_11002_2",
+        "name":"验证更新事件的正确性",
+        "input":"{\"eventName\":\"\",\"proprties\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"eventID\":\"\"}",
+        "output":"",
+        "step":"验证eventName、eventID是空字符串或是nil的情况",
+        "expect":"程序不奔溃",
+        "description":"",
+        "result":false
+    }
+]

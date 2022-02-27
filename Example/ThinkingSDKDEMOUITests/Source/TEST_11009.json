@@ -1,0 +1,18 @@
+[
+    {
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_11009_1",
+        "name":"验证清除一条静态公共属性正确性",
+        "input":"{\"eventName\":\"eventName\",\"superProperties\":{\"superkey1\":\"supervalue1\",\"superkey2\":\"supervalue2\",\"superkey3\":\"supervalue3\"},\"removesuperkey\":\"superkey1\"}",
+        "output":"",
+        "step":"传入superkey1属性名，再调用track方法，验证内部事件对象",
+        "expect":"内部事件对象中不包含该属性",
+        "description":"",
+        "result":false
+    }
+]

@@ -1,0 +1,43 @@
+PODS:
+  - Aspects (1.4.1)
+  - CocoaAsyncSocket (7.6.4)
+  - HMCThreadSafeMutableCollection (0.1.0)
+  - Masonry (1.1.0)
+  - OCMock (3.7.1)
+  - ThinkingSDK (2.7.5)
+  - YYModel (1.0.4)
+
+DEPENDENCIES:
+  - Aspects
+  - CocoaAsyncSocket
+  - HMCThreadSafeMutableCollection
+  - Masonry
+  - OCMock
+  - ThinkingSDK (from `../`)
+  - YYModel
+
+SPEC REPOS:
+  trunk:
+    - Aspects
+    - CocoaAsyncSocket
+    - HMCThreadSafeMutableCollection
+    - Masonry
+    - OCMock
+    - YYModel
+
+EXTERNAL SOURCES:
+  ThinkingSDK:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Aspects: 7595ba96a6727a58ebcbfc954497fc5d2fdde546
+  CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
+  HMCThreadSafeMutableCollection: 16d137f0d3480fe66fe04ba7e288a7e5a5e3d224
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  OCMock: 75fbeaa46a9b11f8c182bbb1d1f7e9a35ccc9955
+  ThinkingSDK: 08d4dbc5204905888fa8dff103a676db6c517e59
+  YYModel: 2a7fdd96aaa4b86a824e26d0c517de8928c04b30
+
+PODFILE CHECKSUM: 16e1f21ae263b7d809406b3e6c867ad1734da8a3
+
+COCOAPODS: 1.10.0.beta.1
