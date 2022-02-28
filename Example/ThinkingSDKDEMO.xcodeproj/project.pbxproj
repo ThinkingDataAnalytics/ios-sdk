@@ -58,6 +58,7 @@
 		6E4936242514CBD800F27296 /* TDUserIDVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4936232514CBD800F27296 /* TDUserIDVC.m */; };
 		6E49362C251872F100F27296 /* TDH5VC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E49362B251872F100F27296 /* TDH5VC.m */; };
 		6E493633251892B700F27296 /* TDColCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E493632251892B700F27296 /* TDColCell.m */; };
+		6E8A114427CC662100824175 /* TEST_15000.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E8A114227CC662100824175 /* TEST_15000.m */; };
 		6EA0E35A24C84B5D008FCF11 /* SpaceMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6EA0E35824C84B5D008FCF11 /* SpaceMono-Bold.ttf */; };
 		6EA0E35B24C84B5D008FCF11 /* SpaceMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6EA0E35924C84B5D008FCF11 /* SpaceMono-Regular.ttf */; };
 		6EA0E35D24C84C74008FCF11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6EA0E35C24C84C74008FCF11 /* Assets.xcassets */; };
@@ -184,6 +185,8 @@
 		6E49362B251872F100F27296 /* TDH5VC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDH5VC.m; sourceTree = "<group>"; };
 		6E493631251892B700F27296 /* TDColCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDColCell.h; sourceTree = "<group>"; };
 		6E493632251892B700F27296 /* TDColCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDColCell.m; sourceTree = "<group>"; };
+		6E8A114227CC662100824175 /* TEST_15000.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TEST_15000.m; sourceTree = "<group>"; };
+		6E8A114327CC662100824175 /* TEST_15000.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TEST_15000.h; sourceTree = "<group>"; };
 		6EA0E35624C8421A008FCF11 /* ThinkingSDKDEMO-PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ThinkingSDKDEMO-PrefixHeader.pch"; sourceTree = "<group>"; };
 		6EA0E35724C8430D008FCF11 /* TDMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDMacro.h; sourceTree = "<group>"; };
 		6EA0E35824C84B5D008FCF11 /* SpaceMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpaceMono-Bold.ttf"; sourceTree = "<group>"; };
@@ -323,6 +326,8 @@
 		2E0BE69027674104004F0D91 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				6E8A114327CC662100824175 /* TEST_15000.h */,
+				6E8A114227CC662100824175 /* TEST_15000.m */,
 				2EC442CF27AD2CD50042ADD5 /* TDMutiThread.h */,
 				2EC442CE27AD2CD50042ADD5 /* TDMutiThread.m */,
 				2E0BE69427674104004F0D91 /* TEST_10000.h */,
@@ -791,6 +796,7 @@
 				2EF222BA2768414500B71E0C /* TEST_14000.m in Sources */,
 				2E0BE6C127674104004F0D91 /* TEST_Fakes.m in Sources */,
 				2E0BE6C027674104004F0D91 /* TEST_10000.m in Sources */,
+				6E8A114427CC662100824175 /* TEST_15000.m in Sources */,
 				2E0BE6BD27674104004F0D91 /* TEST_Helper.m in Sources */,
 				2E0BE6BE27674104004F0D91 /* TEST_Model.m in Sources */,
 				2EF222B72768315000B71E0C /* TEST_13000.m in Sources */,
