@@ -71,9 +71,9 @@
         make.width.mas_equalTo(kTDCommonW);
         make.centerY.mas_equalTo(serverDesLabel);
     }];
-//    serverTF.text = @"https://receiver-ta-dev.thinkingdata.cn";
-    
     serverTF.text = @"https://receiver-ta-dev.thinkingdata.cn";
+    
+//    serverTF.text = @"https://receiver-ta-demo.thinkingdata.cn";
 //    serverTF.text = @"http://receiver.ta.thinkingdata.cn/";
     
     UIButton* submitBtn = [UIButton new];
@@ -112,7 +112,14 @@
         TDConfig *config = [TDConfig new];
         config.appid = _appidTF.text;
         config.configureURL = _serverTF.text;
+        config.autoTrackEventType = ThinkingAnalyticsEventTypeAppViewScreen;
+//        config.enableEncrypt = YES;
 //        config.debugMode = ThinkingAnalyticsDebug;
+//        config.localSecretKey = ^TDSecretKey * _Nonnull{
+//            return [[TDSecretKey alloc] initWithVersion:1
+//                                              publicKey:@"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA53jcQ05rxq7Vk5FSbyKw8iQf/OSaTpH/Qh9Y3X3SKWDY9YI+kE52USeg66g1KzT10slMwB1lVBshi1ornhbq0wDoUQE2bzSti3X6AYm/qvv37y7J/XRKLyyFaQFYfdKsHlS6zyDep7pQvkMCIxQY/2ZresFDGD+wwcMFolp0qh/O1vRM8Zu4X/10xHJvzGbRRVgDnx/quycuXt6fmlFHVOQXd2yOinfv5QTWO39SWce960PyIv+MDgl09COOKEcxbBSQBotdT0s4FBh9wtHosO7qSY4JPmabxdxVqWleWgtR7PStEjNeZgCUzi0aAgt+g9ISI3dzfexh4vkn5p7xKwIDAQAB"];
+//        };
+        config.debugMode = ThinkingAnalyticsDebug;
         [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
         ThinkingAnalyticsSDK* instance =  [ThinkingAnalyticsSDK startWithConfig:config];
 //        ThinkingAnalyticsSDK* instance =  [ThinkingAnalyticsSDK startWithAppId:_appidTF.text withUrl:_serverTF.text withConfig:config];

@@ -47,7 +47,7 @@
 - (NSNumber*)unarchiveUploadSize {
     NSNumber*  uploadSize = [self unarchiveFromFile:[self uploadSizeFilePath] asClass:[NSNumber class]];
     if (!uploadSize) {
-        uploadSize = [NSNumber numberWithInteger:100];
+        uploadSize = [NSNumber numberWithInteger:30];
     }
     return uploadSize;
 }
@@ -62,7 +62,7 @@
 - (NSNumber*)unarchiveUploadInterval {
     NSNumber* uploadInterval = [self unarchiveFromFile:[self uploadIntervalFilePath] asClass:[NSNumber class]];
     if (!uploadInterval) {
-        uploadInterval = [NSNumber numberWithInteger:60];
+        uploadInterval = [NSNumber numberWithInteger:30];
     }
     return uploadInterval;
 }
@@ -83,6 +83,18 @@
 
 - (NSDictionary*)unarchiveSuperProperties {
     return [self unarchiveFromFile:[self superPropertiesFilePath] asClass:[NSDictionary class]];
+}
+
+- (void)archiveTrackPause:(BOOL)trackPause {
+    NSString *filePath = [self trackPauseFilePath];
+    if (![self archiveObject:[NSNumber numberWithBool:trackPause] withFilePath:filePath]) {
+        TDLogError(@"%@ unable to archive trackPause", self);
+    }
+}
+
+- (BOOL)unarchiveTrackPause {
+    NSNumber *trackPause = (NSNumber *)[self unarchiveFromFile:[self trackPauseFilePath] asClass:[NSNumber class]];
+    return [trackPause boolValue];
 }
 
 - (void)archiveOptOut:(BOOL)optOut {
@@ -204,6 +216,10 @@
 
 - (NSString *)enabledFilePath {
     return [self persistenceFilePath:@"isEnabled"];
+}
+
+- (NSString *)trackPauseFilePath {
+    return [self persistenceFilePath:@"trackPause"];
 }
 
 - (NSString *)optOutFilePath {

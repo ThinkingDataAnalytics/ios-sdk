@@ -1,6 +1,0 @@
-framework module HCClangTrace {
-  umbrella header "HCClangTrace-umbrella.h"
-
-  export *
-  module * { export * }
-}

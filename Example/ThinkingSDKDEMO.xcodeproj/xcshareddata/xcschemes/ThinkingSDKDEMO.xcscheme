@@ -48,6 +48,16 @@
                ReferencedContainer = "container:ThinkingSDKDEMO.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2E702BD827C8CF08003B16C2"
+               BuildableName = "ThinkingSDKDEMOTests.xctest"
+               BlueprintName = "ThinkingSDKDEMOTests"
+               ReferencedContainer = "container:ThinkingSDKDEMO.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

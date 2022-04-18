@@ -6,7 +6,6 @@
 //
 
 #import "TDRunTime.h"
-#import "NSObject+TDUtils.h"
 #import "TDJSONUtil.h"
 #import "TDPresetProperties+TDDisProperties.h"
 

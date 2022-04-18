@@ -9,7 +9,6 @@
 #import "TDPublicConfig.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "TDFile.h"
-#import "NSObject+TDUtils.h"
 
 #define kTDDyldPropertyNames @[@"TDPerformance"]
 #define kTDGetPropertySelName @"getPresetProperties"
@@ -276,13 +275,17 @@
     return [NSDate date];
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
 + (NSDictionary *)getAPMParams {
     NSMutableDictionary *p = [NSMutableDictionary dictionary];
     for (NSString *clsName in kTDDyldPropertyNames) {
         Class cls = NSClassFromString(clsName);
         SEL sel = NSSelectorFromString(kTDGetPropertySelName);
         if (cls && sel && [cls respondsToSelector:sel]) {
-            NSDictionary *result = [NSObject performSelector:sel onTarget:cls withArguments:@[]];
+            NSDictionary *result = [cls performSelector:sel];
+//            NSDictionary *result = [NSObject performSelector:sel onTarget:cls withArguments:@[]];
             if ([result isKindOfClass:[NSDictionary class]] && result.allKeys.count > 0) {
                 [p addEntriesFromDictionary:result];
             }
@@ -291,5 +294,7 @@
     }
     return p;
 }
+
+#pragma clang diagnostic pop
 
 @end

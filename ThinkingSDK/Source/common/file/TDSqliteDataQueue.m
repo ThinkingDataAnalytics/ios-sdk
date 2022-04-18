@@ -4,6 +4,7 @@
 #import "TDLogging.h"
 #import "TDJSONUtil.h"
 #import "TDConfig.h"
+#import "TDEventRecord.h"
 
 @implementation TDSqliteDataQueue {
     sqlite3 *_database;
@@ -25,6 +26,7 @@
     dispatch_once(&onceToken, ^{
         NSString *filepath = [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"TDData-data.plist"];
         sharedInstance = [[self alloc] initWithPath:filepath withAppid:appid];
+        TDLogDebug(@"数据库路径：%@", filepath);
     });
     return sharedInstance;
 }
@@ -143,15 +145,13 @@
     return [self sqliteCountForAppid:appid];
 }
 
-- (NSDictionary *)getFirstRecords:(NSUInteger)recordSize withAppid:(NSString *)appid {
+- (NSArray<TDEventRecord *> *)getFirstRecords:(NSUInteger)recordSize withAppid:(NSString *)appid {
     if (_allmessageCount == 0) {
-        return @{};
+        return @[];
     }
     
-    NSMutableArray *contentArray = [[NSMutableArray alloc] init];
-    NSMutableArray *idArray = [[NSMutableArray alloc] init];
+    NSMutableArray *records = [[NSMutableArray alloc] init];
     NSString *query = @"SELECT id,content FROM TDData where appid=? ORDER BY id ASC LIMIT ?";
-
     sqlite3_stmt *stmt = NULL;
     int rc = sqlite3_prepare_v2(_database, [query UTF8String], -1, &stmt, NULL);
     if (rc == SQLITE_OK) {
@@ -170,17 +170,12 @@
                                                                       options:NSJSONReadingMutableContainers
                                                                         error:&err];
             if (!err && [eventDict isKindOfClass:[NSDictionary class]]) {
-                [contentArray addObject:eventDict];
-                [idArray addObject:[NSNumber numberWithLongLong:index]];
+                [records addObject:[[TDEventRecord alloc] initWithIndex:[NSNumber numberWithLongLong:index] content:eventDict]];
             }
         }
     }
     sqlite3_finalize(stmt);
-    NSDictionary *resultRecoders = @{
-        @"recoders":[NSArray arrayWithArray:contentArray],
-        @"recoderIds":[NSArray arrayWithArray:idArray]
-    };
-    return resultRecoders;
+    return records;
 }
 
 - (BOOL)removeDataWithuids:(NSArray *)uids {
@@ -239,7 +234,7 @@
     return YES;
 }
 
-- (NSArray *)upadteRecordIds:(NSArray *)recordIds {
+- (NSArray *)upadteRecordIds:(NSArray<NSNumber *> *)recordIds {
     if (recordIds.count == 0) {
         return @[];
     }

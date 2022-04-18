@@ -1,214 +1,292 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
-   uuid = "D9D2891E-6A29-497A-93EE-E885762F118A"
+   uuid = "2E4BA503-CB49-4591-B066-EC0DA553316D"
    type = "0"
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9501048C-418E-486E-B593-81BAFEAC8624"
+            uuid = "D49A1128-08EB-4E92-93D7-F076B917F183"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ThinkingSDKDEMOUITests/Core/TEST_14000.m"
+            filePath = "NotificationServer/NotificationService.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
-            landmarkName = "-test_14000"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "-didReceiveNotificationRequest:withContentHandler:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "CC52A034-1F3A-41EA-9B8B-7DFA8B61F179"
+            uuid = "A5BC1028-B7E4-498D-AD0D-6AA067EE1A6C"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ThinkingSDKDEMOUITests/Core/TEST_14000.m"
+            filePath = "NotificationServer/NotificationService.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "101"
-            endingLineNumber = "101"
-            landmarkName = "-test_14000"
+            startingLineNumber = "23"
+            endingLineNumber = "23"
+            landmarkName = "-didReceiveNotificationRequest:withContentHandler:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C23178E9-F66F-4AEC-BE5D-3919D702FF78"
+            uuid = "B6BEE258-42A5-4257-9CB6-349547B37052"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../ThinkingSDK/Source/Encrypt/TDEncryptManager.m"
+            filePath = "NotificationServer/NotificationService.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "79"
-            endingLineNumber = "79"
-            landmarkName = "-updateEncryptor:"
+            startingLineNumber = "24"
+            endingLineNumber = "24"
+            landmarkName = "-didReceiveNotificationRequest:withContentHandler:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6AE9FA74-A960-4854-87B0-736D8C7F8F67"
+            uuid = "EA7F4A64-28A3-416E-9D6E-5C2C0C3B764D"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../ThinkingSDK/Source/Encrypt/TDEncryptManager.m"
+            filePath = "NotificationServer/NotificationService.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
-            landmarkName = "-updateEncryptor:"
+            startingLineNumber = "25"
+            endingLineNumber = "25"
+            landmarkName = "-didReceiveNotificationRequest:withContentHandler:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "93300E66-1E57-4B09-83C8-151C2EE6A8A7"
+            uuid = "2EE4929C-F05A-4E35-A30B-E83E0A14CC3B"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../ThinkingSDK/Source/Encrypt/TDEncryptManager.m"
+            filePath = "NotificationServer/NotificationService.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "88"
-            endingLineNumber = "88"
-            landmarkName = "-updateEncryptor:"
+            startingLineNumber = "33"
+            endingLineNumber = "33"
+            landmarkName = "-serviceExtensionTimeWillExpire"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "99306775-8AE9-4F4C-AEAB-56391FF82EBE"
+            uuid = "15B9A739-8395-4734-853C-9DDDF2528336"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../ThinkingSDK/Source/Encrypt/TDEncryptManager.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "94"
-            endingLineNumber = "94"
-            landmarkName = "-updateEncryptor:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "7DF6E41C-FDEA-4171-B588-F58663D320E5"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../ThinkingSDK/Source/common/exception/ThinkingExceptionHandler.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "136"
-            endingLineNumber = "136"
-            landmarkName = "-td_getCrashInfo:"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "7DF6E41C-FDEA-4171-B588-F58663D320E5 - 816b09a3d62c3bba"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[ThinkingExceptionHandler td_getCrashInfo:]"
-                  moduleName = "ThinkingSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/wwango/Desktop/shushucode/ios-sdk-http1/ThinkingSDK/Source/common/exception/ThinkingExceptionHandler.m"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "136"
-                  endingLineNumber = "136"
-                  offsetFromSymbolStart = "1400">
-               </Location>
-               <Location
-                  uuid = "7DF6E41C-FDEA-4171-B588-F58663D320E5 - 816b09a3d62c3bba"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[ThinkingExceptionHandler td_getCrashInfo:]"
-                  moduleName = "ThinkingSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/wwango/Desktop/shushucode/ios-sdk-http1/ThinkingSDK/Source/common/exception/ThinkingExceptionHandler.m"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "136"
-                  endingLineNumber = "136"
-                  offsetFromSymbolStart = "892">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "C9D1CCED-7ABC-45CD-8578-5390312A5AFE"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../ThinkingSDK/Source/common/exception/ThinkingExceptionHandler.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "134"
-            endingLineNumber = "134"
-            landmarkName = "-td_getCrashInfo:"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "C9D1CCED-7ABC-45CD-8578-5390312A5AFE - 816b09a3d62c3b78"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[ThinkingExceptionHandler td_getCrashInfo:]"
-                  moduleName = "ThinkingSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/wwango/Desktop/shushucode/ios-sdk-http1/ThinkingSDK/Source/common/exception/ThinkingExceptionHandler.m"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "134"
-                  endingLineNumber = "134"
-                  offsetFromSymbolStart = "332">
-               </Location>
-               <Location
-                  uuid = "C9D1CCED-7ABC-45CD-8578-5390312A5AFE - 816b09a3d62c3b78"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[ThinkingExceptionHandler td_getCrashInfo:]"
-                  moduleName = "ThinkingSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/wwango/Desktop/shushucode/ios-sdk-http1/ThinkingSDK/Source/common/exception/ThinkingExceptionHandler.m"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "134"
-                  endingLineNumber = "134"
-                  offsetFromSymbolStart = "984">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "02B955B8-1362-485A-B370-886A7A1920CD"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../ThinkingSDK/Source/AutoTrack/model/NSObject+TDSwizzle.m"
+            filePath = "NotificationServer/NotificationService.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "32"
             endingLineNumber = "32"
-            landmarkName = "+td_swizzleMethod:withMethod:error:"
+            landmarkName = "-serviceExtensionTimeWillExpire"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "736AF0F0-1EAF-4FAF-BD84-D8E9967C8AB5"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ThinkingSDKDEMO/AppDelegate.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "queue2"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9B98FD8A-F26A-4E94-BAFB-3E30EA200AC8"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ThinkingSDKDEMO/AppDelegate.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "605"
+            endingLineNumber = "605"
+            landmarkName = "-application:didRegisterForRemoteNotificationsWithDeviceToken:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1799BEA6-1517-465C-9938-0844F399E3BB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../ThinkingSDK/Source/AppLaunch/TDAppLaunchReason.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "184"
+            endingLineNumber = "184"
+            landmarkName = "-_applicationDidFinishLaunchingNotification:"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "1799BEA6-1517-465C-9938-0844F399E3BB - ca9f7520b1b257df"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__64-[TDAppLaunchReason _applicationDidFinishLaunchingNotification:]_block_invoke.91"
+                  moduleName = "ThinkingSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wwango/Desktop/shushucode/ios-sdk-http1/ThinkingSDK/Source/AppLaunch/TDAppLaunchReason.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "172"
+                  endingLineNumber = "172"
+                  offsetFromSymbolStart = "152">
+               </Location>
+               <Location
+                  uuid = "1799BEA6-1517-465C-9938-0844F399E3BB - ca9f7520b1b2542f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__64-[TDAppLaunchReason _applicationDidFinishLaunchingNotification:]_block_invoke.91"
+                  moduleName = "ThinkingSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wwango/Desktop/shushucode/ios-sdk-http1/ThinkingSDK/Source/AppLaunch/TDAppLaunchReason.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "188"
+                  endingLineNumber = "188"
+                  offsetFromSymbolStart = "192">
+               </Location>
+               <Location
+                  uuid = "1799BEA6-1517-465C-9938-0844F399E3BB - ca9f7520b1b2542f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__64-[TDAppLaunchReason _applicationDidFinishLaunchingNotification:]_block_invoke.91"
+                  moduleName = "ThinkingSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wwango/Desktop/shushucode/ios-sdk-http1/ThinkingSDK/Source/AppLaunch/TDAppLaunchReason.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "188"
+                  endingLineNumber = "188"
+                  offsetFromSymbolStart = "176">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "72A924F3-6BB9-4058-8B0A-E67EC22BBA67"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../ThinkingSDK/Source/AppLaunch/TDAppLaunchReason.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "190"
+            endingLineNumber = "190"
+            landmarkName = "-_applicationDidFinishLaunchingNotification:"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "72A924F3-6BB9-4058-8B0A-E67EC22BBA67 - ca9f7520b1b256e5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__64-[TDAppLaunchReason _applicationDidFinishLaunchingNotification:]_block_invoke.91"
+                  moduleName = "ThinkingSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wwango/Desktop/shushucode/ios-sdk-http1/ThinkingSDK/Source/AppLaunch/TDAppLaunchReason.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "178"
+                  endingLineNumber = "178"
+                  offsetFromSymbolStart = "380">
+               </Location>
+               <Location
+                  uuid = "72A924F3-6BB9-4058-8B0A-E67EC22BBA67 - ca9f7520b1b25471"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__64-[TDAppLaunchReason _applicationDidFinishLaunchingNotification:]_block_invoke.91"
+                  moduleName = "ThinkingSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wwango/Desktop/shushucode/ios-sdk-http1/ThinkingSDK/Source/AppLaunch/TDAppLaunchReason.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "190"
+                  endingLineNumber = "190"
+                  offsetFromSymbolStart = "280">
+               </Location>
+               <Location
+                  uuid = "72A924F3-6BB9-4058-8B0A-E67EC22BBA67 - ca9f7520b1b25471"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__64-[TDAppLaunchReason _applicationDidFinishLaunchingNotification:]_block_invoke.91"
+                  moduleName = "ThinkingSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wwango/Desktop/shushucode/ios-sdk-http1/ThinkingSDK/Source/AppLaunch/TDAppLaunchReason.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "190"
+                  endingLineNumber = "190"
+                  offsetFromSymbolStart = "264">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "843540EF-2555-4472-9663-ACCCB015939C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ThinkingSDKDEMO/AppDelegate.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "601"
+            endingLineNumber = "601"
+            landmarkName = "AppDelegate"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6E94426E-047A-4B87-83B2-19DD0931844F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../ThinkingSDK/Source/AppLaunch/TDAppLaunchReason.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "175"
+            endingLineNumber = "175"
+            landmarkName = "-_applicationDidFinishLaunchingNotification:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
