@@ -55,6 +55,8 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
     // 是否需要采集启动原因
     [TDPresetProperties disPresetProperties];
     if ([TDPresetProperties disableStartReason]) return;
+    
+    [self td_hookUserNotificationCenterMethod];
 
     [[NSNotificationCenter defaultCenter] addObserver:[TDAppLaunchReason sharedInstance]
                                              selector:@selector(_applicationDidFinishLaunchingNotification:)
@@ -66,6 +68,71 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
                                                  name:UIApplicationDidEnterBackgroundNotification
                                                object:nil];
     
+}
+
++ (void)td_hookUserNotificationCenterMethod {
+    if (@available(iOS 10.0, *)) {
+        // 要求推送的代理需要在application:didFinishLaunchingWithOptions:设置
+        // 如果不是在application:didFinishLaunchingWithOptions:设置，那么冷启动时推送的消息会收集不到
+        if ([UNUserNotificationCenter currentNotificationCenter].delegate) {
+            NSString *pushSel = @"userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:";
+            SEL newpushSel = NSSelectorFromString([NSString stringWithFormat:@"td_%@", pushSel]);
+            IMP newpushSelIMP = imp_implementationWithBlock(^(id _self1, UNUserNotificationCenter *center, UNNotificationResponse *response, id completionHandler) {
+                if ([_self1 respondsToSelector:newpushSel]) {
+                    [NSObject performSelector:newpushSel onTarget:_self1 withArguments:@[center, response, completionHandler]];
+                }
+                
+                
+                NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+                UNNotificationRequest *request = response.notification.request;
+                NSDictionary *userInfo = request.content.userInfo;
+                if (userInfo) {
+                    [properties addEntriesFromDictionary:userInfo];
+                }
+                properties[@"title"] = request.content.title;
+                properties[@"body"] = request.content.body;
+                
+                [[TDAppLaunchReason sharedInstance] clearAppLaunchParams];
+                [TDAppLaunchReason sharedInstance].appLaunchParams = @{@"url": @"",
+                                             @"data": [TDCommonUtil dictionary:properties]};
+            });
+            __td_td_swizzleWithOriSELStr([UNUserNotificationCenter currentNotificationCenter].delegate, pushSel, newpushSel, newpushSelIMP);
+        } else {
+            
+            NSString *pushDelegateSel = @"setDelegate:";
+            SEL newPushDelegateSel = NSSelectorFromString([NSString stringWithFormat:@"td_%@", pushDelegateSel]);
+            IMP newPushDelegateIMP = imp_implementationWithBlock(^(id _self, id delegate) {
+                if ([_self respondsToSelector:newPushDelegateSel]) {
+                    [NSObject performSelector:newPushDelegateSel onTarget:_self withArguments:@[delegate]];
+                }
+                
+                
+                NSString *pushSel = @"userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:";
+                SEL newpushSel = NSSelectorFromString([NSString stringWithFormat:@"td_%@", pushSel]);
+                IMP newpushSelIMP = imp_implementationWithBlock(^(id _self1, UNUserNotificationCenter *center, UNNotificationResponse *response, id completionHandler) {
+                    if ([_self1 respondsToSelector:newpushSel]) {
+                        [NSObject performSelector:newpushSel onTarget:_self1 withArguments:@[center, response, completionHandler]];
+                    }
+                    
+                    
+                    NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+                    UNNotificationRequest *request = response.notification.request;
+                    NSDictionary *userInfo = request.content.userInfo;
+                    if (userInfo) {
+                        [properties addEntriesFromDictionary:userInfo];
+                    }
+                    properties[@"title"] = request.content.title;
+                    properties[@"body"] = request.content.body;
+                    
+                    [[TDAppLaunchReason sharedInstance] clearAppLaunchParams];
+                    [TDAppLaunchReason sharedInstance].appLaunchParams = @{@"url": @"",
+                                                 @"data": [TDCommonUtil dictionary:properties]};
+                });
+                __td_td_swizzleWithOriSELStr([UNUserNotificationCenter currentNotificationCenter].delegate, pushSel, newpushSel, newpushSelIMP);
+            });
+            __td_td_swizzleWithOriSELStr([UNUserNotificationCenter currentNotificationCenter], pushDelegateSel, newPushDelegateSel, newPushDelegateIMP);
+        }
+    }
 }
 
 + (TDAppLaunchReason *)sharedInstance {
@@ -160,70 +227,6 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
     });
     __td_td_swizzleWithOriSELStr(applicationDelegate, remotePushSelString, newRemotePushSel, newRemotePushIMP);
     
-    
-    if (@available(iOS 10.0, *)) {
-        // 要求推送的代理需要在application:didFinishLaunchingWithOptions:设置
-        // 如果不是在application:didFinishLaunchingWithOptions:设置，那么冷启动时推送的消息会收集不到
-        if ([UNUserNotificationCenter currentNotificationCenter].delegate) {
-            NSString *pushSel = @"userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:";
-            SEL newpushSel = NSSelectorFromString([NSString stringWithFormat:@"td_%@", pushSel]);
-            IMP newpushSelIMP = imp_implementationWithBlock(^(id _self1, UNUserNotificationCenter *center, UNNotificationResponse *response, id completionHandler) {
-                if ([_self1 respondsToSelector:newpushSel]) {
-                    [NSObject performSelector:newpushSel onTarget:_self1 withArguments:@[center, response, completionHandler]];
-                }
-                
-                
-                NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
-                UNNotificationRequest *request = response.notification.request;
-                NSDictionary *userInfo = request.content.userInfo;
-                if (userInfo) {
-                    [properties addEntriesFromDictionary:userInfo];
-                }
-                properties[@"title"] = request.content.title;
-                properties[@"body"] = request.content.body;
-                
-                [self clearAppLaunchParams];
-                weakSelf.appLaunchParams = @{@"url": @"",
-                                             @"data": [TDCommonUtil dictionary:properties]};
-            });
-            __td_td_swizzleWithOriSELStr([UNUserNotificationCenter currentNotificationCenter].delegate, pushSel, newpushSel, newpushSelIMP);
-        } else {
-            if ([UNUserNotificationCenter currentNotificationCenter].delegate) {
-                NSString *pushDelegateSel = @"setDelegate:";
-                SEL newPushDelegateSel = NSSelectorFromString([NSString stringWithFormat:@"td_%@", pushDelegateSel]);
-                IMP newPushDelegateIMP = imp_implementationWithBlock(^(id _self, id delegate) {
-                    if ([_self respondsToSelector:newPushDelegateSel]) {
-                        [NSObject performSelector:newPushDelegateSel onTarget:_self withArguments:@[delegate]];
-                    }
-                    
-                    
-                    NSString *pushSel = @"userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:";
-                    SEL newpushSel = NSSelectorFromString([NSString stringWithFormat:@"td_%@", pushSel]);
-                    IMP newpushSelIMP = imp_implementationWithBlock(^(id _self1, UNUserNotificationCenter *center, UNNotificationResponse *response, id completionHandler) {
-                        if ([_self1 respondsToSelector:newpushSel]) {
-                            [NSObject performSelector:newpushSel onTarget:_self1 withArguments:@[center, response, completionHandler]];
-                        }
-                        
-                        
-                        NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
-                        UNNotificationRequest *request = response.notification.request;
-                        NSDictionary *userInfo = request.content.userInfo;
-                        if (userInfo) {
-                            [properties addEntriesFromDictionary:userInfo];
-                        }
-                        properties[@"title"] = request.content.title;
-                        properties[@"body"] = request.content.body;
-                        
-                        [self clearAppLaunchParams];
-                        weakSelf.appLaunchParams = @{@"url": @"",
-                                                     @"data": [TDCommonUtil dictionary:properties]};
-                    });
-                    __td_td_swizzleWithOriSELStr([UNUserNotificationCenter currentNotificationCenter].delegate, pushSel, newpushSel, newpushSelIMP);
-                });
-                __td_td_swizzleWithOriSELStr([UNUserNotificationCenter currentNotificationCenter], pushDelegateSel, newPushDelegateSel, newPushDelegateIMP);
-            }
-        }
-    }
     
     // hook deeplink回调方法
     NSString *deeplinkStr1 = @"application:handleOpenURL:";// ios(2.0, 9.0)
