@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2014-2020 Erik Doernenburg and contributors
+ *  Copyright (c) 2014-2021 Erik Doernenburg and contributors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use these files except in compliance with the License. You may obtain
@@ -15,14 +15,13 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "OCMFunctions.h"
-
+#import <OCMock/OCMFunctions.h>
 
 @interface OCMLocation : NSObject
 {
-    id          testCase;
-    NSString    *file;
-    NSUInteger  line;
+    id         testCase;
+    NSString  *file;
+    NSUInteger line;
 }
 
 + (instancetype)locationWithTestCase:(id)aTestCase file:(NSString *)aFile line:(NSUInteger)aLine;

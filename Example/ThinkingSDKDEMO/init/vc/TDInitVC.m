@@ -37,7 +37,7 @@
     appidTF.layer.borderColor = kTDColor2.CGColor;
     appidTF.layer.borderWidth = kTDBorder;
     //appidTF.text = @"7a055a4bd7ec423fa5294b4a2c1eff28";
-    appidTF.text = @"d265efeedb2d469ca275fc3bfe569631";
+    appidTF.text = @"22e445595b0f42bd8c5fe35bc44b88d6";
 //    appidTF.text = @"1b1c1fef65e3482bad5c9d0e6a823356";
     [appidTF setBackgroundColor:[UIColor whiteColor]];
     [appidTF mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -71,9 +71,9 @@
         make.width.mas_equalTo(kTDCommonW);
         make.centerY.mas_equalTo(serverDesLabel);
     }];
-//    serverTF.text = @"https://receiver-ta-dev.thinkingdata.cn";
-    
-    serverTF.text = @"https://receiver-ta-demo.thinkingdata.cn";
+    serverTF.text = @"https://receiver-ta-dev.thinkingdata.cn";
+//    serverTF.text = @"http://ta_test.receiver.thinkingdata.cn";
+//    serverTF.text = @"https://receiver-ta-demo.thinkingdata.cn";
 //    serverTF.text = @"http://receiver.ta.thinkingdata.cn/";
     
     UIButton* submitBtn = [UIButton new];
@@ -112,18 +112,26 @@
         TDConfig *config = [TDConfig new];
         config.appid = _appidTF.text;
         config.configureURL = _serverTF.text;
-        config.enableEncrypt = YES;
+//        config.name = @"123";
+//        config.autoTrackEventType = ThinkingAnalyticsEventTypeAppViewScreen;
+//        config.enableEncrypt = YES;
 //        config.debugMode = ThinkingAnalyticsDebug;
-        config.localSecretKey = ^TDSecretKey * _Nonnull{
-            return [[TDSecretKey alloc] initWithVersion:1
-                                              publicKey:@"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA53jcQ05rxq7Vk5FSbyKw8iQf/OSaTpH/Qh9Y3X3SKWDY9YI+kE52USeg66g1KzT10slMwB1lVBshi1ornhbq0wDoUQE2bzSti3X6AYm/qvv37y7J/XRKLyyFaQFYfdKsHlS6zyDep7pQvkMCIxQY/2ZresFDGD+wwcMFolp0qh/O1vRM8Zu4X/10xHJvzGbRRVgDnx/quycuXt6fmlFHVOQXd2yOinfv5QTWO39SWce960PyIv+MDgl09COOKEcxbBSQBotdT0s4FBh9wtHosO7qSY4JPmabxdxVqWleWgtR7PStEjNeZgCUzi0aAgt+g9ISI3dzfexh4vkn5p7xKwIDAQAB"];
-        };
-//        config.debugMode = ThinkingAnalyticsDebug;
+//        config.localSecretKey = ^TDSecretKey * _Nonnull{
+//            return [[TDSecretKey alloc] initWithVersion:1
+//                                              publicKey:@"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA53jcQ05rxq7Vk5FSbyKw8iQf/OSaTpH/Qh9Y3X3SKWDY9YI+kE52USeg66g1KzT10slMwB1lVBshi1ornhbq0wDoUQE2bzSti3X6AYm/qvv37y7J/XRKLyyFaQFYfdKsHlS6zyDep7pQvkMCIxQY/2ZresFDGD+wwcMFolp0qh/O1vRM8Zu4X/10xHJvzGbRRVgDnx/quycuXt6fmlFHVOQXd2yOinfv5QTWO39SWce960PyIv+MDgl09COOKEcxbBSQBotdT0s4FBh9wtHosO7qSY4JPmabxdxVqWleWgtR7PStEjNeZgCUzi0aAgt+g9ISI3dzfexh4vkn5p7xKwIDAQAB"];
+//        };
+        config.debugMode = ThinkingAnalyticsDebugOff;
         [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-        ThinkingAnalyticsSDK* instance =  [ThinkingAnalyticsSDK startWithConfig:config];
+        ThinkingAnalyticsSDK *instance =  [ThinkingAnalyticsSDK startWithConfig:config];
+        
+        ThinkingAnalyticsAutoTrackEventType autoTrackEventType = ThinkingAnalyticsEventTypeAll;
+        [instance enableAutoTrack:autoTrackEventType];
+        
 //        ThinkingAnalyticsSDK* instance =  [ThinkingAnalyticsSDK startWithAppId:_appidTF.text withUrl:_serverTF.text withConfig:config];
         [ThinkingSDKAPI setInstance:instance];
 //        [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+        
+        [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"yxiong"];
         
         if(_callback != nil)
         {

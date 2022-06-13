@@ -13,10 +13,11 @@
 #import "TDJSONUtil.h"
 #import "TDEventRecord.h"
 #import "TDLogging.h"
-#import "TDArchiveStore.h"
+
 
 @interface TDEncryptManager ()
 
+@property (nonatomic, strong) TDConfig *config;
 @property (nonatomic, strong) id<TDEncryptProtocol> encryptor;
 @property (nonatomic, copy) NSArray<id<TDEncryptProtocol>> *encryptors;
 @property (nonatomic, copy) NSString *encryptedSymmetricKey;
@@ -26,20 +27,39 @@
 
 @implementation TDEncryptManager
 
-- (void)setConfig:(TDConfig *)config {
-    _config = config;
+- (instancetype)initWithConfig:(TDConfig *)config
+{
+    self = [super init];
+    if (self) {
+        [self updateConfig:config];
+    }
+    return self;
+}
+
+- (void)updateConfig:(TDConfig *)config {
+    self.config = config;
     
+    /// 加载所有加密插件
     NSMutableArray *encryptors = [NSMutableArray array];
     [encryptors addObject:[TDRSAEncryptorPlugin new]];
     self.encryptors = encryptors;
+    
+    /// 获取当前加密插件
     [self updateEncryptor:[self loadCurrentSecretKey]];
 }
 
-
-
 - (void)handleEncryptWithConfig:(NSDictionary *)encryptConfig {
     
-    TDSecretKey *secretKey = [[TDSecretKey alloc] initWithVersion:(NSInteger)encryptConfig[@"version"]
+    if (!encryptConfig || ![encryptConfig isKindOfClass:[NSDictionary class]]) {
+        return;
+    }
+    
+    if (![encryptConfig objectForKey:@"version"]) {
+        return;
+    }
+    
+    NSInteger version = [[encryptConfig objectForKey:@"version"] integerValue];
+    TDSecretKey *secretKey = [[TDSecretKey alloc] initWithVersion:version
                                                         publicKey:encryptConfig[@"key"]
                                              asymmetricEncryption:encryptConfig[@"asymmetric"]
                                               symmetricEncryption:encryptConfig[@"symmetric"]];
@@ -56,19 +76,14 @@
     
     // 更新加密构造器
     [self updateEncryptor:secretKey];
-
 }
 
-// 根据密钥 -> 筛选出合适的加密组件 -> 保存加密后的对称密钥数据
+// 根据密钥 -> 筛选出合适的加密组件 -> 更新内存中加密插件
 - (void)updateEncryptor:(TDSecretKey *)obj {
     @try {
         // 加载密钥
         TDSecretKey *secretKey = obj;
         if (!secretKey.publicKey.length) {
-            return;
-        }
-
-        if (secretKey.version <= 0) {
             return;
         }
 
@@ -102,29 +117,7 @@
 }
 
 - (TDSecretKey *)loadCurrentSecretKey {
-    TDSecretKey *secretKey = nil;
-    
-    TDSecretKey *(^localSecretKey)(void) = self.config.localSecretKey;
-    if (localSecretKey) {
-        // 1. 加载本地密钥
-        secretKey = localSecretKey();
-
-        if (secretKey) {
-            TDLogDebug(@"Load secret key from loadSecretKey callback failed!");
-        } else {
-            TDLogDebug(@"Load secret key from loadSecretKey callback, pkv : %ld, public_key : %@", (long)secretKey.version, secretKey.publicKey);
-        }
-    } else {
-        // 2. 使用缓存
-        id secretKeyData = [TDArchiveStore unarchiveWithFileName:@"kTDEncryptSecretKey"
-                                                   instanceToken:[self.config getMapInstanceToken]];
-        secretKey = [NSKeyedUnarchiver unarchiveObjectWithData:secretKeyData];
-        if (secretKey) {
-            TDLogDebug(@"Load secret key from localSecretKey, pkv : %ld, public_key : %@", (long)secretKey.version, secretKey.publicKey);
-        } else {
-            TDLogDebug(@"Load secret key from localSecretKey failed!");
-        }
-    }
+    TDSecretKey *secretKey = self.config.secretKey;
     return secretKey;
 }
 
@@ -219,6 +212,10 @@
     NSString *publicKey = self.secretKey.publicKey;
     self.encryptedSymmetricKey = [self.encryptor encryptSymmetricKeyWithPublicKey:publicKey];
     return self.encryptedSymmetricKey != nil;
+}
+
+- (BOOL)isValid {
+    return _encryptor ? YES:NO;
 }
 
 @end

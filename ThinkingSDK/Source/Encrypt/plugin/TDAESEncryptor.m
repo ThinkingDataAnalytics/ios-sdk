@@ -20,9 +20,8 @@
 
 - (NSData *)key {
     if (!_key) {
-        // 默认使用 16 位长度随机字符串，RSA 和 ECC 保持一致
         NSUInteger length = 16;
-        NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&()*+,-./:;<=>?@[]^_{}|~";
+        NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         NSMutableString *randomString = [NSMutableString stringWithCapacity:length];
         for (NSUInteger i = 0; i < length; i++) {
             [randomString appendFormat: @"%C", [letters characterAtIndex:arc4random_uniform((uint32_t)[letters length])]];
@@ -40,12 +39,10 @@
 
 - (nullable NSString *)encryptData:(NSData *)obj {
     if (!obj) {
-//        SALogError(@"Enable AES encryption but the input obj is invalid!");
         return nil;
     }
 
     if (!self.key) {
-//        SALogError(@"Enable AES encryption but the secret key data is invalid!");
         return nil;
     }
     
@@ -53,11 +50,7 @@
     NSUInteger dataLength = [data length];
     size_t bufferSize = dataLength + kCCBlockSizeAES128;
     void *buffer = malloc(bufferSize);
-    
-//    unsigned char buf[16];
-//    arc4random_buf(buf, sizeof(buf));
-//    NSData *ivData = [NSData dataWithBytes:buf length:sizeof(buf)];
-    
+
     size_t numBytesEncrypted = 0;
     CCCryptorStatus cryptStatus = CCCrypt(kCCEncrypt,
                                           kCCAlgorithmAES128,
@@ -83,10 +76,10 @@
         return encryptString;
     } else {
         free(buffer);
-//        SALogError(@"AES encrypt data failed, with error Code: %d",(int)cryptStatus);
     }
     return nil;
 }
+
 
 
 @end

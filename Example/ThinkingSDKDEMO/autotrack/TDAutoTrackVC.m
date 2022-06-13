@@ -26,12 +26,41 @@
     return @"自动埋点";
 }
 
+/// 普通方式开启全埋点
+- (void)enableAutoTrackNormal {
+    NSDictionary *properties = @{@"auto_key1": @"auto_value1", @"auto_key2": @"auto_value2", @"auto_key3": @"auto_value3", @"auto_key4": @"auto_value4"};
+    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll properties:properties];
+}
+
+/// 传入回调的方式开启自动埋点，在主线程初始化
+- (void)enableAutoTrackWithCallbackInMainThread {
+    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll callback:^NSDictionary * _Nonnull(ThinkingAnalyticsAutoTrackEventType eventType, NSDictionary * _Nonnull properties) {
+        
+        return @{@"autoTrackCallbackTest": @"test1"};
+    }];
+}
+
+/// 传入回调的方式开启自动埋点，在子线程初始化
+- (void)enableAutoTrackWithCallbackInChildThread {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll callback:^NSDictionary * _Nonnull(ThinkingAnalyticsAutoTrackEventType eventType, NSDictionary * _Nonnull properties) {
+
+            return @{@"autoTrackCallbackTest": @"test1"};
+        }];
+    });
+}
+
 - (void)setData
 {
-    // 自动化采集自定义属性
-    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll
-                                                properties:@{@"auto_key1": @"auto_value1", @"auto_key2": @"auto_value2", @"auto_key3": @"auto_value3", @"auto_key4": @"auto_value4"}];
+    // 普通方式初始化自动化采集
+    [self enableAutoTrackNormal];
     
+    // 传入回调的方式开启自动埋点，在主线程初始化
+//    [self enableAutoTrackWithCallbackInMainThread];
+
+    // 传入回调的方式开启自动埋点，在子线程初始化
+//    [self enableAutoTrackWithCallbackInChildThread];
+
     // 更新自动化采集数据自定义属性
     [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppClick properties: @{@"auto_key1@@@": @"auto_click"}];
     [[ThinkingAnalyticsSDK sharedInstance] setAutoTrackProperties:ThinkingAnalyticsEventTypeAppEnd properties: @{@"auto_key2": @"auto_end"}];

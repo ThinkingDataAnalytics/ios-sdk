@@ -18,7 +18,26 @@
 
 #import <PushKit/PushKit.h>
 #import <CallKit/CallKit.h>
+#import <AppsFlyerLib/AppsFlyerLib.h>
+#import "IronSource/IronSource.h"
+#import "Adjust.h"
+#import "Branch/Branch.h"
+#import <AnyThinkSDK/AnyThinkSDK.h>
 
+// 目前ReYunFramework、TradPlusAds 的framework，在模拟器上不能运行
+#if (TARGET_IPHONE_SIMULATOR == 0)
+#import <ReYunFramework/Tracking.h>
+#import <TradPlusAds/TradPlus.h>
+#endif
+
+// 引入 JPush 功能所需头文件
+# import "JPUSHService.h"
+// iOS10 注册 APNs 所需头文件
+# ifdef NSFoundationVersionNumber_iOS_9_x_Max
+# import <UserNotifications/UserNotifications.h>
+# endif
+// 如果需要使用 idfa 功能所需要引入的头文件（可选）
+# import <AdSupport/AdSupport.h>
 
 @interface AppDelegate () <UNUserNotificationCenterDelegate, PKPushRegistryDelegate>
 
@@ -46,14 +65,307 @@
     [self.window makeKeyAndVisible];
     NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
     
+    NSLog(@" [THINKING]  %@", launchOptions);
+    
+
+//    [self test_eventTime];
+//    [self test_AppCrash];
+    
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        raise(SIGABRT);
+////        raise(SIGPIPE);
+//    });
+    
+//    [self testAPPPush:application launchOptions:launchOptions];
+
+//    [self test_thirdParty: launchOptions];
+    
+//    [self test_trackStatus];
+
+//    [self test_SecretKey];
+//    [self test_thirdParty];
+//    [self test1:application launchOptions:launchOptions];
+//    [self test_autoTrack];
+
+//    [JPUSHService setupWithOption:launchOptions appKey:@"4c03c99227364f137e25e77f"
+//                          channel:@""
+//                 apsForProduction:NO
+//            advertisingIdentifier:@""];
+
+//    [self appLaunchAction:application launchOptions:launchOptions];
+    
+    
     
     return YES;
+}
+
+- (void)test_multipleInstance {
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    
+    NSString *appid1 = @"";
+    NSString *url1 = @"https://receiver-ta-dev.thinkingdata.cn";
+    TDConfig *config1 = [TDConfig new];
+    config1.appid = appid1;
+    config1.configureURL = url1;
+    config1.debugMode = ThinkingAnalyticsDebug;
+    ThinkingAnalyticsSDK *instance1 = [ThinkingAnalyticsSDK startWithConfig:config1];
+    [instance1 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+    
+    NSString *appid2 = @"";
+    NSString *url2 = @"https://receiver-ta-dev.thinkingdata.cn";
+    TDConfig *config2 = [TDConfig new];
+    config2.appid = appid2;
+    config2.configureURL = url2;
+    config2.debugMode = ThinkingAnalyticsDebug;
+    ThinkingAnalyticsSDK *instance2 = [ThinkingAnalyticsSDK startWithConfig:config2];
+    [instance2 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+}
+
+/// 测试自动埋点
+- (void)test_autoTrack {
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    NSString *appid = @"22e445595b0f42bd8c5fe35bc44b88d6";
+    NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
+    TDConfig *config = [TDConfig new];
+    config.appid = appid;
+    config.configureURL = url;
+    config.debugMode = ThinkingAnalyticsDebug;
+    [ThinkingAnalyticsSDK startWithConfig:config];
+    
+    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAppStart | ThinkingAnalyticsEventTypeAppEnd | ThinkingAnalyticsEventTypeAppInstall callback:^NSDictionary * _Nonnull(ThinkingAnalyticsAutoTrackEventType eventType, NSDictionary * _Nonnull properties) {
+        if (eventType == ThinkingAnalyticsEventTypeAppStart) {
+            return @{@"addkey":@"addvalue"};
+        }
+        if (eventType == ThinkingAnalyticsEventTypeAppEnd) {
+            return @{@"updatekey":@"updatevalue"};
+        }
+        return @{};
+    }];
+}
+    
+- (void)test_eventTime {
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    NSString *appid = @"cf918051b394495ca85d1b7787ad7243";
+    NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
+    TDConfig *config = [TDConfig new];
+    config.appid = appid;
+    config.configureURL = url;
+    ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK startWithConfig:config];
+    
+    [instance timeEvent:@"yxiong"];
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    
+    NSLog(@"!!!! 1 %f", [[NSDate date] timeIntervalSince1970]);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@"!!!! 2 %f", [[NSDate date] timeIntervalSince1970]);
+        dispatch_semaphore_signal(semaphore);
+    });
+    
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    NSLog(@"!!!! 3 %f", [[NSDate date] timeIntervalSince1970]);
+    
+    [instance track:@"yxiong"];
+}
+
+- (void)test_AppCrash {
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    NSString *appid = @"cf918051b394495ca85d1b7787ad7243";
+    NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
+    TDConfig *config = [TDConfig new];
+    config.appid = appid;
+    config.configureURL = url;
+    ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK startWithConfig:config];
+    [instance optInTracking];
+    [instance enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+}
+
+- (void)test_trackStatus {
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    NSString *appid = @"cf918051b394495ca85d1b7787ad7243";
+    NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
+    TDConfig *config = [TDConfig new];
+    config.appid = appid;
+    config.configureURL = url;
+    ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK startWithConfig:config];
+//    [instance setTrackStatus: TATrackStatusPause];
+    [instance optOutTracking];
+    [instance login:@"shpyoucan"];
+    [instance track:@"trackStatus_test_event" properties:@{
+        @"info": @"测试数据上报状态-track0000000000"
+    }];
+    [instance user_set:@{
+        @"info": @"测试数据上报状态-user00000000000"
+    }];
+    
+    NSString *appid2 = @"22e445595b0f42bd8c5fe35bc44b88d6";
+    NSString *url2 = @"https://receiver-ta-dev.thinkingdata.cn";
+    TDConfig *config2 = [TDConfig new];
+    config2.appid = appid2;
+    config2.configureURL = url2;
+   ThinkingAnalyticsSDK *instance2 = [ThinkingAnalyticsSDK startWithConfig:config2];
+    [instance2 login:@"shpyoucan"];
+    [instance2 track:@"trackStatus_test_event" properties:@{
+        @"info2": @"测试数据上报状态-track"
+    }];
+    [instance2 user_set:@{
+        @"info2": @"测试数据上报状态-user"
+    }];
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(50 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        //通过之前创建的实例，调用createLightInstance生成轻实例
+        ThinkingAnalyticsSDK *lightInstance  = [instance createLightInstance];
+        [lightInstance login:@"123ABCabc@thinkingdata.cn"];
+        [lightInstance optOutTracking];
+        [lightInstance setTrackStatus:TATrackStatusPause];
+        [lightInstance track:@"some_event" properties:@{
+            @"info": @"轻实例-测试数据上报状态-track"
+        }];
+        [lightInstance user_set:@{
+            @"info": @"轻实例-测试数据上报状态-user"
+        }];
+        
+        [lightInstance flush];
+    });
+
+    
+}
+
+- (void)test_SecretKey  {
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    NSString *appid = @"cf918051b394495ca85d1b7787ad7243";
+    NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
+    TDConfig *config = [TDConfig new];
+    config.appid = appid;
+    config.configureURL = url;
+    config.enableEncrypt = YES;
+    config.secretKey = [[TDSecretKey alloc] initWithVersion:1 publicKey:@"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCzAKEGsq67Yd03/RF77VKJ/cQ3\nzfSboK1wzlQfH2E1fr504WCJHHL/UVgjfUGUjMLIN15FNEelp7TXLToqtYlqqMbE\nXCfSc14ulRatKQioYnJ8EzgUhG0HcRlulni6vxGJHR9iq4weDNyJFRaZuwIQSrUz\nIaiVq/3hYijxxhhFqQIDAQAB"];
+    [ThinkingAnalyticsSDK startWithConfig:config];
+    [[ThinkingAnalyticsSDK sharedInstance] login:@"login1"];
+    [[ThinkingAnalyticsSDK sharedInstance] track:@"secret_event" properties:@{@"a":@"asadas",@"b":@"djGNVWOzMC/4D2v/JGN.EsH3uP2stjoZ=+/", @"wangdaji":@"王大吉"}];
+    [[ThinkingAnalyticsSDK sharedInstance] user_uniqAppend:@{@"abc":@[@"aaa",@"bbb",@"ccc"]}];
+    [[ThinkingAnalyticsSDK sharedInstance] flush];
+    
+    
+    
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    NSString *appid1 = @"22e445595b0f42bd8c5fe35bc44b88d6";
+    NSString *url1 = @"https://receiver-ta-dev.thinkingdata.cn";
+    TDConfig *config1 = [TDConfig new];
+    config1.appid = appid1;
+    config1.configureURL = url1;
+    config1.enableEncrypt = NO;
+    ThinkingAnalyticsSDK *ins = [ThinkingAnalyticsSDK startWithConfig:config1];
+    [ins login:@"j9nb91876thmct8"];
+    [ins track:@"test_event" properties:@{@"a":@"asadas",@"b":@"djGNVWOzMC/4D2v/JGN.EsH3uP2stjoZ=+/", @"wangdaji":@"王大吉"}];
+    [ins user_uniqAppend:@{@"abc":@[@"aaa",@"bbb",@"ccc"]}];
+    [ins flush];
+}
+
+- (void)test_thirdParty:(NSDictionary *)launchOptions {
+    
+    [AppsFlyerLib shared].isDebug = 1;
+    [[AppsFlyerLib shared] setIsDebug:YES];
+    [AppsFlyerLib shared].appsFlyerDevKey = @"FVAvxeH7HPCVZ67QrjQPqQ";
+    [AppsFlyerLib shared].appleAppID = @"1562111162";
+    [AppsFlyerLib shared].delegate = self;
+
+    
+    
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    NSString *appid = @"1b1c1fef65e3482bad5c9d0e6a823356";
+    NSString *url = @"http://receiver.ta.thinkingdata.cn/";
+    TDConfig *config = [TDConfig new];
+    config.appid = appid;
+    config.configureURL = url;
+    [ThinkingAnalyticsSDK startWithConfig:config];
+    [[ThinkingAnalyticsSDK sharedInstance] login:@"j9nb91876thmct8"];
+    [[ThinkingAnalyticsSDK sharedInstance] track:@"timeEvent" properties:@{@"a":@"b", @"aa":@{@"a1":@"b1"}}];
+
+    
+    //MARK: AF发事件
+    [[ThinkingAnalyticsSDK sharedInstance] enableThirdPartySharing: TAThirdPartyShareTypeAPPSFLYER customMap:@{@"ta_data11":@"ta_value11"}];
+    [[AppsFlyerLib shared] logEvent:@"af_eventname" withValues:@{@"key":@"value"}];
+    [[AppsFlyerLib shared] start];
+
+    //MARK: IRON发事件
+    [[ThinkingAnalyticsSDK sharedInstance] enableThirdPartySharing: TAThirdPartyShareTypeIRONSOURCE];
+
+    [IronSource addImpressionDataDelegate:self];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self impressionDataDidSucceed:ISImpressionData.new];
+    });
+    
+    //MARK: Adjust
+    [[ThinkingAnalyticsSDK sharedInstance] enableThirdPartySharing:TAThirdPartyShareTypeADJUST];
+    NSString *yourAppToken = @"{YourAppToken}";
+    NSString *environment = ADJEnvironmentSandbox;
+    ADJConfig *adjustConfig = [ADJConfig configWithAppToken:yourAppToken
+                                      environment:environment];
+    
+    [Adjust appDidLaunch:adjustConfig];
+    
+    //MARK: Branch
+    [[ThinkingAnalyticsSDK sharedInstance] enableThirdPartySharing:TAThirdPartyShareTypeBRANCH];
+    // if you are using the TEST key
+    [Branch setUseTestBranchKey:YES];
+    // listener for Branch Deep Link data
+    [[Branch getInstance] initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary * _Nonnull params, NSError * _Nullable error) {
+      // do stuff with deep link data (nav to page, display content, etc)
+      NSLog(@"%@", params);
+    }];
+    
+    //MARK: TopOn
+    [[ThinkingAnalyticsSDK sharedInstance] enableThirdPartySharing:TAThirdPartyShareTypeTOPON];
+    [ATAPI setLogEnabled:YES];//Turn on debug logs
+    [ATAPI integrationChecking];
+    [[ATAPI sharedInstance] startWithAppID:@"a5acc73c25fbf5" appKey:@"4f7b9ac17decb9babec83aac078742c7" error:nil];
+    
+    
+    // 目前ReYunFramework、TradPlusAds 的framework，在模拟器上不能运行
+#if (TARGET_IPHONE_SIMULATOR == 0)
+    //MARK: 热云
+    [[ThinkingAnalyticsSDK sharedInstance] enableThirdPartySharing:TAThirdPartyShareTypeTRACKING];
+    [Tracking initWithAppKey:@"475938c702f7451a88eaffb524962649"withChannelId:@"_default_"];
+    
+    
+    //MARK: TradPlus
+    [[ThinkingAnalyticsSDK sharedInstance] enableThirdPartySharing:TAThirdPartyShareTypeTRADPLUS];
+    [TradPlus initSDK:@"tradplus后台的应用对应appid" completionBlock:^(NSError *error){
+            if (!error)
+            {
+                MSLogInfo(@"tradplus sdk init success!");
+            }
+        }];
+#endif
+    
+}
+
+- (void)impressionDataDidSucceed:(ISImpressionData *)impressionData {
+    NSLog(@"IronSource - impressionDataDidSucceed");
+}
+
+
+- (void)testAPPPush:(UIApplication *)application launchOptions:(NSDictionary *)launchOptions {
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    NSString *appid = @"1b1c1fef65e3482bad5c9d0e6a823356";
+    NSString *url = @"http://receiver.ta.thinkingdqata.cn121/";
+    TDConfig *config = [TDConfig new];
+    config.appid = appid;
+    config.configureURL = url;
+//    config.debugMode = ThinkingAnalyticsDebug;
+    config.launchOptions = launchOptions;
+    [ThinkingAnalyticsSDK startWithConfig:config];
+    
+    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+
+    [self registerLocalNotice];
+    [self registerRemoteNotifications:application];
 }
 
 - (void)test1:(UIApplication *)application launchOptions:(NSDictionary *)launchOptions {
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     NSString *appid = @"1b1c1fef65e3482bad5c9d0e6a823356";
-    NSString *url = @"http://receiver.ta.thinkingdata.cn/";
+    NSString *url = @"http://receiver.ta.thinkingdqata.cn121/";
     TDConfig *config = [TDConfig new];
     config.appid = appid;
     config.configureURL = url;
@@ -81,9 +393,12 @@
         [[ThinkingAnalyticsSDK sharedInstance] track:@"timeEvent"];
     });
     
+    [[ThinkingAnalyticsSDK sharedInstance] track:@"timeEvent" properties:@{@"a":@"b", @"aa":@{@"a1":@"b1"}}];
+    
 //    [[NSArray new] objectAtIndex:1];
     _queue1 = dispatch_queue_create("queue1", DISPATCH_QUEUE_SERIAL);
     _queue2 = dispatch_queue_create("queue2", DISPATCH_QUEUE_SERIAL);
+    
 }
 
 - (void)appLaunchAction:(UIApplication *)application launchOptions:(NSDictionary *)launchOptions {
@@ -125,7 +440,7 @@
 //    [[ThinkingAnalyticsSDK sharedInstance] track:@"Español" properties:@{@"key": @"value"}];
     
     // 本地推送
-    [self registerLocalNotice];
+//    [self registerLocalNotice];
     // 注册远程推送
     [self registerRemoteNotifications:application];
     // voip
@@ -219,6 +534,7 @@
 - (void)registerLocalNotice {
     if (@available(iOS 10.0, *)) {
         UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        center.delegate = self;
         UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
 
         content.title = @"本地推送--标题";
@@ -348,7 +664,6 @@
     // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
 }
 
-
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
@@ -364,6 +679,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+//    [[AppsFlyerLib shared] start];
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
@@ -408,17 +724,19 @@
 //}
 
 // ios(10.0)
-//- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler  API_AVAILABLE(ios(10.0)){
-//    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-//    [TDToastView1 showInWindow:UIApplication.sharedApplication.keyWindow text:@"2" duration:1];
-//    completionHandler();
-//}
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
+    completionHandler(UNNotificationPresentationOptionBadge|UNNotificationPresentationOptionAlert|UNNotificationPresentationOptionSound);
+}
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
+    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+    completionHandler();
+}
 
-// ios(3.0, 10.0) 远程推送
-//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
-//    [TDToastView1 showInWindow:UIApplication.sharedApplication.keyWindow text:@"3" duration:1];
-//    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-//}
+// ios(3.0, 10.0) 点击远程推送/前台时收到推送
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+
+    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+}
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     NSString *token;
@@ -435,6 +753,9 @@
     }
     
     NSLog(@" [THINKING] @@@@@@deviceToken==%@",token);
+    
+    /// Required - 注册 DeviceToken
+      [JPUSHService registerDeviceToken:deviceToken];
 }
 
 -(void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {

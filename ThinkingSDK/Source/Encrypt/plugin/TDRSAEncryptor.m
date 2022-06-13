@@ -27,19 +27,16 @@
 
 - (NSString *)encryptData:(NSData *)data {
     if (!data) {
-//        SALogError(@"Enable RSA encryption but the input obj is invalid!");
         return nil;
     }
 
     NSString *asymmetricPublicKey = self.key;
     if (!asymmetricPublicKey) {
-//        SALogError(@"Enable RSA encryption but the public key is invalid!");
         return nil;
     }
     
     SecKeyRef keyRef = [self addPublicKey:asymmetricPublicKey];
     if (!keyRef) {
-//        SALogError(@"Enable RSA encryption but init public SecKeyRef failed!");
         return nil;
     }
     
@@ -68,7 +65,6 @@
                                &outlen
                                );
         if (status != 0) {
-//            SALogError(@"SecKeyEncrypt fail. Error Code: %d", (int)status);
             ret = nil;
             break;
         }else{
@@ -85,7 +81,6 @@
 - (SecKeyRef)addPublicKey:(NSString *)aymmetricPublicKey {
     NSString *key = [aymmetricPublicKey copy];
     
-    // This will be base64 encoded, decode it.
     NSData *data = [[NSData alloc] initWithBase64EncodedString:key options:NSDataBase64DecodingIgnoreUnknownCharacters];
     data = [self stripPublicKeyHeader:data];
     if (!data) {

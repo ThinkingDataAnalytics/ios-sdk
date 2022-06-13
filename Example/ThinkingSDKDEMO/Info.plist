@@ -236,10 +236,6 @@
 	<string>aa</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>thinkingdata-定位</string>
-	<key>TDDisPresetProperties</key>
-	<array>
-		<string>#disk</string>
-	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SpaceMono-Regular.ttf</string>
@@ -300,5 +296,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	
 </dict>
 </plist>

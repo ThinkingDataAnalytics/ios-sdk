@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2014-2020 Erik Doernenburg and contributors
+ *  Copyright (c) 2014-2021 Erik Doernenburg and contributors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use these files except in compliance with the License. You may obtain
@@ -14,8 +14,8 @@
  *  under the License.
  */
 
-#import "OCMInvocationExpectation.h"
 #import "NSInvocation+OCMAdditions.h"
+#import "OCMInvocationExpectation.h"
 
 
 @implementation OCMInvocationExpectation
@@ -29,7 +29,7 @@
 
 - (BOOL)isMatchAndReject
 {
-  return matchAndReject;
+    return matchAndReject;
 }
 
 - (BOOL)isSatisfied
@@ -61,7 +61,6 @@
         isSatisfied = YES;
     }
 }
-
 
 
 @end

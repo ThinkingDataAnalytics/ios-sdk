@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2009-2020 Erik Doernenburg and contributors
+ *  Copyright (c) 2009-2021 Erik Doernenburg and contributors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use these files except in compliance with the License. You may obtain
@@ -15,22 +15,24 @@
  */
 
 #import "OCMBoxedReturnValueProvider.h"
-#import "OCMFunctionsPrivate.h"
 #import "NSValue+OCMAdditions.h"
+#import "OCMFunctionsPrivate.h"
 
 
 @implementation OCMBoxedReturnValueProvider
 
 - (void)handleInvocation:(NSInvocation *)anInvocation
 {
-	const char *returnType = [[anInvocation methodSignature] methodReturnType];
-    NSUInteger returnTypeSize = [[anInvocation methodSignature] methodReturnLength];
-    char valueBuffer[returnTypeSize];
+    NSUInteger valueSize = 0;
     NSValue *returnValueAsNSValue = (NSValue *)returnValue;
+    NSGetSizeAndAlignment([returnValueAsNSValue objCType], &valueSize, NULL);
+    char valueBuffer[valueSize];
     [returnValueAsNSValue getValue:valueBuffer];
 
+    const char *returnType = [[anInvocation methodSignature] methodReturnType];
+
     if([self isMethodReturnType:returnType compatibleWithValueType:[returnValueAsNSValue objCType]
-                value:valueBuffer valueSize:returnTypeSize])
+                value:valueBuffer valueSize:valueSize])
     {
         [anInvocation setReturnValue:valueBuffer];
     }
@@ -57,6 +59,5 @@
 
     return OCMEqualTypesAllowingOpaqueStructs(returnType, valueType);
 }
-
 
 @end

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2009-2020 Erik Doernenburg and contributors
+ *  Copyright (c) 2009-2021 Erik Doernenburg and contributors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use these files except in compliance with the License. You may obtain
@@ -21,18 +21,18 @@
 
 - (id)initWithValue:(id)aValue
 {
-    if ((self = [super init]))
+    if((self = [super init]))
     {
         value = [aValue retain];
     }
-	
-	return self;
+
+    return self;
 }
 
 - (void)dealloc
 {
-	[value release];
-	[super dealloc];
+    [value release];
+    [super dealloc];
 }
 
 - (void)handleArgument:(id)arg

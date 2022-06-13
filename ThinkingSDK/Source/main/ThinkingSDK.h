@@ -36,9 +36,3 @@
 #else
 #import "TDDeviceInfo.h"
 #endif
-
-#if __has_include(<ThinkingSDK/TDSecretKey.h>)
-#import <ThinkingSDK/TDSecretKey.h>
-#else
-#import "TDSecretKey.h"
-#endif

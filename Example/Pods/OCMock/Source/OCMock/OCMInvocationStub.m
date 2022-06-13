@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2014-2020 Erik Doernenburg and contributors
+ *  Copyright (c) 2014-2021 Erik Doernenburg and contributors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use these files except in compliance with the License. You may obtain
@@ -14,12 +14,13 @@
  *  under the License.
  */
 
+#import "NSInvocation+OCMAdditions.h"
 #import "OCMInvocationStub.h"
 #import "OCMArg.h"
 #import "OCMArgAction.h"
-#import "NSInvocation+OCMAdditions.h"
 
 #define UNSET_RETURN_VALUE_MARKER ((id)0x01234567)
+
 
 @implementation OCMInvocationStub
 
@@ -51,8 +52,11 @@
 - (void)handleInvocation:(NSInvocation *)anInvocation
 {
     [self invokeArgActionsForInvocation:anInvocation];
+    id target = [anInvocation target];
 
-    if([anInvocation methodIsInInitFamily])
+    BOOL isInInitFamily = [anInvocation methodIsInInitFamily];
+    BOOL isInCreateFamily = isInInitFamily ? NO : [anInvocation methodIsInCreateFamily];
+    if(isInInitFamily || isInCreateFamily)
     {
         id returnVal = UNSET_RETURN_VALUE_MARKER;
         [anInvocation setReturnValue:&returnVal];
@@ -61,8 +65,25 @@
 
         [anInvocation getReturnValue:&returnVal];
         if(returnVal == UNSET_RETURN_VALUE_MARKER)
+            [NSException raise:NSInvalidArgumentException format:@"%@ was stubbed but no return value set. A return value is required for all alloc/copy/new/mutablecopy/init methods. If you intended to return nil, make this explicit with .andReturn(nil)", NSStringFromSelector([anInvocation selector])];
+
+        if(isInCreateFamily)
         {
-            [NSException raise:NSInvalidArgumentException format:@"%@ was stubbed but no return value set. A return value is required for an init method. If you intended to return nil, make this explicit with .andReturn(nil)", NSStringFromSelector([anInvocation selector])];
+            // methods that "create" an object return it with an extra retain count
+            [returnVal retain];
+        }
+        if(isInInitFamily)
+        {
+            // init family methods "consume" self and retain their return value. Do the retain
+            // first in case the return value and self are the same.  The analyzer doesn't
+            // understand this; see #456 for details. In this case we also need to do something
+            // harmless with target or else the analyzer will complain about it not being used.
+            [returnVal retain];
+#ifndef __clang_analyzer__
+            [target release];
+#else
+            [target class];
+#endif
         }
     }
     else

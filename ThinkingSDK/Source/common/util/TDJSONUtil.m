@@ -16,11 +16,17 @@
     id obj = [TDJSONUtil JSONSerializableObjectForObject:object];
     NSData *data = nil;
     
-    if ([NSJSONSerialization isValidJSONObject:obj]) {
-        data = [NSJSONSerialization dataWithJSONObject:obj options:0 error:NULL];
-    } else {
-//        TDLogError(@"Invalid json: %@", obj);
+    
+    
+    @try {
+        if ([NSJSONSerialization isValidJSONObject:obj]) {
+            data = [NSJSONSerialization dataWithJSONObject:obj options:0 error:NULL];
+        }
     }
+    @catch (NSException *exception) {
+        
+    }
+    
     
     return data;
 }

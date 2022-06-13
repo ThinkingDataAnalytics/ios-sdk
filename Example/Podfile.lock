@@ -1,43 +1,97 @@
 PODS:
+  - Adjust (4.29.7):
+    - Adjust/Core (= 4.29.7)
+  - Adjust/Core (4.29.7)
+  - AnyThinkiOS (5.9.20):
+    - AnyThinkiOS/AnyThinkSDK (= 5.9.20)
+  - AnyThinkiOS/AnyThinkSDK (5.9.20)
+  - AppsFlyerFramework (6.5.3):
+    - AppsFlyerFramework/Main (= 6.5.3)
+  - AppsFlyerFramework/Main (6.5.3)
   - Aspects (1.4.1)
-  - CocoaAsyncSocket (7.6.4)
-  - HMCThreadSafeMutableCollection (0.1.0)
+  - BaiduMobAdSDK (4.83)
+  - Branch (1.39.4)
+  - IronSourceSDK (7.1.8.0)
+  - JCore (3.2.0)
+  - JPush (4.4.0):
+    - JCore (>= 2.0.0)
   - Masonry (1.1.0)
-  - OCMock (3.7.1)
-  - ThinkingSDK (2.7.5)
-  - YYModel (1.0.4)
+  - OCMock (3.9.1)
+  - ThinkingSDK (2.8.1):
+    - ThinkingSDK/Core (= 2.8.1)
+    - ThinkingSDK/Extension (= 2.8.1)
+  - ThinkingSDK/Core (2.8.1)
+  - ThinkingSDK/Extension (2.8.1):
+    - ThinkingSDK/Core
+  - TradPlusAdSDK (6.9.10):
+    - TradPlusAdSDK/TradPlusAds (= 6.9.10)
+  - TradPlusAdSDK/BaiduAdapter (6.9.10):
+    - TradPlusAdSDK/TradPlusAds
+  - TradPlusAdSDK/TPADXAdapter (6.9.10):
+    - TradPlusAdSDK/TradPlusAds
+  - TradPlusAdSDK/TPCrossAdapter (6.9.10):
+    - TradPlusAdSDK/TradPlusAds
+  - TradPlusAdSDK/TradPlusAds (6.9.10)
+  - YYKit (1.0.9):
+    - YYKit/no-arc (= 1.0.9)
+  - YYKit/no-arc (1.0.9)
 
 DEPENDENCIES:
+  - Adjust (~> 4.29.2)
+  - AnyThinkiOS
+  - AppsFlyerFramework
   - Aspects
-  - CocoaAsyncSocket
-  - HMCThreadSafeMutableCollection
+  - BaiduMobAdSDK (= 4.83)
+  - Branch (~> 1.39.1)
+  - IronSourceSDK (= 7.1.8.0)
+  - JPush (= 4.4.0)
   - Masonry
   - OCMock
   - ThinkingSDK (from `../`)
-  - YYModel
+  - ThinkingSDK/Extension (from `../`)
+  - TradPlusAdSDK (= 6.9.10)
+  - TradPlusAdSDK/BaiduAdapter (= 6.9.10)
+  - TradPlusAdSDK/TPADXAdapter (= 6.9.10)
+  - TradPlusAdSDK/TPCrossAdapter (= 6.9.10)
+  - YYKit (from `../YYKit`)
 
 SPEC REPOS:
   trunk:
+    - Adjust
+    - AnyThinkiOS
+    - AppsFlyerFramework
     - Aspects
-    - CocoaAsyncSocket
-    - HMCThreadSafeMutableCollection
+    - BaiduMobAdSDK
+    - Branch
+    - IronSourceSDK
+    - JCore
+    - JPush
     - Masonry
     - OCMock
-    - YYModel
+    - TradPlusAdSDK
 
 EXTERNAL SOURCES:
   ThinkingSDK:
     :path: "../"
+  YYKit:
+    :path: "../YYKit"
 
 SPEC CHECKSUMS:
+  Adjust: 91a06a01e4bb35b432e26b5d5bb8995b95fc381c
+  AnyThinkiOS: fbdd5acb17db31919937b1ae8086814c89e4e2b8
+  AppsFlyerFramework: daff1a8ac502cef2c9408794bac68c852e3483d4
   Aspects: 7595ba96a6727a58ebcbfc954497fc5d2fdde546
-  CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
-  HMCThreadSafeMutableCollection: 16d137f0d3480fe66fe04ba7e288a7e5a5e3d224
+  BaiduMobAdSDK: d3006333637dacac0ef9808655a686e18019f033
+  Branch: d21c40c47b5c15c6ab709cdf7d965a50059e0546
+  IronSourceSDK: 89168ab902229f4447f401dc8d2ac51308a85524
+  JCore: 9cefb7c7e030b41a62e019e97139ae6e58750173
+  JPush: b7d00f2cc78766e76c8abb30a5741fe94d21e5bc
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
-  OCMock: 75fbeaa46a9b11f8c182bbb1d1f7e9a35ccc9955
-  ThinkingSDK: 08d4dbc5204905888fa8dff103a676db6c517e59
-  YYModel: 2a7fdd96aaa4b86a824e26d0c517de8928c04b30
+  OCMock: 9491e4bec59e0b267d52a9184ff5605995e74be8
+  ThinkingSDK: aeadb9a7ec34fcf493e898efcf686a05b90404f1
+  TradPlusAdSDK: 43b6e23b646bf347d578723de9e7b9dec4f55eeb
+  YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: 16e1f21ae263b7d809406b3e6c867ad1734da8a3
+PODFILE CHECKSUM: 3e8d4d52ac0ad99765992db428b632cc075c1975
 
 COCOAPODS: 1.10.0.beta.1

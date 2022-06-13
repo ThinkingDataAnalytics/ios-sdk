@@ -1,6 +1,0 @@
-framework module HMCThreadSafeMutableCollection {
-  umbrella header "HMCThreadSafeMutableCollection-umbrella.h"
-
-  export *
-  module * { export * }
-}

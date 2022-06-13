@@ -9,7 +9,7 @@
 
 @interface TDSecretKey ()
 
-@property (nonatomic, assign) NSInteger version;
+@property (nonatomic, assign) NSUInteger version;
 @property (nonatomic, copy) NSString *publicKey;
 @property (nonatomic, copy) NSString *symmetricEncryption;
 @property (nonatomic, copy) NSString *asymmetricEncryption;
@@ -19,7 +19,7 @@
 @implementation TDSecretKey
 
 
-- (instancetype)initWithVersion:(NSInteger)version
+- (instancetype)initWithVersion:(NSUInteger)version
                       publicKey:(NSString *)publicKey {
     
     return [[TDSecretKey alloc] initWithVersion:version
@@ -28,7 +28,7 @@
                             symmetricEncryption:@"AES"];
 }
 
-- (instancetype)initWithVersion:(NSInteger)version
+- (instancetype)initWithVersion:(NSUInteger)version
                       publicKey:(NSString *)publicKey
            asymmetricEncryption:(NSString *)asymmetricEncryption
             symmetricEncryption:(NSString *)symmetricEncryption {
@@ -61,12 +61,20 @@
 }
 
 - (BOOL)isValid {
-    if (self.publicKey.length &&
-        self.symmetricEncryption.length &&
-        self.asymmetricEncryption.length) {
+    if (self.publicKey.length && self.symmetricEncryption.length && self.asymmetricEncryption.length) {
         return YES;
     }
     return NO;
 }
+
+- (id)copyWithZone:(NSZone *)zone {
+    TDSecretKey *secretKey = [[[self class] allocWithZone:zone] init];
+    secretKey.version = self.version;
+    secretKey.publicKey = [self.publicKey copy];
+    secretKey.symmetricEncryption = [self.symmetricEncryption copy];
+    secretKey.asymmetricEncryption = [self.asymmetricEncryption copy];
+    return secretKey;
+}
+
 
 @end

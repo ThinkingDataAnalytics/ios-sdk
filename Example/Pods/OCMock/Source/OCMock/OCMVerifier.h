@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2014-2020 Erik Doernenburg and contributors
+ *  Copyright (c) 2014-2021 Erik Doernenburg and contributors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use these files except in compliance with the License. You may obtain
@@ -14,7 +14,7 @@
  *  under the License.
  */
 
-#import "OCMRecorder.h"
+#import <OCMock/OCMRecorder.h>
 
 @class OCMLocation;
 @class OCMQuantifier;
@@ -24,6 +24,6 @@
 @property(strong) OCMLocation *location;
 @property(strong) OCMQuantifier *quantifier;
 
-- (instancetype)withQuantifier:(OCMQuantifier *)quantifier;
+- (id)withQuantifier:(OCMQuantifier *)quantifier;
 
 @end

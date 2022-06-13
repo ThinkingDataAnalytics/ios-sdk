@@ -91,17 +91,19 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
         TDH5VC *VC = [TDH5VC new];
         [[TDUtil jsd_findVisibleViewController].navigationController pushViewController:VC animated:YES];
     }];
+    
+    __weak typeof(self) weakSelf = self;
     ActionModel *initModel = [[ActionModel alloc] initWithName:@"初始化" action:^{
         TDInitVC *VC = [TDInitVC new];
         VC.callback = ^{
-            [self.commands removeAllObjects];
-            [self.commands addObject:userIDModel];
-            [self.commands addObject:userModel];
-            [self.commands addObject:trackModel];
-            [self.commands addObject:autoModel];
-            [self.commands addObject:h5Model];
-            [self.commands addObject:otherModel];
-            [self.tableView reloadData];
+            [weakSelf.commands removeAllObjects];
+            [weakSelf.commands addObject:userIDModel];
+            [weakSelf.commands addObject:userModel];
+            [weakSelf.commands addObject:trackModel];
+            [weakSelf.commands addObject:autoModel];
+            [weakSelf.commands addObject:h5Model];
+            [weakSelf.commands addObject:otherModel];
+            [weakSelf.tableView reloadData];
         };
         [TDUtil.currentVC.navigationController pushViewController:VC animated:YES];
         
@@ -445,6 +447,8 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
    // [self.navigationController setNavigationBarHidden:YES];
+    
+    [[ThinkingAnalyticsSDK sharedInstanceWithAppid:@"123"] trackFromAppExtensionWithAppGroupId:@"group.cn.thinking.thinkingdata"];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

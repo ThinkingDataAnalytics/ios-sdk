@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2016-2020 Erik Doernenburg and contributors
+ *  Copyright (c) 2016-2021 Erik Doernenburg and contributors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use these files except in compliance with the License. You may obtain
@@ -18,7 +18,7 @@
 
 @interface OCMQuantifier : NSObject
 {
-    NSUInteger    expectedCount;
+    NSUInteger expectedCount;
 }
 
 + (instancetype)never;
@@ -33,10 +33,10 @@
 @end
 
 
-#define OCMNever()          ([OCMQuantifier never])
-#define OCMTimes(n)         ([OCMQuantifier exactly:(n)])
-#define OCMAtLeast(n)       ([OCMQuantifier atLeast:(n)])
-#define OCMAtMost(n)        ([OCMQuantifier atMost:(n)])
+#define OCMNever()      ([OCMQuantifier never])
+#define OCMTimes(n)     ([OCMQuantifier exactly:(n)])
+#define OCMAtLeast(n)   ([OCMQuantifier atLeast:(n)])
+#define OCMAtMost(n)    ([OCMQuantifier atMost:(n)])
 
 #ifndef OCM_DISABLE_SHORT_QSYNTAX
 #define never()         OCMNever()

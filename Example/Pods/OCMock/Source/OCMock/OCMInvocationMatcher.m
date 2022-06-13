@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2014-2020 Erik Doernenburg and contributors
+ *  Copyright (c) 2014-2021 Erik Doernenburg and contributors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use these files except in compliance with the License. You may obtain
@@ -15,15 +15,15 @@
  */
 
 #import <objc/runtime.h>
-#import <OCMock/OCMArg.h>
-#import <OCMock/OCMConstraint.h>
-#import "OCMPassByRefSetter.h"
 #import "NSInvocation+OCMAdditions.h"
 #import "OCMInvocationMatcher.h"
+#import "OCMArg.h"
+#import "OCMConstraint.h"
 #import "OCMFunctionsPrivate.h"
+#import "OCMPassByRefSetter.h"
 
 
-@interface NSObject(HCMatcherDummy)
+@interface NSObject (HCMatcherDummy)
 - (BOOL)matches:(id)item;
 @end
 
@@ -76,8 +76,7 @@
 {
     if(sel == [recordedInvocation selector])
         return YES;
-    if(OCMIsAliasSelector(sel) &&
-       OCMOriginalSelectorForAlias(sel) == [recordedInvocation selector])
+    if(OCMIsAliasSelector(sel) && OCMOriginalSelectorForAlias(sel) == [recordedInvocation selector])
         return YES;
 
     return NO;
@@ -131,11 +130,9 @@
         }
         else
         {
-            if(([recordedArg class] == [NSNumber class]) &&
-                    ([(NSNumber*)recordedArg compare:(NSNumber*)passedArg] != NSOrderedSame))
+            if(([recordedArg class] == [NSNumber class]) && ([(NSNumber *)recordedArg compare:(NSNumber *)passedArg] != NSOrderedSame))
                 return NO;
-            if(([recordedArg isEqual:passedArg] == NO) &&
-                    !((recordedArg == nil) && (passedArg == nil)))
+            if(([recordedArg isEqual:passedArg] == NO) && !((recordedArg == nil) && (passedArg == nil)))
                 return NO;
         }
     }

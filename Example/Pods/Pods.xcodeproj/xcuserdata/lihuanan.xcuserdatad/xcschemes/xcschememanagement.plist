@@ -4,17 +4,47 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Adjust.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>AnyThinkiOS.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>AppsFlyerFramework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Aspects.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>CocoaAsyncSocket.xcscheme</key>
+		<key>BaiduMobAdSDK.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>HMCThreadSafeMutableCollection.xcscheme</key>
+		<key>Branch.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>IronSourceSDK.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>JCore.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>JPush.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -29,7 +59,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Pods-ThinkingSDKDEMO-ThinkingSDKDEMOUITests.xcscheme</key>
+		<key>Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -39,12 +69,27 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Pods-ThinkingShare.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>ThinkingSDK-Core-Extension.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>ThinkingSDK.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>YYModel.xcscheme</key>
+		<key>TradPlusAdSDK.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>YYKit.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
