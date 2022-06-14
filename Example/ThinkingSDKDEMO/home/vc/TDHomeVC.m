@@ -38,7 +38,22 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
     [super viewDidLoad];
     NSString *homePath = NSHomeDirectory();
     
-    NSLog(@"Home目录：%@",homePath);  
+    NSLog(@"Home目录：%@",homePath);
+    
+//    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+//        NSLog(@"##########2222");
+//        [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+//        NSLog(@"##########3333");
+//    });
+//    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+}
+
+- (NSDictionary *)getTrackPropertiesWithAppid {
+    return @{@"instanceName1" : @{@"auto_key1" : @"auto_value1"},
+             @"instanceName2" : @{@"auto_key2" : @"auto_value2"},
+             @"instanceName3" : @{@"auto_key3" : @"auto_value3"},
+             @"22e445595b0f42bd8c5fe35bc44b88d6" : @{@"auto_key" : @"auto_value"},
+            };
 }
 
 //- (TrackAPIViewController *)trackAPIVCWithApis:(NSArray *)commands {
@@ -76,17 +91,19 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
         TDH5VC *VC = [TDH5VC new];
         [[TDUtil jsd_findVisibleViewController].navigationController pushViewController:VC animated:YES];
     }];
+    
+    __weak typeof(self) weakSelf = self;
     ActionModel *initModel = [[ActionModel alloc] initWithName:@"初始化" action:^{
         TDInitVC *VC = [TDInitVC new];
         VC.callback = ^{
-            [self.commands removeAllObjects];
-            [self.commands addObject:userIDModel];
-            [self.commands addObject:userModel];
-            [self.commands addObject:trackModel];
-            [self.commands addObject:autoModel];
-            [self.commands addObject:h5Model];
-            [self.commands addObject:otherModel];
-            [self.tableView reloadData];
+            [weakSelf.commands removeAllObjects];
+            [weakSelf.commands addObject:userIDModel];
+            [weakSelf.commands addObject:userModel];
+            [weakSelf.commands addObject:trackModel];
+            [weakSelf.commands addObject:autoModel];
+            [weakSelf.commands addObject:h5Model];
+            [weakSelf.commands addObject:otherModel];
+            [weakSelf.tableView reloadData];
         };
         [TDUtil.currentVC.navigationController pushViewController:VC animated:YES];
         
@@ -253,7 +270,7 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
     //      }]];
     
     // MARK: options
-    NSMutableArray *optionArray = [NSMutableArray array];
+//    NSMutableArray *optionArray = [NSMutableArray array];
 //    [optionArray addObject:[[ActionModel alloc]initWithName:@"Change Customer LibName & LibVersion" action:^{
 //        [ThinkingSDKAPI testChangeLibNameAndLibVersion];
 //    }]];
@@ -430,6 +447,8 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
    // [self.navigationController setNavigationBarHidden:YES];
+    
+    [[ThinkingAnalyticsSDK sharedInstanceWithAppid:@"123"] trackFromAppExtensionWithAppGroupId:@"group.cn.thinking.thinkingdata"];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

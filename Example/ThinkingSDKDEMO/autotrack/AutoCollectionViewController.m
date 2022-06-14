@@ -43,7 +43,7 @@
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"UICollectionViewCell";
     TDColCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    [cell setTitle:[[NSString alloc]initWithFormat:@"TA_%li",indexPath.row]];
+    [cell setTitle:[[NSString alloc]initWithFormat:@"TA_%li",(long)indexPath.row]];
 //    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
 //    label.textColor = UIColor.tc9;
 //    label.textAlignment = NSTextAlignmentCenter;

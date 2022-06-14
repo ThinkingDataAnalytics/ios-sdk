@@ -14,6 +14,13 @@
 @end
 
 @implementation TDEventVC
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [[ThinkingAnalyticsSDK sharedInstance] track:@"yxiong"];
+}
+
 - (NSString*)rightTitle
 {
     return @"事件发送功能";
@@ -51,10 +58,11 @@
     [self.commands addObject:[[ActionModel alloc]initWithName:@"设置动态公共事件属性" action:^{
         [ThinkingSDKAPI testSetDynamicsuper];
     }]];
+    
+    __weak typeof(self) weakSelf = self;
     [self.commands addObject:[[ActionModel alloc]initWithName:@"记录事件时长" action:^{
         [ThinkingSDKAPI testTimedEvent];
-        [self performSelector:@selector(eventEnd) withObject:nil afterDelay:2.];
-        
+        [weakSelf performSelector:@selector(eventEnd) withObject:nil afterDelay:15.];
     }]];
     
 }

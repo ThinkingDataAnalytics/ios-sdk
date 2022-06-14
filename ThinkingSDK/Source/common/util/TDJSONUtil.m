@@ -1,5 +1,5 @@
 #import "TDJSONUtil.h"
-#import "TDLogging.h"
+//#import "TDLogging.h"
 
 @implementation TDJSONUtil
 
@@ -16,11 +16,17 @@
     id obj = [TDJSONUtil JSONSerializableObjectForObject:object];
     NSData *data = nil;
     
-    if ([NSJSONSerialization isValidJSONObject:obj]) {
-        data = [NSJSONSerialization dataWithJSONObject:obj options:0 error:NULL];
-    } else {
-        TDLogError(@"Invalid json: %@", obj);
+    
+    
+    @try {
+        if ([NSJSONSerialization isValidJSONObject:obj]) {
+            data = [NSJSONSerialization dataWithJSONObject:obj options:0 error:NULL];
+        }
     }
+    @catch (NSException *exception) {
+        
+    }
+    
     
     return data;
 }
@@ -29,7 +35,13 @@
     if ([object isKindOfClass:[NSString class]]) {
         return object;
     } else if ([object isKindOfClass:[NSNumber class]]) {
+        // 浮点型精度丢失问题
         if ([object stringValue] && [[object stringValue] rangeOfString:@"."].location != NSNotFound) {
+            return [NSDecimalNumber decimalNumberWithDecimal:((NSNumber *)object).decimalValue];
+        }
+        // 科学计数法精度丢失问题
+        if ([object stringValue] && ([[object stringValue] rangeOfString:@"e"].location != NSNotFound ||
+                                     [[object stringValue] rangeOfString:@"E"].location != NSNotFound )) {
             return [NSDecimalNumber decimalNumberWithDecimal:((NSNumber *)object).decimalValue];
         }
         return object;
@@ -58,7 +70,6 @@
     }
     
     NSString *s = [object description];
-    TDLogError(@"%@ warning: property values should be valid json types. got: %@. coercing to: %@", self, [object class], s);
     return s;
 }
 

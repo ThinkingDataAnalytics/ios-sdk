@@ -1,6 +1,6 @@
 
 #import <UIKit/UIKit.h>
-#import <CocoaAsyncSocket/CocoaAsyncSocket.h>
+#import <CocoaAsyncSocket/GCDAsyncSocket.h>
 
 #define JAN_1970    		((uint64_t)0x83aa7e80)          // UNIX epoch in NTP's epoch:
                                                             // 1970-1900 (2,208,988,800s)

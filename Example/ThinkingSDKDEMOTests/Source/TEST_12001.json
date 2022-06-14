@@ -1,0 +1,18 @@
+[
+    {
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_12001_1",
+        "name":"验证重置用户属性的正确性",
+        "input":"{\"eventName\":\"eventName\",\"userSetProperties\":{\"userkey1\":\"uservalue1\",\"userkey2\":\"uservalue2\",\"userkey3\":\"uservalue3\"},\"removeUserSetkey\":\"userkey1\",\"type\":\"user_unset\"}",
+        "output":"",
+        "step":"传入用户属性字符串，验证内部创建的事件对象",
+        "expect":"事件对象包含属性userkey1，其值为0; #type为user_unset",
+        "description":"",
+        "result":false
+    }
+]

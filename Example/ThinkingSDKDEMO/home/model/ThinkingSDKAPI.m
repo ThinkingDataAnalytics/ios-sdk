@@ -20,7 +20,7 @@ ThinkingAnalyticsSDK* _instance;
     return _instance;
 }
 + (void)testTrack {
-    [_instance track:@"TA"];
+    [_instance track:@"a"];
 
 }
 

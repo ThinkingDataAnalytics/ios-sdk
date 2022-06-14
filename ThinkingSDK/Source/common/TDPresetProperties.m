@@ -7,6 +7,7 @@
 //
 
 #import "TDPresetProperties.h"
+#import "TDPresetProperties+TDDisProperties.h"
 
 @interface TDPresetProperties ()
 
@@ -37,6 +38,8 @@
     return self;
 }
 
+
+
 - (void)updateValuesWithDictionary:(NSDictionary *)dict {
     _bundle_id = dict[@"#bundle_id"]?:@"";
     _carrier = dict[@"#carrier"]?:@"";
@@ -52,6 +55,19 @@
     _zone_offset = dict[@"#zone_offset"]?:@(0);
 
     _presetProperties = [NSDictionary dictionaryWithDictionary:dict];
+    
+    // 过滤不需要的预置属性
+    NSMutableDictionary *updateProperties = [_presetProperties mutableCopy];
+    NSArray *propertykeys = updateProperties.allKeys;
+    NSArray *registerkeys = [TDPresetProperties disPresetProperties];
+    NSMutableSet *set1 = [NSMutableSet setWithArray:propertykeys];
+    NSMutableSet *set2 = [NSMutableSet setWithArray:registerkeys];
+    [set1 intersectSet:set2];// 求交集
+    if (set1.allObjects.count) {
+        [updateProperties removeObjectsForKeys:set1.allObjects];
+    }
+    
+    _presetProperties = updateProperties;
 }
 
 - (NSDictionary *)toEventPresetProperties {
