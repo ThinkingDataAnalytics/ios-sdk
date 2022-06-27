@@ -57,6 +57,6 @@ static TDPublicConfig* config;
 }
 + (NSString*)version
 {
-    return @"2.8.1";
+    return @"2.8.1.1";
 }
 @end
