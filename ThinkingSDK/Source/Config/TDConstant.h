@@ -182,7 +182,7 @@ typedef NS_OPTIONS(NSInteger, TAThirdPartyShareType) {
     TAThirdPartyShareTypeTRACKING           = 1 << 5,
     TAThirdPartyShareTypeTRADPLUS           = 1 << 6,
     
-    // 兼容老版本
+    
     TDThirdPartyShareTypeNONE               = TAThirdPartyShareTypeNONE,
     TDThirdPartyShareTypeAPPSFLYER          = TAThirdPartyShareTypeAPPSFLYER,
     TDThirdPartyShareTypeIRONSOURCE         = TAThirdPartyShareTypeIRONSOURCE,
