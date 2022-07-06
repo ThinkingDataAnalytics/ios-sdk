@@ -181,6 +181,16 @@ typedef NS_OPTIONS(NSInteger, TAThirdPartyShareType) {
     TAThirdPartyShareTypeTOPON              = 1 << 4,
     TAThirdPartyShareTypeTRACKING           = 1 << 5,
     TAThirdPartyShareTypeTRADPLUS           = 1 << 6,
+    
+    // 兼容老版本
+    TDThirdPartyShareTypeNONE               = TAThirdPartyShareTypeNONE,
+    TDThirdPartyShareTypeAPPSFLYER          = TAThirdPartyShareTypeAPPSFLYER,
+    TDThirdPartyShareTypeIRONSOURCE         = TAThirdPartyShareTypeIRONSOURCE,
+    TDThirdPartyShareTypeADJUST             = TAThirdPartyShareTypeADJUST,
+    TDThirdPartyShareTypeBRANCH             = TAThirdPartyShareTypeBRANCH,
+    TDThirdPartyShareTypeTOPON              = TAThirdPartyShareTypeTOPON,
+    TDThirdPartyShareTypeTRACKING           = TAThirdPartyShareTypeTRACKING,
+    TDThirdPartyShareTypeTRADPLUS           = TAThirdPartyShareTypeTRADPLUS,
 };
 
 //MARK: - 数据上报状态

@@ -8,10 +8,9 @@
 
 #import "TATrackTimer.h"
 #import "TATrackTimerItem.h"
-#import "TAThreadSafeDictionary.h"
 
 @interface TATrackTimer ()
-@property (nonatomic, strong) TAThreadSafeDictionary *events;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, TATrackTimerItem *> *events;
 
 @end
 
@@ -21,7 +20,7 @@
 {
     self = [super init];
     if (self) {
-        self.events = [TAThreadSafeDictionary dictionary];
+        self.events = [NSMutableDictionary dictionary];
     }
     return self;
 }
