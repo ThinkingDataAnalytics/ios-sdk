@@ -8,9 +8,8 @@
 
 #import "TDAppLaunchReason.h"
 #import <objc/runtime.h>
-#import "NSObject+TDUtil.h"
-#import "TDPresetProperties+TDDisProperties.h"
 #import "TDCommonUtil.h"
+#import "TDPresetProperties+TDDisProperties.h"
 #import "TAAspects.h"
 
 #define td_force_inline __inline__ __attribute__((always_inline))
