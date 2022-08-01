@@ -32,6 +32,11 @@ target 'ThinkingSDKDEMO' do
 #  pod 'HCClangTrace', '~> 1.0.0'
   
   
+  target 'NotificationCenter' do
+    #    pod "ThinkingSDK",:subspecs => ['Source', 'Performance', 'AppLaunch'] , :path=>"../"
+    pod "ThinkingSDK", :path => "../"
+  end
+  
   target 'ThinkingSDKDEMOTests' do
     #    pod "ThinkingSDK",:subspecs => ['Source', 'Performance', 'AppLaunch'] , :path=>"../"
     pod "ThinkingSDK", :path => "../"
@@ -39,6 +44,8 @@ target 'ThinkingSDKDEMO' do
     pod 'YYKit', :path => "../YYKit"
     pod 'OCMock'
   end
+  
+  
   
 end
 

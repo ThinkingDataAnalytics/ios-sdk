@@ -31,7 +31,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- SDK VERSION = 2.8.1.2
+ SDK VERSION = 2.8.1.3
  ThinkingData API
  
  ## 初始化API

@@ -335,9 +335,11 @@ static double td_enterDidBecomeActiveTime = 0;// 进入前台时间
 - (void)launchedIntoBackground:(NSDictionary *)launchOptions {
     td_dispatch_main_sync_safe(^{
         if (launchOptions && [launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]) {
-            UIApplicationState applicationState = [UIApplication sharedApplication].applicationState;
-            if (applicationState == UIApplicationStateBackground) {
-                self->_relaunchInBackGround = YES;
+            if ([TDAppState sharedApplication]) {
+                UIApplicationState applicationState = [TDAppState sharedApplication].applicationState;
+                if (applicationState == UIApplicationStateBackground) {
+                    self->_relaunchInBackGround = YES;
+                }
             }
         }
     });
@@ -553,7 +555,7 @@ static double td_enterDidBecomeActiveTime = 0;// 进入前台时间
 - (void)applicationWillEnterForeground:(NSNotification *)notification {
     TDLogDebug(@"%@ application will enter foreground", self);
     
-    if (UIApplication.sharedApplication.applicationState == UIApplicationStateBackground) {
+    if ([TDAppState sharedApplication] && [TDAppState sharedApplication].applicationState == UIApplicationStateBackground) {
         _relaunchInBackGround = NO;
         _appRelaunched = YES;
         dispatch_async(td_trackQueue, ^{
@@ -1479,12 +1481,18 @@ static double td_enterDidBecomeActiveTime = 0;// 进入前台时间
                     
                     // 计算累计前台时长
                     NSTimeInterval foregroundDuration = [self.trackTimer foregroundDurationOfEvent:eventData.eventName isActive:isActive systemUptime:systemUptime];
-                    updateProperties[@"#duration"] = @([[NSString stringWithFormat:@"%.3f", foregroundDuration] doubleValue]);
+                    
+                    if (foregroundDuration > 0) {
+                        updateProperties[@"#duration"] = @([[NSString stringWithFormat:@"%.3f", foregroundDuration] doubleValue]);
+                    }
                     
                     // 计算累计后台时长
                     if (eventData.eventName != TD_APP_END_EVENT) {
                         NSTimeInterval backgroundDuration = [self.trackTimer backgroundDurationOfEvent:eventData.eventName isActive:isActive systemUptime:systemUptime];
-                        updateProperties[TD_BACKGROUND_DURATION] = @([[NSString stringWithFormat:@"%.3f", backgroundDuration] doubleValue]);
+                        
+                        if (backgroundDuration > 0) {
+                            updateProperties[TD_BACKGROUND_DURATION] = @([[NSString stringWithFormat:@"%.3f", backgroundDuration] doubleValue]);
+                        }
                     }
                     
                     // 计算时长后，删除当前事件的记录
@@ -1890,7 +1898,7 @@ static double td_enterDidBecomeActiveTime = 0;// 进入前台时间
 }
 
 #pragma mark - Autotracking
-- (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType {
+- (void) enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType {
     [self _enableAutoTrack:eventType properties:nil callback:nil];
 }
 

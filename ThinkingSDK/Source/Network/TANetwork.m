@@ -5,6 +5,8 @@
 #import "TDLogging.h"
 #import "TDSecurityPolicy.h"
 #import "TDToastView.h"
+#import "TDAppState.h"
+
 static NSString *kTAIntegrationType = @"TA-Integration-Type";
 static NSString *kTAIntegrationVersion = @"TA-Integration-Version";
 static NSString *kTAIntegrationCount = @"TA-Integration-Count";
@@ -85,7 +87,7 @@ static NSString *kTADatasType = @"TA-Datas-Type";
             dispatch_once(&onceToken, ^{
                 if (debugResult == 0 || debugResult == 1 || debugResult == 2) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        UIWindow *window = [UIApplication sharedApplication].keyWindow;
+                        UIWindow *window = [TDAppState sharedApplication].keyWindow;
                         [TDToastView showInWindow:window text:[NSString stringWithFormat:@"当前模式为:%@", self.debugMode == ThinkingAnalyticsDebugOnly ? @"DebugOnly(数据不入库)\n测试联调阶段开启\n正式上线前请关闭Debug功能" : @"Debug"] duration:2.0];
                     });
                 }

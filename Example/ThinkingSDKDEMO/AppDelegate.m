@@ -67,6 +67,8 @@
     
     NSLog(@" [THINKING]  %@", launchOptions);
     
+//    [self test_multipleInstance];
+    
 
 //    [self test_eventTime];
 //    [self test_AppCrash];
@@ -76,7 +78,7 @@
 ////        raise(SIGPIPE);
 //    });
     
-//    [self testAPPPush:application launchOptions:launchOptions];
+    [self testAPPPush:application launchOptions:launchOptions];
 
 //    [self test_thirdParty: launchOptions];
     
@@ -102,23 +104,30 @@
 - (void)test_multipleInstance {
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     
-    NSString *appid1 = @"";
+    NSString *appid1 = @"aaaa";
     NSString *url1 = @"https://receiver-ta-dev.thinkingdata.cn";
     TDConfig *config1 = [TDConfig new];
     config1.appid = appid1;
     config1.configureURL = url1;
-    config1.debugMode = ThinkingAnalyticsDebug;
+//    config1.debugMode = ThinkingAnalyticsDebug;
     ThinkingAnalyticsSDK *instance1 = [ThinkingAnalyticsSDK startWithConfig:config1];
+    
+    [instance1 setSuperProperties:@{@"property_static": @"aaa"}];
+    
     [instance1 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
     
-    NSString *appid2 = @"";
-    NSString *url2 = @"https://receiver-ta-dev.thinkingdata.cn";
-    TDConfig *config2 = [TDConfig new];
-    config2.appid = appid2;
-    config2.configureURL = url2;
-    config2.debugMode = ThinkingAnalyticsDebug;
-    ThinkingAnalyticsSDK *instance2 = [ThinkingAnalyticsSDK startWithConfig:config2];
-    [instance2 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+    [instance1 track:@"ssss"];
+    
+    [instance1 clearSuperProperties];
+    
+//    NSString *appid2 = @"";
+//    NSString *url2 = @"https://receiver-ta-dev.thinkingdata.cn";
+//    TDConfig *config2 = [TDConfig new];
+//    config2.appid = appid2;
+//    config2.configureURL = url2;
+//    config2.debugMode = ThinkingAnalyticsDebug;
+//    ThinkingAnalyticsSDK *instance2 = [ThinkingAnalyticsSDK startWithConfig:config2];
+//    [instance2 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
 }
 
 /// 测试自动埋点

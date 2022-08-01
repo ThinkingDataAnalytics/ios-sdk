@@ -11,6 +11,7 @@
 #import "NSObject+TDUtil.h"
 #import "TDPresetProperties+TDDisProperties.h"
 #import "TDCommonUtil.h"
+#import "TDAppState.h"
 
 #define td_force_inline __inline__ __attribute__((always_inline))
 
@@ -203,7 +204,12 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
                                  @"data": [TDCommonUtil dictionary:data]};
     }
     
-    id<UIApplicationDelegate> applicationDelegate = [[UIApplication sharedApplication] delegate];
+    
+    if ([TDAppState sharedApplication] == nil) {
+        return;
+    }
+    
+    id<UIApplicationDelegate> applicationDelegate = [[TDAppState sharedApplication]  delegate];
     
     
     // hook 点击推送方法
