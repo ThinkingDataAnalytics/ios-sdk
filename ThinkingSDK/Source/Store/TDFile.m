@@ -261,6 +261,7 @@
     [dic setObject:[self unarchiveSuperProperties]?:@{}  forKey:@"superProperties"];
     [dic setObject:[NSNumber numberWithBool:[self unarchiveOptOut] ]forKey:@"optOut"];
     [dic setObject:[NSNumber numberWithBool:[self unarchiveEnabled]] forKey:@"isEnabled"];
+    [dic setObject:[NSNumber numberWithBool:[self unarchiveTrackPause]] forKey:@"isTrackPause"];
     [dic setObject:[self unarchiveDeviceId]?:@"" forKey:@"deviceId"];
     [dic setObject:[self unarchiveInstallTimes]?:@"" forKey:@"installTimes"];
     return [TDJSONUtil JSONStringForObject:dic];

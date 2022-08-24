@@ -8,10 +8,18 @@
 #import "TAReachability.h"
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
+
+#if __has_include(<ThinkingSDK/TDLogging.h>)
 #import <ThinkingSDK/TDLogging.h>
+#else
+#import "TDLogging.h"
+#endif
+
 
 @interface TAReachability ()
+#if TARGET_OS_IOS
 @property (atomic, assign) SCNetworkReachabilityRef reachability;
+#endif
 @property (nonatomic, assign) BOOL isWifi;
 @property (nonatomic, assign) BOOL isWwan;
 
@@ -19,6 +27,7 @@
 
 @implementation TAReachability
 
+#if TARGET_OS_IOS
 /// 网络状态监听的回调方法
 static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void *info) {
     TAReachability *instance = (__bridge TAReachability *)info;
@@ -26,6 +35,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         [instance reachabilityChanged:flags];
     }
 }
+#endif
 
 //MARK: - Public Methods
 
@@ -38,6 +48,8 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     return reachability;
 }
 
+#if TARGET_OS_IOS
+
 - (NSString *)networkState {
     if (self.isWifi) {
         return @"WIFI";
@@ -49,6 +61,8 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 }
 
 - (void)startMonitoring {
+    [self stopMonitoring];
+
     SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithName(NULL,"thinkingdata.cn");
     self.reachability = reachability;
     
@@ -74,6 +88,24 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         return;
     }
     SCNetworkReachabilityUnscheduleFromRunLoop(self.reachability, CFRunLoopGetMain(), kCFRunLoopCommonModes);
+}
+
++ (ThinkingNetworkType)convertNetworkType:(NSString *)networkType {
+    if ([@"NULL" isEqualToString:networkType]) {
+        return ThinkingNetworkTypeALL;
+    } else if ([@"WIFI" isEqualToString:networkType]) {
+        return ThinkingNetworkTypeWIFI;
+    } else if ([@"2G" isEqualToString:networkType]) {
+        return ThinkingNetworkType2G;
+    } else if ([@"3G" isEqualToString:networkType]) {
+        return ThinkingNetworkType3G;
+    } else if ([@"4G" isEqualToString:networkType]) {
+        return ThinkingNetworkType4G;
+    }else if([@"5G"isEqualToString:networkType])
+    {
+        return ThinkingNetworkType5G;
+    }
+    return ThinkingNetworkTypeNONE;
 }
 
 //MARK: - Private Methods
@@ -135,5 +167,27 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     
     return networkType;
 }
+
+#elif TARGET_OS_OSX
+
++ (ThinkingNetworkType)convertNetworkType:(NSString *)networkType {
+    return ThinkingNetworkTypeWIFI;
+}
+
+- (void)startMonitoring {
+}
+
+- (void)stopMonitoring {
+}
+
+- (NSString *)currentRadio {
+    return @"WIFI";
+}
+
+- (NSString *)networkState {
+    return @"WIFI";
+}
+
+#endif
 
 @end

@@ -12,10 +12,12 @@
 #import "TDSecurityPolicy.h"
 #endif
 
+#if TARGET_OS_IOS
 #if __has_include(<ThinkingSDK/TDSecretKey.h>)
 #import <ThinkingSDK/TDSecretKey.h>
 #else
 #import "TDSecretKey.h"
+#endif
 #endif
 
 
@@ -105,8 +107,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// 是否开启加密
 @property (nonatomic, assign) BOOL enableEncrypt;
 
+#if TARGET_OS_IOS
 /// 获取本地密钥配置
 @property (nonatomic, strong) TDSecretKey *secretKey;
+#endif
 
 /// 获取实例标识
 - (NSString *)getMapInstanceToken;

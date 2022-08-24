@@ -1,0 +1,31 @@
+PODS:
+  - ThinkingSDK (2.8.1.1):
+    - ThinkingSDK/Main (= 2.8.1.1)
+  - ThinkingSDK/Base (2.8.1.1):
+    - ThinkingSDK/Core
+    - ThinkingSDK/Extension
+    - ThinkingSDK/Util
+  - ThinkingSDK/Core (2.8.1.1)
+  - ThinkingSDK/Extension (2.8.1.1):
+    - ThinkingSDK/Core
+  - ThinkingSDK/Main (2.8.1.1):
+    - ThinkingSDK/iOS
+    - ThinkingSDK/OSX
+  - ThinkingSDK/OSX (2.8.1.1):
+    - ThinkingSDK/Base
+  - ThinkingSDK/Util (2.8.1.1):
+    - ThinkingSDK/Core
+
+DEPENDENCIES:
+  - ThinkingSDK (from `../../`)
+
+EXTERNAL SOURCES:
+  ThinkingSDK:
+    :path: "../../"
+
+SPEC CHECKSUMS:
+  ThinkingSDK: 2d686180646a03c9bdaec456fbd5c36fb5d00d5b
+
+PODFILE CHECKSUM: 07f70630883f5403bcd1bfcfe4c46c1c1a6cd280
+
+COCOAPODS: 1.11.3
