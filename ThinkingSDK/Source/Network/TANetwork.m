@@ -4,11 +4,8 @@
 #import "TDJSONUtil.h"
 #import "TDLogging.h"
 #import "TDSecurityPolicy.h"
-#import "TDAppState.h"
-
-#if TARGET_OS_IOS
 #import "TDToastView.h"
-#endif
+#import "TDAppState.h"
 
 static NSString *kTAIntegrationType = @"TA-Integration-Type";
 static NSString *kTAIntegrationVersion = @"TA-Integration-Version";
@@ -30,14 +27,7 @@ static NSString *kTADatasType = @"TA-Datas-Type";
 }
 
 - (NSString *)URLEncode:(NSString *)string {
-    
-    NSString *encodedString = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,
-                                                                                                    (CFStringRef)string,
-                                                                                                    NULL,
-                                                                                                    (CFStringRef)@"!*'();:@&=+$,/?%#[]",
-                                                                                                    kCFStringEncodingUTF8 ));
-
-    return encodedString;
+    return [string stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 }
 
 - (int)flushDebugEvents:(NSDictionary *)record withAppid:(NSString *)appid {
@@ -56,21 +46,16 @@ static NSString *kTADatasType = @"TA-Datas-Type";
     dispatch_semaphore_t flushSem = dispatch_semaphore_create(0);
 
     void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
-        
         if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
             debugResult = -2;
             TDLogError(@"Debug Networking error:%@", error);
             dispatch_semaphore_signal(flushSem);
             return;
         }
+
         NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
         if ([urlResponse statusCode] == 200) {
             NSError *err;
-            
-            if (!data) {
-                return;
-            }
-            
             NSDictionary *retDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
             if (err) {
                 TDLogError(@"Debug data json error:%@", err);
@@ -101,16 +86,10 @@ static NSString *kTADatasType = @"TA-Datas-Type";
             static dispatch_once_t onceToken;
             dispatch_once(&onceToken, ^{
                 if (debugResult == 0 || debugResult == 1 || debugResult == 2) {
-#if TARGET_OS_IOS
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        UIApplication *application = [TDAppState sharedApplication];
-                        if (![application isKindOfClass:UIApplication.class]) {
-                            return;
-                        }
-                        UIWindow *window = application.keyWindow;
+                        UIWindow *window = [TDAppState sharedApplication].keyWindow;
                         [TDToastView showInWindow:window text:[NSString stringWithFormat:@"当前模式为:%@", self.debugMode == ThinkingAnalyticsDebugOnly ? @"DebugOnly(数据不入库)\n测试联调阶段开启\n正式上线前请关闭Debug功能" : @"Debug"] duration:2.0];
                     });
-#endif
                 }
             });
         } else {
@@ -169,9 +148,6 @@ static NSString *kTADatasType = @"TA-Datas-Type";
         if ([urlResponse statusCode] == 200) {
             flushSucc = YES;
             TDLogDebug(@"flush success sendContent---->:%@",flushDic);
-            if (!data) {
-                return;
-            }
             id result = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             TDLogDebug(@"flush success responseData---->%@",result);
         } else {
@@ -220,9 +196,6 @@ static NSString *kTADatasType = @"TA-Datas-Type";
             return;
         }
         NSError *err;
-        if (!data) {
-            return;
-        }
         NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
         if (err) {
             TDLogError(@"Fetch remote config json error:%@", err);
