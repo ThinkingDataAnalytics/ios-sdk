@@ -11,6 +11,7 @@
 #import "TDCommonUtil.h"
 #import "TDPresetProperties+TDDisProperties.h"
 #import "TAAspects.h"
+#import "TDAppState.h"
 
 #define td_force_inline __inline__ __attribute__((always_inline))
 
@@ -43,24 +44,36 @@ static id __td_get_userNotificationCenter_delegate() {
 
 static NSDictionary * __td_get_userNotificationCenterResponse(id response) {
     
-    if ([response isKindOfClass:[NSClassFromString(@"UNNotificationResponse") class]]) {
-        return [response valueForKeyPath:@"notification.request.content.userInfo"];
+    @try {
+        if ([response isKindOfClass:[NSClassFromString(@"UNNotificationResponse") class]]) {
+            return [response valueForKeyPath:@"notification.request.content.userInfo"];
+        }
+    } @catch (NSException *exception) {
+        
     }
     return nil;
 }
 
 static NSString * __td_get_userNotificationCenterRequestContentTitle(id response) {
     
-    if ([response isKindOfClass:[NSClassFromString(@"UNNotificationResponse") class]]) {
-        return [response valueForKeyPath:@"notification.request.content.title"];
+    @try {
+        if ([response isKindOfClass:[NSClassFromString(@"UNNotificationResponse") class]]) {
+            return [response valueForKeyPath:@"notification.request.content.title"];
+        }
+    } @catch (NSException *exception) {
+        
     }
     return nil;
 }
 
 static NSString * __td_get_userNotificationCenterRequestContentBody(id response) {
     
-    if ([response isKindOfClass:[NSClassFromString(@"UNNotificationResponse") class]]) {
-        return [response valueForKeyPath:@"notification.request.content.body"];
+    @try {
+        if ([response isKindOfClass:[NSClassFromString(@"UNNotificationResponse") class]]) {
+            return [response valueForKeyPath:@"notification.request.content.body"];
+        }
+    } @catch (NSException *exception) {
+        
     }
     return nil;
 }
@@ -124,23 +137,54 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
         if (__td_get_userNotificationCenter_delegate()) {
             [self td_hookUserNotificationCenterDelegateMethod];
         } else {
-            
-            NSString *pushDelegateSel = @"setDelegate:";
-            [__td_get_userNotificationCenter() ta_aspect_hookSelector:NSSelectorFromString(pushDelegateSel) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo) {
-                
-                [self td_hookUserNotificationCenterDelegateMethod];
-                
-            }  error:NULL];
-
+            [self addDelegateObserverToUserNotificationCenter:__td_get_userNotificationCenter()];
         }
     }
 }
+
+
+#pragma mark - KVO for UNUserNotificationCenter
+
++ (void)addDelegateObserverToUserNotificationCenter:(id)userNotificationCenter {
+
+    if (userNotificationCenter != nil) {
+        @try {
+          [userNotificationCenter addObserver:[TDAppLaunchReason sharedInstance]
+                                   forKeyPath:NSStringFromSelector(@selector(delegate))
+                                      options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+                                      context:@"UserNotificationObserverContext"];
+        } @catch (NSException *exception) {
+        } @finally {
+        }
+    }
+
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSKeyValueChangeKey, id> *)change
+                       context:(void *)context {
+  if (context == @"UserNotificationObserverContext") {
+    if ([keyPath isEqualToString:NSStringFromSelector(@selector(delegate))]) {
+//      id oldDelegate = change[NSKeyValueChangeOldKey];
+//      if (oldDelegate && oldDelegate != [NSNull null]) {
+//      }
+      id newDelegate = change[NSKeyValueChangeNewKey];
+      if (newDelegate && newDelegate != [NSNull null]) {
+          [TDAppLaunchReason td_hookUserNotificationCenterDelegateMethod];
+      }
+    }
+  } else {
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+  }
+}
+
 
 + (void)td_hookUserNotificationCenterDelegateMethod {
     
     NSString *pushSel = @"userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:";
     [__td_get_userNotificationCenter_delegate() ta_aspect_hookSelector:NSSelectorFromString(pushSel) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, id center ,id response ,id completionHandler) {
-
+        
         NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
         NSDictionary *userInfo = __td_get_userNotificationCenterResponse(response);
         if (userInfo) {
@@ -151,7 +195,7 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
         
         [[TDAppLaunchReason sharedInstance] clearAppLaunchParams];
         [TDAppLaunchReason sharedInstance].appLaunchParams = @{@"url": @"",
-                                     @"data": [TDCommonUtil dictionary:properties]};
+                                                               @"data": [TDCommonUtil dictionary:properties]};
         
     } error:NULL];
     
@@ -190,7 +234,7 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
     
     // 获取冷启动原因：
     if (!launchOptions) {
-        [self clearAppLaunchParams];
+        [weakSelf clearAppLaunchParams];
     } else if ([url isKindOfClass:[NSString class]] && url.length) {
         self.appLaunchParams = @{@"url": [TDCommonUtil string:url],
                                  @"data": @{}};
@@ -199,8 +243,11 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
                                  @"data": [TDCommonUtil dictionary:data]};
     }
     
-    id applicationDelegate = [[UIApplication sharedApplication] delegate];
-    
+    if ([TDAppState sharedApplication] == nil) {
+      return;
+    }
+
+    id applicationDelegate = [[TDAppState sharedApplication] delegate];
     
     // hook 点击推送方法
     NSString *localPushSelString = @"application:didReceiveLocalNotification:";
@@ -211,7 +258,7 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
             isValidPushClick = YES;
         }
         if (!isValidPushClick) {
-//            TDLogDebug(@"Invalid app push callback, PushClick was ignored.");
+            //            TDLogDebug(@"Invalid app push callback, PushClick was ignored.");
             return;
         }
         NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
@@ -219,7 +266,7 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
         if (@available(iOS 8.2, *)) {
             properties[@"alertTitle"] = notification.alertTitle;
         }
-        [self clearAppLaunchParams];
+        [weakSelf clearAppLaunchParams];
         weakSelf.appLaunchParams = @{@"url": @"",
                                      @"data": [TDCommonUtil dictionary:properties]};
         
@@ -234,10 +281,10 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
             isValidPushClick = YES;
         }
         if (!isValidPushClick) {
-//            TDLogDebug(@"Invalid app push callback, PushClick was ignored.");
+            //            TDLogDebug(@"Invalid app push callback, PushClick was ignored.");
             return;
         }
-        [self clearAppLaunchParams];
+        [weakSelf clearAppLaunchParams];
         weakSelf.appLaunchParams = @{@"url": @"",
                                      @"data": [TDCommonUtil dictionary:userInfo]};
         
@@ -248,8 +295,8 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
     // hook deeplink回调方法
     NSString *deeplinkStr1 = @"application:handleOpenURL:";// ios(2.0, 9.0)
     [applicationDelegate ta_aspect_hookSelector:NSSelectorFromString(deeplinkStr1) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, UIApplication *application, NSURL *url) {
-    
-        [self clearAppLaunchParams];
+        
+        [weakSelf clearAppLaunchParams];
         weakSelf.appLaunchParams = @{@"url": [TDCommonUtil string:url.absoluteString],
                                      @"data":@{}};
     } error:NULL];
@@ -259,16 +306,16 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
     NSString *deeplinkStr2 = @"application:openURL:options:";// ios(9.0)
     [applicationDelegate ta_aspect_hookSelector:NSSelectorFromString(deeplinkStr2) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, UIApplication *app, NSURL *url, id options) {
         
-        [self clearAppLaunchParams];
+        [weakSelf clearAppLaunchParams];
         weakSelf.appLaunchParams = @{@"url": [TDCommonUtil string:url.absoluteString],
                                      @"data":@{}};
     } error:NULL];
     
-
+    
     NSString *deeplinkStr3 = @"application:continueUserActivity:restorationHandler:";// ios(8.0)
     [applicationDelegate ta_aspect_hookSelector:NSSelectorFromString(deeplinkStr3) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, UIApplication *application, NSUserActivity *userActivity, id restorationHandler) {
         
-        [self clearAppLaunchParams];
+        [weakSelf clearAppLaunchParams];
         weakSelf.appLaunchParams = @{@"url": [TDCommonUtil string: userActivity.webpageURL.absoluteString],
                                      @"data":@{}};
     } error:NULL];
@@ -279,11 +326,11 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
     if (@available(iOS 9.0, *)) {
         NSString *touch3dSel = @"application:performActionForShortcutItem:completionHandler:";
         [applicationDelegate ta_aspect_hookSelector:NSSelectorFromString(touch3dSel) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, UIApplication *application, UIApplicationShortcutItem *shortcutItem, id completionHandler) {
-        
-            [self clearAppLaunchParams];
+            
+            [weakSelf clearAppLaunchParams];
             weakSelf.appLaunchParams = @{@"url": @"",
                                          @"data": [TDCommonUtil dictionary:shortcutItem.userInfo]};
-        
+            
         } error:NULL];
     }
 }
