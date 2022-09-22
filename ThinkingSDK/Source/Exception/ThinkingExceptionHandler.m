@@ -3,6 +3,7 @@
 #include <libkern/OSAtomic.h>
 #include <stdatomic.h>
 #import "TDLogging.h"
+#import "TDPresetProperties+TDDisProperties.h"
 
 static NSString * const TDUncaughtExceptionHandlerSignalExceptionName = @"UncaughtExceptionHandlerSignalExceptionName";
 static NSString * const TDUncaughtExceptionHandlerSignalKey = @"UncaughtExceptionHandlerSignalKey";
@@ -93,17 +94,23 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
 
 
 - (void)td_handleUncaughtException:(NSException *)exception {
-
     NSDate *trackDate = [NSDate date];
     NSDictionary *dic = [self td_getCrashInfo:exception];
     for (ThinkingAnalyticsSDK *instance in self.thinkingAnalyticsSDKInstances) {
-        [instance autotrack:TD_APP_CRASH_EVENT properties:dic withTime:trackDate];
+        TAAutoTrackEvent *crashEvent = [[TAAutoTrackEvent alloc] initWithName:TD_APP_CRASH_EVENT];
+        crashEvent.time = trackDate;
+        [instance autoTrackWithEvent:crashEvent properties:dic];
+        
         if (![instance isAutoTrackEventTypeIgnored:ThinkingAnalyticsEventTypeAppEnd]) {
-            [instance autotrack:TD_APP_END_EVENT properties:nil withTime:trackDate];
+            TAAutoTrackEvent *appEndEvent = [[TAAutoTrackEvent alloc] initWithName:TD_APP_END_EVENT];
+            appEndEvent.time = trackDate;
+            [instance autoTrackWithEvent:appEndEvent properties:nil];
         }
     }
     
     dispatch_sync([ThinkingAnalyticsSDK td_trackQueue], ^{});
+    dispatch_sync([ThinkingAnalyticsSDK td_networkQueue], ^{});
+
     NSSetUncaughtExceptionHandler(NULL);
     for (int i = 0; i < sizeof(TDSignals) / sizeof(int); i++) {
         signal(TDSignals[i], SIG_DFL);
@@ -113,6 +120,12 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
 // 解析crash信息
 - (NSMutableDictionary *)td_getCrashInfo:(NSException *)exception {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+    
+    // 是否屏蔽crash_reason 字段
+    if ([TDPresetProperties disableAppCrashedReason]) {
+        return properties;
+    }
+    
     NSString *crashStr;
     @try {
         if ([exception callStackSymbols]) {

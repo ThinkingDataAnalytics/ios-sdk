@@ -1,0 +1,431 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0116B5D72861B76C00716E8B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0116B5D62861B76C00716E8B /* AppDelegate.m */; };
+		0116B5DA2861B76C00716E8B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0116B5D92861B76C00716E8B /* ViewController.m */; };
+		0116B5DC2861B76D00716E8B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0116B5DB2861B76D00716E8B /* Assets.xcassets */; };
+		0116B5DF2861B76D00716E8B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0116B5DD2861B76D00716E8B /* Main.storyboard */; };
+		0116B5E12861B76D00716E8B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0116B5E02861B76D00716E8B /* main.m */; };
+		012FB2F02873E539009A2716 /* TAInitinalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 012FB2EE2873E539009A2716 /* TAInitinalViewController.m */; };
+		012FB2F12873E539009A2716 /* TAInitinalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 012FB2EF2873E539009A2716 /* TAInitinalViewController.xib */; };
+		36B9278C74A617E12A2F30B6 /* Pods_ThinkingSDKMac.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB99E30FD01DE7288F5237F8 /* Pods_ThinkingSDKMac.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0116B5D22861B76C00716E8B /* ThinkingSDKMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThinkingSDKMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0116B5D52861B76C00716E8B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		0116B5D62861B76C00716E8B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		0116B5D82861B76C00716E8B /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		0116B5D92861B76C00716E8B /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		0116B5DB2861B76D00716E8B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0116B5DE2861B76D00716E8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		0116B5E02861B76D00716E8B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		0116B5E22861B76D00716E8B /* ThinkingSDKMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ThinkingSDKMac.entitlements; sourceTree = "<group>"; };
+		012FB2ED2873E539009A2716 /* TAInitinalViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TAInitinalViewController.h; sourceTree = "<group>"; };
+		012FB2EE2873E539009A2716 /* TAInitinalViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TAInitinalViewController.m; sourceTree = "<group>"; };
+		012FB2EF2873E539009A2716 /* TAInitinalViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TAInitinalViewController.xib; sourceTree = "<group>"; };
+		0174F74B286CE6D10030AAB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6660D38683DE112DD43D8537 /* Pods-ThinkingSDKMac.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKMac.release.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKMac/Pods-ThinkingSDKMac.release.xcconfig"; sourceTree = "<group>"; };
+		CE17B4CBD1A5563645BA5474 /* Pods-ThinkingSDKMac.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKMac.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKMac/Pods-ThinkingSDKMac.debug.xcconfig"; sourceTree = "<group>"; };
+		DB99E30FD01DE7288F5237F8 /* Pods_ThinkingSDKMac.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThinkingSDKMac.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0116B5CF2861B76C00716E8B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36B9278C74A617E12A2F30B6 /* Pods_ThinkingSDKMac.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0116B5C92861B76C00716E8B = {
+			isa = PBXGroup;
+			children = (
+				0116B5D42861B76C00716E8B /* ThinkingSDKMac */,
+				0116B5D32861B76C00716E8B /* Products */,
+				528C09A49F746CFC0845005B /* Pods */,
+				E268168CE7BFCF33DA012B04 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		0116B5D32861B76C00716E8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0116B5D22861B76C00716E8B /* ThinkingSDKMac.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0116B5D42861B76C00716E8B /* ThinkingSDKMac */ = {
+			isa = PBXGroup;
+			children = (
+				0174F74B286CE6D10030AAB9 /* Info.plist */,
+				0116B5D52861B76C00716E8B /* AppDelegate.h */,
+				0116B5D62861B76C00716E8B /* AppDelegate.m */,
+				0116B5D82861B76C00716E8B /* ViewController.h */,
+				0116B5D92861B76C00716E8B /* ViewController.m */,
+				012FB2ED2873E539009A2716 /* TAInitinalViewController.h */,
+				012FB2EE2873E539009A2716 /* TAInitinalViewController.m */,
+				012FB2EF2873E539009A2716 /* TAInitinalViewController.xib */,
+				0116B5DB2861B76D00716E8B /* Assets.xcassets */,
+				0116B5DD2861B76D00716E8B /* Main.storyboard */,
+				0116B5E02861B76D00716E8B /* main.m */,
+				0116B5E22861B76D00716E8B /* ThinkingSDKMac.entitlements */,
+			);
+			path = ThinkingSDKMac;
+			sourceTree = "<group>";
+		};
+		528C09A49F746CFC0845005B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				CE17B4CBD1A5563645BA5474 /* Pods-ThinkingSDKMac.debug.xcconfig */,
+				6660D38683DE112DD43D8537 /* Pods-ThinkingSDKMac.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		E268168CE7BFCF33DA012B04 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DB99E30FD01DE7288F5237F8 /* Pods_ThinkingSDKMac.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0116B5D12861B76C00716E8B /* ThinkingSDKMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0116B5E52861B76D00716E8B /* Build configuration list for PBXNativeTarget "ThinkingSDKMac" */;
+			buildPhases = (
+				7459CEF0CE2A3841E8D129A9 /* [CP] Check Pods Manifest.lock */,
+				0116B5CE2861B76C00716E8B /* Sources */,
+				0116B5CF2861B76C00716E8B /* Frameworks */,
+				0116B5D02861B76C00716E8B /* Resources */,
+				F81B8EB4CEC7BFBAE83D5BDA /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ThinkingSDKMac;
+			productName = ThinkingSDKMac;
+			productReference = 0116B5D22861B76C00716E8B /* ThinkingSDKMac.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0116B5CA2861B76C00716E8B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1340;
+				TargetAttributes = {
+					0116B5D12861B76C00716E8B = {
+						CreatedOnToolsVersion = 13.4;
+					};
+				};
+			};
+			buildConfigurationList = 0116B5CD2861B76C00716E8B /* Build configuration list for PBXProject "ThinkingSDKMac" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 0116B5C92861B76C00716E8B;
+			productRefGroup = 0116B5D32861B76C00716E8B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0116B5D12861B76C00716E8B /* ThinkingSDKMac */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0116B5D02861B76C00716E8B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0116B5DC2861B76D00716E8B /* Assets.xcassets in Resources */,
+				0116B5DF2861B76D00716E8B /* Main.storyboard in Resources */,
+				012FB2F12873E539009A2716 /* TAInitinalViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7459CEF0CE2A3841E8D129A9 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ThinkingSDKMac-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F81B8EB4CEC7BFBAE83D5BDA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKMac/Pods-ThinkingSDKMac-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKMac/Pods-ThinkingSDKMac-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKMac/Pods-ThinkingSDKMac-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0116B5CE2861B76C00716E8B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				012FB2F02873E539009A2716 /* TAInitinalViewController.m in Sources */,
+				0116B5DA2861B76C00716E8B /* ViewController.m in Sources */,
+				0116B5E12861B76D00716E8B /* main.m in Sources */,
+				0116B5D72861B76C00716E8B /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		0116B5DD2861B76D00716E8B /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0116B5DE2861B76D00716E8B /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		0116B5E32861B76D00716E8B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		0116B5E42861B76D00716E8B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		0116B5E62861B76D00716E8B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE17B4CBD1A5563645BA5474 /* Pods-ThinkingSDKMac.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ThinkingSDKMac/ThinkingSDKMac.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7G8873223Z;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ThinkingSDKMac/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.yxiong.ThinkingSDKMac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Debug;
+		};
+		0116B5E72861B76D00716E8B /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6660D38683DE112DD43D8537 /* Pods-ThinkingSDKMac.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ThinkingSDKMac/ThinkingSDKMac.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7G8873223Z;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ThinkingSDKMac/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.yxiong.ThinkingSDKMac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0116B5CD2861B76C00716E8B /* Build configuration list for PBXProject "ThinkingSDKMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0116B5E32861B76D00716E8B /* Debug */,
+				0116B5E42861B76D00716E8B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0116B5E52861B76D00716E8B /* Build configuration list for PBXNativeTarget "ThinkingSDKMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0116B5E62861B76D00716E8B /* Debug */,
+				0116B5E72861B76D00716E8B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0116B5CA2861B76C00716E8B /* Project object */;
+}

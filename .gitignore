@@ -26,7 +26,6 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
@@ -102,6 +101,8 @@ iOSInjectionProject/
 
 Script/
 build/
-Script/
-Example/Pods/
-Example/Podfile.lock
+/Example/iOS/Pods
+/Example/OSX/Pods
+Pods/
+
+

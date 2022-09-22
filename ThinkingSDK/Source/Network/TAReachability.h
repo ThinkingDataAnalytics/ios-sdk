@@ -6,10 +6,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "TDConstant.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TAReachability : NSObject
+
++ (ThinkingNetworkType)convertNetworkType:(NSString *)networkType;
 
 /// 获取网络状态监听类
 + (instancetype)shareInstance;
@@ -22,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 获取网络状态
 - (NSString *)networkState;
+
 
 @end
 

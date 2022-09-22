@@ -116,6 +116,16 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
     [TDPresetProperties disPresetProperties];
     if ([TDPresetProperties disableStartReason]) return;
 
+#if defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
+    if (@available(iOS 13.0, *)) {
+        [[NSNotificationCenter defaultCenter] addObserver:[TDAppLaunchReason sharedInstance]
+                                                 selector:@selector(_sceneWillConnectToSession:)
+                                                     name:UISceneWillConnectNotification
+                                                   object:nil];
+    }
+
+#endif
+    
     [[NSNotificationCenter defaultCenter] addObserver:[TDAppLaunchReason sharedInstance]
                                              selector:@selector(_applicationDidFinishLaunchingNotification:)
                                                  name:UIApplicationDidFinishLaunchingNotification
@@ -178,6 +188,8 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
 }
+
+#pragma mark - NSProxy methods
 
 
 + (void)td_hookUserNotificationCenterDelegateMethod {
@@ -243,11 +255,13 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
                                  @"data": [TDCommonUtil dictionary:data]};
     }
     
-    if ([TDAppState sharedApplication] == nil) {
-      return;
+    UIApplication *application = [TDAppState sharedApplication];
+    id applicationDelegate = [application delegate];
+    if (applicationDelegate == nil)
+    {
+        return;
     }
-
-    id applicationDelegate = [[TDAppState sharedApplication] delegate];
+    
     
     // hook 点击推送方法
     NSString *localPushSelString = @"application:didReceiveLocalNotification:";
@@ -333,7 +347,109 @@ static NSString * __td_get_userNotificationCenterRequestContentBody(id response)
             
         } error:NULL];
     }
+    
+
+#if defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
+    // UISceneConfiguration回调方法
+    if (@available(iOS 13.0, *)) {
+        NSString *connectingSceneSessionSel = @"application:configurationForConnectingSceneSession:options:";
+        [applicationDelegate ta_aspect_hookSelector:NSSelectorFromString(connectingSceneSessionSel) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, UIApplication *application, id connectingSceneSession, id options) {
+           
+            @try {
+                if ([options isKindOfClass:NSClassFromString(@"UISceneConnectionOptions")]) {
+                    
+                    NSURL *openURL = [[(NSSet *)[options valueForKey:@"URLContexts"] allObjects].lastObject valueForKey:@"URL"];
+                    NSURL *userURL = [[(NSSet *)[options valueForKey:@"userActivities"] allObjects].lastObject valueForKey:@"webpageURL"];
+                    id response = [options valueForKey:@"notificationResponse"];
+
+                    if (openURL && openURL.absoluteString.length) {
+                        [weakSelf clearAppLaunchParams];
+                        weakSelf.appLaunchParams = @{@"url": openURL.absoluteString,
+                                                     @"data":@{}};
+                    } else if (userURL && userURL.absoluteString.length) {
+                        [weakSelf clearAppLaunchParams];
+                        weakSelf.appLaunchParams = @{@"url": userURL.absoluteString,
+                                                     @"data":@{}};
+                    }
+                    else if (response) {
+                        NSDictionary *userInfo = __td_get_userNotificationCenterResponse(response);
+                        NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+                        if (userInfo) {
+                            [properties addEntriesFromDictionary:userInfo];
+                        }
+                        properties[@"title"] = __td_get_userNotificationCenterRequestContentTitle(response);
+                        properties[@"body"] = __td_get_userNotificationCenterRequestContentBody(response);
+
+                        [[TDAppLaunchReason sharedInstance] clearAppLaunchParams];
+                        [TDAppLaunchReason sharedInstance].appLaunchParams = @{@"url": @"",
+                                                                               @"data": [TDCommonUtil dictionary:properties]};
+                    }
+                }
+            } @catch (NSException *exception) {}
+            
+        } error:NULL];
+    }
+#endif
+    
 }
+
+#if defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
+
+- (void)_sceneWillConnectToSession:(id)param {
+    
+    @try {
+        static BOOL isHookconnectedScenes;
+        if (isHookconnectedScenes) {
+            return;
+        }
+        
+        __weak TDAppLaunchReason *weakSelf = self;
+        id scenes = [param valueForKey:@"object"];
+        id windowSceneDelegate = [scenes valueForKeyPath:@"delegate"];
+        [windowSceneDelegate ta_aspect_hookSelector:NSSelectorFromString(@"scene:continueUserActivity:") withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, id scene ,id userActivity) {
+           
+            @try {
+                if ([userActivity isKindOfClass:NSClassFromString(@"NSUserActivity")]) {
+                    NSURL *URL = [(NSUserActivity *)userActivity webpageURL];
+                    if (URL && URL.absoluteString) {
+                        [weakSelf clearAppLaunchParams];
+                        weakSelf.appLaunchParams = @{@"url": URL.absoluteString,
+                                                     @"data":@{}};
+                    }
+                }
+            } @catch (NSException *exception) {
+                
+            }
+            
+        }  error:NULL];
+        
+        
+        [windowSceneDelegate ta_aspect_hookSelector:NSSelectorFromString(@"scene:openURLContexts:") withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo,  id scene ,id urlContexts) {
+            
+            @try {
+                if ([urlContexts isKindOfClass:[NSSet class]]) {
+                    NSURL *URL = [[(NSSet *)urlContexts allObjects].lastObject valueForKey:@"URL"];
+                    if (URL && URL.absoluteString) {
+                        [weakSelf clearAppLaunchParams];
+                        weakSelf.appLaunchParams = @{@"url": URL.absoluteString,
+                                                     @"data":@{}};
+                    }
+                }
+            } @catch (NSException *exception) {
+                
+            }
+            
+        }  error:NULL];
+           
+        isHookconnectedScenes = YES;
+    } @catch (NSException *exception) {
+        
+    }
+  
+}
+
+#endif
+
 
 - (NSString *)getInitDeeplink:(NSDictionary *)launchOptions {
     
