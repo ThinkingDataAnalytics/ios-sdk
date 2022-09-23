@@ -1,0 +1,48 @@
+[
+    {
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_12000_1",
+        "name":"验证设置用户属性的正确性",
+        "input":"{\"eventName\":\"eventName\",\"userSetProperties\":{\"userkey1\":\"uservalue1\",\"userkey2\":\"uservalue2\",\"userkey3\":\"uservalue3\"},\"type\":\"user_set\",\"superProperties\":{\"superkey1\":\"supervalue1\",\"superkey2\":\"supervalue2\",\"superkey3\":\"supervalue3\"},\"superdyldProperties\":{\"dyldkey1\":\"dyldvalue1\",\"dyldkey2\":\"dyldvalue2\",\"dyldkey3\":\"dyldvalue3\"}}",
+        "output":"",
+        "step":"传入用户属性，验证内部创建的事件对象",
+        "expect":"事件对象中包含userkey1、userkey2、userkey3的键值对; #type为user_set；属性中不包含预置属性、静态公共属性、动态公共属性",
+        "description":"",
+        "result":false
+    },{
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_12000_2",
+        "name":"验证设置用户属性的正确性",
+        "input":"{\"eventName\":\"eventName\",\"userSetProperties\":{\"userkey1\":\"uservalue1\",\"userkey2\":\"uservalue2\",\"userkey3\":\"uservalue3\"},\"type\":\"user_set\",\"time\":1452044020,\"timestring\":\"2016-01-06 09:33:40.000\"}",
+        "output":"",
+        "step":"传入用户属性和时间，验证内部创建的事件对象（默认时区）",
+        "expect":"事件对象的#time为\"2016-01-06 09:33:40.000\"",
+        "description":"",
+        "result":false
+    },{
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_12000_3",
+        "name":"验证设置用户属性的正确性",
+        "input":"{\"eventName\":\"eventName\",\"userSetProperties\":{\"userkey1\":\"uservalue1\",\"userkey2\":\"uservalue2\",\"userkey3\":\"uservalue3\"},\"type\":\"user_set\",\"time\":1452044020,\"timeZone\":\"America/Phoenix\",\"timestring\":\"2016-01-05 18:33:40.000\"}",
+        "output":"",
+        "step":"传入用户属性和时间，验证内部创建的事件对象（自定义时区）",
+        "expect":"事件对象的#time : \"2016-01-05 17:33:40.000\"",
+        "description":"",
+        "result":false
+    }
+]

@@ -8,45 +8,105 @@
 
 #import "TDAppLaunchReason.h"
 #import <objc/runtime.h>
-#import "NSObject+TDUtil.h"
-#import "TDPresetProperties+TDDisProperties.h"
 #import "TDCommonUtil.h"
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-#import <UserNotifications/UserNotifications.h>
-#endif
+#import "TDPresetProperties+TDDisProperties.h"
+#import "TAAspects.h"
+#import "TDAppState.h"
 
 #define td_force_inline __inline__ __attribute__((always_inline))
 
-static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *oriSELStr, SEL newSEL, IMP newIMP) {
-    SEL origSEL = NSSelectorFromString(oriSELStr);
-    Method origMethod = class_getInstanceMethod([target class], origSEL);
-    
-    if ([target respondsToSelector:origSEL]) {
-        // 给当前类添加新方法(newSEL, newIMP)
-        class_addMethod([target class], newSEL, newIMP, method_getTypeEncoding(origMethod));
-        
-        // 获取原始方法实现，方法实现可能是当前类，也可能是父类
-        Method origMethod = class_getInstanceMethod([target class], origSEL);
-        // 新方法实现
-        Method newMethod = class_getInstanceMethod([target class], newSEL);
-        
-        // 判断当前类是否实现原始方法
-        if(class_addMethod([target class], origSEL, method_getImplementation(newMethod), method_getTypeEncoding(newMethod))) {
-            // 当前类没有实现原始方法，父类实现了原始方法
-            // 给当前类添加原始方法(origSEL, newIMP)，调用class_replaceMethod后，当前类的新方法和原始方法的IMP交换了
-            // 不会污染父类
-            class_replaceMethod([target class], newSEL, method_getImplementation(origMethod), method_getTypeEncoding(origMethod));
-        } else {
-            // 当前类实现了原始方法，只会交换当前类，不会污染父类
-            method_exchangeImplementations(origMethod, newMethod);
-        }
-    } else {
-        // 类和父类都没有实现，给当前类添加新方法，不会污染父类
-        class_addMethod([target class], origSEL, newIMP, method_getTypeEncoding(origMethod));
+
+static id __td_get_userNotificationCenter() {
+    Class cls = NSClassFromString(@"UNUserNotificationCenter");
+    SEL sel = NSSelectorFromString(@"currentNotificationCenter");
+    if ([cls respondsToSelector:sel]) {
+        id (*getUserNotificationCenterIMP)(id, SEL) = (NSString * (*)(id, SEL))[cls methodForSelector:sel];
+        return getUserNotificationCenterIMP(cls, sel);
     }
+    return nil;
 }
 
+static id __td_get_userNotificationCenter_delegate() {
+    Class cls = NSClassFromString(@"UNUserNotificationCenter");
+    SEL sel = NSSelectorFromString(@"currentNotificationCenter");
+    SEL delegateSel = NSSelectorFromString(@"delegate");
+    if ([cls respondsToSelector:sel]) {
+        id (*getUserNotificationCenterIMP)(id, SEL) = (id (*)(id, SEL))[cls methodForSelector:sel];
+        id center = getUserNotificationCenterIMP(cls, sel);
+        if (center) {
+            id (*getUserNotificationCenterDelegateIMP)(id, SEL) = (id (*)(id, SEL))[center methodForSelector:delegateSel];
+            id delegate = getUserNotificationCenterDelegateIMP(center, delegateSel);
+            return delegate;
+        }
+    }
+    return nil;
+}
+
+static NSDictionary * __td_get_userNotificationCenterResponse(id response) {
+    
+    @try {
+        if ([response isKindOfClass:[NSClassFromString(@"UNNotificationResponse") class]]) {
+            return [response valueForKeyPath:@"notification.request.content.userInfo"];
+        }
+    } @catch (NSException *exception) {
+        
+    }
+    return nil;
+}
+
+static NSString * __td_get_userNotificationCenterRequestContentTitle(id response) {
+    
+    @try {
+        if ([response isKindOfClass:[NSClassFromString(@"UNNotificationResponse") class]]) {
+            return [response valueForKeyPath:@"notification.request.content.title"];
+        }
+    } @catch (NSException *exception) {
+        
+    }
+    return nil;
+}
+
+static NSString * __td_get_userNotificationCenterRequestContentBody(id response) {
+    
+    @try {
+        if ([response isKindOfClass:[NSClassFromString(@"UNNotificationResponse") class]]) {
+            return [response valueForKeyPath:@"notification.request.content.body"];
+        }
+    } @catch (NSException *exception) {
+        
+    }
+    return nil;
+}
+
+//static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *oriSELStr, SEL newSEL, IMP newIMP) {
+//    SEL origSEL = NSSelectorFromString(oriSELStr);
+//    Method origMethod = class_getInstanceMethod([target class], origSEL);
+//
+//    if ([target respondsToSelector:origSEL]) {
+//        // 给当前类添加新方法(newSEL, newIMP)
+//        class_addMethod([target class], newSEL, newIMP, method_getTypeEncoding(origMethod));
+//
+//        // 获取原始方法实现，方法实现可能是当前类，也可能是父类
+//        Method origMethod = class_getInstanceMethod([target class], origSEL);
+//        // 新方法实现
+//        Method newMethod = class_getInstanceMethod([target class], newSEL);
+//
+//        // 判断当前类是否实现原始方法
+//        if(class_addMethod([target class], origSEL, method_getImplementation(newMethod), method_getTypeEncoding(newMethod))) {
+//            // 当前类没有实现原始方法，父类实现了原始方法
+//            // 给当前类添加原始方法(origSEL, newIMP)，调用class_replaceMethod后，当前类的新方法和原始方法的IMP交换了
+//            // 不会污染父类
+//            class_replaceMethod([target class], newSEL, method_getImplementation(origMethod), method_getTypeEncoding(origMethod));
+//        } else {
+//            // 当前类实现了原始方法，只会交换当前类，不会污染父类
+//            method_exchangeImplementations(origMethod, newMethod);
+//        }
+//    } else {
+//        // 类和父类都没有实现，给当前类添加新方法，不会污染父类
+//        class_addMethod([target class], origSEL, newIMP, method_getTypeEncoding(origMethod));
+//    }
+//}
+//
 
 @implementation TDAppLaunchReason
 
@@ -55,9 +115,17 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
     // 是否需要采集启动原因
     [TDPresetProperties disPresetProperties];
     if ([TDPresetProperties disableStartReason]) return;
-    
-    [self td_hookUserNotificationCenterMethod];
 
+#if defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
+    if (@available(iOS 13.0, *)) {
+        [[NSNotificationCenter defaultCenter] addObserver:[TDAppLaunchReason sharedInstance]
+                                                 selector:@selector(_sceneWillConnectToSession:)
+                                                     name:UISceneWillConnectNotification
+                                                   object:nil];
+    }
+
+#endif
+    
     [[NSNotificationCenter defaultCenter] addObserver:[TDAppLaunchReason sharedInstance]
                                              selector:@selector(_applicationDidFinishLaunchingNotification:)
                                                  name:UIApplicationDidFinishLaunchingNotification
@@ -70,69 +138,79 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
     
 }
 
+
+
 + (void)td_hookUserNotificationCenterMethod {
     if (@available(iOS 10.0, *)) {
         // 要求推送的代理需要在application:didFinishLaunchingWithOptions:设置
         // 如果不是在application:didFinishLaunchingWithOptions:设置，那么冷启动时推送的消息会收集不到
-        if ([UNUserNotificationCenter currentNotificationCenter].delegate) {
-            NSString *pushSel = @"userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:";
-            SEL newpushSel = NSSelectorFromString([NSString stringWithFormat:@"td_%@", pushSel]);
-            IMP newpushSelIMP = imp_implementationWithBlock(^(id _self1, UNUserNotificationCenter *center, UNNotificationResponse *response, id completionHandler) {
-                if ([_self1 respondsToSelector:newpushSel]) {
-                    [NSObject performSelector:newpushSel onTarget:_self1 withArguments:@[center, response, completionHandler]];
-                }
-                
-                
-                NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
-                UNNotificationRequest *request = response.notification.request;
-                NSDictionary *userInfo = request.content.userInfo;
-                if (userInfo) {
-                    [properties addEntriesFromDictionary:userInfo];
-                }
-                properties[@"title"] = request.content.title;
-                properties[@"body"] = request.content.body;
-                
-                [[TDAppLaunchReason sharedInstance] clearAppLaunchParams];
-                [TDAppLaunchReason sharedInstance].appLaunchParams = @{@"url": @"",
-                                             @"data": [TDCommonUtil dictionary:properties]};
-            });
-            __td_td_swizzleWithOriSELStr([UNUserNotificationCenter currentNotificationCenter].delegate, pushSel, newpushSel, newpushSelIMP);
+        if (__td_get_userNotificationCenter_delegate()) {
+            [self td_hookUserNotificationCenterDelegateMethod];
         } else {
-            
-            NSString *pushDelegateSel = @"setDelegate:";
-            SEL newPushDelegateSel = NSSelectorFromString([NSString stringWithFormat:@"td_%@", pushDelegateSel]);
-            IMP newPushDelegateIMP = imp_implementationWithBlock(^(id _self, id delegate) {
-                if ([_self respondsToSelector:newPushDelegateSel]) {
-                    [NSObject performSelector:newPushDelegateSel onTarget:_self withArguments:@[delegate]];
-                }
-                
-                
-                NSString *pushSel = @"userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:";
-                SEL newpushSel = NSSelectorFromString([NSString stringWithFormat:@"td_%@", pushSel]);
-                IMP newpushSelIMP = imp_implementationWithBlock(^(id _self1, UNUserNotificationCenter *center, UNNotificationResponse *response, id completionHandler) {
-                    if ([_self1 respondsToSelector:newpushSel]) {
-                        [NSObject performSelector:newpushSel onTarget:_self1 withArguments:@[center, response, completionHandler]];
-                    }
-                    
-                    
-                    NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
-                    UNNotificationRequest *request = response.notification.request;
-                    NSDictionary *userInfo = request.content.userInfo;
-                    if (userInfo) {
-                        [properties addEntriesFromDictionary:userInfo];
-                    }
-                    properties[@"title"] = request.content.title;
-                    properties[@"body"] = request.content.body;
-                    
-                    [[TDAppLaunchReason sharedInstance] clearAppLaunchParams];
-                    [TDAppLaunchReason sharedInstance].appLaunchParams = @{@"url": @"",
-                                                 @"data": [TDCommonUtil dictionary:properties]};
-                });
-                __td_td_swizzleWithOriSELStr([UNUserNotificationCenter currentNotificationCenter].delegate, pushSel, newpushSel, newpushSelIMP);
-            });
-            __td_td_swizzleWithOriSELStr([UNUserNotificationCenter currentNotificationCenter], pushDelegateSel, newPushDelegateSel, newPushDelegateIMP);
+            [self addDelegateObserverToUserNotificationCenter:__td_get_userNotificationCenter()];
         }
     }
+}
+
+
+#pragma mark - KVO for UNUserNotificationCenter
+
++ (void)addDelegateObserverToUserNotificationCenter:(id)userNotificationCenter {
+
+    if (userNotificationCenter != nil) {
+        @try {
+          [userNotificationCenter addObserver:[TDAppLaunchReason sharedInstance]
+                                   forKeyPath:NSStringFromSelector(@selector(delegate))
+                                      options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+                                      context:@"UserNotificationObserverContext"];
+        } @catch (NSException *exception) {
+        } @finally {
+        }
+    }
+
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSKeyValueChangeKey, id> *)change
+                       context:(void *)context {
+  if (context == @"UserNotificationObserverContext") {
+    if ([keyPath isEqualToString:NSStringFromSelector(@selector(delegate))]) {
+//      id oldDelegate = change[NSKeyValueChangeOldKey];
+//      if (oldDelegate && oldDelegate != [NSNull null]) {
+//      }
+      id newDelegate = change[NSKeyValueChangeNewKey];
+      if (newDelegate && newDelegate != [NSNull null]) {
+          [TDAppLaunchReason td_hookUserNotificationCenterDelegateMethod];
+      }
+    }
+  } else {
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+  }
+}
+
+#pragma mark - NSProxy methods
+
+
++ (void)td_hookUserNotificationCenterDelegateMethod {
+    
+    NSString *pushSel = @"userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:";
+    [__td_get_userNotificationCenter_delegate() ta_aspect_hookSelector:NSSelectorFromString(pushSel) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, id center ,id response ,id completionHandler) {
+        
+        NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+        NSDictionary *userInfo = __td_get_userNotificationCenterResponse(response);
+        if (userInfo) {
+            [properties addEntriesFromDictionary:userInfo];
+        }
+        properties[@"title"] = __td_get_userNotificationCenterRequestContentTitle(response);
+        properties[@"body"] = __td_get_userNotificationCenterRequestContentBody(response);
+        
+        [[TDAppLaunchReason sharedInstance] clearAppLaunchParams];
+        [TDAppLaunchReason sharedInstance].appLaunchParams = @{@"url": @"",
+                                                               @"data": [TDCommonUtil dictionary:properties]};
+        
+    } error:NULL];
+    
 }
 
 + (TDAppLaunchReason *)sharedInstance {
@@ -164,9 +242,11 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
     NSString *url = [self getInitDeeplink:launchOptions];
     NSDictionary *data = [self getInitData:launchOptions];
     
+    [TDAppLaunchReason td_hookUserNotificationCenterMethod];
+    
     // 获取冷启动原因：
     if (!launchOptions) {
-        [self clearAppLaunchParams];
+        [weakSelf clearAppLaunchParams];
     } else if ([url isKindOfClass:[NSString class]] && url.length) {
         self.appLaunchParams = @{@"url": [TDCommonUtil string:url],
                                  @"data": @{}};
@@ -175,23 +255,24 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
                                  @"data": [TDCommonUtil dictionary:data]};
     }
     
-    id<UIApplicationDelegate> applicationDelegate = [[UIApplication sharedApplication] delegate];
+    UIApplication *application = [TDAppState sharedApplication];
+    id applicationDelegate = [application delegate];
+    if (applicationDelegate == nil)
+    {
+        return;
+    }
     
     
     // hook 点击推送方法
     NSString *localPushSelString = @"application:didReceiveLocalNotification:";
-    SEL newLocalPushSel = NSSelectorFromString([NSString stringWithFormat:@"td_%@", localPushSelString]);
-    IMP newLocalPushIMP = imp_implementationWithBlock(^(id _self, UIApplication *application, UILocalNotification *notification) {
-        if ([_self respondsToSelector:newLocalPushSel]) {
-            [NSObject performSelector:newLocalPushSel onTarget:_self withArguments:@[application, notification]];
-        }
+    [applicationDelegate ta_aspect_hookSelector:NSSelectorFromString(localPushSelString) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, UIApplication *application ,UILocalNotification *notification) {
         
         BOOL isValidPushClick = NO;
         if (application.applicationState == UIApplicationStateInactive) {
             isValidPushClick = YES;
         }
         if (!isValidPushClick) {
-//            TDLogDebug(@"Invalid app push callback, PushClick was ignored.");
+            //            TDLogDebug(@"Invalid app push callback, PushClick was ignored.");
             return;
         }
         NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
@@ -199,92 +280,176 @@ static td_force_inline void __td_td_swizzleWithOriSELStr(id target, NSString *or
         if (@available(iOS 8.2, *)) {
             properties[@"alertTitle"] = notification.alertTitle;
         }
-        [self clearAppLaunchParams];
+        [weakSelf clearAppLaunchParams];
         weakSelf.appLaunchParams = @{@"url": @"",
                                      @"data": [TDCommonUtil dictionary:properties]};
-    });
-    __td_td_swizzleWithOriSELStr(applicationDelegate, localPushSelString, newLocalPushSel, newLocalPushIMP);
+        
+    } error:NULL];
     
     
     NSString *remotePushSelString = @"application:didReceiveRemoteNotification:fetchCompletionHandler:";
-    SEL newRemotePushSel = NSSelectorFromString([NSString stringWithFormat:@"td_%@", remotePushSelString]);
-    IMP newRemotePushIMP = imp_implementationWithBlock(^(id _self, UIApplication *application, NSDictionary *userInfo, id completionHandler) {
-        if ([_self respondsToSelector:newRemotePushSel]) {
-            [NSObject performSelector:newRemotePushSel onTarget:_self withArguments:@[application, userInfo, completionHandler]];
-        }
+    [applicationDelegate ta_aspect_hookSelector:NSSelectorFromString(remotePushSelString) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, UIApplication *application, NSDictionary *userInfo, id fetchCompletionHandler) {
         
         BOOL isValidPushClick = NO;
         if (application.applicationState == UIApplicationStateInactive) {
             isValidPushClick = YES;
         }
         if (!isValidPushClick) {
-//            TDLogDebug(@"Invalid app push callback, PushClick was ignored.");
+            //            TDLogDebug(@"Invalid app push callback, PushClick was ignored.");
             return;
         }
-        [self clearAppLaunchParams];
+        [weakSelf clearAppLaunchParams];
         weakSelf.appLaunchParams = @{@"url": @"",
                                      @"data": [TDCommonUtil dictionary:userInfo]};
-    });
-    __td_td_swizzleWithOriSELStr(applicationDelegate, remotePushSelString, newRemotePushSel, newRemotePushIMP);
+        
+    } error:NULL];
+    
     
     
     // hook deeplink回调方法
     NSString *deeplinkStr1 = @"application:handleOpenURL:";// ios(2.0, 9.0)
-    SEL newdeeplinkSel1 = NSSelectorFromString([NSString stringWithFormat:@"td_%@", deeplinkStr1]);
-    IMP newdeeplinkIMP1 = imp_implementationWithBlock(^(id _self, UIApplication *application, NSURL *url) {
-        if ([_self respondsToSelector:newdeeplinkSel1]) {
-            [NSObject performSelector:newdeeplinkSel1 onTarget:_self withArguments:@[application, url]];
-        }
+    [applicationDelegate ta_aspect_hookSelector:NSSelectorFromString(deeplinkStr1) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, UIApplication *application, NSURL *url) {
         
-        [self clearAppLaunchParams];
+        [weakSelf clearAppLaunchParams];
         weakSelf.appLaunchParams = @{@"url": [TDCommonUtil string:url.absoluteString],
                                      @"data":@{}};
-    });
-    __td_td_swizzleWithOriSELStr(applicationDelegate, deeplinkStr1, newdeeplinkSel1, newdeeplinkIMP1);
+    } error:NULL];
+    
+    
     
     NSString *deeplinkStr2 = @"application:openURL:options:";// ios(9.0)
-    SEL newdeeplinkSel2 = NSSelectorFromString([NSString stringWithFormat:@"td_%@", deeplinkStr2]);
-    IMP newdeeplinkIMP2 = imp_implementationWithBlock(^(id _self, UIApplication *application, NSURL *url, NSDictionary *options) {
-        if ([_self respondsToSelector:newdeeplinkSel2]) {
-            [NSObject performSelector:newdeeplinkSel2 onTarget:_self withArguments:@[application, url, options]];
-        }
+    [applicationDelegate ta_aspect_hookSelector:NSSelectorFromString(deeplinkStr2) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, UIApplication *app, NSURL *url, id options) {
         
-        [self clearAppLaunchParams];
+        [weakSelf clearAppLaunchParams];
         weakSelf.appLaunchParams = @{@"url": [TDCommonUtil string:url.absoluteString],
                                      @"data":@{}};
-    });
-    __td_td_swizzleWithOriSELStr(applicationDelegate, deeplinkStr2, newdeeplinkSel2, newdeeplinkIMP2);
+    } error:NULL];
+    
     
     NSString *deeplinkStr3 = @"application:continueUserActivity:restorationHandler:";// ios(8.0)
-    SEL newdeeplinkSel3 = NSSelectorFromString([NSString stringWithFormat:@"td_%@", deeplinkStr3]);
-    IMP newdeeplinkIMP3 = imp_implementationWithBlock(^(id _self, UIApplication *application, NSUserActivity *userActivity, id restorationHandler) {
-        if ([_self respondsToSelector:newdeeplinkSel3]) {
-            [NSObject performSelector:newdeeplinkSel3 onTarget:_self withArguments:@[application, userActivity, restorationHandler]];
-        }
+    [applicationDelegate ta_aspect_hookSelector:NSSelectorFromString(deeplinkStr3) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, UIApplication *application, NSUserActivity *userActivity, id restorationHandler) {
         
-        [self clearAppLaunchParams];
+        [weakSelf clearAppLaunchParams];
         weakSelf.appLaunchParams = @{@"url": [TDCommonUtil string: userActivity.webpageURL.absoluteString],
                                      @"data":@{}};
-    });
-    __td_td_swizzleWithOriSELStr(applicationDelegate, deeplinkStr3, newdeeplinkSel3, newdeeplinkIMP3);
+    } error:NULL];
+    
     
     
     // hook 3d touch回调方法
     if (@available(iOS 9.0, *)) {
         NSString *touch3dSel = @"application:performActionForShortcutItem:completionHandler:";
-        SEL newtouch3dSel = NSSelectorFromString([NSString stringWithFormat:@"td_%@", touch3dSel]);
-        IMP newtouch3dIMP = imp_implementationWithBlock(^(id _self, UIApplication *application, UIApplicationShortcutItem *shortcutItem, id completionHandler) {
-            if ([_self respondsToSelector:newtouch3dSel]) {
-                [NSObject performSelector:newtouch3dSel onTarget:_self withArguments:@[application, shortcutItem, completionHandler]];
-            }
+        [applicationDelegate ta_aspect_hookSelector:NSSelectorFromString(touch3dSel) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, UIApplication *application, UIApplicationShortcutItem *shortcutItem, id completionHandler) {
             
-            [self clearAppLaunchParams];
+            [weakSelf clearAppLaunchParams];
             weakSelf.appLaunchParams = @{@"url": @"",
                                          @"data": [TDCommonUtil dictionary:shortcutItem.userInfo]};
-        });
-        __td_td_swizzleWithOriSELStr(applicationDelegate, touch3dSel, newtouch3dSel, newtouch3dIMP);
+            
+        } error:NULL];
     }
+    
+
+#if defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
+    // UISceneConfiguration回调方法
+    if (@available(iOS 13.0, *)) {
+        NSString *connectingSceneSessionSel = @"application:configurationForConnectingSceneSession:options:";
+        [applicationDelegate ta_aspect_hookSelector:NSSelectorFromString(connectingSceneSessionSel) withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, UIApplication *application, id connectingSceneSession, id options) {
+           
+            @try {
+                if ([options isKindOfClass:NSClassFromString(@"UISceneConnectionOptions")]) {
+                    
+                    NSURL *openURL = [[(NSSet *)[options valueForKey:@"URLContexts"] allObjects].lastObject valueForKey:@"URL"];
+                    NSURL *userURL = [[(NSSet *)[options valueForKey:@"userActivities"] allObjects].lastObject valueForKey:@"webpageURL"];
+                    id response = [options valueForKey:@"notificationResponse"];
+
+                    if (openURL && openURL.absoluteString.length) {
+                        [weakSelf clearAppLaunchParams];
+                        weakSelf.appLaunchParams = @{@"url": openURL.absoluteString,
+                                                     @"data":@{}};
+                    } else if (userURL && userURL.absoluteString.length) {
+                        [weakSelf clearAppLaunchParams];
+                        weakSelf.appLaunchParams = @{@"url": userURL.absoluteString,
+                                                     @"data":@{}};
+                    }
+                    else if (response) {
+                        NSDictionary *userInfo = __td_get_userNotificationCenterResponse(response);
+                        NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+                        if (userInfo) {
+                            [properties addEntriesFromDictionary:userInfo];
+                        }
+                        properties[@"title"] = __td_get_userNotificationCenterRequestContentTitle(response);
+                        properties[@"body"] = __td_get_userNotificationCenterRequestContentBody(response);
+
+                        [[TDAppLaunchReason sharedInstance] clearAppLaunchParams];
+                        [TDAppLaunchReason sharedInstance].appLaunchParams = @{@"url": @"",
+                                                                               @"data": [TDCommonUtil dictionary:properties]};
+                    }
+                }
+            } @catch (NSException *exception) {}
+            
+        } error:NULL];
+    }
+#endif
+    
 }
+
+#if defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
+
+- (void)_sceneWillConnectToSession:(id)param {
+    
+    @try {
+        static BOOL isHookconnectedScenes;
+        if (isHookconnectedScenes) {
+            return;
+        }
+        
+        __weak TDAppLaunchReason *weakSelf = self;
+        id scenes = [param valueForKey:@"object"];
+        id windowSceneDelegate = [scenes valueForKeyPath:@"delegate"];
+        [windowSceneDelegate ta_aspect_hookSelector:NSSelectorFromString(@"scene:continueUserActivity:") withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo, id scene ,id userActivity) {
+           
+            @try {
+                if ([userActivity isKindOfClass:NSClassFromString(@"NSUserActivity")]) {
+                    NSURL *URL = [(NSUserActivity *)userActivity webpageURL];
+                    if (URL && URL.absoluteString) {
+                        [weakSelf clearAppLaunchParams];
+                        weakSelf.appLaunchParams = @{@"url": URL.absoluteString,
+                                                     @"data":@{}};
+                    }
+                }
+            } @catch (NSException *exception) {
+                
+            }
+            
+        }  error:NULL];
+        
+        
+        [windowSceneDelegate ta_aspect_hookSelector:NSSelectorFromString(@"scene:openURLContexts:") withOptions:TAAspectPositionAfter usingBlock:^(id<TAAspectInfo> aspectInfo,  id scene ,id urlContexts) {
+            
+            @try {
+                if ([urlContexts isKindOfClass:[NSSet class]]) {
+                    NSURL *URL = [[(NSSet *)urlContexts allObjects].lastObject valueForKey:@"URL"];
+                    if (URL && URL.absoluteString) {
+                        [weakSelf clearAppLaunchParams];
+                        weakSelf.appLaunchParams = @{@"url": URL.absoluteString,
+                                                     @"data":@{}};
+                    }
+                }
+            } @catch (NSException *exception) {
+                
+            }
+            
+        }  error:NULL];
+           
+        isHookconnectedScenes = YES;
+    } @catch (NSException *exception) {
+        
+    }
+  
+}
+
+#endif
+
 
 - (NSString *)getInitDeeplink:(NSDictionary *)launchOptions {
     
