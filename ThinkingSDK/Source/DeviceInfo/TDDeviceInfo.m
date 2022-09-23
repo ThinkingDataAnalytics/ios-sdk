@@ -150,6 +150,8 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
         CGSize size = [UIScreen mainScreen].bounds.size;
         [p setValue:@((NSInteger)size.height) forKey:@"#screen_height"];
     }
+    
+#if TARGET_OS_IOS
     if (![TDPresetProperties disableDeviceType]) {
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             [p setValue:@"iPad" forKey:@"#device_type"];
@@ -157,6 +159,8 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
             [p setValue:@"iPhone" forKey:@"#device_type"];
         }
     }
+#endif
+    
 #elif TARGET_OS_OSX
     if (![TDPresetProperties disableOs]) {
         [p setValue:@"OSX" forKey:@"#os"];
@@ -451,7 +455,11 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
 #pragma clang diagnostic pop
 
 + (BOOL)isIPad {
-    return  (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
+#if TARGET_OS_IOS
+    return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
+#elif TARGET_OS_OSX
+    return NO;
+#endif
 }
 
 @end
