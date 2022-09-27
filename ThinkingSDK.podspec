@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.source_files     = 'ThinkingSDK/Source/**/*.{h,m,c}' 
 
   s.subspec 'Core' do |c|
-    c.source_files = 'ThinkingSDK/Source/Logger/**/*.{h,m}', 'ThinkingSDK/Source/CalibratedTime/**/*.{h,m,c}', 'ThinkingSDK/Source/Config/TDConstant.h'
+    c.source_files = 'ThinkingSDK/Source/Core/Logger/**/*.{h,m}', 'ThinkingSDK/Source/Core/CalibratedTime/**/*.{h,m,c}', 'ThinkingSDK/Source/Core/TDConstant.h'
 
   end
 
