@@ -17,6 +17,7 @@
 #import "TAAppExtensionAnalytic.h"
 #import "TAReachability.h"
 #import "TAAppLifeCycle.h"
+#import "TARouter.h"
 
 #if !__has_feature(objc_arc)
 #error The ThinkingSDK library must be compiled with ARC enabled
@@ -1026,16 +1027,12 @@ static dispatch_queue_t td_trackQueue;
 }
 
 - (void)enableThirdPartySharing:(TAThirdPartyShareType)type customMap:(NSDictionary<NSString *, NSObject *> *)customMap {
-    if (!self.thirdPartyManager) {
-        Class cls = NSClassFromString(@"TAThirdPartyManager");
-        if (!cls) {
-    //        TDLog(@"请安装三方扩展插件");
-            return;
-        }
-        self.thirdPartyManager = [[cls alloc] init];
-    }
     
-    [self.thirdPartyManager enableThirdPartySharing:type instance:self property:customMap];
+    // com.thinkingdata://call.service/TAThirdPartyManager.TAThirdPartyProtocol/...?params={}(value url encode)
+    NSURL *url = [NSURL URLWithString:@"com.thinkingdata://call.service.thinkingdata/TAThirdPartyManager.TAThirdPartyProtocol.enableThirdPartySharing:instance:property:/"];
+    if ([TARouter canOpenURL:url]) {
+        [TARouter openURL:url withParams:@{@"TAThirdPartyManager":@{@1:[NSNumber numberWithInteger:type],@2:self,@3:customMap}}];
+    }
 }
 
 //MARK: - Auto Track

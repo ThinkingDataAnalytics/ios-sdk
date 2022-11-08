@@ -1,59 +1,34 @@
 # Uncomment the next line to define a global platform for your project
 # platform :ios, '8.0'
 
+use_frameworks!
+
 target 'ThinkingSDKDEMO' do
   # Comment the next line if you don't want to use dynamic frameworks
   
-  use_frameworks!
-  
-  
-  pod 'JPush', '4.4.0'
   pod "ThinkingSDK", :path => "../../"
   pod 'Masonry'
-  pod 'AppsFlyerFramework'
-  pod 'IronSourceSDK','7.1.8.0'
-  pod 'Adjust', '~> 4.29.2'
-  pod 'Branch', '~> 1.39.1'
-#热云
-  pod 'AnyThinkiOS'
-
-# TradPlus
-  pod 'TradPlusAdSDK', '6.9.10'
-  pod 'TradPlusAdSDK/TPCrossAdapter', '6.9.10'
-  pod 'TradPlusAdSDK/TPADXAdapter', '6.9.10'
-  pod 'TradPlusAdSDK/BaiduAdapter', '6.9.10'
-  pod 'BaiduMobAdSDK','4.83'
-
-  
-#  pod 'CocoaAsyncSocket', :inhibit_warnings => true
-#  pod 'FLEX', :inhibit_warnings => true
-#  pod 'MLeaksFinder', :inhibit_warnings => true
-#  pod 'FBRetainCycleDetector', :inhibit_warnings => true
-#  pod 'HCClangTrace', '~> 1.0.0'
-  
   
   target 'NotificationCenter' do
-    #    pod "ThinkingSDK",:subspecs => ['Source', 'Performance', 'AppLaunch'] , :path=>"../"
+    inherit! :search_paths
     pod "ThinkingSDK", :path => "../../"
+  end
+
+  target 'ThinkingShare' do
+    inherit! :search_paths
+    pod "ThinkingSDK", :path => "../../"
+
   end
   
   target 'ThinkingSDKDEMOTests' do
-    #    pod "ThinkingSDK",:subspecs => ['Source', 'Performance', 'AppLaunch'] , :path=>"../../"
     pod "ThinkingSDK", :path => "../../"
     pod 'Aspects'
     pod 'YYKit'
     pod 'OCMock'
   end
-  
-  
-  
+
 end
 
-target 'ThinkingShare' do
-  use_frameworks!
-
-  pod "ThinkingSDK/Extension", :path => "../../"
-end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|

@@ -67,6 +67,14 @@
         [updateProperties removeObjectsForKeys:set1.allObjects];
     }
     
+    // 移除lib、lib_version
+    if ([updateProperties.allKeys containsObject:@"#lib"]) {
+        [updateProperties removeObjectForKey:@"#lib"];
+    }
+    if ([updateProperties.allKeys containsObject:@"#lib_version"]) {
+        [updateProperties removeObjectForKey:@"#lib_version"];
+    }
+    
     _presetProperties = updateProperties;
 }
 

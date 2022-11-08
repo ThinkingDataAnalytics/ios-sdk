@@ -55,30 +55,28 @@
 		2E702C4127C8CF27003B16C2 /* TEST_Fakes.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E702C1627C8CF27003B16C2 /* TEST_Fakes.m */; };
 		2E702C4227C8CF27003B16C2 /* TDMutiThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E702C1727C8CF27003B16C2 /* TDMutiThread.m */; };
 		2E7E2EB927059D26002F26BC /* TDDemoLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7E2EB827059D26002F26BC /* TDDemoLocation.m */; };
+		2EA56A3A28E44E8D007ABF9F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2EA56A3928E44E8D007ABF9F /* GoogleService-Info.plist */; };
 		2EBE2CA22750D0CF005B3F09 /* AppDelegate+WW.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE2CA12750D0CF005B3F09 /* AppDelegate+WW.m */; };
 		2EC9309B288693D000FB0A45 /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC9309A288693D000FB0A45 /* NotificationService.m */; };
 		2EC9309F288693D000FB0A45 /* NotificationCenter.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2EC93097288693D000FB0A45 /* NotificationCenter.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2EF3A5DC27A0182D007D5F44 /* TDTrackAPIListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF3A5DB27A0182D007D5F44 /* TDTrackAPIListCell.m */; };
+		33C8EA7053FF96156DCF755B /* Pods_NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D0ABADD3C74F325BFFD30DC /* Pods_NotificationCenter.framework */; };
 		3666F0C527CC795000AB21DD /* UrlRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3666F0C427CC795000AB21DD /* UrlRequest.m */; };
+		36672DC679D6727432E261F2 /* Pods_ThinkingSDKDEMO_ThinkingSDKDEMOTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F22DBB8E44B848A16F6A522D /* Pods_ThinkingSDKDEMO_ThinkingSDKDEMOTests.framework */; };
 		5207C9C227EDFE86007DF5F3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9C127EDFE86007DF5F3 /* Security.framework */; };
 		5207C9C427EDFE91007DF5F3 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9C327EDFE91007DF5F3 /* CoreTelephony.framework */; };
 		5207C9C627EDFE9B007DF5F3 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9C527EDFE9B007DF5F3 /* AdSupport.framework */; };
 		5207C9C827EDFEA6007DF5F3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9C727EDFEA6007DF5F3 /* SystemConfiguration.framework */; };
-		5207C9CA27EDFEB1007DF5F3 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9C927EDFEB1007DF5F3 /* CoreMotion.framework */; };
 		5207C9CC27EDFEBC007DF5F3 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9CB27EDFEBC007DF5F3 /* libsqlite3.tbd */; };
-		5207C9CE27EDFEC8007DF5F3 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9CD27EDFEC8007DF5F3 /* iAd.framework */; };
 		5207C9D027EDFED1007DF5F3 /* AdServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9CF27EDFED1007DF5F3 /* AdServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		5207C9D227EDFEDD007DF5F3 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9D127EDFEDD007DF5F3 /* AVFoundation.framework */; };
 		5207C9D427EDFEE9007DF5F3 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9D327EDFEE9007DF5F3 /* libz.tbd */; };
 		5207C9D627EDFEF5007DF5F3 /* libresolv.9.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9D527EDFEF5007DF5F3 /* libresolv.9.tbd */; };
 		5207C9D827EDFF01007DF5F3 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9D727EDFF01007DF5F3 /* libresolv.tbd */; };
 		5207C9DA27EDFF0D007DF5F3 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9D927EDFF0D007DF5F3 /* libc++.tbd */; };
 		5207C9DC27EDFF17007DF5F3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9DB27EDFF17007DF5F3 /* CFNetwork.framework */; };
 		5207C9DE27EDFF23007DF5F3 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9DD27EDFF23007DF5F3 /* WebKit.framework */; };
-		5207C9E727EE01D4007DF5F3 /* ReYunFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9E527EDFFC0007DF5F3 /* ReYunFramework.framework */; };
-		5207C9E827EE01D4007DF5F3 /* ReYunFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9E527EDFFC0007DF5F3 /* ReYunFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		528FC1E427E850B300A68370 /* Pods_ThinkingSDKDEMO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 528FC1E327E850B300A68370 /* Pods_ThinkingSDKDEMO.framework */; };
-		5E280AD5D10543995AE6B732 /* Pods_ThinkingShare.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EB0BF0CFA7B9ADDE719C28B /* Pods_ThinkingShare.framework */; };
+		595C3C37683B5651ADA36A65 /* Pods_ThinkingShare.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD8B4831402A79C6B37EC52 /* Pods_ThinkingShare.framework */; };
 		6E3B49E8250603520021B467 /* ActionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3B49E7250603520021B467 /* ActionModel.m */; };
 		6E3B49EB250603CC0021B467 /* TDUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3B49EA250603CC0021B467 /* TDUtil.m */; };
 		6E4936242514CBD800F27296 /* TDUserIDVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4936232514CBD800F27296 /* TDUserIDVC.m */; };
@@ -96,8 +94,6 @@
 		6EEDD2BD25063099001E07BC /* TDOtherVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEDD2BC25063099001E07BC /* TDOtherVC.m */; };
 		6EEDD2C0250630A8001E07BC /* TDEventVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEDD2BF250630A8001E07BC /* TDEventVC.m */; };
 		6EEDD2C325063552001E07BC /* TDAutoTrackVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEDD2C225063552001E07BC /* TDAutoTrackVC.m */; };
-		A0CBB005C1866F9F004788D6 /* Pods_ThinkingSDKDEMO_ThinkingSDKDEMOTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA0D37C5BADDCD6AC6B0915 /* Pods_ThinkingSDKDEMO_ThinkingSDKDEMOTests.framework */; };
-		C0BB4031215774DBC76EFF02 /* Pods_ThinkingSDKDEMO_NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C51BECA7087800A6D25380E3 /* Pods_ThinkingSDKDEMO_NotificationCenter.framework */; };
 		F34CAAD222C5B26C00A8FF82 /* WKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */; };
 		F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */; };
 		F34CAB0122C730D400A8FF82 /* AutoCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAB0022C730D400A8FF82 /* AutoCollectionViewController.m */; };
@@ -151,17 +147,6 @@
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5207C9E927EE01D4007DF5F3 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				5207C9E827EE01D4007DF5F3 /* ReYunFramework.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -173,6 +158,8 @@
 		01D33844283FDA60002B1CAF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		01D33846283FDA60002B1CAF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		01D33850283FDE4D002B1CAF /* ThinkingShare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ThinkingShare.entitlements; sourceTree = "<group>"; };
+		06E2147B1261FEB7E8833F44 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.release.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.release.xcconfig"; sourceTree = "<group>"; };
+		1FD8B4831402A79C6B37EC52 /* Pods_ThinkingShare.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThinkingShare.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C16AD3E21D9BF8B14A087F3 /* Pods-ThinkingSDKDEMO-NotificationServer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO-NotificationServer.release.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO-NotificationServer/Pods-ThinkingSDKDEMO-NotificationServer.release.xcconfig"; sourceTree = "<group>"; };
 		2E64BC2F28034511007BFD75 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		2E64BC3128034518007BFD75 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -233,6 +220,7 @@
 		2E702C1727C8CF27003B16C2 /* TDMutiThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDMutiThread.m; sourceTree = "<group>"; };
 		2E7E2EB727059D26002F26BC /* TDDemoLocation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDDemoLocation.h; sourceTree = "<group>"; };
 		2E7E2EB827059D26002F26BC /* TDDemoLocation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDDemoLocation.m; sourceTree = "<group>"; };
+		2EA56A3928E44E8D007ABF9F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2EB5D0C227030C1C002FAECF /* ThinkingSDKDEMO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ThinkingSDKDEMO.entitlements; sourceTree = "<group>"; };
 		2EBE2CA02750D0CF005B3F09 /* AppDelegate+WW.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+WW.h"; sourceTree = "<group>"; };
 		2EBE2CA12750D0CF005B3F09 /* AppDelegate+WW.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+WW.m"; sourceTree = "<group>"; };
@@ -242,13 +230,13 @@
 		2EC9309C288693D000FB0A45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2EF3A5DA27A0182D007D5F44 /* TDTrackAPIListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDTrackAPIListCell.h; sourceTree = "<group>"; };
 		2EF3A5DB27A0182D007D5F44 /* TDTrackAPIListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDTrackAPIListCell.m; sourceTree = "<group>"; };
-		33FAF25CA3EEFC5C94694591 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.release.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.release.xcconfig"; sourceTree = "<group>"; };
 		3666F0C327CC795000AB21DD /* UrlRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UrlRequest.h; sourceTree = "<group>"; };
 		3666F0C427CC795000AB21DD /* UrlRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UrlRequest.m; sourceTree = "<group>"; };
 		3A301C839CD51A77CF9211F8 /* Pods-ThinkingSDKDEMO-NotificationServer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO-NotificationServer.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO-NotificationServer/Pods-ThinkingSDKDEMO-NotificationServer.debug.xcconfig"; sourceTree = "<group>"; };
+		43BCFABE099A9EF4024B7D53 /* Pods-ThinkingSDKDEMOTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMOTests.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMOTests/Pods-ThinkingSDKDEMOTests.debug.xcconfig"; sourceTree = "<group>"; };
 		45877A67F6BF49ABAA4E029E /* Pods_ThinkingSDKDEMO_NotificationServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThinkingSDKDEMO_NotificationServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		45B20249727267411CE0850B /* Pods_ThinkingSDKDEMO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThinkingSDKDEMO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4CA0D37C5BADDCD6AC6B0915 /* Pods_ThinkingSDKDEMO_ThinkingSDKDEMOTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThinkingSDKDEMO_ThinkingSDKDEMOTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		47C469F1024D378DE04BF176 /* Pods-NotificationCenter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationCenter.debug.xcconfig"; path = "Target Support Files/Pods-NotificationCenter/Pods-NotificationCenter.debug.xcconfig"; sourceTree = "<group>"; };
 		5207C9C127EDFE86007DF5F3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		5207C9C327EDFE91007DF5F3 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		5207C9C527EDFE9B007DF5F3 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -300,17 +288,20 @@
 		6EEDD2C125063552001E07BC /* TDAutoTrackVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDAutoTrackVC.h; sourceTree = "<group>"; };
 		6EEDD2C225063552001E07BC /* TDAutoTrackVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDAutoTrackVC.m; sourceTree = "<group>"; };
 		77623CF61E690F63C98DDA47 /* Pods-ThinkingSDKDEMO-NotificationCenter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO-NotificationCenter.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO-NotificationCenter/Pods-ThinkingSDKDEMO-NotificationCenter.debug.xcconfig"; sourceTree = "<group>"; };
-		7EB0BF0CFA7B9ADDE719C28B /* Pods_ThinkingShare.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThinkingShare.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D0ABADD3C74F325BFFD30DC /* Pods_NotificationCenter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotificationCenter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		98353B940723B0640596C516 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO-ThinkingSDKDEMOUITests.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOUITests/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		9DCEABB505E7C4F7587EAA14 /* Pods-NotificationCenter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationCenter.release.xcconfig"; path = "Target Support Files/Pods-NotificationCenter/Pods-NotificationCenter.release.xcconfig"; sourceTree = "<group>"; };
 		A40F95C0E7171D723E665C0E /* Pods-ThinkingSDKDEMO-ThinkingShare.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO-ThinkingShare.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO-ThinkingShare/Pods-ThinkingSDKDEMO-ThinkingShare.debug.xcconfig"; sourceTree = "<group>"; };
 		A9ECFE4A730B9658B6923D74 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO-ThinkingSDKDEMOUITests.release.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOUITests/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOUITests.release.xcconfig"; sourceTree = "<group>"; };
 		BD5C5B2CB9A3280F2AD94E33 /* Pods-ThinkingSDKDEMO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO/Pods-ThinkingSDKDEMO.debug.xcconfig"; sourceTree = "<group>"; };
-		C51BECA7087800A6D25380E3 /* Pods_ThinkingSDKDEMO_NotificationCenter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThinkingSDKDEMO_NotificationCenter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C6201BB65D3AB5C25095CB18 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.debug.xcconfig"; sourceTree = "<group>"; };
+		BEBC2E908FE550DE67B55AF9 /* AppLovinQualityService.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.xcframework; name = AppLovinQualityService.xcframework; path = AppLovinQualityService/AppLovinQualityService.xcframework; sourceTree = "<group>"; };
 		C9559A96BDF714F215AD25D6 /* Pods-ThinkingShare.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingShare.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingShare/Pods-ThinkingShare.debug.xcconfig"; sourceTree = "<group>"; };
 		CAFBBD5D4195D4F1080A9256 /* Pods-ThinkingSDKDEMO-NotificationCenter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO-NotificationCenter.release.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO-NotificationCenter/Pods-ThinkingSDKDEMO-NotificationCenter.release.xcconfig"; sourceTree = "<group>"; };
+		D97A0DABC3B6BAC45166C8F8 /* Pods-ThinkingSDKDEMOTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMOTests.release.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMOTests/Pods-ThinkingSDKDEMOTests.release.xcconfig"; sourceTree = "<group>"; };
+		DBBDAE84CBD179A09AF8D5F8 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E914AA64F15051F7BA46847D /* Pods-ThinkingShare.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingShare.release.xcconfig"; path = "Target Support Files/Pods-ThinkingShare/Pods-ThinkingShare.release.xcconfig"; sourceTree = "<group>"; };
 		ED848CC2BA22F465C8355707 /* Pods_ThinkingSDKDEMO_ThinkingSDKDEMOUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThinkingSDKDEMO_ThinkingSDKDEMOUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F22DBB8E44B848A16F6A522D /* Pods_ThinkingSDKDEMO_ThinkingSDKDEMOTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThinkingSDKDEMO_ThinkingSDKDEMOTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F349CA6D2306C0E000EC1106 /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CocoaAsyncSocket.framework; sourceTree = "<group>"; };
 		F34CAAD022C5B26C00A8FF82 /* WKWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WKWebViewController.h; sourceTree = "<group>"; };
 		F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WKWebViewController.m; sourceTree = "<group>"; };
@@ -348,7 +339,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5E280AD5D10543995AE6B732 /* Pods_ThinkingShare.framework in Frameworks */,
+				595C3C37683B5651ADA36A65 /* Pods_ThinkingShare.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,7 +347,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A0CBB005C1866F9F004788D6 /* Pods_ThinkingSDKDEMO_ThinkingSDKDEMOTests.framework in Frameworks */,
+				36672DC679D6727432E261F2 /* Pods_ThinkingSDKDEMO_ThinkingSDKDEMOTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,7 +355,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C0BB4031215774DBC76EFF02 /* Pods_ThinkingSDKDEMO_NotificationCenter.framework in Frameworks */,
+				33C8EA7053FF96156DCF755B /* Pods_NotificationCenter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -375,15 +366,11 @@
 				5207C9DE27EDFF23007DF5F3 /* WebKit.framework in Frameworks */,
 				5207C9DC27EDFF17007DF5F3 /* CFNetwork.framework in Frameworks */,
 				5207C9DA27EDFF0D007DF5F3 /* libc++.tbd in Frameworks */,
-				5207C9E727EE01D4007DF5F3 /* ReYunFramework.framework in Frameworks */,
 				5207C9D827EDFF01007DF5F3 /* libresolv.tbd in Frameworks */,
 				5207C9D627EDFEF5007DF5F3 /* libresolv.9.tbd in Frameworks */,
 				5207C9D427EDFEE9007DF5F3 /* libz.tbd in Frameworks */,
-				5207C9D227EDFEDD007DF5F3 /* AVFoundation.framework in Frameworks */,
 				5207C9D027EDFED1007DF5F3 /* AdServices.framework in Frameworks */,
-				5207C9CE27EDFEC8007DF5F3 /* iAd.framework in Frameworks */,
 				5207C9CC27EDFEBC007DF5F3 /* libsqlite3.tbd in Frameworks */,
-				5207C9CA27EDFEB1007DF5F3 /* CoreMotion.framework in Frameworks */,
 				5207C9C827EDFEA6007DF5F3 /* SystemConfiguration.framework in Frameworks */,
 				5207C9C627EDFE9B007DF5F3 /* AdSupport.framework in Frameworks */,
 				5207C9C427EDFE91007DF5F3 /* CoreTelephony.framework in Frameworks */,
@@ -414,8 +401,6 @@
 				2E6CA86D4D6CB7CA3F4D519E /* Pods-ThinkingSDKDEMO.release.xcconfig */,
 				98353B940723B0640596C516 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOUITests.debug.xcconfig */,
 				A9ECFE4A730B9658B6923D74 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOUITests.release.xcconfig */,
-				C6201BB65D3AB5C25095CB18 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.debug.xcconfig */,
-				33FAF25CA3EEFC5C94694591 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.release.xcconfig */,
 				A40F95C0E7171D723E665C0E /* Pods-ThinkingSDKDEMO-ThinkingShare.debug.xcconfig */,
 				FED9D30D320B429883D346AF /* Pods-ThinkingSDKDEMO-ThinkingShare.release.xcconfig */,
 				C9559A96BDF714F215AD25D6 /* Pods-ThinkingShare.debug.xcconfig */,
@@ -424,6 +409,12 @@
 				2C16AD3E21D9BF8B14A087F3 /* Pods-ThinkingSDKDEMO-NotificationServer.release.xcconfig */,
 				77623CF61E690F63C98DDA47 /* Pods-ThinkingSDKDEMO-NotificationCenter.debug.xcconfig */,
 				CAFBBD5D4195D4F1080A9256 /* Pods-ThinkingSDKDEMO-NotificationCenter.release.xcconfig */,
+				43BCFABE099A9EF4024B7D53 /* Pods-ThinkingSDKDEMOTests.debug.xcconfig */,
+				D97A0DABC3B6BAC45166C8F8 /* Pods-ThinkingSDKDEMOTests.release.xcconfig */,
+				47C469F1024D378DE04BF176 /* Pods-NotificationCenter.debug.xcconfig */,
+				9DCEABB505E7C4F7587EAA14 /* Pods-NotificationCenter.release.xcconfig */,
+				DBBDAE84CBD179A09AF8D5F8 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.debug.xcconfig */,
+				06E2147B1261FEB7E8833F44 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -648,6 +639,14 @@
 			path = other;
 			sourceTree = "<group>";
 		};
+		915B996A5E893C39D293EC7E /* AppLovinQualityService */ = {
+			isa = PBXGroup;
+			children = (
+				BEBC2E908FE550DE67B55AF9 /* AppLovinQualityService.xcframework */,
+			);
+			name = AppLovinQualityService;
+			sourceTree = "<group>";
+		};
 		F34CAAD622C5B91500A8FF82 /* autotrack */ = {
 			isa = PBXGroup;
 			children = (
@@ -699,6 +698,7 @@
 				F380B2A622C0E8BB00955FC5 /* Products */,
 				F3BA589F2301388D00D6D7DE /* Frameworks */,
 				0C406E03CA4A89995D61A0F1 /* Pods */,
+				915B996A5E893C39D293EC7E /* AppLovinQualityService */,
 			);
 			sourceTree = "<group>";
 		};
@@ -716,6 +716,7 @@
 		F380B2A722C0E8BB00955FC5 /* ThinkingSDKDEMO */ = {
 			isa = PBXGroup;
 			children = (
+				2EA56A3928E44E8D007ABF9F /* GoogleService-Info.plist */,
 				2EB5D0C227030C1C002FAECF /* ThinkingSDKDEMO.entitlements */,
 				5207C9BD27EDFC67007DF5F3 /* Vendors */,
 				6ED61FB4251485F600F0E41D /* init */,
@@ -767,12 +768,12 @@
 				F3BA58A02301388D00D6D7DE /* ThinkingSDK.framework */,
 				45B20249727267411CE0850B /* Pods_ThinkingSDKDEMO.framework */,
 				ED848CC2BA22F465C8355707 /* Pods_ThinkingSDKDEMO_ThinkingSDKDEMOUITests.framework */,
-				4CA0D37C5BADDCD6AC6B0915 /* Pods_ThinkingSDKDEMO_ThinkingSDKDEMOTests.framework */,
 				01437913283E215800371DEE /* WidgetKit.framework */,
 				01437915283E215800371DEE /* SwiftUI.framework */,
-				7EB0BF0CFA7B9ADDE719C28B /* Pods_ThinkingShare.framework */,
 				45877A67F6BF49ABAA4E029E /* Pods_ThinkingSDKDEMO_NotificationServer.framework */,
-				C51BECA7087800A6D25380E3 /* Pods_ThinkingSDKDEMO_NotificationCenter.framework */,
+				7D0ABADD3C74F325BFFD30DC /* Pods_NotificationCenter.framework */,
+				1FD8B4831402A79C6B37EC52 /* Pods_ThinkingShare.framework */,
+				F22DBB8E44B848A16F6A522D /* Pods_ThinkingSDKDEMO_ThinkingSDKDEMOTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -802,12 +803,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2E702BDF27C8CF08003B16C2 /* Build configuration list for PBXNativeTarget "ThinkingSDKDEMOTests" */;
 			buildPhases = (
-				20C905F0480011EDC3E612A6 /* [CP] Check Pods Manifest.lock */,
+				94D8A960ACD9AD5CD668DBC1 /* [CP] Check Pods Manifest.lock */,
 				2E702BD527C8CF08003B16C2 /* Sources */,
 				2E702BD627C8CF08003B16C2 /* Frameworks */,
 				2E702BD727C8CF08003B16C2 /* Resources */,
-				BD9F50E46DE8052A45085B63 /* [CP] Embed Pods Frameworks */,
-				AA77310B2C3F0574B6C07D23 /* [CP] Copy Pods Resources */,
+				6443BD06824339C9B4549336 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -827,7 +827,6 @@
 				2EC93093288693D000FB0A45 /* Sources */,
 				2EC93094288693D000FB0A45 /* Frameworks */,
 				2EC93095288693D000FB0A45 /* Resources */,
-				93CAC346364048D4EEA73AC9 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -847,8 +846,6 @@
 				F380B2A222C0E8BB00955FC5 /* Frameworks */,
 				F380B2A322C0E8BB00955FC5 /* Resources */,
 				57952CBA88818CBDC6713E49 /* [CP] Embed Pods Frameworks */,
-				79CC17EE67543E6FE7415BFA /* [CP] Copy Pods Resources */,
-				5207C9E927EE01D4007DF5F3 /* Embed Frameworks */,
 				01437923283E215900371DEE /* Embed App Extensions */,
 			);
 			buildRules = (
@@ -976,6 +973,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6EEDD2B725062BF6001E07BC /* Launch Screen.storyboard in Resources */,
+				2EA56A3A28E44E8D007ABF9F /* GoogleService-Info.plist in Resources */,
 				F37AE90622C493A9005D64F8 /* index.html in Resources */,
 				6EA0E35B24C84B5D008FCF11 /* SpaceMono-Regular.ttf in Resources */,
 				6EA0E35A24C84B5D008FCF11 /* SpaceMono-Bold.ttf in Resources */,
@@ -1002,7 +1000,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ThinkingSDKDEMO-NotificationCenter-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-NotificationCenter-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1025,28 +1023,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-ThinkingShare-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		20C905F0480011EDC3E612A6 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1092,58 +1068,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKDEMO/Pods-ThinkingSDKDEMO-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		79CC17EE67543E6FE7415BFA /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKDEMO/Pods-ThinkingSDKDEMO-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKDEMO/Pods-ThinkingSDKDEMO-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKDEMO/Pods-ThinkingSDKDEMO-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		93CAC346364048D4EEA73AC9 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKDEMO-NotificationCenter/Pods-ThinkingSDKDEMO-NotificationCenter-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKDEMO-NotificationCenter/Pods-ThinkingSDKDEMO-NotificationCenter-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKDEMO-NotificationCenter/Pods-ThinkingSDKDEMO-NotificationCenter-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AA77310B2C3F0574B6C07D23 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		BD9F50E46DE8052A45085B63 /* [CP] Embed Pods Frameworks */ = {
+		6443BD06824339C9B4549336 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1158,6 +1083,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		94D8A960ACD9AD5CD668DBC1 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1275,12 +1222,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				EXCLUDED_ARCHS = arm64;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ThinkingShare/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ThinkingShare;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 thinking. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1306,11 +1253,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
+				EXCLUDED_ARCHS = arm64;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ThinkingShare/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ThinkingShare;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 thinking. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1327,7 +1275,7 @@
 		};
 		2E702BE027C8CF08003B16C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C6201BB65D3AB5C25095CB18 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.debug.xcconfig */;
+			baseConfigurationReference = DBBDAE84CBD179A09AF8D5F8 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -1335,7 +1283,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
-				EXCLUDED_ARCHS = "";
+				EXCLUDED_ARCHS = arm64;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1354,7 +1302,7 @@
 		};
 		2E702BE127C8CF08003B16C2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 33FAF25CA3EEFC5C94694591 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.release.xcconfig */;
+			baseConfigurationReference = 06E2147B1261FEB7E8833F44 /* Pods-ThinkingSDKDEMO-ThinkingSDKDEMOTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -1362,7 +1310,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
-				EXCLUDED_ARCHS = "";
+				EXCLUDED_ARCHS = arm64;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1381,7 +1329,7 @@
 		};
 		2EC930A1288693D000FB0A45 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 77623CF61E690F63C98DDA47 /* Pods-ThinkingSDKDEMO-NotificationCenter.debug.xcconfig */;
+			baseConfigurationReference = 47C469F1024D378DE04BF176 /* Pods-NotificationCenter.debug.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
@@ -1389,6 +1337,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
+				EXCLUDED_ARCHS = arm64;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NotificationCenter/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NotificationCenter;
@@ -1410,7 +1359,7 @@
 		};
 		2EC930A2288693D000FB0A45 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CAFBBD5D4195D4F1080A9256 /* Pods-ThinkingSDKDEMO-NotificationCenter.release.xcconfig */;
+			baseConfigurationReference = 9DCEABB505E7C4F7587EAA14 /* Pods-NotificationCenter.release.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
@@ -1418,6 +1367,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
+				EXCLUDED_ARCHS = arm64;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NotificationCenter/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NotificationCenter;
@@ -1475,7 +1425,8 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				EXCLUDED_ARCHS = "";
+				EXCLUDED_ARCHS = arm64;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1536,7 +1487,8 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				EXCLUDED_ARCHS = "";
+				EXCLUDED_ARCHS = arm64;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1557,7 +1509,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BD5C5B2CB9A3280F2AD94E33 /* Pods-ThinkingSDKDEMO.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ThinkingSDKDEMO/ThinkingSDKDEMO.entitlements;
@@ -1565,13 +1516,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
 				ENABLE_BITCODE = NO;
-				EXCLUDED_ARCHS = "";
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				EXCLUDED_ARCHS = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/ThinkingSDKDEMO/Vendors/ReYun",
 				);
 				GCC_PREFIX_HEADER = "$(SRCROOT)/ThinkingSDKDEMO/common/ThinkingSDKDEMO-PrefixHeader.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1609,7 +1558,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2E6CA86D4D6CB7CA3F4D519E /* Pods-ThinkingSDKDEMO.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ThinkingSDKDEMO/ThinkingSDKDEMO.entitlements;
@@ -1617,12 +1565,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
 				ENABLE_BITCODE = NO;
-				EXCLUDED_ARCHS = "";
+				EXCLUDED_ARCHS = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThinkingSDKDEMO",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/ThinkingSDKDEMO/Vendors/ReYun",
 				);
 				GCC_PREFIX_HEADER = "$(SRCROOT)/ThinkingSDKDEMO/common/ThinkingSDKDEMO-PrefixHeader.pch";
 				HEADER_SEARCH_PATHS = (
