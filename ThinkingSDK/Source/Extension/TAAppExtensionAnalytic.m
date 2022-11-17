@@ -8,8 +8,19 @@
 
 #import "TAAppExtensionAnalytic.h"
 #import "TAAppExtensionAnalyticConfig.h"
+
+#if __has_include(<ThinkingSDK/TDCalibratedTimeWithNTP.h>)
 #import <ThinkingSDK/TDCalibratedTimeWithNTP.h>
+#else
+#import "TDCalibratedTimeWithNTP.h"
+#endif
+
+#if __has_include(<ThinkingSDK/TDCalibratedTime.h>)
 #import <ThinkingSDK/TDCalibratedTime.h>
+#else
+#import "TDCalibratedTime.h"
+#endif
+
 
 NSString * const kTAAppExtensionEventName = @"ta_app_extension_event_name";
 NSString * const kTAAppExtensionEventProperties = @"ta_app_extension_properties";
