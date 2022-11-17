@@ -4,7 +4,6 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "TDSecurityPolicy.h"
 #import "TDFile.h"
-#import "NSString+TDString.h"
 
 #define TDSDKSETTINGS_PLIST_SETTING_IMPL(TYPE, PLIST_KEY, GETTER, SETTER, DEFAULT_VALUE, ENABLE_CACHE) \
 static TYPE *g_##PLIST_KEY = nil; \
@@ -88,10 +87,6 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
 }
 
 
-- (void)setName:(NSString *)name {
-    _name = name.td_trim;// 去除空格
-}
-
 - (void)updateConfig:(void(^)(NSDictionary *secretKey))block {
     NSString *serverUrlStr = [NSString stringWithFormat:@"%@/config",self.configureURL];
     TANetwork *network = [[TANetwork alloc] init];
@@ -146,9 +141,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
     config.defaultTimeZone = [self.defaultTimeZone copyWithZone:zone];
     config.name = [self.name copy];
     config.enableEncrypt = self.enableEncrypt;
-#if TARGET_OS_IOS
     config.secretKey = [self.secretKey copyWithZone:zone];
-#endif
     
     return config;
 }

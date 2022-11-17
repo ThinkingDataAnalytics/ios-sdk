@@ -166,15 +166,12 @@
             
             NSData *jsonData = [[NSString stringWithUTF8String:jsonChar] dataUsingEncoding:NSUTF8StringEncoding];
             NSError *err;
-            if (jsonData) {
-                NSDictionary *eventDict = [NSJSONSerialization JSONObjectWithData:jsonData
-                                                                          options:NSJSONReadingMutableContainers
-                                                                            error:&err];
-                if (!err && [eventDict isKindOfClass:[NSDictionary class]]) {
-                    [records addObject:[[TDEventRecord alloc] initWithIndex:[NSNumber numberWithLongLong:index] content:eventDict]];
-                }
+            NSDictionary *eventDict = [NSJSONSerialization JSONObjectWithData:jsonData
+                                                                      options:NSJSONReadingMutableContainers
+                                                                        error:&err];
+            if (!err && [eventDict isKindOfClass:[NSDictionary class]]) {
+                [records addObject:[[TDEventRecord alloc] initWithIndex:[NSNumber numberWithLongLong:index] content:eventDict]];
             }
-            
         }
     }
     sqlite3_finalize(stmt);
