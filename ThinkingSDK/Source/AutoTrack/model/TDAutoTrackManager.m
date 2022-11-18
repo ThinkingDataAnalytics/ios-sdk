@@ -275,7 +275,10 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
             NSString *currentUrl = [screenAutoTrackerController getScreenUrl];
             [properties setValue:currentUrl forKey:TD_EVENT_PROPERTY_URL_PROPERTY];
             [properties setValue:_referrerViewControllerUrl forKey:TD_EVENT_PROPERTY_REFERRER_URL];
-            _referrerViewControllerUrl = currentUrl;
+            if(currentUrl && [currentUrl isKindOfClass:[NSString class]] && currentUrl.length>0) {
+                _referrerViewControllerUrl = currentUrl;
+            }
+            
         }
     }
     
