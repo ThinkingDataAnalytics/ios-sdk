@@ -5,8 +5,6 @@
 #import "TDLogging.h"
 #import "TDSecurityPolicy.h"
 #import "TDToastView.h"
-#import "TDAppState.h"
-
 static NSString *kTAIntegrationType = @"TA-Integration-Type";
 static NSString *kTAIntegrationVersion = @"TA-Integration-Version";
 static NSString *kTAIntegrationCount = @"TA-Integration-Count";
@@ -87,7 +85,7 @@ static NSString *kTADatasType = @"TA-Datas-Type";
             dispatch_once(&onceToken, ^{
                 if (debugResult == 0 || debugResult == 1 || debugResult == 2) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        UIWindow *window = [TDAppState sharedApplication].keyWindow;
+                        UIWindow *window = [UIApplication sharedApplication].keyWindow;
                         [TDToastView showInWindow:window text:[NSString stringWithFormat:@"当前模式为:%@", self.debugMode == ThinkingAnalyticsDebugOnly ? @"DebugOnly(数据不入库)\n测试联调阶段开启\n正式上线前请关闭Debug功能" : @"Debug"] duration:2.0];
                     });
                 }
@@ -137,9 +135,13 @@ static NSString *kTADatasType = @"TA-Datas-Type";
     dispatch_semaphore_t flushSem = dispatch_semaphore_create(0);
 
     void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
+        
         if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
             flushSucc = NO;
             TDLogError(@"Networking error:%@", error);
+            if (error) {
+                [self postNetworkError:@{@"request":jsonString,@"response":[error.debugDescription copy]}];
+            }
             dispatch_semaphore_signal(flushSem);
             return;
         }
@@ -150,10 +152,27 @@ static NSString *kTADatasType = @"TA-Datas-Type";
             TDLogDebug(@"flush success sendContent---->:%@",flushDic);
             id result = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             TDLogDebug(@"flush success responseData---->%@",result);
+            
+            @try {
+                if ([result isKindOfClass:[NSDictionary class]]) {
+                    NSInteger code = [[result objectForKey:@"code"] integerValue];
+                    if (code != 0) {
+                        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:result options:NSJSONWritingPrettyPrinted error:NULL];
+                        NSString *string = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+                        [self postNetworkError:@{@"request":jsonString, @"response":string}];
+                    }
+                }
+            } @catch (NSException *exception) {
+                
+            }
         } else {
             flushSucc = NO;
             NSString *urlResponse = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             TDLogError(@"%@", [NSString stringWithFormat:@"%@ network failed with response '%@'.", self, urlResponse]);
+            @try {
+                [self postNetworkError:@{@"request":jsonString, @"response":urlResponse}];
+            } @catch (NSException *exception) {
+            }
         }
 
         dispatch_semaphore_signal(flushSem);
@@ -163,6 +182,11 @@ static NSString *kTADatasType = @"TA-Datas-Type";
     [task resume];
     dispatch_semaphore_wait(flushSem, DISPATCH_TIME_FOREVER);
     return flushSucc;
+}
+
+- (void)postNetworkError:(NSDictionary *)info {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ThinkingSDKNetworkError" object:nil userInfo:info];
+     
 }
 
 - (NSMutableURLRequest *)buildRequestWithJSONString:(NSString *)jsonString {

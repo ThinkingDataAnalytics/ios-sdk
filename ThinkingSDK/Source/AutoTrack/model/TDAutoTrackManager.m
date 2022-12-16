@@ -7,7 +7,6 @@
 #import "UIApplication+AutoTrack.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "TDPublicConfig.h"
-#import "TDAppState.h"
 
 #ifndef TD_LOCK
 #define TD_LOCK(lock) dispatch_semaphore_wait(lock, DISPATCH_TIME_FOREVER);
@@ -275,10 +274,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
             NSString *currentUrl = [screenAutoTrackerController getScreenUrl];
             [properties setValue:currentUrl forKey:TD_EVENT_PROPERTY_URL_PROPERTY];
             [properties setValue:_referrerViewControllerUrl forKey:TD_EVENT_PROPERTY_REFERRER_URL];
-            if(currentUrl && [currentUrl isKindOfClass:[NSString class]] && currentUrl.length>0) {
-                _referrerViewControllerUrl = currentUrl;
-            }
-            
+            _referrerViewControllerUrl = currentUrl;
         }
     }
     
@@ -492,9 +488,9 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
 }
 
 + (UIWindow *)findWindow {
-    UIWindow *window = [TDAppState sharedApplication].keyWindow;
+    UIWindow *window = [UIApplication sharedApplication].keyWindow;
     if (window == nil || window.windowLevel != UIWindowLevelNormal) {
-        for (window in [TDAppState sharedApplication].windows) {
+        for (window in [UIApplication sharedApplication].windows) {
             if (window.windowLevel == UIWindowLevelNormal) {
                 break;
             }
@@ -503,7 +499,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     
 #ifdef __IPHONE_13_0
     if (@available(iOS 13.0, tvOS 13, *)) {
-        NSSet *scenes = [[TDAppState sharedApplication] valueForKey:@"connectedScenes"];
+        NSSet *scenes = [[UIApplication sharedApplication] valueForKey:@"connectedScenes"];
         for (id scene in scenes) {
             if (window) {
                 break;

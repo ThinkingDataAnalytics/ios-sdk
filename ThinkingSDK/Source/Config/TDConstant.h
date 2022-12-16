@@ -182,9 +182,6 @@ typedef NS_OPTIONS(NSInteger, TAThirdPartyShareType) {
     TAThirdPartyShareTypeTRACKING           = 1 << 5,
     TAThirdPartyShareTypeTRADPLUS           = 1 << 6,
     
-};
-
-typedef NS_OPTIONS(NSInteger, TDThirdPartyShareType) {
     
     TDThirdPartyShareTypeNONE               = TAThirdPartyShareTypeNONE,
     TDThirdPartyShareTypeAPPSFLYER          = TAThirdPartyShareTypeAPPSFLYER,

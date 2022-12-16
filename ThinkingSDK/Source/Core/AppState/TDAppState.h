@@ -26,8 +26,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (nullable UIApplication *)sharedApplication;
 
-+ (BOOL)runningInAppExtension;
-
 @end
 
 NS_ASSUME_NONNULL_END

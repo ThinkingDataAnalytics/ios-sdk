@@ -270,12 +270,10 @@
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(_database, sql.UTF8String, -1, &stmt, NULL) != SQLITE_OK) {
         TDLogError(@"Update Records Error: %s", sqlite3_errmsg(_database));
-        sqlite3_finalize(stmt);
         return NO;
     }
     if (sqlite3_step(stmt) != SQLITE_DONE) {
         TDLogError(@"Update Records Error: %s", sqlite3_errmsg(_database));
-        sqlite3_finalize(stmt);
         return NO;
     }
     sqlite3_finalize(stmt);
