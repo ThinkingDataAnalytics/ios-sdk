@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://github.com/ThinkingDataAnalytics/ios-sdk'
   s.license          = 'Apache License, Version 2.0'
   s.author           = { 'ThinkingData, Inc' => 'sdk@thinkingdata.cn' }
-  s.source           = { :git => 'https://github.com/ThinkingDataAnalytics/ios-sdk.git', :tag => "v#{s.version}" }
+  s.source           = { :git => 'https://github.com/ThinkingDataAnalytics/ios-sdk.git', :tag => "#{s.version}" }
   s.requires_arc     = true
   s.platform         = :ios, "8.0"
   s.frameworks       = 'UIKit', 'Foundation', 'CoreTelephony', 'SystemConfiguration', 'CoreGraphics', 'Security'
