@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name             = 'ThinkingSDK'
-  s.version          = 'ks_2.8.1.2'
+  s.version          = '2.8.1.2-ks'
   s.summary          = 'Official ThinkingData SDK for iOS.'
   s.homepage         = 'https://github.com/ThinkingDataAnalytics/ios-sdk'
   s.license          = 'Apache License, Version 2.0'
   s.author           = { 'ThinkingData, Inc' => 'sdk@thinkingdata.cn' }
-  s.source           = { :git => 'https://github.com/ThinkingDataAnalytics/ios-sdk.git', :tag => "#{s.version}" }
+  s.source           = { :git => 'https://github.com/ThinkingDataAnalytics/ios-sdk.git', :tag => "v#{s.version}" }
   s.requires_arc     = true
   s.platform         = :ios, "8.0"
   s.frameworks       = 'UIKit', 'Foundation', 'CoreTelephony', 'SystemConfiguration', 'CoreGraphics', 'Security'
