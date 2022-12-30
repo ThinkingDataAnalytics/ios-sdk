@@ -173,8 +173,6 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
 #endif
     if (![TDPresetProperties disableSystemLanguage]) {
         NSString *preferredLanguages = [[NSLocale preferredLanguages] firstObject];
-//        NSString *preferredLanguages1 = [NSLocale currentLocale].languageCode;
-        NSString * retValue = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"] firstObject] copy];
         if (preferredLanguages && preferredLanguages.length > 0) {
             p[@"#system_language"] = [[preferredLanguages componentsSeparatedByString:@"-"] firstObject];;
         }

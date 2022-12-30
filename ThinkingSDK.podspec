@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'ThinkingSDK'
-  s.version          = '2.8.3'
+  s.version          = '2.8.2.1'
   s.summary          = 'Official ThinkingData SDK for iOS.'
   s.homepage         = 'https://github.com/ThinkingDataAnalytics/ios-sdk'
   s.license          = 'Apache License, Version 2.0'
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.subspec 'iOS' do |i|
     path = "ThinkingSDK/Source"
     i.ios.deployment_target = '8.0'
-    i.source_files = path + '/EventTracker/**/*.{h,m}', path + '/TDRuntime/**/*.{h,m}', path + '/Config/**/*.{h,m}', path + '/DeviceInfo/**/*.{h,m}', path + '/main/**/*.{h,m}',  path + '/Store/**/*.{h,m}', path + '/Network/**/*.{h,m}', path + '/AppLaunch/**/*.{h,m}', path + '/AutoTrack/**/*.{h,m}', path + '/Encrypt/**/*.{h,m}', path + '/Exception/**/*.{h,m}', path + '/Router/*.{h,m}'
+    i.source_files = path + '/EventTracker/**/*.{h,m}', path + '/TDRuntime/**/*.{h,m}', path + '/Config/**/*.{h,m}', path + '/DeviceInfo/**/*.{h,m}', path + '/main/**/*.{h,m}',  path + '/Store/**/*.{h,m}', path + '/Network/**/*.{h,m}', path + '/AppLaunch/**/*.{h,m}', path + '/AutoTrack/**/*.{h,m}', path + '/Encrypt/**/*.{h,m}', path + '/Exception/**/*.{h,m}', path + '/ThirdPartyIntegration/**/*.{h,m}'
     i.dependency 'ThinkingSDK/Base'
     i.ios.frameworks = 'CoreTelephony'
   end

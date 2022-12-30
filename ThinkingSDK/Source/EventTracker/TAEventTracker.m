@@ -118,10 +118,10 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
             if (encryptData == nil) {
                 encryptData = event;
             }
-            count = [self.dataQueue addObject:encryptData withAppid:[self.config getMapInstanceToken]];
 #elif TARGET_OS_OSX
-            count = [self.dataQueue addObject:event withAppid:[self.config getMapInstanceToken]];
+            NSDictionary *dic = event;
 #endif
+            count = [self.dataQueue addObject:encryptData withAppid:[self.config getMapInstanceToken]];
         } else {
             count = [self.dataQueue addObject:event withAppid:[self.config getMapInstanceToken]];
         }

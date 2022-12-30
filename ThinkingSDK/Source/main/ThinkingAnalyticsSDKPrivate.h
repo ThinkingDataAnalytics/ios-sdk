@@ -15,6 +15,7 @@
 #import "TAAutoTrackEvent.h"
 #import "TAAutoTrackSuperProperty.h"
 #import "TDEncrypt.h"
+#import "TDThirdPartyProtocol.h"
 #endif
 
 #import "TDLogging.h"
@@ -84,7 +85,7 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 #if TARGET_OS_IOS
 @property (nonatomic, strong) TAAutoTrackSuperProperty *autoTrackSuperProperty;
 @property (nonatomic, strong) TDEncryptManager *encryptManager;
-@property (strong,nonatomic) id thirdPartyManager;
+@property (strong,nonatomic) id<TDThirdPartyProtocol> thirdPartyManager;
 #endif
 
 @property (atomic, copy) NSString *appid;
