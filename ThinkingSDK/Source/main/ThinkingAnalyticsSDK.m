@@ -782,6 +782,17 @@ static dispatch_queue_t td_trackQueue;
         NSString *networkType = [self.class getNetWorkStates];
         [presetDic setObject:networkType?:@"" forKey:@"#network_type"];
     }
+    
+    // 将安装时间转为字符串
+    if (![TDPresetProperties disableInstallTime]) {
+        if (presetDic[@"#install_time"] && [presetDic[@"#install_time"] isKindOfClass:[NSDate class]]) {
+            NSString *install_timeString = [(NSDate *)presetDic[@"#install_time"] ta_formatWithTimeZone:self.config.defaultTimeZone formatString:kDefaultTimeFormat];
+            if (install_timeString && install_timeString.length) {
+                [presetDic setObject:install_timeString forKey:@"#install_time"];
+            }
+        }
+    }
+    
     static TDPresetProperties *presetProperties = nil;
     if (presetProperties == nil) {
         presetProperties = [[TDPresetProperties alloc] initWithDictionary:presetDic];
@@ -1001,7 +1012,7 @@ static dispatch_queue_t td_trackQueue;
     [self stopFlushTimer];
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.config.uploadInterval > 0) {
-            self.timer = [NSTimer scheduledTimerWithTimeInterval:3
+            self.timer = [NSTimer scheduledTimerWithTimeInterval:[self.config.uploadInterval integerValue]
                                                           target:self
                                                         selector:@selector(flush)
                                                         userInfo:nil

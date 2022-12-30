@@ -19,12 +19,12 @@
     CGFloat minDuration = 0.01;
     if (![TDPresetProperties disableDuration]) {
         if (self.foregroundDuration > minDuration) {
-            self.properties[@"#duration"] = [NSString stringWithFormat:@"%.3f", self.foregroundDuration];
+            self.properties[@"#duration"] = @([NSString stringWithFormat:@"%.3f", self.foregroundDuration].floatValue);
         }
     }
     if (![TDPresetProperties disableBackgroundDuration]) {
         if (self.backgroundDuration > minDuration) {
-            self.properties[@"#background_duration"] = [NSString stringWithFormat:@"%.3f", self.backgroundDuration];
+            self.properties[@"#background_duration"] = @([NSString stringWithFormat:@"%.3f", self.backgroundDuration].floatValue);
         }
     }
     

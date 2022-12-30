@@ -42,13 +42,13 @@
     
     if (![TDPresetProperties disableDuration]) {
         if (self.foregroundDuration > 0) {
-            self.properties[@"#duration"] = [NSString stringWithFormat:@"%.3f", self.foregroundDuration];
+            self.properties[@"#duration"] = @([NSString stringWithFormat:@"%.3f", self.foregroundDuration].floatValue);
         }
     }
     
     if (![TDPresetProperties disableBackgroundDuration]) {
         if (self.backgroundDuration > 0) {
-            self.properties[@"#background_duration"] = [NSString stringWithFormat:@"%.3f", self.backgroundDuration];
+            self.properties[@"#background_duration"] = @([NSString stringWithFormat:@"%.3f", self.backgroundDuration].floatValue);
         }
     }
     
