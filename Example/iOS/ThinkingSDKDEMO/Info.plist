@@ -2,6 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AppLovinConsentFlowInfo</key>
+	<dict>
+		<key>AppLovinConsentFlowEnabled</key>
+		<true/>
+		<key>AppLovinConsentFlowPrivacyPolicy</key>
+		<string>https://your_company_name.com/privacy_policy</string>
+		<key>AppLovinConsentFlowTermsOfService</key>
+		<string>https://your_company_name.com/terms_of_service</string>
+	</dict>
+	<key>AppLovinSdkKey</key>
+	<string>HK-aKJOoNqCh041QURIIv5m2kgnP0f7rF50niOLNGRVGg1f04FPWM-AlVWD1wuBPp2_M6Pm-5suFZZkHJzXJUR</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -223,6 +234,8 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAdvertisingAttributionReportEndpoint</key>
+	<string>https://postbacks-app.com</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -236,6 +249,8 @@
 	<string>aa</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>thinkingdata-定位</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>aaa</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SpaceMono-Regular.ttf</string>
@@ -296,6 +311,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	
 </dict>
 </plist>

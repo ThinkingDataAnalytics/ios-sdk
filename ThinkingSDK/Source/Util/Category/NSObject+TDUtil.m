@@ -179,6 +179,7 @@ return [value isKindOfClass:[foundationClass class]]; \
         return returnObject;
     }
     
+    return nil;
 }
 
 

@@ -1,19 +1,19 @@
 PODS:
-  - ThinkingSDK (2.8.1.1):
-    - ThinkingSDK/Main (= 2.8.1.1)
-  - ThinkingSDK/Base (2.8.1.1):
+  - ThinkingSDK (2.8.3):
+    - ThinkingSDK/Main (= 2.8.3)
+  - ThinkingSDK/Base (2.8.3):
     - ThinkingSDK/Core
     - ThinkingSDK/Extension
     - ThinkingSDK/Util
-  - ThinkingSDK/Core (2.8.1.1)
-  - ThinkingSDK/Extension (2.8.1.1):
+  - ThinkingSDK/Core (2.8.3)
+  - ThinkingSDK/Extension (2.8.3):
     - ThinkingSDK/Core
-  - ThinkingSDK/Main (2.8.1.1):
+  - ThinkingSDK/Main (2.8.3):
     - ThinkingSDK/iOS
     - ThinkingSDK/OSX
-  - ThinkingSDK/OSX (2.8.1.1):
+  - ThinkingSDK/OSX (2.8.3):
     - ThinkingSDK/Base
-  - ThinkingSDK/Util (2.8.1.1):
+  - ThinkingSDK/Util (2.8.3):
     - ThinkingSDK/Core
 
 DEPENDENCIES:
@@ -24,7 +24,7 @@ EXTERNAL SOURCES:
     :path: "../../"
 
 SPEC CHECKSUMS:
-  ThinkingSDK: 2d686180646a03c9bdaec456fbd5c36fb5d00d5b
+  ThinkingSDK: 572d70d2c4c5cf6abaec8b0eb165e3c19fbb20ab
 
 PODFILE CHECKSUM: 07f70630883f5403bcd1bfcfe4c46c1c1a6cd280
 

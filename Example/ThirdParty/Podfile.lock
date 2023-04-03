@@ -1,0 +1,96 @@
+PODS:
+  - Adjust (4.29.7):
+    - Adjust/Core (= 4.29.7)
+  - Adjust/Core (4.29.7)
+  - AnyThinkiOS (6.1.21):
+    - AnyThinkiOS/AnyThinkSDK (= 6.1.21)
+  - AnyThinkiOS/AnyThinkSDK (6.1.21)
+  - AppLovinSDK (11.5.0)
+  - AppsFlyerFramework (6.8.1):
+    - AppsFlyerFramework/Main (= 6.8.1)
+  - AppsFlyerFramework/Main (6.8.1)
+  - BaiduMobAdSDK (4.83)
+  - Branch (1.39.4)
+  - FBSnapshotTestCase (2.1.4):
+    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
+  - FBSnapshotTestCase/Core (2.1.4)
+  - FBSnapshotTestCase/SwiftSupport (2.1.4):
+    - FBSnapshotTestCase/Core
+  - IronSourceSDK (7.1.8.0)
+  - TAThirdParty (0.1.0)
+  - ThinkingSDK (2.8.2):
+    - ThinkingSDK/Main (= 2.8.2)
+  - ThinkingSDK/Base (2.8.2):
+    - ThinkingSDK/Core
+    - ThinkingSDK/Extension
+    - ThinkingSDK/Util
+  - ThinkingSDK/Core (2.8.2)
+  - ThinkingSDK/Extension (2.8.2):
+    - ThinkingSDK/Core
+  - ThinkingSDK/iOS (2.8.2):
+    - ThinkingSDK/Base
+  - ThinkingSDK/Main (2.8.2):
+    - ThinkingSDK/iOS
+    - ThinkingSDK/OSX
+  - ThinkingSDK/Util (2.8.2):
+    - ThinkingSDK/Core
+  - TradPlusAdSDK (6.9.10):
+    - TradPlusAdSDK/TradPlusAds (= 6.9.10)
+  - TradPlusAdSDK/BaiduAdapter (6.9.10):
+    - TradPlusAdSDK/TradPlusAds
+  - TradPlusAdSDK/TPADXAdapter (6.9.10):
+    - TradPlusAdSDK/TradPlusAds
+  - TradPlusAdSDK/TPCrossAdapter (6.9.10):
+    - TradPlusAdSDK/TradPlusAds
+  - TradPlusAdSDK/TradPlusAds (6.9.10)
+
+DEPENDENCIES:
+  - Adjust (~> 4.29.2)
+  - AnyThinkiOS
+  - AppLovinSDK
+  - AppsFlyerFramework
+  - BaiduMobAdSDK (= 4.83)
+  - Branch (~> 1.39.1)
+  - FBSnapshotTestCase
+  - IronSourceSDK (= 7.1.8.0)
+  - TAThirdParty (from `../../`)
+  - ThinkingSDK (from `../../`)
+  - TradPlusAdSDK (= 6.9.10)
+  - TradPlusAdSDK/BaiduAdapter (= 6.9.10)
+  - TradPlusAdSDK/TPADXAdapter (= 6.9.10)
+  - TradPlusAdSDK/TPCrossAdapter (= 6.9.10)
+
+SPEC REPOS:
+  trunk:
+    - Adjust
+    - AnyThinkiOS
+    - AppLovinSDK
+    - AppsFlyerFramework
+    - BaiduMobAdSDK
+    - Branch
+    - FBSnapshotTestCase
+    - IronSourceSDK
+    - TradPlusAdSDK
+
+EXTERNAL SOURCES:
+  TAThirdParty:
+    :path: "../../"
+  ThinkingSDK:
+    :path: "../../"
+
+SPEC CHECKSUMS:
+  Adjust: 91a06a01e4bb35b432e26b5d5bb8995b95fc381c
+  AnyThinkiOS: 8e7bf6ec95db7cb59d4544a028ee6c907d644a5a
+  AppLovinSDK: aa7612a10d6356d6fe7eb30ad5b4f25376931fbb
+  AppsFlyerFramework: a664325124485223296354b4eec335f5340a6df8
+  BaiduMobAdSDK: d3006333637dacac0ef9808655a686e18019f033
+  Branch: d21c40c47b5c15c6ab709cdf7d965a50059e0546
+  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
+  IronSourceSDK: 89168ab902229f4447f401dc8d2ac51308a85524
+  TAThirdParty: 6eaf5ae92d163c0a94efc7268a036dc9e529108c
+  ThinkingSDK: c35fe2446d4cb6fe4c610daaa1041ff6c859fc0a
+  TradPlusAdSDK: 43b6e23b646bf347d578723de9e7b9dec4f55eeb
+
+PODFILE CHECKSUM: b1117a8cf3ec8fdbb0d3d6c5dca33ccf14821431
+
+COCOAPODS: 1.11.3
