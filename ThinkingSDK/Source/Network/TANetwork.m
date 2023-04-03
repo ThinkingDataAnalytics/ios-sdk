@@ -4,7 +4,12 @@
 #import "TDJSONUtil.h"
 #import "TDLogging.h"
 #import "TDSecurityPolicy.h"
+#import "TDAppState.h"
+
+#if TARGET_OS_IOS
 #import "TDToastView.h"
+#endif
+
 static NSString *kTAIntegrationType = @"TA-Integration-Type";
 static NSString *kTAIntegrationVersion = @"TA-Integration-Version";
 static NSString *kTAIntegrationCount = @"TA-Integration-Count";
@@ -25,7 +30,14 @@ static NSString *kTADatasType = @"TA-Datas-Type";
 }
 
 - (NSString *)URLEncode:(NSString *)string {
-    return [string stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    
+    NSString *encodedString = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,
+                                                                                                    (CFStringRef)string,
+                                                                                                    NULL,
+                                                                                                    (CFStringRef)@"!*'();:@&=+$,/?%#[]",
+                                                                                                    kCFStringEncodingUTF8 ));
+
+    return encodedString;
 }
 
 - (int)flushDebugEvents:(NSDictionary *)record withAppid:(NSString *)appid {
@@ -44,16 +56,21 @@ static NSString *kTADatasType = @"TA-Datas-Type";
     dispatch_semaphore_t flushSem = dispatch_semaphore_create(0);
 
     void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
+        
         if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
             debugResult = -2;
             TDLogError(@"Debug Networking error:%@", error);
             dispatch_semaphore_signal(flushSem);
             return;
         }
-
         NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
         if ([urlResponse statusCode] == 200) {
             NSError *err;
+            
+            if (!data) {
+                return;
+            }
+            
             NSDictionary *retDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
             if (err) {
                 TDLogError(@"Debug data json error:%@", err);
@@ -84,10 +101,16 @@ static NSString *kTADatasType = @"TA-Datas-Type";
             static dispatch_once_t onceToken;
             dispatch_once(&onceToken, ^{
                 if (debugResult == 0 || debugResult == 1 || debugResult == 2) {
+#if TARGET_OS_IOS
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        UIWindow *window = [UIApplication sharedApplication].keyWindow;
+                        UIApplication *application = [TDAppState sharedApplication];
+                        if (![application isKindOfClass:UIApplication.class]) {
+                            return;
+                        }
+                        UIWindow *window = application.keyWindow;
                         [TDToastView showInWindow:window text:[NSString stringWithFormat:@"当前模式为:%@", self.debugMode == ThinkingAnalyticsDebugOnly ? @"DebugOnly(数据不入库)\n测试联调阶段开启\n正式上线前请关闭Debug功能" : @"Debug"] duration:2.0];
                     });
+#endif
                 }
             });
         } else {
@@ -135,13 +158,9 @@ static NSString *kTADatasType = @"TA-Datas-Type";
     dispatch_semaphore_t flushSem = dispatch_semaphore_create(0);
 
     void (^block)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
-        
         if (error || ![response isKindOfClass:[NSHTTPURLResponse class]]) {
             flushSucc = NO;
             TDLogError(@"Networking error:%@", error);
-            if (error) {
-                [self postNetworkError:@{@"request":jsonString,@"response":[error.debugDescription copy]}];
-            }
             dispatch_semaphore_signal(flushSem);
             return;
         }
@@ -150,29 +169,15 @@ static NSString *kTADatasType = @"TA-Datas-Type";
         if ([urlResponse statusCode] == 200) {
             flushSucc = YES;
             TDLogDebug(@"flush success sendContent---->:%@",flushDic);
+            if (!data) {
+                return;
+            }
             id result = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             TDLogDebug(@"flush success responseData---->%@",result);
-            
-            @try {
-                if ([result isKindOfClass:[NSDictionary class]]) {
-                    NSInteger code = [[result objectForKey:@"code"] integerValue];
-                    if (code != 0) {
-                        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:result options:NSJSONWritingPrettyPrinted error:NULL];
-                        NSString *string = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-                        [self postNetworkError:@{@"request":jsonString, @"response":string}];
-                    }
-                }
-            } @catch (NSException *exception) {
-                
-            }
         } else {
             flushSucc = NO;
             NSString *urlResponse = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             TDLogError(@"%@", [NSString stringWithFormat:@"%@ network failed with response '%@'.", self, urlResponse]);
-            @try {
-                [self postNetworkError:@{@"request":jsonString, @"response":urlResponse}];
-            } @catch (NSException *exception) {
-            }
         }
 
         dispatch_semaphore_signal(flushSem);
@@ -182,11 +187,6 @@ static NSString *kTADatasType = @"TA-Datas-Type";
     [task resume];
     dispatch_semaphore_wait(flushSem, DISPATCH_TIME_FOREVER);
     return flushSucc;
-}
-
-- (void)postNetworkError:(NSDictionary *)info {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"ThinkingSDKNetworkError" object:nil userInfo:info];
-     
 }
 
 - (NSMutableURLRequest *)buildRequestWithJSONString:(NSString *)jsonString {
@@ -220,6 +220,9 @@ static NSString *kTADatasType = @"TA-Datas-Type";
             return;
         }
         NSError *err;
+        if (!data) {
+            return;
+        }
         NSDictionary *ret = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
         if (err) {
             TDLogError(@"Fetch remote config json error:%@", err);

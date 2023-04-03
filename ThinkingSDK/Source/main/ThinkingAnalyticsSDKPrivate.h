@@ -1,19 +1,41 @@
+#if __has_include(<ThinkingSDK/ThinkingAnalyticsSDK.h>)
+#import <ThinkingSDK/ThinkingAnalyticsSDK.h>
+#else
 #import "ThinkingAnalyticsSDK.h"
+#endif
 
 #import <Foundation/Foundation.h>
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
-#import <SystemConfiguration/SystemConfiguration.h>
 #import <objc/runtime.h>
 #import <WebKit/WebKit.h>
 
-#import "TDLogging.h"
+#if TARGET_OS_IOS
 #import "ThinkingExceptionHandler.h"
+#import "TAAutoTrackEvent.h"
+#import "TAAutoTrackSuperProperty.h"
+#import "TDEncrypt.h"
+#endif
+
+#import "TDLogging.h"
 #import "TDDeviceInfo.h"
 #import "TDConfig.h"
 #import "TDSqliteDataQueue.h"
 #import "TDEventModel.h"
+
 #import "TATrackTimer.h"
+#import "TASuperProperty.h"
+#import "TATrackEvent.h"
+#import "TATrackFirstEvent.h"
+#import "TATrackOverwriteEvent.h"
+#import "TATrackUpdateEvent.h"
+#import "TAUserPropertyHeader.h"
+#import "TAPropertyPluginManager.h"
+#import "TAPresetPropertyPlugin.h"
+#import "TABaseEvent+H5.h"
+#import "NSDate+TAFormat.h"
+#import "TAEventTracker.h"
+#import "TAAppLifeCycle.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -40,14 +62,6 @@ static kEDEventTypeName const TD_EVENT_TYPE_USER_UNSET      = @"user_unset";
 static kEDEventTypeName const TD_EVENT_TYPE_USER_APPEND     = @"user_append";
 static kEDEventTypeName const TD_EVENT_TYPE_USER_UNIQ_APPEND= @"user_uniq_append";
 
-static char TD_AUTOTRACK_VIEW_ID;
-static char TD_AUTOTRACK_VIEW_ID_APPID;
-static char TD_AUTOTRACK_VIEW_IGNORE;
-static char TD_AUTOTRACK_VIEW_IGNORE_APPID;
-static char TD_AUTOTRACK_VIEW_PROPERTIES;
-static char TD_AUTOTRACK_VIEW_PROPERTIES_APPID;
-static char TD_AUTOTRACK_VIEW_DELEGATE;
-
 #ifndef td_dispatch_main_sync_safe
 #define td_dispatch_main_sync_safe(block)\
 if (dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL) == dispatch_queue_get_label(dispatch_get_main_queue())) {\
@@ -67,48 +81,50 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 
 @interface ThinkingAnalyticsSDK ()
 
+#if TARGET_OS_IOS
+@property (nonatomic, strong) TAAutoTrackSuperProperty *autoTrackSuperProperty;
+@property (nonatomic, strong) TDEncryptManager *encryptManager;
+@property (strong,nonatomic) id thirdPartyManager;
+#endif
+
 @property (atomic, copy) NSString *appid;
 @property (atomic, copy) NSString *serverURL;
 @property (atomic, copy, nullable) NSString *accountId;
 @property (atomic, copy) NSString *identifyId;
-@property (atomic, strong) NSDictionary *superProperty;
-@property (atomic, strong) NSMutableDictionary *autoCustomProperty;// 自动采集自定义属性
-@property (atomic, copy) NSDictionary*(^autoTrackCallback)(ThinkingAnalyticsAutoTrackEventType type, NSDictionary *properties);// 自动采集回调
+@property (nonatomic, strong) TASuperProperty *superProperty;
+@property (nonatomic, strong) TAPropertyPluginManager *propertyPluginManager;
+@property (nonatomic, strong) TAAppLifeCycle *appLifeCycle;
+
 @property (atomic, strong) NSMutableSet *ignoredViewTypeList;
 @property (atomic, strong) NSMutableSet *ignoredViewControllers;
-@property (nonatomic, assign) BOOL relaunchInBackGround;// 标识是否是后台自启动事件
 
 /// 标识是否暂停网络上报，默认 NO 上报网络正常流程；YES 入本地数据库但不网络上报
 @property (atomic, assign, getter=isTrackPause) BOOL trackPause;
-
 @property (nonatomic, assign) BOOL isEnabled;
 @property (atomic, assign) BOOL isOptOut;
 
+/// 上报数据定时器
 @property (nonatomic, strong, nullable) NSTimer *timer;
-@property (nonatomic, strong) NSPredicate *regexKey;
-@property (nonatomic, strong) NSPredicate *regexAutoTrackKey;
+/// 事件时长统计
 @property (nonatomic, strong) TATrackTimer *trackTimer;
-@property (nonatomic, assign) UIBackgroundTaskIdentifier taskId;
-@property (nonatomic, assign) SCNetworkReachabilityRef reachability;
-@property (nonatomic, copy) NSDictionary<NSString *, id> *(^dynamicSuperProperties)(void);
 
 @property (atomic, strong) TDSqliteDataQueue *dataQueue;
 @property (nonatomic, copy) TDConfig *config;
-@property (nonatomic, strong) NSDateFormatter *timeFormatter;
-@property (nonatomic, assign) BOOL applicationWillResignActive;
-@property (nonatomic, assign) BOOL appRelaunched;
-@property (nonatomic, assign) BOOL isEnableSceneSupport;// 标识APP是不是Scene方法启动，IOS13以后版本才需要用到
 @property (nonatomic, strong) WKWebView *wkWebView;
 
-- (instancetype)initLight:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config;
-- (void)autotrack:(NSString *)event properties:(NSDictionary *_Nullable)propertieDict withTime:(NSDate *_Nullable)date;
+#if TARGET_OS_IOS
+- (void)autoTrackWithEvent:(TAAutoTrackEvent *)event properties:(nullable NSDictionary *)properties;
 - (BOOL)isViewControllerIgnored:(UIViewController *)viewController;
 - (BOOL)isAutoTrackEventTypeIgnored:(ThinkingAnalyticsAutoTrackEventType)eventType;
 - (BOOL)isViewTypeIgnored:(Class)aClass;
+#endif
+
+- (instancetype)initLight:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config;
+
 - (void)retrievePersistedData;
 + (dispatch_queue_t)td_trackQueue;
 + (dispatch_queue_t)td_networkQueue;
-+ (UIApplication *)sharedUIApplication;
++ (id)sharedUIApplication;
 - (NSInteger)saveEventsData:(NSDictionary *)data;
 - (void)flushImmediately:(NSDictionary *)dataDic;
 - (BOOL)hasDisabled;
@@ -127,6 +143,10 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (nonatomic, assign) TimeValueType timeValueType;
 @property (nonatomic, copy) NSString *extraID;
 @property (nonatomic, assign) BOOL persist;
+// 新增属性
+@property (nonatomic, strong) NSDate *time;
+// 新增属性
+@property (nonatomic, strong) NSTimeZone *timeZone;
 
 - (instancetype)initWithEventName:(NSString * _Nullable)eventName;
 
