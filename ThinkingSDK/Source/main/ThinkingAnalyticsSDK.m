@@ -18,7 +18,7 @@
 #import "TAAppExtensionAnalytic.h"
 #import "TAReachability.h"
 #import "TAAppLifeCycle.h"
-#import "TASessionIdPropertyPlugin.h"
+//#import "TASessionIdPropertyPlugin.h"
 #import "TASessionIdManager.h"
 
 
