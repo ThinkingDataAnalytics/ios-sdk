@@ -18,16 +18,16 @@
 
 - (NSString*)rightTitle
 {
-    return @"H5页面测试";
+    return @"H5 Test";
 }
 - (void)setData
 {
     self.commands = [NSMutableArray array];
-    [self.commands addObject:[[ActionModel alloc]initWithName:@"H5 打通 UIWebView" action:^{
+    [self.commands addObject:[[ActionModel alloc]initWithName:@"H5 pass UIWebView" action:^{
         WEBViewController *webVC = [[WEBViewController alloc] init];
         [TDUtil.jsd_findVisibleViewController.navigationController pushViewController:webVC animated:YES];
     }]];
-    [self.commands addObject:[[ActionModel alloc]initWithName:@"H5 打通 WKWebView" action:^{
+    [self.commands addObject:[[ActionModel alloc]initWithName:@"H5 pass WKWebView" action:^{
         WKWebViewController *webVC = [[WKWebViewController alloc] init];
         [TDUtil.jsd_findVisibleViewController.navigationController pushViewController:webVC animated:YES];
     }]];

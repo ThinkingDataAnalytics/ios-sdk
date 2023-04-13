@@ -89,7 +89,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
 
 
 - (void)setName:(NSString *)name {
-    _name = name.td_trim;// 去除空格
+    _name = name.td_trim;
 }
 
 - (void)updateConfig:(void(^)(NSDictionary *secretKey))block {

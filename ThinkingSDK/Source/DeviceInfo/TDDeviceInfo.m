@@ -14,6 +14,7 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "TDFile.h"
 #import "TDPresetProperties+TDDisProperties.h"
+#import <sys/sysctl.h>
 
 #define kTDDyldPropertyNames @[@"TDPerformance"]
 #define kTDGetPropertySelName @"getPresetProperties"
@@ -30,7 +31,7 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
 @interface TDDeviceInfo ()
 
 @property (nonatomic, readwrite) BOOL isFirstOpen;
-@property (nonatomic, strong) NSDictionary *automaticData;
+@property (atomic, strong) NSDictionary *automaticData;
 
 @end
 
@@ -59,8 +60,8 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
         self.libVersion = TDPublicConfig.version;
         
         NSDictionary *deviceInfo = [self getDeviceUniqueId];
-        _uniqueId = [deviceInfo objectForKey:@"uniqueId"];// 默认访客ID
-        _deviceId = [deviceInfo objectForKey:@"deviceId"];// 默认设备id
+        _uniqueId = [deviceInfo objectForKey:@"uniqueId"];
+        _deviceId = [deviceInfo objectForKey:@"deviceId"];
         _appVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
         
         _automaticData = [self td_collectProperties];
@@ -96,7 +97,6 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
         NSString *carrierName = @"";
     #ifdef __IPHONE_12_0
             if (@available(iOS 12.1, *)) {
-                // 双卡双待的情况
                 NSArray *carrierKeysArray = [__td_TelephonyNetworkInfo.serviceSubscriberCellularProviders.allKeys sortedArrayUsingSelector:@selector(compare:)];
                 carrier = __td_TelephonyNetworkInfo.serviceSubscriberCellularProviders[carrierKeysArray.firstObject];
                 if (!carrier.mobileNetworkCode) {
@@ -109,8 +109,8 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
             carrier = [__td_TelephonyNetworkInfo subscriberCellularProvider];
         }
         
-        // 系统特性，在SIM没有安装的情况下，carrierName也存在有值的情况，这里额外添加MCC和MNC是否有值的判断
-        // MCC、MNC、isoCountryCode在没有安装SIM卡、没在蜂窝服务范围内时候为nil
+        // System characteristics, when the SIM is not installed, the carrierName also has a value, here additionally add the judgment of whether MCC and MNC have values
+        // MCC, MNC, and isoCountryCode are nil when no SIM card is installed and not within the cellular service range
         if (carrier.carrierName &&
             carrier.carrierName.length > 0 &&
             carrier.mobileNetworkCode &&
@@ -121,20 +121,23 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     }
 #endif
     
-    if (![TDPresetProperties disableLib]) {
-        [p setValue:self.libName forKey:@"#lib"];
-    }
     if (![TDPresetProperties disableLibVersion]) {
         [p setValue:self.libVersion forKey:@"#lib_version"];
     }
     if (![TDPresetProperties disableManufacturer]) {
         [p setValue:@"Apple" forKey:@"#manufacturer"];
     }
+   
+
+#if TARGET_OS_IOS
     if (![TDPresetProperties disableDeviceModel]) {
         [p setValue:[self td_iphoneType] forKey:@"#device_model"];
     }
     
-#if TARGET_OS_IOS
+    if (![TDPresetProperties disableLib]) {
+        [p setValue:self.libName forKey:@"#lib"];
+    }
+    
     if (![TDPresetProperties disableOs]) {
         [p setValue:@"iOS" forKey:@"#os"];
     }
@@ -151,7 +154,6 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
         [p setValue:@((NSInteger)size.height) forKey:@"#screen_height"];
     }
     
-#if TARGET_OS_IOS
     if (![TDPresetProperties disableDeviceType]) {
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             [p setValue:@"iPad" forKey:@"#device_type"];
@@ -161,7 +163,12 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     }
 #endif
     
-#elif TARGET_OS_OSX
+#if TARGET_OS_OSX
+    
+    if (![TDPresetProperties disableLib]) {
+        [p setValue:@"Mac OS" forKey:@"#lib"];
+    }
+    
     if (![TDPresetProperties disableOs]) {
         [p setValue:@"OSX" forKey:@"#os"];
     }
@@ -177,7 +184,6 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
             p[@"#system_language"] = [[preferredLanguages componentsSeparatedByString:@"-"] firstObject];;
         }
     }
-    // 添加性能指标
     [p addEntriesFromDictionary:[TDDeviceInfo getAPMParams]];
     
     return [p copy];
@@ -212,6 +218,33 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     if ([platform isEqualToString:@"iPhone8,4"]) return @"iPhone SE";
     if ([platform isEqualToString:@"iPhone9,1"]) return @"iPhone 7";
     if ([platform isEqualToString:@"iPhone9,2"]) return @"iPhone 7 Plus";
+    if ([platform isEqualToString:@"iPhone10,1"]) return @"iPhone 8";
+    if ([platform isEqualToString:@"iPhone10,4"]) return @"iPhone 8";
+    if ([platform isEqualToString:@"iPhone10,2"]) return @"iPhone 8 Plus";
+    if ([platform isEqualToString:@"iPhone10,5"]) return @"iPhone 8 Plus";
+    if ([platform isEqualToString:@"iPhone10,3"]) return @"iPhone X";
+    if ([platform isEqualToString:@"iPhone10,6"]) return @"iPhone X";
+    if ([platform isEqualToString:@"iPhone11,8"]) return @"iPhone XR";
+    if ([platform isEqualToString:@"iPhone11,2"]) return @"iPhone XS";
+    if ([platform isEqualToString:@"iPhone11,6"]) return @"iPhone XS Max";
+    if ([platform isEqualToString:@"iPhone11,4"]) return @"iPhone XS Max";
+    if ([platform isEqualToString:@"iPhone12,1"]) return @"iPhone 11";
+    if ([platform isEqualToString:@"iPhone12,3"]) return @"iPhone 11 Pro";
+    if ([platform isEqualToString:@"iPhone12,5"]) return @"iPhone 11 Pro Max";
+    if ([platform isEqualToString:@"iPhone12,8"]) return @"iPhone SE(2nd generation)";
+    if ([platform isEqualToString:@"iPhone13,1"]) return @"iPhone 12 mini";
+    if ([platform isEqualToString:@"iPhone13,2"]) return @"iPhone 12";
+    if ([platform isEqualToString:@"iPhone13,3"]) return @"iPhone 12 Pro";
+    if ([platform isEqualToString:@"iPhone13,4"]) return @"iPhone 12 Pro Max";
+    if ([platform isEqualToString:@"iPhone14,4"]) return @"iPhone 13 mini";
+    if ([platform isEqualToString:@"iPhone14,5"]) return @"iPhone 13";
+    if ([platform isEqualToString:@"iPhone14,2"]) return @"iPhone 13 Pro";
+    if ([platform isEqualToString:@"iPhone14,3"]) return @"iPhone 13 Pro Max";
+    if ([platform isEqualToString:@"iPhone14,6"]) return @"iPhone SE (3rd generation)";
+    if ([platform isEqualToString:@"iPhone14,7"]) return @"iPhone 14";
+    if ([platform isEqualToString:@"iPhone14,8"]) return @"iPhone 14 Plus";
+    if ([platform isEqualToString:@"iPhone15,2"]) return @"iPhone 14 Pro";
+    if ([platform isEqualToString:@"iPhone15,3"]) return @"iPhone 14 Pro Max";
     if ([platform isEqualToString:@"iPod1,1"])   return @"iPod Touch 1G";
     if ([platform isEqualToString:@"iPod2,1"])   return @"iPod Touch 2G";
     if ([platform isEqualToString:@"iPod3,1"])   return @"iPod Touch 3G";
@@ -237,28 +270,83 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     if ([platform isEqualToString:@"iPad4,4"])   return @"iPad Mini 2G";
     if ([platform isEqualToString:@"iPad4,5"])   return @"iPad Mini 2G";
     if ([platform isEqualToString:@"iPad4,6"])   return @"iPad Mini 2G";
+    if ([platform isEqualToString:@"iPad4,7"])   return @"iPad mini 3";
+    if ([platform isEqualToString:@"iPad4,8"])   return @"iPad mini 3";
+    if ([platform isEqualToString:@"iPad4,9"])   return @"iPad mini 3";
+    if ([platform isEqualToString:@"iPad5,1"])   return @"iPad mini 4";
+    if ([platform isEqualToString:@"iPad5,2"])   return @"iPad mini 4";
+    if ([platform isEqualToString:@"iPad5,3"])   return @"iPad Air 2";
+    if ([platform isEqualToString:@"iPad5,4"])   return @"iPad Air 2";
+    if ([platform isEqualToString:@"iPad6,3"])   return @"iPad Pro (9.7-inch)";
+    if ([platform isEqualToString:@"iPad6,4"])   return @"iPad Pro (9.7-inch)";
+    if ([platform isEqualToString:@"iPad6,7"])   return @"iPad Pro (12.9-inch)";
+    if ([platform isEqualToString:@"iPad6,8"])   return @"iPad Pro (12.9-inch)";
+    if ([platform isEqualToString:@"iPad6,11"])   return @"iPad 5";
+    if ([platform isEqualToString:@"iPad6,12"])   return @"iPad 5";
+    if ([platform isEqualToString:@"iPad7,1"])   return @"iPad Pro 2 (12.9-inch)";
+    if ([platform isEqualToString:@"iPad7,2"])   return @"iPad Pro 2 (12.9-inch)";
+    if ([platform isEqualToString:@"iPad7,3"])   return @"iPad Pro (10.5-inch)";
+    if ([platform isEqualToString:@"iPad7,4"])   return @"iPad Pro (10.5-inch)";
+    if ([platform isEqualToString:@"iPad7,5"])   return @"iPad 6";
+    if ([platform isEqualToString:@"iPad7,6"])   return @"iPad 6";
+    if ([platform isEqualToString:@"iPad7,11"])   return @"iPad 7";
+    if ([platform isEqualToString:@"iPad7,12"])   return @"iPad 7";
+    if ([platform isEqualToString:@"iPad8,1"])   return @"iPad Pro 3 (11-inch)";
+    if ([platform isEqualToString:@"iPad8,2"])   return @"iPad Pro 3 (11-inch)";
+    if ([platform isEqualToString:@"iPad8,3"])   return @"iPad Pro 3 (11-inch)";
+    if ([platform isEqualToString:@"iPad8,4"])   return @"iPad Pro 3 (11-inch)";
+    if ([platform isEqualToString:@"iPad8,5"])   return @"iPad Pro 3 (12.9-inch)";
+    if ([platform isEqualToString:@"iPad8,6"])   return @"iPad Pro 3 (12.9-inch)";
+    if ([platform isEqualToString:@"iPad8,7"])   return @"iPad Pro 3 (12.9-inch)";
+    if ([platform isEqualToString:@"iPad8,8"])   return @"iPad Pro 3 (12.9-inch)";
+    if ([platform isEqualToString:@"iPad8,9"])   return @"iPad Pro 4 (11-inch)";
+    if ([platform isEqualToString:@"iPad8,10"])   return @"iPad Pro 4 (11-inch)";
+    if ([platform isEqualToString:@"iPad8,11"])   return @"iPad Pro 4 (12.9-inch)";
+    if ([platform isEqualToString:@"iPad8,12"])   return @"iPad Pro 4 (12.9-inch)";
+    if ([platform isEqualToString:@"iPad11,1"])   return @"iPad mini 5";
+    if ([platform isEqualToString:@"iPad11,2"])   return @"iPad mini 5";
+    if ([platform isEqualToString:@"iPad11,3"])   return @"iPad Air 3";
+    if ([platform isEqualToString:@"iPad11,4"])   return @"iPad Air 3";
+    if ([platform isEqualToString:@"iPad11,6"])   return @"iPad 8";
+    if ([platform isEqualToString:@"iPad11,7"])   return @"iPad 8";
+    if ([platform isEqualToString:@"iPad12,1"])   return @"iPad 9";
+    if ([platform isEqualToString:@"iPad12,2"])   return @"iPad 9";
+    if ([platform isEqualToString:@"iPad13,1"])   return @"iPad Air 4";
+    if ([platform isEqualToString:@"iPad13,2"])   return @"iPad Air 4";
+    if ([platform isEqualToString:@"iPad13,4"])   return @"iPad Pro 11-inch (3rd generation)";
+    if ([platform isEqualToString:@"iPad13,5"])   return @"iPad Pro 11-inch (3rd generation)";
+    if ([platform isEqualToString:@"iPad13,6"])   return @"iPad Pro 11-inch (3rd generation)";
+    if ([platform isEqualToString:@"iPad13,7"])   return @"iPad Pro 11-inch (3rd generation)";
+    if ([platform isEqualToString:@"iPad13,8"])   return @"iPad Pro 12.9-inch (5th generation)";
+    if ([platform isEqualToString:@"iPad13,9"])   return @"iPad Pro 12.9-inch (5th generation)";
+    if ([platform isEqualToString:@"iPad13,10"])   return @"iPad Pro 12.9-inch (5th generation)";
+    if ([platform isEqualToString:@"iPad13,11"])   return @"iPad Pro 12.9-inch (5th generation)";
+    if ([platform isEqualToString:@"iPad13,16"])   return @"iPad Air 5";
+    if ([platform isEqualToString:@"iPad13,17"])   return @"iPad Air 5";
+    if ([platform isEqualToString:@"iPad13,18"])   return @"iPad (10th generation)";
+    if ([platform isEqualToString:@"iPad13,19"])   return @"iPad (10th generation)";
+    if ([platform isEqualToString:@"iPad14,1"])   return @"iPad mini 6";
+    if ([platform isEqualToString:@"iPad14,2"])   return @"iPad mini 6";
+    if ([platform isEqualToString:@"iPad14,3"])   return @"iPad Pro 11-inch (4th generation)";
+    if ([platform isEqualToString:@"iPad14,4"])   return @"iPad Pro 11-inch (4th generation)";
+    if ([platform isEqualToString:@"iPad14,5"])   return @"iPad Pro 12.9-inch (6th generation)";
+    if ([platform isEqualToString:@"iPad14,6"])   return @"iPad Pro 12.9-inch (6th generation)";
     if ([platform isEqualToString:@"i386"])      return @"iPhone Simulator";
     if ([platform isEqualToString:@"x86_64"])    return @"iPhone Simulator";
     return platform;
 }
 
 
-/// 获取设备id和默认的访客ID
 - (NSDictionary *)getDeviceUniqueId {
-    // 获取IDFV
+
     NSString *defaultDistinctId = [self getIdentifier];
-    // 设备ID
     NSString *deviceId;
-    // 默认访客ID
     NSString *uniqueId;
     
     TDKeychainHelper *wrapper = [[TDKeychainHelper alloc] init];
-    
-    // 获取keychain中的设备ID和安装次数
     NSString *deviceIdKeychain = [wrapper readDeviceId];
     NSString *installTimesKeychain = [wrapper readInstallTimes];
     
-    // 获取安装标识
     BOOL isExistFirstRecord = [[[NSUserDefaults standardUserDefaults] objectForKey:@"thinking_isfirst"] boolValue];
     if (!isExistFirstRecord) {
         _isFirstOpen = YES;
@@ -268,14 +356,12 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
         _isFirstOpen = NO;
     }
     
-    // keychain中没有，获取老版本数据
     if (deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
         [wrapper readOldKeychain];
         deviceIdKeychain = [wrapper getDeviceIdOld];
         installTimesKeychain = [wrapper getInstallTimesOld];
     }
     
-    // 检查是否持久化过该TA实例的设备ID、安装次数
     TDFile *file = [[TDFile alloc] initWithAppid:[ThinkingAnalyticsSDK sharedInstance].appid];
     if (deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
         deviceIdKeychain = [file unarchiveDeviceId];
@@ -283,7 +369,6 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     }
     
     if (deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
-        // 新设备、新用户
         deviceId = defaultDistinctId;
         installTimesKeychain = @"1";
     } else {
@@ -302,10 +387,7 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     } else {
         uniqueId = [NSString stringWithFormat:@"%@_%@",deviceId,installTimesKeychain];
     }
-    
-    // keychain更新设备ID、安装次数
-    // file存储设备ID、安装次数
-    // uniqueId是访客ID，字符串中包含了安装次数，
+
     [wrapper saveDeviceId:deviceId];
     [wrapper saveInstallTimes:installTimesKeychain];
     [file archiveDeviceId:deviceId];
@@ -461,5 +543,26 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     return NO;
 #endif
 }
+
++ (NSTimeInterval)uptime
+{
+    struct timeval boottime;
+    int mib[2] = {CTL_KERN, KERN_BOOTTIME};
+    size_t size = sizeof(boottime);
+
+    struct timeval now;
+    struct timezone tz;
+    gettimeofday(&now, &tz);
+
+    double uptime = -1;
+
+    if (sysctl(mib, 2, &boottime, &size, NULL, 0) != -1 && boottime.tv_sec != 0)
+    {
+        uptime = now.tv_sec - boottime.tv_sec;
+        uptime += (double)(now.tv_usec - boottime.tv_usec) / 1000000.0;
+    }
+    return uptime;
+}
+
 
 @end

@@ -2,6 +2,7 @@
 
 #if TARGET_OS_IOS
 #import "TDAutoTrackManager.h"
+#import "TARouter.h"
 #endif
 
 #import "TDCalibratedTimeWithNTP.h"
@@ -17,6 +18,9 @@
 #import "TAAppExtensionAnalytic.h"
 #import "TAReachability.h"
 #import "TAAppLifeCycle.h"
+#import "TASessionIdPropertyPlugin.h"
+#import "TASessionIdManager.h"
+
 
 #if !__has_feature(objc_arc)
 #error The ThinkingSDK library must be compiled with ARC enabled
@@ -42,7 +46,6 @@
 static NSMutableDictionary *instances;
 static NSString *defaultProjectAppid;
 static TDCalibratedTime *calibratedTime;
-// track操作、操作数据库等在td_trackQueue中进行
 static dispatch_queue_t td_trackQueue;
 
 + (nullable ThinkingAnalyticsSDK *)sharedInstance {
@@ -54,7 +57,7 @@ static dispatch_queue_t td_trackQueue;
 }
 
 + (ThinkingAnalyticsSDK *)sharedInstanceWithAppid:(NSString *)appid {
-    appid = appid.td_trim;// 去除空格
+    appid = appid.td_trim;
     if (instances[appid]) {
         return instances[appid];
     } else {
@@ -64,9 +67,8 @@ static dispatch_queue_t td_trackQueue;
 }
 
 + (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url withConfig:(TDConfig *)config {
-    appId = appId.td_trim; // 去除空格
+    appId = appId.td_trim;
     
-    // name存在，先从内存取，取不到再初始化
     NSString *name = config.name;
     if (name && [name isKindOfClass:[NSString class]] && name.length) {
         if (instances[name]) {
@@ -76,7 +78,6 @@ static dispatch_queue_t td_trackQueue;
         }
     }
     
-    // name不存在，(原逻辑)appid存在，先从内存取，取不到再初始化
     if (instances[appId]) {
         return instances[appId];
     } else if (![url isKindOfClass:[NSString class]] || url.length == 0) {
@@ -88,6 +89,7 @@ static dispatch_queue_t td_trackQueue;
 + (ThinkingAnalyticsSDK *)startWithAppId:(NSString *)appId withUrl:(NSString *)url {
     return [ThinkingAnalyticsSDK startWithAppId:appId withUrl:url withConfig:nil];
 }
+
 
 + (ThinkingAnalyticsSDK *)startWithConfig:(nullable TDConfig *)config {
     return [ThinkingAnalyticsSDK startWithAppId:config.appid withUrl:config.configureURL withConfig:config];
@@ -124,9 +126,10 @@ static dispatch_queue_t td_trackQueue;
         self.appid = appid;
         self.serverURL = serverURL;
         self.config = [config copy];
+        self.config.appid = appid;
         self.config.configureURL = serverURL;
+        self.config.appid = appid;
         
-        // 初始化公共属性管理
         self.superProperty = [[TASuperProperty alloc] initWithToken:[self td_getMapInstanceTag] isLight:YES];
         
         self.trackTimer = [[TATrackTimer alloc] init];
@@ -151,6 +154,7 @@ static dispatch_queue_t td_trackQueue;
     if (self = [self init:appid]) {
         
         [TDAppState shareInstance];
+        // [TASessionIdManager shareInstance];
         
         serverURL = [serverURL ta_formatUrlString];
         self.serverURL = serverURL;
@@ -167,39 +171,42 @@ static dispatch_queue_t td_trackQueue;
         instances[[self td_getMapInstanceTag]] = self;
 
         self.file = [[TDFile alloc] initWithAppid:[self td_getMapInstanceTag]];
-        // 恢复配置
         [self retrievePersistedData];
         
-        // 初始化公共属性管理
         self.superProperty = [[TASuperProperty alloc] initWithToken:[self td_getMapInstanceTag] isLight:NO];
         
-        // 注册属性插件
         self.propertyPluginManager = [[TAPropertyPluginManager alloc] init];
         TAPresetPropertyPlugin *presetPlugin = [[TAPresetPropertyPlugin alloc] init];
+        presetPlugin.defaultTimeZone = config.defaultTimeZone;
         [self.propertyPluginManager registerPropertyPlugin:presetPlugin];
         
-        // config获取intanceName
         NSString *instanceName = [self td_getMapInstanceTag];
         
         _config.getInstanceName = ^NSString * _Nonnull{
             return instanceName;
         };
         
+        /* remove session plugin
+        TASessionIdPropertyPlugin *sessionidPlugin = [[TASessionIdPropertyPlugin alloc] init];
+        sessionidPlugin.instanceToken = instanceName;
+        self.sessionidPlugin = sessionidPlugin;
+        [self.propertyPluginManager registerPropertyPlugin:sessionidPlugin];
+         */
 #if TARGET_OS_IOS
-        // 加载加密插件
+
         if (_config.enableEncrypt) {
             self.encryptManager = [[TDEncryptManager alloc] initWithConfig:config];
         }
+        
         __weak __typeof(self)weakSelf = self;
-        //次序不能调整，异步获取加密配置
         [_config updateConfig:^(NSDictionary * _Nonnull secretKey) {
             if (weakSelf.config.enableEncrypt && secretKey) {
                 [weakSelf.encryptManager handleEncryptWithConfig:secretKey];
             }
         }];
+      
 #elif TARGET_OS_OSX
-        // 获取一般配置
-        [_config updateConfig:^(NSDictionary * _Nonnull secretKey) {}];
+        [_config updateConfig:^(NSDictionary * _Nonnull secretKey, NSTimeInterval time) {}];
 #endif
         
         self.trackTimer = [[TATrackTimer alloc] init];
@@ -225,9 +232,11 @@ static dispatch_queue_t td_trackQueue;
         [self registerAppLifeCycleListener];
         
         if ([self ableMapInstanceTag]) {
-            TDLogInfo(@"Thinking Analytics SDK %@ instance initialized successfully with mode: %@, Instance Name: %@,  APP ID: %@, server url: %@, device ID: %@", [TDDeviceInfo libVersion], [self modeEnumToString:_config.debugMode], _config.name, appid, serverURL, [self getDeviceId]);
+            TDLogInfo(@"Thinking Analytics %@ SDK %@ instance initialized successfully with mode: %@, Instance Name: %@,  APP ID: %@, server url: %@, device ID: %@", [[TDDeviceInfo sharedManager] libName] ,[TDDeviceInfo libVersion], [self modeEnumToString:_config.debugMode], _config.name, appid, serverURL, [self getDeviceId]);
+
         } else {
-            TDLogInfo(@"Thinking Analytics SDK %@ instance initialized successfully with mode: %@, APP ID: %@, server url: %@, device ID: %@", [TDDeviceInfo libVersion], [self modeEnumToString:_config.debugMode], appid, serverURL, [self getDeviceId]);
+            TDLogInfo(@"Thinking Analytics %@ SDK %@ instance initialized successfully with mode: %@, APP ID: %@, server url: %@, device ID: %@", [[TDDeviceInfo sharedManager] libName], [TDDeviceInfo libVersion], [self modeEnumToString:_config.debugMode], appid, serverURL, [self getDeviceId]);
+
         }
         
     }
@@ -266,23 +275,18 @@ static dispatch_queue_t td_trackQueue;
     return [TDAppState sharedApplication];
 }
 
-/// 数据上报状态
-/// @param status 数据上报状态
 - (void)setTrackStatus: (TATrackStatus)status {
     switch (status) {
-            // 暂停SDK上报
         case TATrackStatusPause: {
             TDLogDebug(@"%@ switchTrackStatus: TATrackStatusPause...", self);
             [self enableTracking:NO];
             break;
         }
-            // 停止SDK上报并清除缓存
         case TATrackStatusStop: {
             TDLogDebug(@"%@ switchTrackStatus: TATrackStatusStop...", self);
             [self doOptOutTracking];
             break;
         }
-            // 可以入库 暂停发送数据
         case TATrackStatusSaveOnly: {
             TDLogDebug(@"%@ switchTrackStatus: TATrackStatusSaveOnly...", self);
             self.trackPause = YES;
@@ -295,7 +299,6 @@ static dispatch_queue_t td_trackQueue;
             });
             break;
         }
-            // 恢复所有状态
         case TATrackStatusNormal: {
             TDLogDebug(@"%@ switchTrackStatus: TATrackStatusNormal...", self);
             self.trackPause = NO;
@@ -331,8 +334,7 @@ static dispatch_queue_t td_trackQueue;
     TDLogDebug(@"%@ optOutTrackingAndDeleteUser...", self);
     TAUserEventDelete *deleteEvent = [[TAUserEventDelete alloc] init];
     deleteEvent.immediately = YES;
-    // 立即上报事件
-    [self asyncUserEventObject:deleteEvent properties:nil];
+    [self asyncUserEventObject:deleteEvent properties:nil isH5:NO];
     
     [self doOptOutTracking];
 }
@@ -357,10 +359,9 @@ static dispatch_queue_t td_trackQueue;
         [self.autoTrackSuperProperty clearSuperProperties];
     }
 #endif
-    // 清除动态公共属性
+
     [self.superProperty registerDynamicSuperProperties:nil];
-    
-    // 在任务队列中异步执行，需要判断当前是否已经在任务队列中，避免重复包装
+
     void(^block)(void) = ^{
         [self.dataQueue deleteAll:[self td_getMapInstanceTag]];
         [self.trackTimer clear];
@@ -384,6 +385,7 @@ static dispatch_queue_t td_trackQueue;
 - (ThinkingAnalyticsSDK *)createLightInstance {
     ThinkingAnalyticsSDK *lightInstance = [[LightThinkingAnalyticsSDK alloc] initWithAPPID:self.appid withServerURL:self.serverURL withConfig:self.config];
     lightInstance.identifyId = [TDDeviceInfo sharedManager].uniqueId;
+    lightInstance.propertyPluginManager = self.propertyPluginManager;
     return lightInstance;
 }
 
@@ -399,7 +401,6 @@ static dispatch_queue_t td_trackQueue;
     if (self.identifyId.length == 0) {
         self.identifyId = [TDDeviceInfo sharedManager].uniqueId;
     }
-    // 兼容老版本
     if (self.accountId.length == 0) {
         self.accountId = [self.file unarchiveAccountID];
         [self.file archiveAccountID:self.accountId];
@@ -419,11 +420,12 @@ static dispatch_queue_t td_trackQueue;
 
 - (void)appStateWillChangeNotification:(NSNotification *)notification {
     TAAppLifeCycleState newState = [[notification.userInfo objectForKey:kTAAppLifeCycleNewStateKey] integerValue];
-
+   
     if (newState == TAAppLifeCycleStateEnd) {
         [self stopFlushTimer];
     }
 }
+
 
 - (void)appStateDidChangeNotification:(NSNotification *)notification {
     TAAppLifeCycleState newState = [[notification.userInfo objectForKey:kTAAppLifeCycleNewStateKey] integerValue];
@@ -432,15 +434,14 @@ static dispatch_queue_t td_trackQueue;
         [self startFlushTimer];
 
         // 更新时长统计
-        NSTimeInterval systemUpTime = NSProcessInfo.processInfo.systemUptime;
+        NSTimeInterval systemUpTime = [TDDeviceInfo uptime];
         [self.trackTimer enterForegroundWithSystemUptime:systemUpTime];
     } else if (newState == TAAppLifeCycleStateEnd) {
         // 更新事件时长统计
-        NSTimeInterval systemUpTime = NSProcessInfo.processInfo.systemUptime;
+        NSTimeInterval systemUpTime = [TDDeviceInfo uptime];
         [self.trackTimer enterBackgroundWithSystemUptime:systemUpTime];
         
 #if TARGET_OS_IOS
-        // 开启后台任务发送事件
         UIApplication *application = [TDAppState sharedApplication];;
         __block UIBackgroundTaskIdentifier backgroundTaskIdentifier = UIBackgroundTaskInvalid;
         void (^endBackgroundTask)(void) = ^() {
@@ -449,14 +450,12 @@ static dispatch_queue_t td_trackQueue;
         };
         backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:endBackgroundTask];
         
-        // 进入后台时，事件发送完毕，需要关闭后台任务。
         [self.eventTracker _asyncWithCompletion:endBackgroundTask];
 #else
         [self.eventTracker flush];
 #endif
         
     } else if (newState == TAAppLifeCycleStateTerminate) {
-        // 保证在app杀掉的时候，同步执行完队列内的任务
         dispatch_sync(td_trackQueue, ^{});
         [self.eventTracker syncSendAllData];
     }
@@ -475,7 +474,7 @@ static dispatch_queue_t td_trackQueue;
     return [[TAReachability shareInstance] networkState];
 }
 
-//MARK: - Track 事件
+//MARK: - Track
 
 - (void)track:(NSString *)event {
     [self track:event properties:nil];
@@ -488,7 +487,7 @@ static dispatch_queue_t td_trackQueue;
 #pragma clang diagnostic pop
 }
 
-// deprecated  使用 track:properties:time:timeZone: 方法传入
+// deprecated
 - (void)track:(NSString *)event properties:(NSDictionary *)propertiesDict time:(NSDate *)time {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"
@@ -498,7 +497,7 @@ static dispatch_queue_t td_trackQueue;
 
 - (void)track:(NSString *)event properties:(nullable NSDictionary *)properties time:(NSDate *)time timeZone:(NSTimeZone *)timeZone {
     TATrackEvent *trackEvent = [[TATrackEvent alloc] initWithName:event];
-    TDLogDebug(@"##### track.systemUpTime: %lf", trackEvent.systemUpTime);
+    // TDLogDebug(@"##### track.systemUpTime: %lf", trackEvent.systemUpTime);
     [self configEventTimeValueWithEvent:trackEvent time:time timeZone:timeZone];
     [self handleTimeEvent:trackEvent];
     [self asyncTrackEventObject:trackEvent properties:properties isH5:NO];
@@ -508,22 +507,22 @@ static dispatch_queue_t td_trackQueue;
     TATrackEvent *baseEvent = nil;
     if ([eventModel.eventType isEqualToString:TD_EVENT_TYPE_TRACK_FIRST]) {
         TATrackFirstEvent *trackEvent = [[TATrackFirstEvent alloc] initWithName:eventModel.eventName];
-        [self configEventTimeValueWithEvent:baseEvent time:eventModel.time timeZone:eventModel.timeZone];
+        [self configEventTimeValueWithEvent:trackEvent time:eventModel.time timeZone:eventModel.timeZone];
         trackEvent.firstCheckId = eventModel.extraID;
         baseEvent = trackEvent;
     } else if ([eventModel.eventType isEqualToString:TD_EVENT_TYPE_TRACK_UPDATE]) {
         TATrackUpdateEvent *trackEvent = [[TATrackUpdateEvent alloc] initWithName:eventModel.eventName];
-        [self configEventTimeValueWithEvent:baseEvent time:eventModel.time timeZone:eventModel.timeZone];
+        [self configEventTimeValueWithEvent:trackEvent time:eventModel.time timeZone:eventModel.timeZone];
         trackEvent.eventId = eventModel.extraID;
         baseEvent = trackEvent;
     } else if ([eventModel.eventType isEqualToString:TD_EVENT_TYPE_TRACK_OVERWRITE]) {
         TATrackOverwriteEvent *trackEvent = [[TATrackOverwriteEvent alloc] initWithName:eventModel.eventName];
-        [self configEventTimeValueWithEvent:baseEvent time:eventModel.time timeZone:eventModel.timeZone];
+        [self configEventTimeValueWithEvent:trackEvent time:eventModel.time timeZone:eventModel.timeZone];
         trackEvent.eventId = eventModel.extraID;
         baseEvent = trackEvent;
     } else if ([eventModel.eventType isEqualToString:TD_EVENT_TYPE_TRACK]) {
         TATrackEvent *trackEvent = [[TATrackEvent alloc] initWithName:eventModel.eventName];
-        [self configEventTimeValueWithEvent:baseEvent time:eventModel.time timeZone:eventModel.timeZone];
+        [self configEventTimeValueWithEvent:trackEvent time:eventModel.time timeZone:eventModel.timeZone];
         baseEvent = trackEvent;
     }
     [self asyncTrackEventObject:baseEvent properties:eventModel.properties isH5:NO];
@@ -561,33 +560,26 @@ static dispatch_queue_t td_trackQueue;
 
 #pragma mark - Private
 
-/// 将事件加入到事件队列
-/// @param event 事件
-/// @param properties 自定义属性
 - (void)asyncTrackEventObject:(TATrackEvent *)event properties:(NSDictionary *)properties isH5:(BOOL)isH5 {
-    // 获取当前的SDK上报状态，并记录
+
     event.isEnabled = self.isEnabled;
     event.trackPause = self.isTrackPause;
     event.isOptOut = self.isOptOut;
     
-    // 在当前线程获取动态公共属性
     event.dynamicSuperProperties = [self.superProperty obtainDynamicSuperProperties];
     dispatch_async(td_trackQueue, ^{
         [self trackEvent:event properties:properties isH5:isH5];
     });
 }
 
-/// 将事件加入到事件队列
-/// @param event 事件
-/// @param properties 自定义属性
-- (void)asyncUserEventObject:(TAUserEvent *)event properties:(NSDictionary *)properties {
-    // 获取当前的SDK上报状态，并记录
+- (void)asyncUserEventObject:(TAUserEvent *)event properties:(NSDictionary *)properties isH5:(BOOL)isH5 {
+
     event.isEnabled = self.isEnabled;
     event.trackPause = self.isTrackPause;
     event.isOptOut = self.isOptOut;
     
     dispatch_async(td_trackQueue, ^{
-        [self trackUserEvent:event properties:properties];
+        [self trackUserEvent:event properties:properties isH5:NO];
     });
 }
 
@@ -632,7 +624,7 @@ static dispatch_queue_t td_trackQueue;
 - (void)user_add:(NSDictionary *)properties withTime:(NSDate *)time {
     TAUserEventAdd *event = [[TAUserEventAdd alloc] init];
     event.time = time;
-    [self asyncUserEventObject:event properties:properties];
+    [self asyncUserEventObject:event properties:properties isH5:NO];
 }
 
 - (void)user_setOnce:(NSDictionary *)properties {
@@ -642,7 +634,7 @@ static dispatch_queue_t td_trackQueue;
 - (void)user_setOnce:(NSDictionary *)properties withTime:(NSDate *)time {
     TAUserEventSetOnce *event = [[TAUserEventSetOnce alloc] init];
     event.time = time;
-    [self asyncUserEventObject:event properties:properties];
+    [self asyncUserEventObject:event properties:properties isH5:NO];
 }
 
 - (void)user_set:(NSDictionary *)properties {
@@ -652,7 +644,7 @@ static dispatch_queue_t td_trackQueue;
 - (void)user_set:(NSDictionary *)properties withTime:(NSDate *)time {
     TAUserEventSet *event = [[TAUserEventSet alloc] init];
     event.time = time;
-    [self asyncUserEventObject:event properties:properties];
+    [self asyncUserEventObject:event properties:properties isH5:NO];
 }
 
 - (void)user_unset:(NSString *)propertyName {
@@ -664,7 +656,7 @@ static dispatch_queue_t td_trackQueue;
         NSDictionary *properties = @{propertyName: @0};
         TAUserEventUnset *event = [[TAUserEventUnset alloc] init];
         event.time = time;
-        [self asyncUserEventObject:event properties:properties];
+        [self asyncUserEventObject:event properties:properties isH5:NO];
     }
 }
 
@@ -675,7 +667,7 @@ static dispatch_queue_t td_trackQueue;
 - (void)user_delete:(NSDate *)time {
     TAUserEventDelete *event = [[TAUserEventDelete alloc] init];
     event.time = time;
-    [self asyncUserEventObject:event properties:nil];
+    [self asyncUserEventObject:event properties:nil isH5:NO];
 }
 
 - (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties {
@@ -685,7 +677,7 @@ static dispatch_queue_t td_trackQueue;
 - (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties withTime:(NSDate *)time {
     TAUserEventAppend *event = [[TAUserEventAppend alloc] init];
     event.time = time;
-    [self asyncUserEventObject:event properties:properties];
+    [self asyncUserEventObject:event properties:properties isH5:NO];
 }
 
 - (void)user_uniqAppend:(NSDictionary<NSString *, NSArray *> *)properties {
@@ -695,7 +687,7 @@ static dispatch_queue_t td_trackQueue;
 - (void)user_uniqAppend:(NSDictionary<NSString *, NSArray *> *)properties withTime:(NSDate *)time {
     TAUserEventUniqueAppend *event = [[TAUserEventUniqueAppend alloc] init];
     event.time = time;
-    [self asyncUserEventObject:event properties:properties];
+    [self asyncUserEventObject:event properties:properties isH5:NO];
 }
 
 //MARK: -
@@ -772,14 +764,24 @@ static dispatch_queue_t td_trackQueue;
     NSDictionary *pluginProperties = [self.propertyPluginManager currentPropertiesForPluginClasses:@[TAPresetPropertyPlugin.class]];
     [presetDic addEntriesFromDictionary:pluginProperties];
     
-    if (![TDPresetProperties disableZoneOffset]) {
-        double offset = [[NSDate date] ta_timeZoneOffset:self.config.defaultTimeZone];
-        [presetDic setObject:@(offset) forKey:@"#zone_offset"];
-    }
+    double offset = [[NSDate date] ta_timeZoneOffset:self.config.defaultTimeZone];
+    [presetDic setObject:@(offset) forKey:@"#zone_offset"];
+    
     if (![TDPresetProperties disableNetworkType]) {
         NSString *networkType = [self.class getNetWorkStates];
         [presetDic setObject:networkType?:@"" forKey:@"#network_type"];
     }
+    
+    // 将安装时间转为字符串
+    if (![TDPresetProperties disableInstallTime]) {
+        if (presetDic[@"#install_time"] && [presetDic[@"#install_time"] isKindOfClass:[NSDate class]]) {
+            NSString *install_timeString = [(NSDate *)presetDic[@"#install_time"] ta_formatWithTimeZone:self.config.defaultTimeZone formatString:kDefaultTimeFormat];
+            if (install_timeString && install_timeString.length) {
+                [presetDic setObject:install_timeString forKey:@"#install_time"];
+            }
+        }
+    }
+    
     static TDPresetProperties *presetProperties = nil;
     if (presetProperties == nil) {
         presetProperties = [[TDPresetProperties alloc] initWithDictionary:presetDic];
@@ -788,6 +790,7 @@ static dispatch_queue_t td_trackQueue;
             [presetProperties updateValuesWithDictionary:presetDic];
         }
     }
+    
     return presetProperties;
 }
 
@@ -839,7 +842,7 @@ static dispatch_queue_t td_trackQueue;
     if (error) {
         return;
     }
-    [self.trackTimer trackEvent:event withSystemUptime:NSProcessInfo.processInfo.systemUptime];
+    [self.trackTimer trackEvent:event withSystemUptime:[TDDeviceInfo uptime]];
 }
 
 + (nullable NSString *)getLocalRegion {
@@ -849,99 +852,99 @@ static dispatch_queue_t td_trackQueue;
 
 //MARK: -
 
-- (void)configBaseEvent:(TABaseEvent *)event {
-    // 添加通用的属性
+- (void)configBaseEvent:(TABaseEvent *)event isH5:(BOOL)isH5 {
+    
+    
+    
     event.accountId = self.accountId;
     event.distinctId = self.getDistinctId;
-    // 如果没有设置timezone，则获取config对象中的默认时区
+    
     if (event.timeZone == nil) {
         event.timeZone = self.config.defaultTimeZone;
     }
-    // 事件如果没有指定时间，那么使用系统时间时需要校准
-    if (event.timeValueType == TAEventTimeValueTypeNone && calibratedTime && calibratedTime.stopCalibrate == NO) {
-        NSTimeInterval outTime = NSProcessInfo.processInfo.systemUptime - calibratedTime.systemUptime;
+    
+    if (event.timeValueType == TAEventTimeValueTypeNone && calibratedTime && !calibratedTime.stopCalibrate) {
+        NSTimeInterval outTime = [TDDeviceInfo uptime] - calibratedTime.systemUptime;
         NSDate *serverDate = [NSDate dateWithTimeIntervalSince1970:(calibratedTime.serverTime + outTime)];
         event.time = serverDate;
     }
 }
 
-- (void)trackUserEvent:(TAUserEvent *)event properties:(NSDictionary *)properties {
-    // 判断是否允许上报
+- (void)trackUserEvent:(TAUserEvent *)event properties:(NSDictionary *)properties isH5:(BOOL)isH5 {
+    
     if (!event.isEnabled || event.isOptOut) {
         return;
     }
-    // 当app后台启动时，是否开启数据采集
+    
     if ([TDAppState shareInstance].relaunchInBackground && !self.config.trackRelaunchedInBackgroundEvents) {
         return;
     }
-    // 组装通用属性
-    [self configBaseEvent:event];
-    // 校验并添加用户自定义属性
+    
+    [self configBaseEvent:event isH5:isH5];
+    
     [event.properties addEntriesFromDictionary:[TAPropertyValidator validateProperties:properties validator:event]];
-    // 将属性中所有NSDate对象，用指定的 timezone 转换成时间字符串
+    
     NSDictionary *jsonObj = [event formatDateWithDict:event.jsonObject];
-    // 发送数据
+    
     [self.eventTracker track:jsonObj immediately:event.immediately saveOnly:event.isTrackPause];
 }
 
 - (void)trackEvent:(TATrackEvent *)event properties:(NSDictionary *)properties isH5:(BOOL)isH5 {
-    // 判断是否允许上报
+    
     if (!event.isEnabled || event.isOptOut) {
         return;
     }
-    // 当app后台启动时，是否开启数据采集
+    
     if ([TDAppState shareInstance].relaunchInBackground && !self.config.trackRelaunchedInBackgroundEvents) {
         return;
     }
-    // 组装通用属性
-    [self configBaseEvent:event];
-    // 验证事件本身的合法性，具体的验证策略由事件对象本身定义。
+    
+    [self configBaseEvent:event isH5:isH5];
+    
     NSError *error = nil;
     [event validateWithError:&error];
     if (error) {
         return;
     }
-    // 过滤事件
+    
     if ([self.config.disableEvents containsObject:event.eventName]) {
         return;
     }
 
-    // 是否是从后台启动
+    
     if ([TDAppState shareInstance].relaunchInBackground) {
         event.properties[@"#relaunched_in_background"] = @YES;
     }
-    // 添加从属性插件获取的属性，属性插件只有系统使用，不支持用户自定义。所以属性名字是可信的，不用验证格式
+    
     NSMutableDictionary *pluginProperties = [self.propertyPluginManager propertiesWithEventType:event.eventType];
-    // 过滤预置属性
+    
     [TDPresetProperties handleFilterDisPresetProperties:pluginProperties];
-    // 静态公共属性
+    
     NSDictionary *superProperties = [TAPropertyValidator validateProperties:self.superProperty.currentSuperProperties validator:event];
-    // 动态公共属性
+    
     NSDictionary *dynamicSuperProperties = [TAPropertyValidator validateProperties:event.dynamicSuperProperties validator:event];
     
     NSMutableDictionary *jsonObj = [NSMutableDictionary dictionary];
     
-    // 如果是h5事件，那么native侧的预制属性优先级高于h5侧的属性，native侧的公共属性优先级低于h5侧的属性，且h5侧的属性不需要验证有效性
+    
     if (isH5) {
         event.properties = [superProperties mutableCopy];
         [event.properties addEntriesFromDictionary:dynamicSuperProperties];
         [event.properties addEntriesFromDictionary:properties];
         [event.properties addEntriesFromDictionary:pluginProperties];
-        // 获取当前组装好的最新的属性值
+        
         jsonObj = event.jsonObject;
         
-        // 替换h5的时间和时区偏移
+        
         if (event.h5TimeString) {
             jsonObj[@"#time"] = event.h5TimeString;
         }
         if (event.h5ZoneOffSet) {
-            if (![TDPresetProperties disableZoneOffset]) {
-                jsonObj[@"#zone_offset"] = event.h5ZoneOffSet;
-            }
+            jsonObj[@"#zone_offset"] = event.h5ZoneOffSet;
         }
     } else {
         [event.properties addEntriesFromDictionary:pluginProperties];
-        // 获取当前组装好的最新的属性值
+        
         jsonObj = event.jsonObject;
         [event.properties addEntriesFromDictionary:superProperties];
         [event.properties addEntriesFromDictionary:dynamicSuperProperties];
@@ -949,14 +952,13 @@ static dispatch_queue_t td_trackQueue;
         if ([event isKindOfClass:[TAAutoTrackEvent class]]) {
             TAAutoTrackEvent *autoEvent = (TAAutoTrackEvent *)event;
             
-            // 获取自动采集事件的静态公共属性，优先级低于用户自定义属性
             NSDictionary *autoSuperProperties = [self.autoTrackSuperProperty currentSuperPropertiesWithEventName:event.eventName];
-            // 验证属性，过滤不合法字段
+            
             autoSuperProperties = [TAPropertyValidator validateProperties:autoSuperProperties validator:autoEvent];
             
             [event.properties addEntriesFromDictionary:autoSuperProperties];
             
-            // 在主线程执行自动采集事件的动态回调，用信号量来线程同步
+            
             dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSDictionary *autoDynamicSuperProperties = [self.autoTrackSuperProperty obtainDynamicSuperPropertiesWithType:autoEvent.autoTrackEventType currentProperties:event.properties];
@@ -965,29 +967,28 @@ static dispatch_queue_t td_trackQueue;
 
                 dispatch_semaphore_signal(semaphore);
             });
-            // 等待0.5s的超时时间
+            
             dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)));
         }
-        // 校验用户自定义属性
+#endif
         properties = [TAPropertyValidator validateProperties:properties validator:event];
         [event.properties addEntriesFromDictionary:properties];
-#endif
+
     }
     
-    // 将属性中所有NSDate对象，用指定的 timezone 转换成时间字符串
-    jsonObj = [event formatDateWithDict:jsonObj];
     
-    // 发送数据
+    jsonObj = [event formatDateWithDict:jsonObj];
+
     [self.eventTracker track:jsonObj immediately:event.immediately saveOnly:event.isTrackPause];
 }
 
-// 发送将数据库数据
+
 - (void)flush {
-    // 是否允许SDK采集
+    
     if ([self hasDisabled]) {
         return;
     }
-    // 是否暂停上报
+    
     if (self.isTrackPause) {
         return;
     }
@@ -999,7 +1000,7 @@ static dispatch_queue_t td_trackQueue;
     [self stopFlushTimer];
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.config.uploadInterval > 0) {
-            self.timer = [NSTimer scheduledTimerWithTimeInterval:[self.config.uploadInterval doubleValue]
+            self.timer = [NSTimer scheduledTimerWithTimeInterval:[self.config.uploadInterval integerValue]
                                                           target:self
                                                         selector:@selector(flush)
                                                         userInfo:nil
@@ -1026,16 +1027,14 @@ static dispatch_queue_t td_trackQueue;
 }
 
 - (void)enableThirdPartySharing:(TAThirdPartyShareType)type customMap:(NSDictionary<NSString *, NSObject *> *)customMap {
-    if (!self.thirdPartyManager) {
-        Class cls = NSClassFromString(@"TAThirdPartyManager");
-        if (!cls) {
-    //        TDLog(@"请安装三方扩展插件");
-            return;
-        }
-        self.thirdPartyManager = [[cls alloc] init];
-    }
     
-    [self.thirdPartyManager enableThirdPartySharing:type instance:self property:customMap];
+#if TARGET_OS_IOS
+    // com.thinkingdata://call.service/TAThirdPartyManager.TAThirdPartyProtocol/...?params={}(value url encode)
+    NSURL *url = [NSURL URLWithString:@"com.thinkingdata://call.service.thinkingdata/TAThirdPartyManager.TAThirdPartyProtocol.enableThirdPartySharing:instance:property:/"];
+    if ([TARouter canOpenURL:url]) {
+        [TARouter openURL:url withParams:@{@"TAThirdPartyManager":@{@1:[NSNumber numberWithInteger:type],@2:self,@3:customMap}}];
+    }
+#endif
 }
 
 //MARK: - Auto Track
@@ -1059,19 +1058,19 @@ static dispatch_queue_t td_trackQueue;
     [self.autoTrackSuperProperty registerSuperProperties:properties withType:eventType];
     [self.autoTrackSuperProperty registerDynamicSuperProperties:callback];
     
-    // 走原来方法
+    
     [self _enableAutoTrack:eventType];
 }
 
 - (void)_enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType {
     self.config.autoTrackEventType = eventType;
     
-    // 开启监听界面点击、界面浏览事件
+    
     [[TDAutoTrackManager sharedManager] trackWithAppid:[self td_getMapInstanceTag] withOption:eventType];
 }
 
 - (void)setAutoTrackProperties:(ThinkingAnalyticsAutoTrackEventType)eventType properties:(NSDictionary *)properties {
-    // 未开启不更新数据
+    
     if ([self hasDisabled]) {
         return;
     }
@@ -1122,16 +1121,14 @@ static dispatch_queue_t td_trackQueue;
     [self asyncAutoTrackEventObject:event properties:properties];
 }
 
-/// 将事件加入到事件队列
-/// @param event 事件
-/// @param properties 自定义属性
+/// Add event to event queue
 - (void)asyncAutoTrackEventObject:(TAAutoTrackEvent *)event properties:(NSDictionary *)properties {
-    // 获取当前的SDK上报状态，并记录
+    
     event.isEnabled = self.isEnabled;
     event.trackPause = self.isTrackPause;
     event.isOptOut = self.isOptOut;
     
-    // 在当前线程获取动态公共属性
+    
     event.dynamicSuperProperties = [self.superProperty obtainDynamicSuperProperties];
     dispatch_async(td_trackQueue, ^{
         [self trackEvent:event properties:properties isH5:NO];
@@ -1246,13 +1243,11 @@ static dispatch_queue_t td_trackQueue;
         }
         [self asyncTrackEventObject:event properties:propertieDict isH5:YES];
     } else {
-        // 用户属性
         TAUserEvent *event = [[TAUserEvent alloc] initWithType:[TABaseEvent typeWithTypeString:type]];
-        [self asyncUserEventObject:event properties:propertieDict];
+        [self asyncUserEventObject:event properties:propertieDict isH5:YES];
     }
 }
 
-/// 根据date和时区，获取偏移（h5 有调用）
 - (double)getTimezoneOffset:(NSDate *)date timeZone:(NSTimeZone *)timeZone {
     return [date ta_timeZoneOffset:timeZone];
 }
@@ -1330,6 +1325,7 @@ static dispatch_queue_t td_trackQueue;
 + (void)calibrateTime:(NSTimeInterval)timestamp {
     calibratedTime = [TDCalibratedTime sharedInstance];
     [[TDCalibratedTime sharedInstance] recalibrationWithTimeInterval:timestamp/1000.];
+    //NSLog(@"After version 2.8.4, the external time calibration API is discarded, and the SDK will automatically calibrate");
 }
 
 + (void)calibrateTimeWithNtp:(NSString *)ntpServer {
@@ -1337,6 +1333,7 @@ static dispatch_queue_t td_trackQueue;
         calibratedTime = [TDCalibratedTimeWithNTP sharedInstance];
         [[TDCalibratedTimeWithNTP sharedInstance] recalibrationWithNtps:@[ntpServer]];
     }
+    //NSLog(@"After version 2.8.4, the external time calibration API is discarded, and the SDK will automatically calibrate");
 }
 
 // for UNITY
@@ -1347,54 +1344,51 @@ static dispatch_queue_t td_trackQueue;
 //MARK: - Private
 
 - (void)handleTimeEvent:(TATrackEvent *)trackEvent {
-    // 添加事件统计时长
+    
     BOOL isTrackDuration = [self.trackTimer isExistEvent:trackEvent.eventName];
     BOOL isEndEvent = [trackEvent.eventName isEqualToString:TD_APP_END_EVENT];
     BOOL isStartEvent = [trackEvent.eventName isEqualToString:TD_APP_START_EVENT];
     BOOL isStateInit = [TAAppLifeCycle shareInstance].state == TAAppLifeCycleStateInit;
     
     if (isStateInit) {
-        // 兼容冷启动中使用sleep的情况, 也就是在主线程中使用sleep的情况，虽然情况发生的概率是0.000000001%，但还是要兼容下，你懂得😊
         trackEvent.foregroundDuration = [self.trackTimer foregroundDurationOfEvent:trackEvent.eventName isActive:YES systemUptime:trackEvent.systemUpTime];
         [self.trackTimer removeEvent:trackEvent.eventName];
         
     } else if (isStartEvent) {
-        // 计算start事件后台时长
+        
         trackEvent.backgroundDuration = [self.trackTimer backgroundDurationOfEvent:trackEvent.eventName isActive:NO systemUptime:trackEvent.systemUpTime];
         [self.trackTimer removeEvent:trackEvent.eventName];
         
     } else if (isEndEvent) {
-        // 计算end时间前台时长
+        
         trackEvent.foregroundDuration = [self.trackTimer foregroundDurationOfEvent:trackEvent.eventName isActive:YES systemUptime:trackEvent.systemUpTime];
         [self.trackTimer removeEvent:trackEvent.eventName];
 
     } else if (isTrackDuration) {
-        // 计算自定义事件的时长
-        // app 是否在前台
+        
+        
         BOOL isActive = [TDAppState shareInstance].isActive;
-        // 计算累计前台时长
+        
         trackEvent.foregroundDuration = [self.trackTimer foregroundDurationOfEvent:trackEvent.eventName isActive:isActive systemUptime:trackEvent.systemUpTime];
-        // 计算累计后台时长
+        
         trackEvent.backgroundDuration = [self.trackTimer backgroundDurationOfEvent:trackEvent.eventName isActive:isActive systemUptime:trackEvent.systemUpTime];
         
         TDLogDebug(@"#####eventName: %@, foregroundDuration: %d", trackEvent.eventName, trackEvent.foregroundDuration);
         TDLogDebug(@"#####eventName: %@, backgroundDuration: %d", trackEvent.eventName, trackEvent.backgroundDuration);
-        // 计算时长后，删除当前事件的记录
+        
         [self.trackTimer removeEvent:trackEvent.eventName];
     } else {
-        // 没有事件时长的 TD_APP_END_EVENT 事件，判定为重复的无效 end 事件。（系统的生命周期方法可能回调用多次，会造成重复上报）
+         
         if (trackEvent.eventName == TD_APP_END_EVENT) {
             return;
         }
     }
 }
 
-/// 测试case 使用
 + (NSMutableDictionary *)_getAllInstances {
     return instances;
 }
 
-/// 测试case 使用
 + (void)_clearCalibratedTime {
     calibratedTime = nil;
 }

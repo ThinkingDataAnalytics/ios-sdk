@@ -10,16 +10,7 @@ typedef NS_OPTIONS(NSInteger, TimeValueType) {
 
 typedef NSString *kEDEventTypeName;
 
-/**
- 当eventType为 TD_EVENT_TYPE_TRACK_FIRST 时,
- track事件会添加extraID为: #first_check_id
- */
 FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_FIRST;
-
-/**
- 当eventType为 TD_EVENT_TYPE_TRACK_UPDATE 或 TD_EVENT_TYPE_TRACK_OVERWRITE 时,
- track事件会添加extraID为: #event_id
- */
 FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_UPDATE;
 FOUNDATION_EXTERN kEDEventTypeName const TD_EVENT_TYPE_TRACK_OVERWRITE;
 

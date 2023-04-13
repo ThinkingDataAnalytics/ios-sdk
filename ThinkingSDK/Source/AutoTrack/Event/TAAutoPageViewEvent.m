@@ -2,7 +2,7 @@
 //  TAAutoPageViewEvent.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/15.
+//  Created by Yangxiongon 2022/6/15.
 //
 
 #import "TAAutoPageViewEvent.h"

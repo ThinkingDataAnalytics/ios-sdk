@@ -2,11 +2,12 @@
 //  TAInitinalViewController.m
 //  ThinkingSDKMac
 //
-//  Created by 杨雄 on 2022/7/5.
+//  Created by yangxiong on 2022/7/5.
 //
 
 #import "TAInitinalViewController.h"
 #import <ThinkingSDK/ThinkingSDK.h>
+#import <MJExtension/MJExtension.h>
 
 @interface TAInitinalViewController ()
 @property (nonatomic, weak) IBOutlet NSTextField *appidTextField;
@@ -18,6 +19,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+
     
     NSString *appid = @"c636fb93fb854ffd961a6eed5316410b";
     NSString *url = @"http://ta_test.receiver.thinkingdata.cn";

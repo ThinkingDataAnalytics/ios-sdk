@@ -3,7 +3,7 @@
 //  ThinkingSDKDEMO
 //
 //  Created by syj on 2019/6/27.
-//  Copyright © 2019年 thinking. All rights reserved.
+//  Copyright © 2019 thinking. All rights reserved.
 //
 
 #import "WEBViewController.h"
@@ -32,7 +32,7 @@
 }
 - (NSString*)rightTitle
 {
-    return @"UIWebview测试";
+    return @"UIWebview Test";
 }
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     if ([[ThinkingSDKAPI getInstance] showUpWebView:webView WithRequest:request]) {

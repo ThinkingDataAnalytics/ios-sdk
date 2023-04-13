@@ -2,13 +2,14 @@
 //  TATrackEvent.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/12.
+//  Created by Yangxiongon 2022/6/12.
 //
 
 #import "TATrackEvent.h"
 #import "TDPresetProperties.h"
 #import "TDPresetProperties+TDDisProperties.h"
 #import "NSDate+TAFormat.h"
+#import "TDDeviceInfo.h"
 
 @implementation TATrackEvent
 
@@ -24,14 +25,13 @@
     self = [super init];
     if (self) {
         self.eventType = TAEventTypeTrack;
-        // 获取当前开机时长
-        self.systemUpTime = NSProcessInfo.processInfo.systemUptime;
+        self.systemUpTime = [TDDeviceInfo uptime];
     }
     return self;
 }
 
 - (void)validateWithError:(NSError *__autoreleasing  _Nullable *)error {
-    // 验证事件名字
+    
     [TAPropertyValidator validateEventOrPropertyName:self.eventName withError:error];
 }
 

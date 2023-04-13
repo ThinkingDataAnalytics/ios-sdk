@@ -2,7 +2,7 @@
 //  UIView+ThinkingAnalytics.h
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/7/1.
+//  Created by Yangxiongon 2022/7/1.
 //
 
 #import <UIKit/UIKit.h>
@@ -12,32 +12,32 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UIView (ThinkingAnalytics)
 
 /**
-设置控件元素 ID
+ Set the control element ID
  */
 @property (copy,nonatomic) NSString *thinkingAnalyticsViewID;
 
 /**
- 配置 APPID 的控件元素 ID
+ Configure the control element ID of APPID
  */
 @property (strong,nonatomic) NSDictionary *thinkingAnalyticsViewIDWithAppid;
 
 /**
- 忽略某个控件的点击事件
+ Ignore the click event of a control
  */
 @property (nonatomic,assign) BOOL thinkingAnalyticsIgnoreView;
 
 /**
- 配置 APPID 的忽略某个控件的点击事件
+ Configure APPID to ignore the click event of a control
  */
 @property (strong,nonatomic) NSDictionary *thinkingAnalyticsIgnoreViewWithAppid;
 
 /**
- 自定义控件点击事件的属性
+ Properties of custom control click event
  */
 @property (strong,nonatomic) NSDictionary *thinkingAnalyticsViewProperties;
 
 /**
- 配置 APPID 的自定义控件点击事件的属性
+ Configure the properties of the APPID custom control click event
  */
 @property (strong,nonatomic) NSDictionary *thinkingAnalyticsViewPropertiesWithAppid;
 

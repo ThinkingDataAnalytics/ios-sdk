@@ -2,7 +2,7 @@
 //  TAPropertyPluginManager.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/12.
+//  Created by Yangxiongon 2022/6/12.
 //
 
 #import "TAPropertyPluginManager.h"
@@ -32,7 +32,7 @@
         return;
     }
 
-    // 删除旧的plugin
+    // delete old plugin
     for (id<TAPropertyPluginProtocol> object in self.plugins) {
         if (object.class == plugin.class) {
             [self.plugins removeObject:object];
@@ -41,7 +41,7 @@
     }
     [self.plugins addObject:plugin];
 
-    // 采集属性
+    
     if ([plugin respondsToSelector:@selector(start)]) {
         [plugin start];
     }
@@ -50,9 +50,9 @@
 - (NSMutableDictionary<NSString *,id> *)currentPropertiesForPluginClasses:(NSArray<Class> *)classes {
     NSArray *plugins = [self.plugins copy];
     NSMutableArray<id<TAPropertyPluginProtocol>> *matchResult = [NSMutableArray array];
-    // 遍历插件
+
     for (id<TAPropertyPluginProtocol> obj in plugins) {
-        // 遍历筛选目标class
+        
         for (Class cla in classes) {
             if ([obj isKindOfClass:cla]) {
                 [matchResult addObject:obj];
@@ -60,14 +60,14 @@
             }
         }
     }
-    // 获取属性插件采集的属性
+    
     NSMutableDictionary *pluginProperties = [self propertiesWithPlugins:matchResult];
 
     return pluginProperties;
 }
 
 - (NSMutableDictionary<NSString *,id> *)propertiesWithEventType:(TAEventType)type {
-    // 根据事件类型找到对应的plugin
+    
     NSArray *plugins = [self.plugins copy];
     NSMutableArray<id<TAPropertyPluginProtocol>> *matchResult = [NSMutableArray array];
     for (id<TAPropertyPluginProtocol> obj in plugins) {
@@ -82,27 +82,27 @@
 
 - (NSMutableDictionary *)propertiesWithPlugins:(NSArray<id<TAPropertyPluginProtocol>> *)plugins {
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
-    // 获取匹配的插件属性
+    
     dispatch_semaphore_t semaphore;
     for (id<TAPropertyPluginProtocol> plugin in plugins) {
         if ([plugin respondsToSelector:@selector(asyncGetPropertyCompletion:)]) {
-            // 如果插件需要异步获取属性，那么用信号量来进行线程同步
+            
             semaphore = dispatch_semaphore_create(0);
             [plugin asyncGetPropertyCompletion:^(NSDictionary<NSString *,id> * _Nonnull dict) {
                 [properties addEntriesFromDictionary:dict];
                 dispatch_semaphore_signal(semaphore);
             }];
         }
-        // 普通方式获取属性
+        
         NSDictionary *pluginProperties = [plugin respondsToSelector:@selector(properties)] ? plugin.properties : nil;
         if (pluginProperties) {
             [properties addEntriesFromDictionary:pluginProperties];
         }
         if (semaphore) {
-            // 等待0.5s，让插件异步采集完成
+            
             dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)));
         }
-        // 将信号量置空
+        
         semaphore = nil;
     }
     return properties;
@@ -112,7 +112,7 @@
     TAEventType eventTypeFilter;
 
     if (![plugin respondsToSelector:@selector(eventTypeFilter)]) {
-        // 如果插件没有实现类型筛选方法，则默认只为track类型数据添加，包括首次事件、可更新事件、可重写事件。除了用户属性事件
+        // If the plug-in does not implement the type filtering method, it will only be added for track type data by default, including the first event, updateable event, and rewritable event. In addition to user attribute events
         eventTypeFilter = TAEventTypeTrack | TAEventTypeTrackFirst | TAEventTypeTrackUpdate | TAEventTypeTrackOverwrite;
     } else {
         eventTypeFilter = plugin.eventTypeFilter;

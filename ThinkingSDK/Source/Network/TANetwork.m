@@ -108,7 +108,7 @@ static NSString *kTADatasType = @"TA-Datas-Type";
                             return;
                         }
                         UIWindow *window = application.keyWindow;
-                        [TDToastView showInWindow:window text:[NSString stringWithFormat:@"当前模式为:%@", self.debugMode == ThinkingAnalyticsDebugOnly ? @"DebugOnly(数据不入库)\n测试联调阶段开启\n正式上线前请关闭Debug功能" : @"Debug"] duration:2.0];
+                        [TDToastView showInWindow:window text:[NSString stringWithFormat:@"The current mode is:%@", self.debugMode == ThinkingAnalyticsDebugOnly ? @"DebugOnly(Data is not persisted) \n The test joint debugging stage is allowed to open \n Please turn off the Debug function before the official launch" : @"Debug"] duration:2.0];
                     });
 #endif
                 }
@@ -154,6 +154,8 @@ static NSString *kTADatasType = @"TA-Datas-Type";
     if (isEncrypt) {
         [request addValue:@"1" forHTTPHeaderField:kTADatasType];
     }
+//    [request addValue:@"Keep-Alive" forHTTPHeaderField:@"Connection"];
+//    [request addValue:@"timeout=15,max=100" forHTTPHeaderField:@"Keep-Alive"];
     
     dispatch_semaphore_t flushSem = dispatch_semaphore_create(0);
 
@@ -204,7 +206,7 @@ static NSString *kTADatasType = @"TA-Datas-Type";
 }
 
 - (NSMutableURLRequest *)buildDebugRequestWithJSONString:(NSString *)jsonString withAppid:(NSString *)appid withDeviceId:(NSString *)deviceId {
-    // dryRun=0，如果校验通过就会入库。 dryRun=1，不会入库
+    // dryRun=0, if the verification is passed, it will be put into storage. dryRun=1, no storage
     int dryRun = _debugMode == ThinkingAnalyticsDebugOnly ? 1 : 0;
     NSString *postData = [NSString stringWithFormat:@"appid=%@&source=client&dryRun=%d&deviceId=%@&data=%@", appid, dryRun, deviceId, [self URLEncode:jsonString]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.serverDebugURL];

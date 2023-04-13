@@ -3,7 +3,7 @@
 //  ThinkingSDKDEMO
 //
 //  Created by syj on 2019/6/28.
-//  Copyright © 2019年 thinking. All rights reserved.
+//  Copyright © 2019 thinking. All rights reserved.
 //
 
 #import "WKWebViewController.h"
@@ -38,7 +38,7 @@
 }
 - (NSString*)rightTitle
 {
-    return @"WKWebview测试";
+    return @"WKWebview Test";
 }
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {

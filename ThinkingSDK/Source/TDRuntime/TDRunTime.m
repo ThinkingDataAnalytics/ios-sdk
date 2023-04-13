@@ -15,7 +15,7 @@
 #pragma clang diagnostic ignored "-Wundeclared-selector"
     
 + (NSString *)getAppLaunchReason {
-    // 启动原因
+    // start reason
     Class cls = NSClassFromString(@"TDAppLaunchReason");
     id appLaunch = [cls performSelector:@selector(sharedInstance)];
     
@@ -30,7 +30,6 @@
             return @"";
         } else {
             if (data.allKeys.count == 0) {
-                // data没有值的时候，将data字段赋值空字符串
                 startReason = @{@"url":url, @"data":@""};
             }
             NSString *startReasonString = [TDJSONUtil JSONStringForObject:startReason];

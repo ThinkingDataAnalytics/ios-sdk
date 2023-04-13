@@ -7,5 +7,6 @@ target 'ThinkingSDKMac' do
 
   # Pods for ThinkingSDKMac
   pod "ThinkingSDK", :path => "../../"
+  pod "MJExtension"
 
 end

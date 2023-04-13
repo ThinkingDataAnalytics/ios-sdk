@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -80,23 +81,23 @@
                     </customSpacing>
                 </stackView>
                 <stackView distribution="fillEqually" orientation="horizontal" alignment="top" spacing="20" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AwA-Dk-Nmf">
-                    <rect key="frame" x="171" y="55" width="138" height="20"/>
+                    <rect key="frame" x="170" y="55" width="140" height="20"/>
                     <subviews>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gWY-RZ-0cN">
-                            <rect key="frame" x="-7" y="-7" width="73" height="32"/>
-                            <buttonCell key="cell" type="push" title="取消" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="AW7-G8-uLB">
+                            <rect key="frame" x="-7" y="-7" width="74" height="32"/>
+                            <buttonCell key="cell" type="push" title="cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="AW7-G8-uLB">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" size="13" name=".PingFangSC-Regular"/>
+                                <font key="font" metaFont="system"/>
                             </buttonCell>
                             <connections>
                                 <action selector="cancelAction:" target="-2" id="KZC-4g-zub"/>
                             </connections>
                         </button>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gQw-Qm-Z77">
-                            <rect key="frame" x="72" y="-7" width="73" height="32"/>
-                            <buttonCell key="cell" type="push" title="初始化" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="JPI-aH-MKR">
+                            <rect key="frame" x="73" y="-7" width="74" height="32"/>
+                            <buttonCell key="cell" type="push" title="init" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="JPI-aH-MKR">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" size="13" name=".PingFangSC-Regular"/>
+                                <font key="font" metaFont="system"/>
                             </buttonCell>
                             <connections>
                                 <action selector="initAction:" target="-2" id="2Kg-ze-XFq"/>

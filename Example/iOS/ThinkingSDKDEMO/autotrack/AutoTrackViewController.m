@@ -3,7 +3,7 @@
 //  ThinkingSDKDEMO
 //
 //  Created by syj on 2019/6/25.
-//  Copyright © 2019年 thinking. All rights reserved.
+//  Copyright © 2019 thinking. All rights reserved.
 //
 
 #import "AutoTrackViewController.h"
@@ -17,7 +17,7 @@
 @implementation AutoTrackViewController
 
 - (NSDictionary *)getTrackProperties {
-    return @{@"PageName" : @"商品详情页", @"ProductId" : @12345};
+    return @{@"PageName" : @"detail page", @"ProductId" : @12345};
 }
 
 - (NSString *)getScreenUrl {
@@ -31,12 +31,12 @@
 {
     [super setView];
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 100, 300, 30)];
-    label.text = @"UIViewController 自动埋点";
+    label.text = @"UIViewController auto-tracking";
     [self.view addSubview:label];
     
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(50, 200, 300, 30)];
     button.backgroundColor = [UIColor lightGrayColor];
-    [button setTitle:@"进入二级页面" forState:UIControlStateNormal];
+    [button setTitle:@"inter the second level page" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(showView) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:button];
 }

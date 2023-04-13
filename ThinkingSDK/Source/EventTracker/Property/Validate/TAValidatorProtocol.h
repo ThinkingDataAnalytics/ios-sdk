@@ -2,7 +2,7 @@
 //  TAValidatorProtocol.h
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/7/1.
+//  Created by Yangxiongon 2022/7/1.
 //
 
 #ifndef TAValidatorProtocol_h
@@ -22,21 +22,20 @@
                     userInfo:@{NSLocalizedDescriptionKey:errorMsg}] \
 
 
-/// 属性名字的验证器协议，用来验证属性名
 @protocol TAPropertyKeyValidating <NSObject>
 
 - (void)ta_validatePropertyKeyWithError:(NSError **)error;
 
 @end
 
-/// 属性值的验证器协议，用来验证属性值
+/// The validator protocol of the attribute value, used to verify the attribute value
 @protocol TAPropertyValueValidating <NSObject>
 
 - (void)ta_validatePropertyValueWithError:(NSError **)error;
 
 @end
 
-/// 事件属性的验证器协议，用来验证某一条属性的key-value
+/// The validator protocol of event properties, used to verify the key-value of a certain property
 @protocol TAEventPropertyValidating <NSObject>
 
 - (void)ta_validateKey:(NSString *)key value:(id)value error:(NSError **)error;

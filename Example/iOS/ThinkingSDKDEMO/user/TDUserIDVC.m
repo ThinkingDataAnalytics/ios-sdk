@@ -23,7 +23,7 @@
 }
 - (NSString*)rightTitle
 {
-    return @"自定义访客ID";
+    return @"custom distinct ID";
 }
 
 @end

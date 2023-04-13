@@ -2,7 +2,7 @@
 //  TAUserEventAdd.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/7/1.
+//  Created by Yangxiongon 2022/7/1.
 //
 
 #import "TAUserEventAdd.h"
@@ -17,7 +17,7 @@
 }
 
 - (void)validateWithError:(NSError *__autoreleasing  _Nullable *)error {
-    // 可以在此处添加验证条件
+    
 }
 
 //MARK: - Delegate

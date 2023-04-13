@@ -2,7 +2,7 @@
 //  TABaseEvent.h
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/12.
+//  Created by Yangxiongon 2022/6/12.
 //
 
 #import <Foundation/Foundation.h>
@@ -41,9 +41,9 @@ typedef NS_OPTIONS(NSUInteger, TAEventType) {
 //extern kTAEventType const kTAEventTypeUserUniqueAppend;
 
 typedef NS_OPTIONS(NSInteger, TAEventTimeValueType) {
-    TAEventTimeValueTypeNone = 0, // 用户没有指定时间
-    TAEventTimeValueTypeTimeOnly = 1 << 0, // 用户只指定时间，没有指定时区
-    TAEventTimeValueTypeTimeAndZone = 1 << 1, // 用户指定时间+时区
+    TAEventTimeValueTypeNone = 0,
+    TAEventTimeValueTypeTimeOnly = 1 << 0,
+    TAEventTimeValueTypeTimeAndZone = 1 << 1,
 };
 
 @interface TABaseEvent : NSObject<TAEventPropertyValidating>
@@ -54,35 +54,28 @@ typedef NS_OPTIONS(NSInteger, TAEventTimeValueType) {
 @property (nonatomic, strong) NSDate *time;
 @property (nonatomic, strong) NSTimeZone *timeZone;
 @property (nonatomic, strong, readonly) NSDateFormatter *timeFormatter;
-/// 传入的时间类型
+
 @property (nonatomic, assign) TAEventTimeValueType timeValueType;
 @property (nonatomic, strong) NSMutableDictionary *properties;
-/// 是否需要立即上传
+
 @property (nonatomic, assign) BOOL immediately;
 
-/// 标识是否暂停网络上报，默认 NO 上报网络正常流程；YES 入本地数据库但不网络上报
 @property (atomic, assign, getter=isTrackPause) BOOL trackPause;
-/// 标识SDK是否继续采集事件
+
 @property (nonatomic, assign) BOOL isEnabled;
-/// 标识SDK是否停止
+
 @property (atomic, assign) BOOL isOptOut;
 
 - (instancetype)initWithType:(TAEventType)type;
 
-/// 验证事件对象是否合法
-/// @param error 错误信息
 - (void)validateWithError:(NSError **)error;
 
-/// 用于上报的json对象
 - (NSMutableDictionary *)jsonObject;
 
-/// 将dict数据源中，NSDate格式的value值格式化为字符串
-/// @param dict 数据源
 - (NSMutableDictionary *)formatDateWithDict:(NSDictionary *)dict;
 
 - (NSString *)eventTypeString;
 
-/// 获取事件类型
 + (TAEventType)typeWithTypeString:(NSString *)typeString;
 
 @end

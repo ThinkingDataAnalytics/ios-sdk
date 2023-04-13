@@ -22,12 +22,12 @@
 {
     [super setView];
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 100, 300, 30)];
-    label.text = @"UIViewController 自动埋点 二级页面";
+    label.text = @"UIViewController the second level page";
     label.textColor = kTDColor;
     [self.view addSubview:label];
 }
 - (NSString*)rightTitle
 {
-    return @"二级页面";
+    return @"the second level page";
 }
 @end

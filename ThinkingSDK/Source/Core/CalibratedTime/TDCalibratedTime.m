@@ -1,4 +1,5 @@
 #import "TDCalibratedTime.h"
+#import "TDDeviceInfo.h"
 
 @implementation TDCalibratedTime
 
@@ -14,7 +15,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         self.serverTime = [[NSDate date] timeIntervalSince1970];
-        self.systemUptime = [[NSProcessInfo processInfo] systemUptime];
+        self.systemUptime = [TDDeviceInfo uptime];
     }
 
     return self;
@@ -22,7 +23,7 @@
 
 - (void)recalibrationWithTimeInterval:(NSTimeInterval)timestamp {
     self.serverTime = timestamp;
-    self.systemUptime = [[NSProcessInfo processInfo] systemUptime];
+    self.systemUptime = [TDDeviceInfo uptime];
 }
 
 @end

@@ -15,7 +15,6 @@
 #import "TAAutoTrackEvent.h"
 #import "TAAutoTrackSuperProperty.h"
 #import "TDEncrypt.h"
-#import "TDThirdPartyProtocol.h"
 #endif
 
 #import "TDLogging.h"
@@ -32,6 +31,7 @@
 #import "TATrackUpdateEvent.h"
 #import "TAUserPropertyHeader.h"
 #import "TAPropertyPluginManager.h"
+#import "TASessionIdPropertyPlugin.h"
 #import "TAPresetPropertyPlugin.h"
 #import "TABaseEvent+H5.h"
 #import "NSDate+TAFormat.h"
@@ -85,7 +85,7 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 #if TARGET_OS_IOS
 @property (nonatomic, strong) TAAutoTrackSuperProperty *autoTrackSuperProperty;
 @property (nonatomic, strong) TDEncryptManager *encryptManager;
-@property (strong,nonatomic) id<TDThirdPartyProtocol> thirdPartyManager;
+@property (strong,nonatomic) id thirdPartyManager;
 #endif
 
 @property (atomic, copy) NSString *appid;
@@ -94,19 +94,20 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (atomic, copy) NSString *identifyId;
 @property (nonatomic, strong) TASuperProperty *superProperty;
 @property (nonatomic, strong) TAPropertyPluginManager *propertyPluginManager;
+@property (nonatomic, strong) TASessionIdPropertyPlugin *sessionidPlugin;
 @property (nonatomic, strong) TAAppLifeCycle *appLifeCycle;
 
 @property (atomic, strong) NSMutableSet *ignoredViewTypeList;
 @property (atomic, strong) NSMutableSet *ignoredViewControllers;
 
-/// 标识是否暂停网络上报，默认 NO 上报网络正常流程；YES 入本地数据库但不网络上报
+
 @property (atomic, assign, getter=isTrackPause) BOOL trackPause;
 @property (nonatomic, assign) BOOL isEnabled;
 @property (atomic, assign) BOOL isOptOut;
 
-/// 上报数据定时器
+
 @property (nonatomic, strong, nullable) NSTimer *timer;
-/// 事件时长统计
+
 @property (nonatomic, strong) TATrackTimer *trackTimer;
 
 @property (atomic, strong) TDSqliteDataQueue *dataQueue;
@@ -134,6 +135,9 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 - (BOOL)checkEventProperties:(NSDictionary *)properties withEventType:(NSString *_Nullable)eventType haveAutoTrackEvents:(BOOL)haveAutoTrackEvents;
 - (void)startFlushTimer;
 - (double)getTimezoneOffset:(NSDate *)date timeZone:(NSTimeZone *)timeZone;
++ (NSMutableDictionary *)_getAllInstances;
+
++ (NSMutableDictionary *)_getAllInstances;
 
 @end
 
@@ -144,9 +148,7 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (nonatomic, assign) TimeValueType timeValueType;
 @property (nonatomic, copy) NSString *extraID;
 @property (nonatomic, assign) BOOL persist;
-// 新增属性
 @property (nonatomic, strong) NSDate *time;
-// 新增属性
 @property (nonatomic, strong) NSTimeZone *timeZone;
 
 - (instancetype)initWithEventName:(NSString * _Nullable)eventName;

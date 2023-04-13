@@ -2,12 +2,12 @@
 //  NSString+TAProperty.m
 //  Adjust
 //
-//  Created by 杨雄 on 2022/7/1.
+//  Created by Yangxiongon 2022/7/1.
 //
 
 #import "NSString+TAProperty.h"
 
-/// 自定义属性名字长度限制
+
 static NSInteger kTAPropertyNameMaxLength = 50;
 
 @implementation NSString (TAProperty)

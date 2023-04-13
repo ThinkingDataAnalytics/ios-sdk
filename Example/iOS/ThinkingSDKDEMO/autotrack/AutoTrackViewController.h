@@ -3,7 +3,7 @@
 //  ThinkingSDKDEMO
 //
 //  Created by syj on 2019/6/25.
-//  Copyright © 2019年 thinking. All rights reserved.
+//  Copyright © 2019 thinking. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

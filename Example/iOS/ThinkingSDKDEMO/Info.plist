@@ -242,15 +242,19 @@
 		<true/>
 	</dict>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>thinkingdata-蓝牙</string>
+	<string>thinkingdata-Bluetooth</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>bb</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>aa</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>thinkingdata-定位</string>
+	<string>thinkingdata-location</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>aaa</string>
+	<key>TDDisPresetProperties</key>
+	<array>
+		<string>#zone_offset</string>
+	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SpaceMono-Regular.ttf</string>

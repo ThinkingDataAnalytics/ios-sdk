@@ -2,7 +2,7 @@
 //  TAAutoTrackSuperProperty.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/19.
+//  Created by Yangxiongon 2022/6/19.
 //
 
 #import "TAAutoTrackSuperProperty.h"
@@ -25,10 +25,7 @@
     return self;
 }
 
-/// 设置公共事件属性
-/// @param properties 公共事件属性
 - (void)registerSuperProperties:(NSDictionary *)properties withType:(ThinkingAnalyticsAutoTrackEventType)type {
-    // 自动采集，枚举值和事件名 映射关系
     NSDictionary<NSNumber *, NSString *> *autoTypes = @{
         @(ThinkingAnalyticsEventTypeAppStart) : TD_APP_START_EVENT,
         @(ThinkingAnalyticsEventTypeAppEnd) : TD_APP_END_EVENT,
@@ -45,7 +42,7 @@
         if ((type & eventType) == eventType) {
             NSString *eventName = autoTypes[key];
             if (properties) {
-                // 覆盖之前的，先取出之前的属性进行覆盖；之前没有该属性就直接设置
+                
                 NSDictionary *oldProperties = self.eventProperties[eventName];
                 if (oldProperties && [oldProperties isKindOfClass:[NSDictionary class]]) {
                     NSMutableDictionary *mutiOldProperties = [oldProperties mutableCopy];
@@ -55,7 +52,7 @@
                     self.eventProperties[eventName] = properties;
                 }
                 
-                // 后台自启动事件，保证和appStart事件一样的属性
+                
                 if (eventType == ThinkingAnalyticsEventTypeAppStart) {
                     NSDictionary *startParam = self.eventProperties[TD_APP_START_EVENT];
                     if (startParam && [startParam isKindOfClass:[NSDictionary class]]) {
@@ -67,28 +64,25 @@
     }
 }
 
-/// 获取公共属性
+
 - (NSDictionary *)currentSuperPropertiesWithEventName:(NSString *)eventName {
     NSDictionary *autoEventProperty = [self.eventProperties objectForKey:eventName];
-    // 验证属性
+    
     NSDictionary *validProperties = [TAPropertyValidator validateProperties:[autoEventProperty copy]];
     return validProperties;
 }
 
-/// 设置动态公共属性
-/// @param dynamicSuperProperties 动态公共属性
 - (void)registerDynamicSuperProperties:(NSDictionary<NSString *, id> *(^)(ThinkingAnalyticsAutoTrackEventType, NSDictionary *))dynamicSuperProperties {
     @synchronized (self) {
         self.dynamicSuperProperties = dynamicSuperProperties;
     }
 }
 
-/// 获取动态公共属性
 - (NSDictionary *)obtainDynamicSuperPropertiesWithType:(ThinkingAnalyticsAutoTrackEventType)type currentProperties:(NSDictionary *)properties {
     @synchronized (self) {
         if (self.dynamicSuperProperties) {
             NSDictionary *result = self.dynamicSuperProperties(type, properties);
-            // 验证属性
+            
             NSDictionary *validProperties = [TAPropertyValidator validateProperties:[result copy]];
             return validProperties;
         }
