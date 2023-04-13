@@ -31,7 +31,7 @@
 #import "TATrackUpdateEvent.h"
 #import "TAUserPropertyHeader.h"
 #import "TAPropertyPluginManager.h"
-#import "TASessionIdPropertyPlugin.h"
+//#import "TASessionIdPropertyPlugin.h"
 #import "TAPresetPropertyPlugin.h"
 #import "TABaseEvent+H5.h"
 #import "NSDate+TAFormat.h"
@@ -94,7 +94,7 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 @property (atomic, copy) NSString *identifyId;
 @property (nonatomic, strong) TASuperProperty *superProperty;
 @property (nonatomic, strong) TAPropertyPluginManager *propertyPluginManager;
-@property (nonatomic, strong) TASessionIdPropertyPlugin *sessionidPlugin;
+//@property (nonatomic, strong) TASessionIdPropertyPlugin *sessionidPlugin;
 @property (nonatomic, strong) TAAppLifeCycle *appLifeCycle;
 
 @property (atomic, strong) NSMutableSet *ignoredViewTypeList;
