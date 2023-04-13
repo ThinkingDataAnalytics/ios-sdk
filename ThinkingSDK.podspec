@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'ThinkingSDK'
-  s.version          = '2.8.4'
+  s.version          = '2.8.4-beta.1'
   s.summary          = 'Official ThinkingData SDK for iOS.'
   s.homepage         = 'https://github.com/ThinkingDataAnalytics/ios-sdk'
   s.license          = 'Apache License, Version 2.0'
@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.subspec 'OSX' do |s|
     path = "ThinkingSDK/Source"
     s.osx.deployment_target = '10.10'
-    s.source_files = path + '/EventTracker/**/*.{h,m}', path + '/TDRuntime/**/*.{h,m}', path + '/Config/**/*.{h,m}', path + '/DeviceInfo/**/*.{h,m}', path + '/main/**/*.{h,m}',  path + '/Store/**/*.{h,m}', path + '/Network/**/*.{h,m}'
+    s.source_files = path + '/EventTracker/**/**/*.{h,m}', path + '/TDRuntime/**/*.{h,m}', path + '/Config/**/*.{h,m}', path + '/DeviceInfo/**/*.{h,m}', path + '/main/**/*.{h,m}',  path + '/Store/**/*.{h,m}', path + '/Network/**/*.{h,m}'
     s.osx.exclude_files = path + '/DeviceInfo/TDFPSMonitor.{h,m}', path + '/DeviceInfo/TDPerformance.{h,m}'
 
     s.dependency 'ThinkingSDK/Base'

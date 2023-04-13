@@ -1,31 +1,38 @@
 PODS:
-  - ThinkingSDK (2.8.3.1):
-    - ThinkingSDK/Main (= 2.8.3.1)
-  - ThinkingSDK/Base (2.8.3.1):
+  - MJExtension (3.4.1)
+  - ThinkingSDK (2.8.4-beta.1):
+    - ThinkingSDK/Main (= 2.8.4-beta.1)
+  - ThinkingSDK/Base (2.8.4-beta.1):
     - ThinkingSDK/Core
     - ThinkingSDK/Extension
     - ThinkingSDK/Util
-  - ThinkingSDK/Core (2.8.3.1)
-  - ThinkingSDK/Extension (2.8.3.1):
+  - ThinkingSDK/Core (2.8.4-beta.1)
+  - ThinkingSDK/Extension (2.8.4-beta.1):
     - ThinkingSDK/Core
-  - ThinkingSDK/Main (2.8.3.1):
+  - ThinkingSDK/Main (2.8.4-beta.1):
     - ThinkingSDK/iOS
     - ThinkingSDK/OSX
-  - ThinkingSDK/OSX (2.8.3.1):
+  - ThinkingSDK/OSX (2.8.4-beta.1):
     - ThinkingSDK/Base
-  - ThinkingSDK/Util (2.8.3.1):
+  - ThinkingSDK/Util (2.8.4-beta.1):
     - ThinkingSDK/Core
 
 DEPENDENCIES:
+  - MJExtension
   - ThinkingSDK (from `../../`)
+
+SPEC REPOS:
+  trunk:
+    - MJExtension
 
 EXTERNAL SOURCES:
   ThinkingSDK:
     :path: "../../"
 
 SPEC CHECKSUMS:
-  ThinkingSDK: a0377e3250e7d55b443fba43d489fd85b7081a56
+  MJExtension: 21c5f6f8c4d5d8844b7ae8fbae08fed0b501f961
+  ThinkingSDK: b928c265ca4558c36fb93ec63961433f0207c263
 
-PODFILE CHECKSUM: 07f70630883f5403bcd1bfcfe4c46c1c1a6cd280
+PODFILE CHECKSUM: cbe591f258ec4f33975732457331a2e5d6db8bdb
 
 COCOAPODS: 1.11.3

@@ -206,7 +206,7 @@ static dispatch_queue_t td_trackQueue;
         }];
       
 #elif TARGET_OS_OSX
-        [_config updateConfig:^(NSDictionary * _Nonnull secretKey, NSTimeInterval time) {}];
+        [_config updateConfig:^(NSDictionary * _Nonnull secretKey) {}];
 #endif
         
         self.trackTimer = [[TATrackTimer alloc] init];

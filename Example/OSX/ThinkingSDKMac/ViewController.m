@@ -25,6 +25,17 @@
 }
 
 - (ThinkingAnalyticsSDK *)getInstance {
+    
+    NSString *appid = @"c636fb93fb854ffd961a6eed5316410b";
+    NSString *url = @"http://ta_test.receiver.thinkingdata.cn";
+
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+
+    TDConfig *config = [TDConfig new];
+    config.appid = appid;
+    config.configureURL = url;
+    [ThinkingAnalyticsSDK startWithConfig:config];
+    
     ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstance];
     if (!instance) {
         NSLog(@"[ThinkingData]: init SDK");
@@ -66,16 +77,18 @@
 
 - (IBAction)trackNormal:(NSButton *)sender {
     
+    [[self getInstance] track:@"asdas" properties:@{}];
+    
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
     
-    if (json[@"time"] && json[@"timeZone"]) {
-        NSDate *date=[NSDate dateWithTimeIntervalSince1970:([json[@"time"] doubleValue])];
-        NSTimeZone *zone = [NSTimeZone timeZoneWithName:json[@"timeZone"]];
-        [[self getInstance] track:json[@"event_name"] properties:json[@"properties"] time:date timeZone:zone];
-    } else {
-        [[self getInstance] track:json[@"event_name"] properties:json[@"properties"]];
-    }
-       
+//    if (json[@"time"] && json[@"timeZone"]) {
+//        NSDate *date=[NSDate dateWithTimeIntervalSince1970:([json[@"time"] doubleValue])];
+//        NSTimeZone *zone = [NSTimeZone timeZoneWithName:json[@"timeZone"]];
+//        [[self getInstance] track:json[@"event_name"] properties:json[@"properties"] time:date timeZone:zone];
+//    } else {
+//        [[self getInstance] track:json[@"event_name"] properties:json[@"properties"]];
+//    }
+//
     
 }
 
