@@ -81,10 +81,10 @@
         make.width.mas_equalTo(kTDCommonW);
         make.centerY.mas_equalTo(serverDesLabel);
     }];
-    serverTF.text = @"http://ta_test.receiver.thinkingdata.cn";
+    //serverTF.text = @"http://ta_test.receiver.thinkingdata.cn";
 //    serverTF.text = @"http://ta_test.receiver.thinkingdata.cn";
 //    serverTF.text = @"https://receiver-ta-demo.thinkingdata.cn";
-//    serverTF.text = @"http://receiver.ta.thinkingdata.cn/";
+    serverTF.text = @"http://receiver.ta.thinkingdata.cn/";
     
     UITextField *instanceNameTF = [UITextField new];
     instanceNameTF.clearButtonMode = UITextFieldViewModeWhileEditing;
