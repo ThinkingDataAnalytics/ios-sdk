@@ -2,7 +2,7 @@
 
 #if TARGET_OS_IOS
 #import "TDAutoTrackManager.h"
-#import "TARouter.h"
+//#import "TARouter.h"
 #endif
 
 #import "TDCalibratedTimeWithNTP.h"
@@ -19,7 +19,7 @@
 #import "TAReachability.h"
 #import "TAAppLifeCycle.h"
 //#import "TASessionIdPropertyPlugin.h"
-#import "TASessionIdManager.h"
+//#import "TASessionIdManager.h"
 
 
 #if !__has_feature(objc_arc)
@@ -1029,11 +1029,15 @@ static dispatch_queue_t td_trackQueue;
 - (void)enableThirdPartySharing:(TAThirdPartyShareType)type customMap:(NSDictionary<NSString *, NSObject *> *)customMap {
     
 #if TARGET_OS_IOS
+    Class TARouterCls = NSClassFromString(@"TARouter");
     // com.thinkingdata://call.service/TAThirdPartyManager.TAThirdPartyProtocol/...?params={}(value url encode)
     NSURL *url = [NSURL URLWithString:@"com.thinkingdata://call.service.thinkingdata/TAThirdPartyManager.TAThirdPartyProtocol.enableThirdPartySharing:instance:property:/"];
-    if ([TARouter canOpenURL:url]) {
-        [TARouter openURL:url withParams:@{@"TAThirdPartyManager":@{@1:[NSNumber numberWithInteger:type],@2:self,@3:customMap}}];
+    if (TARouterCls && [TARouterCls respondsToSelector:@selector(canOpenURL:)] && [TARouterCls respondsToSelector:@selector(openURL:withParams:)]) {
+        if ([TARouterCls performSelector:@selector(canOpenURL:) withObject:url]) {
+            [TARouterCls performSelector:@selector(openURL:withParams:) withObject:url withObject:@{@"TAThirdPartyManager":@{@1:[NSNumber numberWithInteger:type],@2:self,@3:customMap}}];
+        }
     }
+    
 #endif
 }
 
