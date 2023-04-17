@@ -565,6 +565,8 @@ static dispatch_queue_t td_trackQueue;
     event.isEnabled = self.isEnabled;
     event.trackPause = self.isTrackPause;
     event.isOptOut = self.isOptOut;
+    event.accountId = self.accountId;
+    event.distinctId = self.identifyId;
     
     event.dynamicSuperProperties = [self.superProperty obtainDynamicSuperProperties];
     dispatch_async(td_trackQueue, ^{
@@ -577,7 +579,9 @@ static dispatch_queue_t td_trackQueue;
     event.isEnabled = self.isEnabled;
     event.trackPause = self.isTrackPause;
     event.isOptOut = self.isOptOut;
-    
+    event.accountId = self.accountId;
+    event.distinctId = self.identifyId;
+        
     dispatch_async(td_trackQueue, ^{
         [self trackUserEvent:event properties:properties isH5:NO];
     });
@@ -731,6 +735,7 @@ static dispatch_queue_t td_trackQueue;
     if ([self hasDisabled]) {
         return;
     }
+    
     dispatch_async(td_trackQueue, ^{
         [self.superProperty registerSuperProperties:properties];
     });
@@ -853,11 +858,6 @@ static dispatch_queue_t td_trackQueue;
 //MARK: -
 
 - (void)configBaseEvent:(TABaseEvent *)event isH5:(BOOL)isH5 {
-    
-    
-    
-    event.accountId = self.accountId;
-    event.distinctId = self.getDistinctId;
     
     if (event.timeZone == nil) {
         event.timeZone = self.config.defaultTimeZone;
@@ -1131,7 +1131,8 @@ static dispatch_queue_t td_trackQueue;
     event.isEnabled = self.isEnabled;
     event.trackPause = self.isTrackPause;
     event.isOptOut = self.isOptOut;
-    
+    event.accountId = self.accountId;
+    event.distinctId = self.identifyId;
     
     event.dynamicSuperProperties = [self.superProperty obtainDynamicSuperProperties];
     dispatch_async(td_trackQueue, ^{

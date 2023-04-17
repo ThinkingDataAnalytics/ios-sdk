@@ -102,7 +102,7 @@ static NSString * const TA_JS_TRACK_SCHEME = @"thinkinganalytics://trackEvent";
 
 
 @property (atomic, assign, getter=isTrackPause) BOOL trackPause;
-@property (nonatomic, assign) BOOL isEnabled;
+@property (atomic, assign) BOOL isEnabled;
 @property (atomic, assign) BOOL isOptOut;
 
 
