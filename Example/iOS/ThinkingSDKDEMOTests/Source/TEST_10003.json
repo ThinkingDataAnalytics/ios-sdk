@@ -1,0 +1,16 @@
+{
+    "plan":1,
+    "platform":1,
+    "platform_description":"iOS",
+    "type":1,
+    "target":1,
+    "target_description":"功能测试",
+    "id":"TEST_10003_1",
+    "name":"验证start方法的正确性",
+    "input":"{\"appid\":\"appid1\",\"serverURL\":\"http://www.server1.com\",\"instanceName\":null}",
+    "output":"",
+    "step":"根据一个实例对象A创建一个轻实例B",
+    "expect":"A和B的appid、url、config一致",
+    "description":"",
+    "result": false
+}

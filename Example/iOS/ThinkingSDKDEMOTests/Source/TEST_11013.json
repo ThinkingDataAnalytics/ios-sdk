@@ -1,0 +1,33 @@
+[
+    {
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_11013_1",
+        "name":"验证设置上传的网络条件的正确性",
+        "input":"{\"eventName\":\"eventName\",\"networkType\":\"WIFI\",\"ableNetworkType\":0}",
+        "output":"",
+        "step":"设置上传的网络条件为wifi，替换getNetWorkStates方法并返回Wifi，再调用track事件和flush方法，验证事件发送情况",
+        "expect":"config对象调用了setNetworkType方法；网络请求对象调用网络请求方法",
+        "description":"",
+        "result":false
+    },{
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_11013_2",
+        "name":"验证设置上传的网络条件的正确性",
+        "input":"{\"eventName\":\"eventName\",\"networkType\":\"4G\",\"ableNetworkType\":1}",
+        "output":"",
+        "step":"设置上传的网络条件为wifi，替换getNetWorkStates方法并返回4G，再调用track事件和flush方法，验证事件发送情况",
+        "expect":"config对象调用了setNetworkType方法；网络请求对象不会调用网络请求方法",
+        "description":"",
+        "result":false
+    }
+]

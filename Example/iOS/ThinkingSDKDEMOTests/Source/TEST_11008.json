@@ -1,0 +1,34 @@
+[
+    {
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_11008_1",
+        "name":"验证设置静态公共属性正确性",
+        "input":"{\"eventName\":\"eventName\",\"superProperties\":{\"superkey1\":\"supervalue1\",\"superkey2\":\"supervalue2\",\"superkey3\":\"supervalue3\"}}",
+        "output":"",
+        "step":"传入字典类型的静态公共属性，再调用track方法，验证内部事件对象",
+        "expect":"内部事件对象包含静态公共属性",
+        "description":"",
+        "result":false
+    },
+    {
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_11008_2",
+        "name":"验证设置静态公共属性正确性",
+        "input":"{\"eventName\":\"eventName\",\"superProperties\":{\"superkey1\":\"supervalue1\",\"superkey2\":\"supervalue2\",\"superkey3\":\"supervalue3\"}}",
+        "output":"",
+        "step":"验证静态公共属性的持久化情况",
+        "expect":"调用了持久化方法",
+        "description":"",
+        "result":false
+    }
+]

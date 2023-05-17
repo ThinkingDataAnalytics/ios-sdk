@@ -36,5 +36,3 @@
 #else
 #import "TDDeviceInfo.h"
 #endif
-
-#import "ThinkingAnalyticsCocosAPI.h"

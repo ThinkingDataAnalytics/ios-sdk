@@ -1,0 +1,18 @@
+[
+    {
+        "plan":1,
+        "platform":1,
+        "platform_description":"iOS",
+        "type":1,
+        "target":1,
+        "target_description":"功能测试",
+        "id":"TEST_12005_1",
+        "name":"验证对 Array 类型的用户属性进行追加操作的正确性",
+        "input":"{\"eventName\":\"eventName\",\"type\":\"user_append\",\"userAppendProperties\":{\"user_append1\":[\"name11\",\"name12\"],\"user_append2\":[\"name21\",\"name22\"]}}",
+        "output":"",
+        "step":"传入API，验证内部创建的事件对象",
+        "expect":"#type为user_del; 事件对象中不包含预制属性的",
+        "description":"",
+        "result":false
+    }
+]

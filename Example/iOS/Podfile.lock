@@ -1,0 +1,52 @@
+PODS:
+  - Aspects (1.4.1)
+  - Masonry (1.1.0)
+  - OCMock (3.9.1)
+  - ThinkingSDK (2.8.3):
+    - ThinkingSDK/Main (= 2.8.3)
+  - ThinkingSDK/Base (2.8.3):
+    - ThinkingSDK/Core
+    - ThinkingSDK/Extension
+    - ThinkingSDK/Util
+  - ThinkingSDK/Core (2.8.3)
+  - ThinkingSDK/Extension (2.8.3):
+    - ThinkingSDK/Core
+  - ThinkingSDK/iOS (2.8.3):
+    - ThinkingSDK/Base
+  - ThinkingSDK/Main (2.8.3):
+    - ThinkingSDK/iOS
+    - ThinkingSDK/OSX
+  - ThinkingSDK/Util (2.8.3):
+    - ThinkingSDK/Core
+  - YYKit (1.0.9):
+    - YYKit/no-arc (= 1.0.9)
+  - YYKit/no-arc (1.0.9)
+
+DEPENDENCIES:
+  - Aspects
+  - Masonry
+  - OCMock
+  - ThinkingSDK (from `../../`)
+  - YYKit
+
+SPEC REPOS:
+  trunk:
+    - Aspects
+    - Masonry
+    - OCMock
+    - YYKit
+
+EXTERNAL SOURCES:
+  ThinkingSDK:
+    :path: "../../"
+
+SPEC CHECKSUMS:
+  Aspects: 7595ba96a6727a58ebcbfc954497fc5d2fdde546
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  OCMock: 9491e4bec59e0b267d52a9184ff5605995e74be8
+  ThinkingSDK: 572d70d2c4c5cf6abaec8b0eb165e3c19fbb20ab
+  YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
+
+PODFILE CHECKSUM: 8b47f8502e6ae4622106bf067832b162a3ce4681
+
+COCOAPODS: 1.11.3
