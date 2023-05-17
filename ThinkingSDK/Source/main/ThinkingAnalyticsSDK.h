@@ -1,17 +1,5 @@
 #import <Foundation/Foundation.h>
-
-#if TARGET_OS_IOS
 #import <UIKit/UIKit.h>
-
-#if __has_include(<ThinkingSDK/TAAutoTrackPublicHeader.h>)
-#import <ThinkingSDK/TAAutoTrackPublicHeader.h>
-#else
-#import "TAAutoTrackPublicHeader.h"
-#endif
-
-#elif TARGET_OS_OSX
-#import <AppKit/AppKit.h>
-#endif
 
 #if __has_include(<ThinkingSDK/TDFirstEventModel.h>)
 #import <ThinkingSDK/TDFirstEventModel.h>
@@ -39,10 +27,11 @@
 #endif
 
 
+
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- SDK VERSION = 2.8.3.2
+ SDK VERSION = 2.7.3
  ThinkingData API
  
  ## 初始化API
@@ -85,7 +74,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param appid APP ID 或者 instanceName
  @return SDK 实例
  */
-+ (nullable ThinkingAnalyticsSDK *)sharedInstanceWithAppid:(NSString *)appid;
++ (ThinkingAnalyticsSDK *)sharedInstanceWithAppid:(NSString *)appid;
 
 /**
  初始化方法
@@ -153,10 +142,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)track:(NSString *)event properties:(nullable NSDictionary *)propertieDict time:(NSDate *)time timeZone:(NSTimeZone *)timeZone;
 
 - (void)trackWithEventModel:(TDEventModel *)eventModel;
-
-/// 获取在App Extension 中采集的事件，并上报
-/// @param appGroupId 数据共享所需要的 app group id
-- (void)trackFromAppExtensionWithAppGroupId:(NSString *)appGroupId;
 
 #pragma mark -
 
@@ -304,11 +289,6 @@ NS_ASSUME_NONNULL_BEGIN
 */
 - (void)user_append:(NSDictionary<NSString *, NSArray *> *)properties withTime:(NSDate * _Nullable)time;
 
-
-- (void)user_uniqAppend:(NSDictionary<NSString *, NSArray *> *)properties;
-
-- (void)user_uniqAppend:(NSDictionary<NSString *, NSArray *> *)properties withTime:(NSDate * _Nullable)time;
-
 /**
  谨慎调用此接口, 此接口用于使用第三方框架或者游戏引擎的场景中, 更准确的设置上报方式.
  @param libName     对应事件表中 #lib预制属性, 默认为 "iOS".
@@ -363,8 +343,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)setNetworkType:(ThinkingAnalyticsNetworkType)type;
 
-#if TARGET_OS_IOS
-
 /**
  开启自动采集事件功能
 
@@ -383,21 +361,19 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType properties:(NSDictionary *)properties;
 
 /**
- 开启自动采集事件功能
-
- @param eventType 枚举 ThinkingAnalyticsAutoTrackEventType 的列表，表示需要开启的自动采集事件类型
- @param callback 事件回调
- 回调中eventType表示自动采集类型，properties表示入库前的事件属性，该block可返回一个字典，用于新增属性
- */
-- (void)enableAutoTrack:(ThinkingAnalyticsAutoTrackEventType)eventType callback:(NSDictionary *(^)(ThinkingAnalyticsAutoTrackEventType eventType, NSDictionary *properties))callback;
-
-/**
  设置和更新自动采集事件的自定义属性的值
  
  @param eventType 枚举 ThinkingAnalyticsAutoTrackEventType 的列表，表示需要开启的自动采集事件类型
  @param properties 自定义属性
  */
 - (void)setAutoTrackProperties:(ThinkingAnalyticsAutoTrackEventType)eventType properties:(NSDictionary *)properties;
+
+/**
+ 获取设备 ID
+
+ @return 设备 ID
+ */
+- (NSString *)getDeviceId;
 
 /**
  忽略某个页面的自动采集事件
@@ -412,17 +388,6 @@ NS_ASSUME_NONNULL_BEGIN
  @param aClass 忽略的控件 Class
  */
 - (void)ignoreViewType:(Class)aClass;
-
-#endif
-
-//MARK: -
-
-/**
- 获取设备 ID
-
- @return 设备 ID
- */
-- (NSString *)getDeviceId;
 
 /**
  H5 与原生 APP SDK 打通，配合 addWebViewUserAgent 接口使用
@@ -452,31 +417,27 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)flush;
 
-/// 数据上报状态
-/// @param status 数据上报状态
-- (void)setTrackStatus: (TATrackStatus)status;
-
 /**
  暂停/开启上报
 
  @param enabled YES：开启上报 NO：暂停上报
  */
-- (void)enableTracking:(BOOL)enabled DEPRECATED_MSG_ATTRIBUTE("Please use instance method setTrackStatus: TATrackStatusPause");
+- (void)enableTracking:(BOOL)enabled;
 
 /**
  停止上报，后续的上报和设置都无效，数据将清空
  */
-- (void)optOutTracking DEPRECATED_MSG_ATTRIBUTE("Please use instance method setTrackStatus: TATrackStatusStop");
+- (void)optOutTracking;
 
 /**
  停止上报，后续的上报和设置都无效，数据将清空，并且发送 user_del
  */
-- (void)optOutTrackingAndDeleteUser DEPRECATED_MSG_ATTRIBUTE("Please use instance method setTrackStatus: TATrackStatusStop");
+- (void)optOutTrackingAndDeleteUser;
 
 /**
  允许上报
  */
-- (void)optInTracking DEPRECATED_MSG_ATTRIBUTE("Please use instance method setTrackStatus: TATrackStatusNormal");
+- (void)optInTracking;
 
 /**
  创建轻实例
@@ -500,14 +461,136 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)getTimeString:(NSDate *)date;
 
-#if TARGET_OS_IOS
-- (void)enableThirdPartySharing:(TAThirdPartyShareType)type;
+@end
 
-- (void)enableThirdPartySharing:(TAThirdPartyShareType)type customMap:(NSDictionary<NSString *, NSObject *> *)customMap;
-#endif
+#pragma mark - Autotrack View Interface
 
-// 获取系统的国家地区信息
-+ (nullable NSString *)getLocalRegion;
+/**
+ APP 控件点击事件
+ */
+@interface UIView (ThinkingAnalytics)
+
+/**
+设置控件元素 ID
+ */
+@property (copy,nonatomic) NSString *thinkingAnalyticsViewID;
+
+/**
+ 配置 APPID 的控件元素 ID
+ */
+@property (strong,nonatomic) NSDictionary *thinkingAnalyticsViewIDWithAppid;
+
+/**
+ 忽略某个控件的点击事件
+ */
+@property (nonatomic,assign) BOOL thinkingAnalyticsIgnoreView;
+
+/**
+ 配置 APPID 的忽略某个控件的点击事件
+ */
+@property (strong,nonatomic) NSDictionary *thinkingAnalyticsIgnoreViewWithAppid;
+
+/**
+ 自定义控件点击事件的属性
+ */
+@property (strong,nonatomic) NSDictionary *thinkingAnalyticsViewProperties;
+
+/**
+ 配置 APPID 的自定义控件点击事件的属性
+ */
+@property (strong,nonatomic) NSDictionary *thinkingAnalyticsViewPropertiesWithAppid;
+
+/**
+ thinkingAnalyticsDelegate
+ */
+@property (nonatomic, weak, nullable) id thinkingAnalyticsDelegate;
+
+@end
+
+#pragma mark - Autotrack View Protocol
+
+/**
+ 自动埋点设置属性
+ */
+@protocol TDUIViewAutoTrackDelegate
+
+@optional
+
+/**
+ UITableView 事件属性
+
+ @return 事件属性
+ */
+- (NSDictionary *)thinkingAnalytics_tableView:(UITableView *)tableView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
+
+/**
+ APPID UITableView 事件属性
+ 
+ @return 事件属性
+ */
+- (NSDictionary *)thinkingAnalyticsWithAppid_tableView:(UITableView *)tableView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
+
+@optional
+
+/**
+ UICollectionView 事件属性
+
+ @return 事件属性
+ */
+- (NSDictionary *)thinkingAnalytics_collectionView:(UICollectionView *)collectionView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
+
+/**
+ APPID UICollectionView 事件属性
+
+ @return 事件属性
+ */
+- (NSDictionary *)thinkingAnalyticsWithAppid_collectionView:(UICollectionView *)collectionView autoTrackPropertiesAtIndexPath:(NSIndexPath *)indexPath;
+
+@end
+
+/**
+ 页面自动埋点
+ */
+@protocol TDAutoTracker
+
+@optional
+
+/**
+ 自定义页面浏览事件的属性
+
+ @return 事件属性
+ */
+- (NSDictionary *)getTrackProperties;
+
+/**
+ 配置 APPID 自定义页面浏览事件的属性
+
+ @return 事件属性
+ */
+- (NSDictionary *)getTrackPropertiesWithAppid;
+
+@end
+
+/**
+ 页面自动埋点
+ */
+@protocol TDScreenAutoTracker <TDAutoTracker>
+
+@optional
+
+/**
+ 自定义页面浏览事件的属性
+
+ @return 预置属性 #url 的值
+ */
+- (NSString *)getScreenUrl;
+
+/**
+ 配置 APPID 自定义页面浏览事件的属性
+
+ @return 预置属性 #url 的值
+ */
+- (NSDictionary *)getScreenUrlWithAppid;
 
 @end
 
