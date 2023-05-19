@@ -2,7 +2,7 @@
 //  TABaseEvent+H5.h
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/19.
+//  Created by Yangxiongon 2022/6/19.
 //
 
 #import "TABaseEvent.h"

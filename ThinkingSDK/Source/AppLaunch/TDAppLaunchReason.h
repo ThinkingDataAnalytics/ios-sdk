@@ -4,17 +4,27 @@
 //
 //  Created by wwango on 2021/11/17.
 //  Copyright © 2021 thinkingdata. All rights reserved.
-//  用来收集link、推送、3dtouch下的启动原因
+
 
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
+
+static NSDictionary *appPushClickDic;
 
 @interface TDAppLaunchReason : NSObject
 
 @property(nonatomic, copy) NSDictionary *appLaunchParams;
 
 + (TDAppLaunchReason *)sharedInstance;
+
+- (void)clearAppLaunchParams;
+
++ (void)td_ops_push_click:(NSDictionary *)userInfo;
+
++ (NSDictionary*)getAppPushDic;
+
++ (void)clearAppPushParams;
 
 @end
 

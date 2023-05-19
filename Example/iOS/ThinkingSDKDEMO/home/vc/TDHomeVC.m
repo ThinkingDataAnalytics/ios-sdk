@@ -3,7 +3,7 @@
 //  ThinkingSDKDEMO
 //
 //  Created by syj on 2019/6/24.
-//  Copyright © 2019年 thinking. All rights reserved.
+//  Copyright © 2019 thinking. All rights reserved.
 //
 
 #import "TDHomeVC.h"
@@ -38,7 +38,7 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
     [super viewDidLoad];
     NSString *homePath = NSHomeDirectory();
     
-    NSLog(@"Home目录：%@",homePath);
+    NSLog(@"Home Directory：%@",homePath);
     
 //    dispatch_async(dispatch_get_global_queue(0, 0), ^{
 //        NSLog(@"##########2222");
@@ -67,33 +67,33 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
 //    [ThinkingAnalyticsSDK startWithAppId:@"7a055a4bd7ec423fa5294b4a2c1eff28" withUrl:@"https://receiver-ta-dev.thinkingdata.cn"];
 //    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     self.commands = [NSMutableArray array];
-    ActionModel *userModel =[[ActionModel alloc] initWithName:@"用户属性" action:^{
+    ActionModel *userModel =[[ActionModel alloc] initWithName:@"user property" action:^{
         TDUserVC *VC = [TDUserVC new];
         [[TDUtil jsd_findVisibleViewController].navigationController pushViewController:VC animated:YES];
     }];
-    ActionModel *trackModel = [[ActionModel alloc] initWithName:@"发送事件" action:^{
+    ActionModel *trackModel = [[ActionModel alloc] initWithName:@"track event" action:^{
         TDEventVC *VC = [TDEventVC new];
         [[TDUtil jsd_findVisibleViewController].navigationController pushViewController:VC animated:YES];
     }];
-    ActionModel *otherModel = [[ActionModel alloc] initWithName:@"其他API" action:^{
+    ActionModel *otherModel = [[ActionModel alloc] initWithName:@"other API" action:^{
         TDOtherVC *VC = [TDOtherVC new];
         [[TDUtil jsd_findVisibleViewController].navigationController pushViewController:VC animated:YES];
     }];
-    ActionModel *userIDModel =[[ActionModel alloc] initWithName:@"设置访客ID" action:^{
+    ActionModel *userIDModel =[[ActionModel alloc] initWithName:@"set distinct ID" action:^{
         TDUserIDVC *VC = [TDUserIDVC new];
         [[TDUtil jsd_findVisibleViewController].navigationController pushViewController:VC animated:YES];
     }];
-    ActionModel *autoModel =[[ActionModel alloc] initWithName:@"自动埋点" action:^{
+    ActionModel *autoModel =[[ActionModel alloc] initWithName:@"auto-tracking" action:^{
         TDAutoTrackVC *VC = [TDAutoTrackVC new];
         [[TDUtil jsd_findVisibleViewController].navigationController pushViewController:VC animated:YES];
     }];
-    ActionModel *h5Model =[[ActionModel alloc] initWithName:@"H5页面埋点" action:^{
+    ActionModel *h5Model =[[ActionModel alloc] initWithName:@"H5 auto-tracking of Page" action:^{
         TDH5VC *VC = [TDH5VC new];
         [[TDUtil jsd_findVisibleViewController].navigationController pushViewController:VC animated:YES];
     }];
     
     __weak typeof(self) weakSelf = self;
-    ActionModel *initModel = [[ActionModel alloc] initWithName:@"初始化" action:^{
+    ActionModel *initModel = [[ActionModel alloc] initWithName:@"initialization" action:^{
         TDInitVC *VC = [TDInitVC new];
         VC.callback = ^{
             [weakSelf.commands removeAllObjects];
@@ -310,12 +310,7 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
 //    [optionArray addObject:[[ActionModel alloc]initWithName:@"optInTracking" action:^{
 //        [ThinkingSDKAPI optInTracking];
 //    }]];
-//    [optionArray addObject:[[ActionModel alloc]initWithName:@"More (AutoTrack,h5,轻实例...)" action:^{
-//        TDHomeVC *cmdController = [TDHomeVC new];
-////        cmdController.getTitleBlock = ^NSString * (__unused UIViewController *controllerInner)
-////        {
-////            return @"AutoTrack";
-////        };
+//
 //        [[TDSDKDemoUtil jsd_findVisibleViewController].navigationController pushViewController:cmdController animated:YES];
 //    }]];
     
@@ -423,19 +418,7 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
     //          [ThinkingSDKAPI optInTracking];
     //      }]];
     //
-    //    [optionArray addObject:
-    //     [APIEntry commandWithName:@"More (AutoTrack,h5,轻实例...)"
-    //                 accessoryType:UITableViewCellAccessoryNone
-    //                         block:^(UIViewController *controller)
-    //      {
-    //          TrackAPIViewController *cmdController = [self trackAPIVCWithApis:[self autoTrackAPIs]];
-    //          cmdController.getTitleBlock = ^NSString * (__unused UIViewController *controllerInner)
-    //          {
-    //              return @"AutoTrack";
-    //          };
-    //          [controller.navigationController pushViewController:cmdController animated:YES];
-    //      }]];
-    
+
 //    [self.commands addObject:trackArray];
 //    [self.commands addObject:userArray];
 //    [self.commands addObject:optionArray];

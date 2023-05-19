@@ -7,6 +7,7 @@
 
 #import "TDPresetProperties+TDDisProperties.h"
 
+static BOOL _td_disableOpsReceiptProperties;
 static BOOL _td_disableStartReason;
 static BOOL _td_disableDisk;
 static BOOL _td_disableRAM;
@@ -27,6 +28,8 @@ static BOOL _td_disableBundleId;
 static BOOL _td_disableOs;
 static BOOL _td_disableInstallTime;
 static BOOL _td_disableDeviceType;
+static BOOL _td_disableSessionID;
+static BOOL _td_disableCalibratedTime;
 
 static BOOL _td_disableNetworkType;
 static BOOL _td_disableZoneOffset;
@@ -44,6 +47,9 @@ static BOOL _td_disableTitle;
 static BOOL _td_disableUrl;
 static BOOL _td_disableReferrer;
 
+
+// 推送事件名
+static const NSString *kTDPushInfo  = @"ops_push_click";
 
 // - 禁用功能并过滤字段拼接
 static const NSString *kTDStartReason  = @"#start_reason";
@@ -66,6 +72,9 @@ static const NSString *kTDPresentOs  = @"#os";
 static const NSString *kTDPresentBundleId  = @"#bundle_id";
 static const NSString *kTDPresentInstallTime  = @"#install_time";
 static const NSString *kTDPresentDeviceType = @"#device_type";
+static const NSString *kTDPresentSessionID  = @"#session_id";
+static const NSString *kTDPresentCalibratedTime = @"#time_calibration";
+
 
 // - 只过滤字段
 static const NSString *kTDPresentNETWORKTYPE = @"#network_type";
@@ -83,6 +92,7 @@ static const NSString *kTDPresentSCREENNAME = @"#screen_name";
 static const NSString *kTDPresentTITLE = @"#title";
 static const NSString *kTDPresentURL = @"#url";
 static const NSString *kTDPresentREFERRER = @"#referrer";
+static const NSString *kTDPresentOpsReceiptProperties = @"ops_receipt_properties";
 
 
 
@@ -90,13 +100,21 @@ static const NSString *kTDPresentREFERRER = @"#referrer";
 
 @implementation TDPresetProperties (TDDisProperties)
 
-static NSArray *__td_disPresetProperties;
+static NSMutableArray *__td_disPresetProperties;
 
 + (NSArray*)disPresetProperties {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        __td_disPresetProperties = (NSArray *)[[[NSBundle mainBundle] infoDictionary] objectForKey:TD_MAIM_INFO_PLIST_DISPRESTPRO_KEY];
-        if (__td_disPresetProperties && __td_disPresetProperties.count) {
+        
+        NSArray *disPresetProperties = (NSArray *)[[[NSBundle mainBundle] infoDictionary] objectForKey:TD_MAIM_INFO_PLIST_DISPRESTPRO_KEY];
+
+        if (disPresetProperties && disPresetProperties.count) {
+            __td_disPresetProperties = [NSMutableArray arrayWithArray:disPresetProperties];
+            
+            if ([__td_disPresetProperties containsObject:kTDPresentZONEOFFSET]) {
+                [__td_disPresetProperties removeObject:kTDPresentZONEOFFSET];
+            }
+
             _td_disableStartReason = [__td_disPresetProperties containsObject:kTDStartReason];
             _td_disableDisk        = [__td_disPresetProperties containsObject:kTDPerformanceDISK];
             _td_disableRAM         = [__td_disPresetProperties containsObject:kTDPerformanceRAM];
@@ -118,6 +136,11 @@ static NSArray *__td_disPresetProperties;
             _td_disableOs = [__td_disPresetProperties containsObject:kTDPresentOs];
             _td_disableInstallTime = [__td_disPresetProperties containsObject:kTDPresentInstallTime];
             _td_disableDeviceType = [__td_disPresetProperties containsObject:kTDPresentDeviceType];
+            //_td_disableSessionID = [__td_disPresetProperties containsObject:kTDPresentSessionID];
+            //_td_disableCalibratedTime = [__td_disPresetProperties containsObject:kTDPresentCalibratedTime];
+            _td_disableSessionID = YES;
+            _td_disableCalibratedTime = YES;
+
             
             _td_disableNetworkType = [__td_disPresetProperties containsObject:kTDPresentNETWORKTYPE];
             _td_disableZoneOffset = [__td_disPresetProperties containsObject:kTDPresentZONEOFFSET];
@@ -134,6 +157,8 @@ static NSArray *__td_disPresetProperties;
             _td_disableTitle = [__td_disPresetProperties containsObject:kTDPresentTITLE];
             _td_disableUrl = [__td_disPresetProperties containsObject:kTDPresentURL];
             _td_disableReferrer = [__td_disPresetProperties containsObject:kTDPresentREFERRER];
+            _td_disableOpsReceiptProperties = [__td_disPresetProperties containsObject:kTDPresentOpsReceiptProperties];
+            
             
         }
     });
@@ -158,6 +183,10 @@ static NSArray *__td_disPresetProperties;
     return ;
 }
 
+
++ (BOOL)disableOpsReceiptProperties {
+    return  _td_disableOpsReceiptProperties;
+}
 
 + (BOOL)disableStartReason {
     return _td_disableStartReason;
@@ -300,6 +329,14 @@ static NSArray *__td_disPresetProperties;
 
 + (BOOL)disableReferrer {
     return _td_disableReferrer;
+}
+
++ (BOOL)disableSessionID {
+    return _td_disableSessionID;
+}
+
++ (BOOL)disableCalibratedTime {
+    return _td_disableCalibratedTime;
 }
 
 @end

@@ -14,7 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)td_trim;
 
-/// 格式化 url string
 - (NSString * _Nullable)ta_formatUrlString;
 
 @end

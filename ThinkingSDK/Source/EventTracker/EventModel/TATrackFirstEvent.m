@@ -2,7 +2,7 @@
 //  TATrackFirstEvent.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/12.
+//  Created by Yangxiongon 2022/6/12.
 //
 
 #import "TATrackFirstEvent.h"
@@ -34,7 +34,6 @@
 - (NSMutableDictionary *)jsonObject {
     NSMutableDictionary *dict = [super jsonObject];
     
-    // 首次事件，默认firstCheckId为设备id
     dict[@"#first_check_id"] = self.firstCheckId ?: [TDDeviceInfo sharedManager].deviceId;
     
     return dict;

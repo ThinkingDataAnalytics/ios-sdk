@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -713,11 +714,11 @@
                                 <rect key="frame" x="30" y="0.0" width="643" height="346"/>
                                 <subviews>
                                     <stackView distribution="equalSpacing" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OQX-Im-ZBs">
-                                        <rect key="frame" x="0.0" y="23" width="135" height="300"/>
+                                        <rect key="frame" x="0.0" y="23" width="102" height="300"/>
                                         <subviews>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pYl-Kt-Y8o">
-                                                <rect key="frame" x="0.0" y="281" width="74" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="初始化SDK" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="cch-8X-u2O">
+                                                <rect key="frame" x="0.0" y="281" width="58" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="init SDK" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="cch-8X-u2O">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
                                                 </buttonCell>
@@ -725,9 +726,19 @@
                                                     <action selector="thinkingAnalysticsSDKInit:" target="XfG-lQ-9wD" id="PXa-CP-fgf"/>
                                                 </connections>
                                             </button>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="b8b-ap-hGO">
+                                                <rect key="frame" x="0.0" y="250" width="63" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="input json" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="BUr-Wq-XhQ">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" size="12" name="STSongti-SC-Regular"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="thinkingAnalysticsInput:" target="XfG-lQ-9wD" id="LMD-0e-3G8"/>
+                                                </connections>
+                                            </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="A3g-sq-axb">
-                                                <rect key="frame" x="0.0" y="246" width="62" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="时间校准" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="psu-0T-Zyx">
+                                                <rect key="frame" x="0.0" y="218" width="39" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="time " bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="psu-0T-Zyx">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
                                                 </buttonCell>
@@ -736,8 +747,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Db9-RG-PHJ">
-                                                <rect key="frame" x="0.0" y="211" width="69" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="track事件" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="mC3-mR-r7n">
+                                                <rect key="frame" x="0.0" y="187" width="43" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="track" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="mC3-mR-r7n">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="cellTitle"/>
                                                 </buttonCell>
@@ -746,8 +757,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vjv-Je-Pek">
-                                                <rect key="frame" x="0.0" y="175" width="131" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="track携带自定义属性" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="BUe-ZC-leF">
+                                                <rect key="frame" x="0.0" y="156" width="99" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="track+property" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="BUe-ZC-leF">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="cellTitle"/>
                                                 </buttonCell>
@@ -756,8 +767,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2oE-GL-w9w">
-                                                <rect key="frame" x="0.0" y="140" width="132" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="track 传入自定义时间" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ZxN-Lf-ZQd">
+                                                <rect key="frame" x="0.0" y="124" width="75" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="track+time" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ZxN-Lf-ZQd">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="cellTitle"/>
                                                 </buttonCell>
@@ -766,8 +777,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="n3p-FP-nRV">
-                                                <rect key="frame" x="0.0" y="105" width="135" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="记录事件时长，并track" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="6LB-Kq-vcH">
+                                                <rect key="frame" x="0.0" y="93" width="65" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="time event" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="6LB-Kq-vcH">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
                                                 </buttonCell>
@@ -776,8 +787,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tFK-YD-p7E">
-                                                <rect key="frame" x="0.0" y="70" width="64" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="首次事件" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="DrK-Yx-68f">
+                                                <rect key="frame" x="0.0" y="62" width="71" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="first event" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="DrK-Yx-68f">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="cellTitle"/>
                                                 </buttonCell>
@@ -786,8 +797,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xD9-Gk-Mgr">
-                                                <rect key="frame" x="0.0" y="34" width="76" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="可更新事件" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Hto-mD-2gE">
+                                                <rect key="frame" x="0.0" y="30" width="89" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="update event" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Hto-mD-2gE">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="cellTitle"/>
                                                 </buttonCell>
@@ -796,8 +807,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2h7-uE-sVk">
-                                                <rect key="frame" x="0.0" y="-1" width="76" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="可重写事件" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wxE-qk-fnm">
+                                                <rect key="frame" x="0.0" y="-1" width="102" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="overwrite event" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wxE-qk-fnm">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="cellTitle"/>
                                                 </buttonCell>
@@ -819,8 +830,10 @@
                                             <integer value="1000"/>
                                             <integer value="1000"/>
                                             <integer value="1000"/>
+                                            <integer value="1000"/>
                                         </visibilityPriorities>
                                         <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
                                             <real value="3.4028234663852886e+38"/>
                                             <real value="3.4028234663852886e+38"/>
                                             <real value="3.4028234663852886e+38"/>
@@ -833,11 +846,11 @@
                                         </customSpacing>
                                     </stackView>
                                     <stackView distribution="equalSpacing" orientation="vertical" alignment="leading" spacing="14" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yc8-BG-Ih4">
-                                        <rect key="frame" x="226" y="23" width="210" height="300"/>
+                                        <rect key="frame" x="188" y="23" width="253" height="300"/>
                                         <subviews>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="82Q-bi-HVH">
-                                                <rect key="frame" x="0.0" y="281" width="210" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="停止上报，并删除用户在TA系统数据" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fLq-fL-aj1">
+                                                <rect key="frame" x="0.0" y="281" width="253" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="Stop reporting and delete user data in TA system" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fLq-fL-aj1">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
                                                 </buttonCell>
@@ -846,8 +859,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KMn-gL-Rp2">
-                                                <rect key="frame" x="0.0" y="241" width="62" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="停止上报" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="MKW-oZ-FA1">
+                                                <rect key="frame" x="0.0" y="241" width="84" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="stop reporting" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="MKW-oZ-FA1">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
                                                 </buttonCell>
@@ -856,8 +869,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JGw-SV-MUg">
-                                                <rect key="frame" x="0.0" y="200" width="62" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="暂停上报" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="i36-Ns-14s">
+                                                <rect key="frame" x="0.0" y="200" width="103" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="Suspend reporting" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="i36-Ns-14s">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
                                                 </buttonCell>
@@ -866,8 +879,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="idA-To-xOf">
-                                                <rect key="frame" x="0.0" y="160" width="62" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="开启上报" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="iaR-Fo-KFc">
+                                                <rect key="frame" x="0.0" y="160" width="38" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="flush" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="iaR-Fo-KFc">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
                                                 </buttonCell>
@@ -876,8 +889,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cQF-dN-RyF">
-                                                <rect key="frame" x="0.0" y="120" width="110" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="设置动态公共属性" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="rMe-it-IXb">
+                                                <rect key="frame" x="0.0" y="120" width="129" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="set dyld public property" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="rMe-it-IXb">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
                                                 </buttonCell>
@@ -886,8 +899,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nfF-PU-ELh">
-                                                <rect key="frame" x="0.0" y="80" width="88" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="设置公共属性" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="lEY-Hj-jtr">
+                                                <rect key="frame" x="0.0" y="80" width="156" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="set static public property" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="lEY-Hj-jtr">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="cellTitle"/>
                                                 </buttonCell>
@@ -896,8 +909,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fV3-2u-pTo">
-                                                <rect key="frame" x="0.0" y="39" width="110" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="清除所有公共属性" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="mnw-A3-Tv5">
+                                                <rect key="frame" x="0.0" y="39" width="161" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="clear all static public property" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="mnw-A3-Tv5">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
                                                 </buttonCell>
@@ -906,8 +919,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nuc-QV-AbU">
-                                                <rect key="frame" x="0.0" y="-1" width="110" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="清除指定公共属性" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="O6K-ia-EcU">
+                                                <rect key="frame" x="0.0" y="-1" width="162" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="clear one static super property" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="O6K-ia-EcU">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
                                                 </buttonCell>
@@ -941,8 +954,8 @@
                                         <rect key="frame" x="526" y="23" width="117" height="300"/>
                                         <subviews>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ROG-t9-IQk">
-                                                <rect key="frame" x="0.0" y="281" width="62" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="用户登录" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3vQ-ol-bDC">
+                                                <rect key="frame" x="0.0" y="281" width="39" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="login" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3vQ-ol-bDC">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
                                                 </buttonCell>
@@ -951,8 +964,8 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZKF-QZ-PNo">
-                                                <rect key="frame" x="0.0" y="246" width="62" height="19"/>
-                                                <buttonCell key="cell" type="roundRect" title="用户登出" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="8Ln-zR-MHg">
+                                                <rect key="frame" x="0.0" y="250" width="46" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="logout" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="8Ln-zR-MHg">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
                                                 </buttonCell>
@@ -960,8 +973,18 @@
                                                     <action selector="logout:" target="XfG-lQ-9wD" id="HCJ-qn-9cr"/>
                                                 </connections>
                                             </button>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KJH-5w-qLi">
+                                                <rect key="frame" x="0.0" y="218" width="56" height="19"/>
+                                                <buttonCell key="cell" type="roundRect" title="distincid" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WYb-TK-ZXq">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" size="12" name="STSongti-SC-Regular"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="distinciddd:" target="XfG-lQ-9wD" id="zDC-YD-O2t"/>
+                                                </connections>
+                                            </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ck4-UQ-Ubg">
-                                                <rect key="frame" x="0.0" y="211" width="59" height="19"/>
+                                                <rect key="frame" x="0.0" y="187" width="59" height="19"/>
                                                 <buttonCell key="cell" type="roundRect" title="user_add" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YEo-uw-blJ">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
@@ -971,7 +994,7 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E9B-Zp-Pf0">
-                                                <rect key="frame" x="0.0" y="175" width="55" height="19"/>
+                                                <rect key="frame" x="0.0" y="156" width="55" height="19"/>
                                                 <buttonCell key="cell" type="roundRect" title="user_del" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WrO-4w-Shp">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
@@ -981,7 +1004,7 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="n2h-ev-2Wa">
-                                                <rect key="frame" x="0.0" y="140" width="117" height="19"/>
+                                                <rect key="frame" x="0.0" y="124" width="117" height="19"/>
                                                 <buttonCell key="cell" type="roundRect" title="user_unique_append" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hXG-6u-R8l">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
@@ -991,7 +1014,7 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0yc-ZY-gro">
-                                                <rect key="frame" x="0.0" y="105" width="77" height="19"/>
+                                                <rect key="frame" x="0.0" y="93" width="77" height="19"/>
                                                 <buttonCell key="cell" type="roundRect" title="user_append" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="mdV-KM-qbd">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
@@ -1001,7 +1024,7 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6L2-RJ-z8j">
-                                                <rect key="frame" x="0.0" y="70" width="68" height="19"/>
+                                                <rect key="frame" x="0.0" y="62" width="68" height="19"/>
                                                 <buttonCell key="cell" type="roundRect" title="user_unSet" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XpL-4Q-gUH">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
@@ -1011,7 +1034,7 @@
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3B7-nQ-sLz">
-                                                <rect key="frame" x="0.0" y="34" width="80" height="19"/>
+                                                <rect key="frame" x="0.0" y="30" width="80" height="19"/>
                                                 <buttonCell key="cell" type="roundRect" title="user_setOnce" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="0Iy-eh-02x">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
@@ -1041,8 +1064,10 @@
                                             <integer value="1000"/>
                                             <integer value="1000"/>
                                             <integer value="1000"/>
+                                            <integer value="1000"/>
                                         </visibilityPriorities>
                                         <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
                                             <real value="3.4028234663852886e+38"/>
                                             <real value="3.4028234663852886e+38"/>
                                             <real value="3.4028234663852886e+38"/>
@@ -1081,7 +1106,7 @@
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="397" y="768"/>
+            <point key="canvasLocation" x="512" y="841"/>
         </scene>
     </scenes>
 </document>

@@ -2,7 +2,7 @@
 //  TATrackOverwriteEvent.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/12.
+//  Created by Yangxiongon 2022/6/12.
 //
 
 #import "TATrackOverwriteEvent.h"

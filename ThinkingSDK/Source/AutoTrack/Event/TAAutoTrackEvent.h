@@ -2,7 +2,7 @@
 //  TAAutoTrackEvent.h
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/15.
+//  Created by Yangxiongon 2022/6/15.
 //
 
 #import "TATrackEvent.h"
@@ -12,13 +12,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TAAutoTrackEvent : TATrackEvent
 
-/// 用于记录自动采集事件的动态公共属性，动态公共属性需要在事件发生的当前线程获取
+/// It is used to record the dynamic public properties of automatic collection events. The dynamic public properties need to be obtained in the current thread where the event occurs
 @property (nonatomic, strong) NSDictionary *autoDynamicSuperProperties;
 
-/// 用于记录自动采集事件的静态公共属性
+/// Static public property for logging autocollection events
 @property (nonatomic, strong) NSDictionary *autoSuperProperties;
 
-/// 返回自动采集类型
+/// Returns the automatic collection type
 - (ThinkingAnalyticsAutoTrackEventType)autoTrackEventType;
 
 @end

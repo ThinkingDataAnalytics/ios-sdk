@@ -35,7 +35,6 @@ TDFPSMonitor *fpsMonitor;
 
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
     
-    // 内存
     if (![TDAPMPresetProperty disableRAM]) {
         NSString *ram = [NSString stringWithFormat:@"%.1f/%.1f",
                          [TDPerformance td_pm_func_getFreeMemory]*1.0/TD_PM_UNIT_GB,
@@ -45,7 +44,6 @@ TDFPSMonitor *fpsMonitor;
         }
     }
     
-    // 磁盘
     if (![TDAPMPresetProperty disableDisk]) {
         NSString *disk = [NSString stringWithFormat:@"%.1f/%.1f",
                           [TDPerformance td_get_disk_free_size]*1.0/TD_PM_UNIT_GB,
@@ -55,7 +53,6 @@ TDFPSMonitor *fpsMonitor;
         }
     }
     
-    // 是否是模拟器
     if (![TDAPMPresetProperty disableSimulator]) {
         
 #ifdef TARGET_OS_IPHONE
@@ -71,7 +68,6 @@ TDFPSMonitor *fpsMonitor;
 #endif
     }
     
-    // 是否开启FPS
     if (![TDAPMPresetProperty disableFPS]) {
         if (!fpsMonitor) {
             fpsMonitor = [[TDFPSMonitor alloc] init];
@@ -86,7 +82,6 @@ TDFPSMonitor *fpsMonitor;
 
 #pragma mark - memory
 
-//返回memory空闲值，单位为Byte
 + (int64_t)td_pm_func_getFreeMemory {
     size_t length = 0;
     int mib[6] = {0};
@@ -109,7 +104,6 @@ TDFPSMonitor *fpsMonitor;
     return freeMem + inactiveMem;
 }
 
-//获取memory总大小，单位Byte
 + (int64_t)td_pm_func_getRamSize{
     int mib[2];
     size_t length = 0;

@@ -2,7 +2,7 @@
 //  TAAutoTrackEvent.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/15.
+//  Created by Yangxiongon 2022/6/15.
 //
 
 #import "TAAutoTrackEvent.h"
@@ -13,9 +13,9 @@
 
 - (NSMutableDictionary *)jsonObject {
     NSMutableDictionary *dict = [super jsonObject];    
-    // 重新处理自动采集事件的时长，主要有 app_start， app_end
-    // app_start app_end 事件是自动采集管理类采集到的。存在以下问题：自动采集管理类 和 timeTracker事件时长管理类 都是通过监听appLifeCycle的通知来做出处理，所以不在一个精确的统一的时间点。会存在有微小误差，需要消除。
-    // 测试下来，误差都小于0.01s.
+    // Reprocess the duration of automatic collection events, mainly app_start, app_end
+    // app_start app_end events are collected by the automatic collection management class. There are the following problems: the automatic collection management class and the timeTracker event duration management class are processed by listening to appLifeCycle notifications, so they are not at a precise and unified time point. There will be small errors that need to be eliminated.
+    // After testing, the error is less than 0.01s.
     CGFloat minDuration = 0.01;
     if (![TDPresetProperties disableDuration]) {
         if (self.foregroundDuration > minDuration) {
@@ -31,7 +31,6 @@
     return dict;
 }
 
-/// 根据eventName返回自动采集类型
 - (ThinkingAnalyticsAutoTrackEventType)autoTrackEventType {
     if ([self.eventName isEqualToString:TD_APP_START_EVENT]) {
         return ThinkingAnalyticsEventTypeAppStart;

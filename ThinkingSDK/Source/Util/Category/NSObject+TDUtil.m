@@ -92,7 +92,6 @@ return [value isKindOfClass:[foundationClass class]]; \
     
     if ([target respondsToSelector:selector]) {
         
-        //获取方法签名
         NSMethodSignature *signature = [target methodSignatureForSelector:selector];
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
         [invocation setTarget:target];
@@ -179,6 +178,7 @@ return [value isKindOfClass:[foundationClass class]]; \
         return returnObject;
     }
     
+    return nil;
 }
 
 

@@ -14,6 +14,7 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "TDFile.h"
 #import "TDPresetProperties+TDDisProperties.h"
+#import <sys/sysctl.h>
 
 #define kTDDyldPropertyNames @[@"TDPerformance"]
 #define kTDGetPropertySelName @"getPresetProperties"
@@ -30,7 +31,7 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
 @interface TDDeviceInfo ()
 
 @property (nonatomic, readwrite) BOOL isFirstOpen;
-@property (nonatomic, strong) NSDictionary *automaticData;
+@property (atomic, strong) NSDictionary *automaticData;
 
 @end
 
@@ -59,8 +60,8 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
         self.libVersion = TDPublicConfig.version;
         
         NSDictionary *deviceInfo = [self getDeviceUniqueId];
-        _uniqueId = [deviceInfo objectForKey:@"uniqueId"];// 默认访客ID
-        _deviceId = [deviceInfo objectForKey:@"deviceId"];// 默认设备id
+        _uniqueId = [deviceInfo objectForKey:@"uniqueId"];
+        _deviceId = [deviceInfo objectForKey:@"deviceId"];
         _appVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
         
         _automaticData = [self td_collectProperties];
@@ -96,7 +97,6 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
         NSString *carrierName = @"";
     #ifdef __IPHONE_12_0
             if (@available(iOS 12.1, *)) {
-                // 双卡双待的情况
                 NSArray *carrierKeysArray = [__td_TelephonyNetworkInfo.serviceSubscriberCellularProviders.allKeys sortedArrayUsingSelector:@selector(compare:)];
                 carrier = __td_TelephonyNetworkInfo.serviceSubscriberCellularProviders[carrierKeysArray.firstObject];
                 if (!carrier.mobileNetworkCode) {
@@ -109,8 +109,8 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
             carrier = [__td_TelephonyNetworkInfo subscriberCellularProvider];
         }
         
-        // 系统特性，在SIM没有安装的情况下，carrierName也存在有值的情况，这里额外添加MCC和MNC是否有值的判断
-        // MCC、MNC、isoCountryCode在没有安装SIM卡、没在蜂窝服务范围内时候为nil
+        // System characteristics, when the SIM is not installed, the carrierName also has a value, here additionally add the judgment of whether MCC and MNC have values
+        // MCC, MNC, and isoCountryCode are nil when no SIM card is installed and not within the cellular service range
         if (carrier.carrierName &&
             carrier.carrierName.length > 0 &&
             carrier.mobileNetworkCode &&
@@ -121,20 +121,23 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     }
 #endif
     
-    if (![TDPresetProperties disableLib]) {
-        [p setValue:self.libName forKey:@"#lib"];
-    }
     if (![TDPresetProperties disableLibVersion]) {
         [p setValue:self.libVersion forKey:@"#lib_version"];
     }
     if (![TDPresetProperties disableManufacturer]) {
         [p setValue:@"Apple" forKey:@"#manufacturer"];
     }
+   
+
+#if TARGET_OS_IOS
     if (![TDPresetProperties disableDeviceModel]) {
         [p setValue:[self td_iphoneType] forKey:@"#device_model"];
     }
     
-#if TARGET_OS_IOS
+    if (![TDPresetProperties disableLib]) {
+        [p setValue:self.libName forKey:@"#lib"];
+    }
+    
     if (![TDPresetProperties disableOs]) {
         [p setValue:@"iOS" forKey:@"#os"];
     }
@@ -151,7 +154,6 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
         [p setValue:@((NSInteger)size.height) forKey:@"#screen_height"];
     }
     
-#if TARGET_OS_IOS
     if (![TDPresetProperties disableDeviceType]) {
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             [p setValue:@"iPad" forKey:@"#device_type"];
@@ -161,7 +163,12 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     }
 #endif
     
-#elif TARGET_OS_OSX
+#if TARGET_OS_OSX
+    
+    if (![TDPresetProperties disableLib]) {
+        [p setValue:@"Mac OS" forKey:@"#lib"];
+    }
+    
     if (![TDPresetProperties disableOs]) {
         [p setValue:@"OSX" forKey:@"#os"];
     }
@@ -173,13 +180,10 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
 #endif
     if (![TDPresetProperties disableSystemLanguage]) {
         NSString *preferredLanguages = [[NSLocale preferredLanguages] firstObject];
-//        NSString *preferredLanguages1 = [NSLocale currentLocale].languageCode;
-        NSString * retValue = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"] firstObject] copy];
         if (preferredLanguages && preferredLanguages.length > 0) {
             p[@"#system_language"] = [[preferredLanguages componentsSeparatedByString:@"-"] firstObject];;
         }
     }
-    // 添加性能指标
     [p addEntriesFromDictionary:[TDDeviceInfo getAPMParams]];
     
     return [p copy];
@@ -245,22 +249,17 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
 }
 
 
-/// 获取设备id和默认的访客ID
+
 - (NSDictionary *)getDeviceUniqueId {
-    // 获取IDFV
+
     NSString *defaultDistinctId = [self getIdentifier];
-    // 设备ID
     NSString *deviceId;
-    // 默认访客ID
     NSString *uniqueId;
     
     TDKeychainHelper *wrapper = [[TDKeychainHelper alloc] init];
-    
-    // 获取keychain中的设备ID和安装次数
     NSString *deviceIdKeychain = [wrapper readDeviceId];
     NSString *installTimesKeychain = [wrapper readInstallTimes];
     
-    // 获取安装标识
     BOOL isExistFirstRecord = [[[NSUserDefaults standardUserDefaults] objectForKey:@"thinking_isfirst"] boolValue];
     if (!isExistFirstRecord) {
         _isFirstOpen = YES;
@@ -270,14 +269,12 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
         _isFirstOpen = NO;
     }
     
-    // keychain中没有，获取老版本数据
     if (deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
         [wrapper readOldKeychain];
         deviceIdKeychain = [wrapper getDeviceIdOld];
         installTimesKeychain = [wrapper getInstallTimesOld];
     }
     
-    // 检查是否持久化过该TA实例的设备ID、安装次数
     TDFile *file = [[TDFile alloc] initWithAppid:[ThinkingAnalyticsSDK sharedInstance].appid];
     if (deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
         deviceIdKeychain = [file unarchiveDeviceId];
@@ -285,7 +282,6 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     }
     
     if (deviceIdKeychain.length == 0 || installTimesKeychain.length == 0) {
-        // 新设备、新用户
         deviceId = defaultDistinctId;
         installTimesKeychain = @"1";
     } else {
@@ -304,10 +300,7 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     } else {
         uniqueId = [NSString stringWithFormat:@"%@_%@",deviceId,installTimesKeychain];
     }
-    
-    // keychain更新设备ID、安装次数
-    // file存储设备ID、安装次数
-    // uniqueId是访客ID，字符串中包含了安装次数，
+
     [wrapper saveDeviceId:deviceId];
     [wrapper saveInstallTimes:installTimesKeychain];
     [file archiveDeviceId:deviceId];
@@ -463,5 +456,26 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     return NO;
 #endif
 }
+
++ (NSTimeInterval)uptime
+{
+    struct timeval boottime;
+    int mib[2] = {CTL_KERN, KERN_BOOTTIME};
+    size_t size = sizeof(boottime);
+
+    struct timeval now;
+    struct timezone tz;
+    gettimeofday(&now, &tz);
+
+    double uptime = -1;
+
+    if (sysctl(mib, 2, &boottime, &size, NULL, 0) != -1 && boottime.tv_sec != 0)
+    {
+        uptime = now.tv_sec - boottime.tv_sec;
+        uptime += (double)(now.tv_usec - boottime.tv_usec) / 1000000.0;
+    }
+    return uptime;
+}
+
 
 @end

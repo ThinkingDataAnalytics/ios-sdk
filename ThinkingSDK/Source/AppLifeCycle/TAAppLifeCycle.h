@@ -2,41 +2,41 @@
 //  TAAppLifeCycle.h
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/28.
+//  Created by Yangxiongon 2022/6/28.
 //
 
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// SDK 生命周期状态
+/// APP life cycle
 typedef NS_ENUM(NSUInteger, TAAppLifeCycleState) {
-    TAAppLifeCycleStateInit = 1, // 初始状态
+    TAAppLifeCycleStateInit = 1, // init status
     TAAppLifeCycleStateStart,
     TAAppLifeCycleStateEnd,
     TAAppLifeCycleStateTerminate,
 };
 
-/// 当生命周期状态将要改变时，会发送这个通知
-/// object：对象为当前的生命周期对象
-/// userInfo：包含 kTAAppLifeCycleNewStateKey 和 kTAAppLifeCycleOldStateKey 两个 key
+/// When the life cycle status is about to change, this notification will be sent
+/// object: The object is the current life cycle object
+/// userInfo: Contains two keys kTAAppLifeCycleNewStateKey and kTAAppLifeCycleOldStateKey
 extern NSNotificationName const kTAAppLifeCycleStateWillChangeNotification;
 
-/// 当生命周期状态改变时，会发送这个通知
-/// object：对象为当前的生命周期对象
-/// userInfo：包含 kTAAppLifeCycleNewStateKey 和 kTAAppLifeCycleOldStateKey 两个 key
+/// When the life cycle status changes, this notification will be sent
+/// object: The object is the current lifecycle object
+/// userInfo: Contains two keys kTAAppLifeCycleNewStateKey and kTAAppLifeCycleOldStateKey
 extern NSNotificationName const kTAAppLifeCycleStateDidChangeNotification;
 
-/// 在状态改变通知中，获取新状态
+/// In the status change notification, get the new status
 extern NSString * const kTAAppLifeCycleNewStateKey;
-/// 在状态改变通知中，获取改变前的状态
+
+/// In the status change notification, get the status before the change
 extern NSString * const kTAAppLifeCycleOldStateKey;
 
 @interface TAAppLifeCycle : NSObject
 
 @property (nonatomic, assign, readonly) TAAppLifeCycleState state;
 
-/// 开启生命周期监听
 + (void)startMonitor;
 
 + (instancetype)shareInstance;

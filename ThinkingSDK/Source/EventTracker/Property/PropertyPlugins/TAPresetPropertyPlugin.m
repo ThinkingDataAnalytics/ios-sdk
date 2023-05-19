@@ -2,7 +2,7 @@
 //  TAPresetPropertyPlugin.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/12.
+//  Created by Yangxiongon 2022/6/12.
 //
 
 #import "TAPresetPropertyPlugin.h"
@@ -10,6 +10,7 @@
 #import "TDPresetProperties+TDDisProperties.h"
 #import "TDDeviceInfo.h"
 #import "TAReachability.h"
+#import "NSDate+TAFormat.h"
 
 @interface TAPresetPropertyPlugin ()
 @property (nonatomic, strong) NSMutableDictionary<NSString *, id> *properties;
@@ -36,7 +37,10 @@
     }
         
     if (![TDPresetProperties disableInstallTime]) {
-        self.properties[@"#install_time"] = [TDDeviceInfo td_getInstallTime];
+        NSString *timeString = [[TDDeviceInfo td_getInstallTime] ta_formatWithTimeZone:self.defaultTimeZone formatString: @"yyyy-MM-dd HH:mm:ss.SSS"];
+        if (timeString && [timeString isKindOfClass:[NSString class]] && timeString.length){
+            self.properties[@"#install_time"] = timeString;
+        }
     }
 }
 

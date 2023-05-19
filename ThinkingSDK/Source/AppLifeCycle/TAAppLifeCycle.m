@@ -2,7 +2,7 @@
 //  TAAppLifeCycle.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/28.
+//  Created by Yangxiongon 2022/6/28.
 //
 
 #import "TAAppLifeCycle.h"
@@ -25,7 +25,7 @@ NSString * const kTAAppLifeCycleOldStateKey = @"old";
 
 
 @interface TAAppLifeCycle ()
-/// 状态
+/// status
 @property (nonatomic, assign) TAAppLifeCycleState state;
 
 @end
@@ -48,7 +48,6 @@ NSString * const kTAAppLifeCycleOldStateKey = @"old";
 - (instancetype)init {
     self = [super init];
     if (self) {
-        // 不触发setter事件
         _state = TAAppLifeCycleStateInit;
         [self registerListeners];
         [self setupLaunchedState];
@@ -89,12 +88,10 @@ NSString * const kTAAppLifeCycleOldStateKey = @"old";
 //                               name:NSApplicationDidFinishLaunchingNotification
 //                             object:nil];
 //
-//    // 聚焦活动状态，和其他 App 之前切换聚焦，和 DidResignActive 通知会频繁调用
 //    [notificationCenter addObserver:self
 //                           selector:@selector(applicationDidBecomeActive:)
 //                               name:NSApplicationDidBecomeActiveNotification
 //                             object:nil];
-//    // 失焦状态
 //    [notificationCenter addObserver:self
 //                           selector:@selector(applicationDidResignActive:)
 //                               name:NSApplicationDidResignActiveNotification
@@ -119,28 +116,27 @@ NSString * const kTAAppLifeCycleOldStateKey = @"old";
 #else
         BOOL isAppStateBackground = NO;
 #endif
-        // 设置 app 是否是在后台自启动
         [TDAppState shareInstance].relaunchInBackground = isAppStateBackground;
 
         self.state = TAAppLifeCycleStateStart;
     };
 
     if (@available(iOS 13.0, *)) {
-        // iOS 13 及以上在异步主队列的 block 修改状态的原因:+
-        // 1. 保证在发送app状态改变的通知之前，SDK的初始化操作都已经完成。这样能保证在自动采集管理类发送app_start事件时公共属性已设置完毕（其实通过监听 UIApplicationDidFinishLaunchingNotification 也可以实现）
-        // 2. 在包含有 SceneDelegate 的工程中，延迟获取 applicationState 才是准确的（通过监听 UIApplicationDidFinishLaunchingNotification 获取不准确）
+        // The reason why iOS 13 and above modify the status in the block of the asynchronous main queue:+
+        // 1. Make sure that the initialization of the SDK has been completed before sending the appstatus change notification. This can ensure that the public properties have been set when the automatic collection management class sends the app_start event (in fact, it can also be achieved by listening to UIApplicationDidFinishLaunchingNotification)
+        // 2. In a project that contains SceneDelegate, it is accurate to delay obtaining applicationState (obtaining by listening to UIApplicationDidFinishLaunchingNotification is inaccurate)
         dispatch_async(dispatch_get_main_queue(), mainThreadBlock);
     } else {
-        // iOS 13 以下通过监听 UIApplicationDidFinishLaunchingNotification 的通知来处理后台唤醒和冷启动（非延迟初始化）的情况:
-        // 1. iOS 13 以下在后台被唤醒时，异步主队列的 block 不会执行。所以需要同时监听 UIApplicationDidFinishLaunchingNotification
-        // 2. iOS 13 以下不会含有 SceneDelegate
+        // iOS 13 and below handle background wakeup and cold start (non-delayed initialization) by listening to the notification of UIApplicationDidFinishLaunchingNotification:
+        // 1. When iOS 13 or later wakes up in the background, the block of the asynchronous main queue will not be executed. So you need to listen to UIApplicationDidFinishLaunchingNotification at the same time
+        // 2. iOS 13 and below will not contain SceneDelegate
 #if TARGET_OS_IOS
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(applicationDidFinishLaunching:)
                                                      name:UIApplicationDidFinishLaunchingNotification
                                                    object:nil];
 #endif
-        // 处理 iOS 13 以下冷启动，客户延迟初始化的情况。延迟初始化时，已经错过了 UIApplicationDidFinishLaunchingNotification 通知
+        // Handle cold start below iOS 13, where the client delays initialization. UIApplicationDidFinishLaunchingNotification notification has been missed when lazy initialization
         dispatch_async(dispatch_get_main_queue(), mainThreadBlock);
     }
 }
@@ -154,8 +150,7 @@ NSString * const kTAAppLifeCycleOldStateKey = @"old";
 #else
     BOOL isAppStateBackground = NO;
 #endif
-    
-    // 设置 app 是否是后台自启动
+
     [TDAppState shareInstance].relaunchInBackground = isAppStateBackground;
     
     self.state = TAAppLifeCycleStateStart;
@@ -165,7 +160,6 @@ NSString * const kTAAppLifeCycleOldStateKey = @"old";
     TDLogDebug(@"application did become active");
 
 #if TARGET_OS_IOS
-    // 防止主动触发 UIApplicationDidBecomeActiveNotification
     if (![notification.object isKindOfClass:[UIApplication class]]) {
         return;
     }
@@ -184,8 +178,7 @@ NSString * const kTAAppLifeCycleOldStateKey = @"old";
         return;
     }
 #endif
-    
-    // 设置 app 是否是后台自启动
+
     [TDAppState shareInstance].relaunchInBackground = NO;
 
     self.state = TAAppLifeCycleStateStart;
@@ -194,8 +187,7 @@ NSString * const kTAAppLifeCycleOldStateKey = @"old";
 #if TARGET_OS_IOS
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
     TDLogDebug(@"application did enter background");
-
-    // 防止主动触发 UIApplicationDidEnterBackgroundNotification
+    
     if (![notification.object isKindOfClass:[UIApplication class]]) {
         return;
     }
@@ -233,12 +225,11 @@ NSString * const kTAAppLifeCycleOldStateKey = @"old";
 //MARK: - Setter
 
 - (void)setState:(TAAppLifeCycleState)state {
-    // 过滤重复的状态
+
     if (_state == state) {
         return;
     }
     
-    // 设置 app 是否是在前台
     [TDAppState shareInstance].isActive = (state == TAAppLifeCycleStateStart);
 
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:2];

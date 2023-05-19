@@ -37,7 +37,7 @@
     appidTF.layer.cornerRadius = kTDCornor;
     appidTF.layer.borderColor = kTDColor2.CGColor;
     appidTF.layer.borderWidth = kTDBorder;
-    appidTF.text = @"22e445595b0f42bd8c5fe35bc44b88d6";
+    appidTF.text = @"c636fb93fb854ffd961a6eed5316410b";
     [appidTF setBackgroundColor:[UIColor whiteColor]];
     [appidTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(appidDesLabel.mas_right).offset(kTDCommonPadding);
@@ -81,10 +81,10 @@
         make.width.mas_equalTo(kTDCommonW);
         make.centerY.mas_equalTo(serverDesLabel);
     }];
-    serverTF.text = @"https://receiver-ta-dev.thinkingdata.cn";
+    //serverTF.text = @"http://ta_test.receiver.thinkingdata.cn";
 //    serverTF.text = @"http://ta_test.receiver.thinkingdata.cn";
 //    serverTF.text = @"https://receiver-ta-demo.thinkingdata.cn";
-//    serverTF.text = @"http://receiver.ta.thinkingdata.cn/";
+    serverTF.text = @"http://receiver.ta.thinkingdata.cn/";
     
     UITextField *instanceNameTF = [UITextField new];
     instanceNameTF.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -105,7 +105,7 @@
     [submitBtn setBackgroundColor:[UIColor whiteColor]];
     [submitBtn setTitleColor:UIColor.tc9 forState:UIControlStateNormal];
     [self.view addSubview:submitBtn];
-    [submitBtn setTitle:@"点击初始化" forState:UIControlStateNormal];
+    [submitBtn setTitle:@"Click to initialize" forState:UIControlStateNormal];
     [submitBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.bottom.right.equalTo(self.view);
         make.height.mas_equalTo(kTDBottomSafeHeight+50);
@@ -122,7 +122,7 @@
 }
 - (NSString*)rightTitle
 {
-    return  @"初始化功能";
+    return  @"initialization";
     
 }
 - (void)setData
@@ -158,16 +158,16 @@
         
         ThinkingAnalyticsAutoTrackEventType autoTrackEventType = ThinkingAnalyticsEventTypeAll;
         [instance enableAutoTrack:autoTrackEventType callback:^NSDictionary * _Nonnull(ThinkingAnalyticsAutoTrackEventType eventType, NSDictionary * _Nonnull properties) {
-            return @{@"#yxiong_auto_track": @"hello"};
+            return @{};
         }];
 //        [instance setAutoTrackProperties:ThinkingAnalyticsEventTypeAll properties:@{
 //            @"#yxiong_auto_track_static": @"hello"
 //        }];
 //        [instance enableAutoTrack:autoTrackEventType properties:@{@"yxiong_auto_track_static": @"hello"}];
         
-        [instance registerDynamicSuperProperties:^NSDictionary<NSString *,id> * _Nonnull{
-            return @{@"#yxiong_dynamic_name": @"hello"};
-        }];
+//        [instance registerDynamicSuperProperties:^NSDictionary<NSString *,id> * _Nonnull{
+//            return @{@"#yxiong_dynamic_name": @"hello"};
+//        }];
         
         [instance setSuperProperties:@{
             @"yxiong_name": @"world"
@@ -177,7 +177,7 @@
         [ThinkingSDKAPI setInstance:instance];
 //        [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
         
-        [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"yxiong"];
+        [[ThinkingAnalyticsSDK sharedInstance] track:@"yxiong" properties:nil time:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
         
         if(_callback != nil)
         {

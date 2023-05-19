@@ -39,7 +39,6 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_CONTENT = @"#element_content";
 NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
 
 @interface TDAutoTrackManager ()
-/// key: 数据采集SDK的唯一标识  value: 开启的自动采集事件类型
 @property (atomic, strong) NSMutableDictionary<NSString *, id> *autoTrackOptions;
 @property (nonatomic, strong, nonnull) dispatch_semaphore_t trackOptionLock;
 @property (atomic, copy) NSString *referrerViewControllerUrl;
@@ -217,7 +216,6 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
                 continue;
             }
             
-            // view 的控件id
             NSDictionary *viewIDs = view.thinkingAnalyticsViewIDWithAppid;
             if (viewIDs != nil && [viewIDs objectForKey:appid]) {
                 trackProperties[TD_EVENT_PROPERTY_ELEMENT_ID] = [viewIDs objectForKey:appid];
@@ -226,7 +224,6 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
 
             }
             
-            // 用户自定义属性
             NSDictionary *viewProperties = view.thinkingAnalyticsViewPropertiesWithAppid;
             if (viewProperties != nil && [viewProperties objectForKey:appid]) {
                 NSDictionary *properties = [viewProperties objectForKey:appid];
@@ -237,7 +234,6 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
                 }
             }
             
-            // tableview 或者 collection 的用户自定义属性
             if (propertyWithAppid) {
                 NSDictionary *autoTrackproperties = [propertyWithAppid objectForKey:appid];
                 if ([autoTrackproperties isKindOfClass:[NSDictionary class]]) {
@@ -270,28 +266,22 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
         [self swizzleVC];
     }
     
-    //安装事件
     if (type & ThinkingAnalyticsEventTypeAppInstall) {
         TAAutoTrackEvent *event = [[TAAutoTrackEvent alloc] initWithName:TD_APP_INSTALL_EVENT];
-        // 安装事件提前1s统计
         event.time = [[NSDate date] dateByAddingTimeInterval: -1];
         [self.appInstallTracker trackWithInstanceTag:appid event:event params:nil];
     }
     
-    // 开始记录end事件时长
     if (type & ThinkingAnalyticsEventTypeAppEnd) {
         ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:appid];
         [instance timeEvent:TD_APP_END_EVENT];
     }
 
-    // 上报app_start 冷启动
     if (type & ThinkingAnalyticsEventTypeAppStart) {
         dispatch_block_t mainThreadBlock = ^(){
-            // 在下一个runloop中执行，此代码，否则relaunchInBackground会不准确。relaunchInBackground 在 AppLifeCycle 管理类中获得
             NSString *eventName = [TDAppState shareInstance].relaunchInBackground ? TD_APP_START_BACKGROUND_EVENT : TD_APP_START_EVENT;
             TAAppStartEvent *event = [[TAAppStartEvent alloc] initWithName:eventName];
             event.resumeFromBackground = NO;
-            // 启动原因
             if (![TDPresetProperties disableStartReason]) {
                 NSString *reason = [TDRunTime getAppLaunchReason];
                 if (reason && reason.length) {
@@ -303,7 +293,6 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
         dispatch_async(dispatch_get_main_queue(), mainThreadBlock);
     }
 
-    // 开启监听crash
     if (type & ThinkingAnalyticsEventTypeAppViewCrash) {
         ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:appid];
         [[ThinkingExceptionHandler sharedHandler] addThinkingInstance:instance];
@@ -700,12 +689,12 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
         for (NSString *appid in self.autoTrackOptions) {
             ThinkingAnalyticsAutoTrackEventType type = (ThinkingAnalyticsAutoTrackEventType)[self.autoTrackOptions[appid] integerValue];
             
-            // 只开启采集热启动的start事件。冷启动事件，在开启自动采集的时候上报
+            // Only open the start event of collecting hot start. Cold start event, reported when automatic collection is turned on
             if ((type & ThinkingAnalyticsEventTypeAppStart) && oldState != TAAppLifeCycleStateInit) {
                 NSString *eventName = [TDAppState shareInstance].relaunchInBackground ? TD_APP_START_BACKGROUND_EVENT : TD_APP_START_EVENT;
                 TAAppStartEvent *event = [[TAAppStartEvent alloc] initWithName:eventName];
                 event.resumeFromBackground = YES;
-                // 启动原因
+    
                 if (![TDPresetProperties disableStartReason]) {
                     NSString *reason = [TDRunTime getAppLaunchReason];
                     if (reason && reason.length) {
@@ -716,7 +705,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
             }
             
             if (type & ThinkingAnalyticsEventTypeAppEnd) {
-                // 开始记录app_end 事件的时间
+            
                 ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:appid];
                 [instance timeEvent:TD_APP_END_EVENT];
             }
@@ -727,7 +716,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
             if (type & ThinkingAnalyticsEventTypeAppEnd) {
                 TAAppEndEvent *event = [[TAAppEndEvent alloc] initWithName:TD_APP_END_EVENT];
                 td_dispatch_main_sync_safe(^{
-                    // 记录当前界面的名字，有UI操作，需要在主线程执行。
+     
                     NSString *screenName = NSStringFromClass([[TDAutoTrackManager topPresentedViewController] class]);
                     event.screenName = screenName;
                     [self.appEndTracker trackWithInstanceTag:appid event:event params:@{}];
@@ -735,7 +724,6 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
             }
             
             if (type & ThinkingAnalyticsEventTypeAppStart) {
-                // 开始记录app_start 事件的时间
                 ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:appid];
                 [instance timeEvent:TD_APP_START_EVENT];
             }

@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface TDPresetProperties (TDDisProperties)
 
 // - 禁用功能并过滤字段拼接
+
+@property(class, nonatomic, readonly) BOOL disableOpsReceiptProperties;
 @property(class, nonatomic, readonly) BOOL disableStartReason;
 @property(class, nonatomic, readonly) BOOL disableDisk;
 @property(class, nonatomic, readonly) BOOL disableRAM;
@@ -36,6 +38,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property(class, nonatomic, readonly) BOOL disableOs;
 @property(class, nonatomic, readonly) BOOL disableInstallTime;
 @property(class, nonatomic, readonly) BOOL disableDeviceType;
+@property(class, nonatomic, readonly) BOOL disableSessionID;
+@property(class, nonatomic, readonly) BOOL disableCalibratedTime;
+
 
 // - 只过滤字段
 @property(class, nonatomic, readonly) BOOL disableNetworkType;

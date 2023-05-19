@@ -2,7 +2,7 @@
 //  TDUpdateEventModel.h
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/7/1.
+//  Created by Yangxiongon 2022/7/1.
 //
 
 #if __has_include(<ThinkingSDK/TDEventModel.h>)

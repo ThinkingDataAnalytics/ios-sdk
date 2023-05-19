@@ -2,7 +2,7 @@
 //  NSNumber+TAProperty.m
 //  Adjust
 //
-//  Created by 杨雄 on 2022/7/1.
+//  Created by Yangxiongon 2022/7/1.
 //
 
 #import "NSNumber+TAProperty.h"

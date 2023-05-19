@@ -15,8 +15,8 @@
     return (NSDictionary *)[self td_checkToObjectRecursive:properties timeFormatter:timeFormatter];
 }
 
-// 五种基础类型：列表、时间、布尔、数值、文本，列表只支持基本数据类型
-// 进阶数据类型：对象、对象组
+// Five basic types: list, time, Boolean, value, text, list only supports basic data types
+// Advanced data types: object, object group
 + (NSObject *)td_checkToObjectRecursive:(NSObject *)properties timeFormatter:(NSDateFormatter *)timeFormatter {
     if (TD_CHECK_NIL(properties)) {
         return properties;
@@ -39,12 +39,11 @@
         NSString *dateStr = [timeFormatter stringFromDate:(NSDate *)properties];
         return dateStr;
     } else {
-        // 其他类型直接返回
         return properties;
     }
 }
 
-// 老方法，解析基本数据类型
+// old method
 //inline static NSDictionary *_td_old_checkToJSONObject(NSDictionary *properties, NSDateFormatter *timeFormatter) {
 //    NSMutableDictionary<NSString *, id> *propertiesDic = [NSMutableDictionary dictionaryWithDictionary:properties];
 //    for (NSString *key in [properties keyEnumerator]) {

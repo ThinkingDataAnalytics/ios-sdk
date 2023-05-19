@@ -1,6 +1,7 @@
 #import "TDCalibratedTimeWithNTP.h"
 #import "TDNTPServer.h"
 #import "TDLogging.h"
+#import "TDDeviceInfo.h"
 
 @interface TDCalibratedTimeWithNTP()
 @end
@@ -40,17 +41,14 @@ static dispatch_queue_t _ta_ntpSerialQueue;
 - (NSTimeInterval)serverTime {
     
     if (_ta_ntpGroup) {
-        TDLogDebug(@"ntp _ntpGroup serverTime wait start");
+    
         long ret = dispatch_group_wait(_ta_ntpGroup, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)));
-        TDLogDebug(@"ntp _ntpGroup serverTime wait end");
         if (ret != 0) {
             self.stopCalibrate = YES;
-            TDLogDebug(@"wait ntp time timeout");
         }
         return _serverTime;
     } else {
         self.stopCalibrate = YES;
-        TDLogDebug(@"ntp _ntpGroup is nil !!!");
     }
     
     return 0;
@@ -75,7 +73,7 @@ static dispatch_queue_t _ta_ntpSerialQueue;
         if (err) {
             TDLogDebug(@"ntp failed :%@", err);
         } else {
-            self.systemUptime = [[NSProcessInfo processInfo] systemUptime];
+            self.systemUptime = [TDDeviceInfo uptime];
             self.serverTime = [[NSDate dateWithTimeIntervalSinceNow:offset] timeIntervalSince1970];
             break;
         }

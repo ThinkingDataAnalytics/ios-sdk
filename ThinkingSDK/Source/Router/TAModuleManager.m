@@ -425,10 +425,10 @@ static  NSString *kTAAppCustomSelector = @"modDidCustomEvent:";
     }
     
     [moduleInstances enumerateObjectsUsingBlock:^(id<TAModuleProtocol> moduleInstance, NSUInteger idx, BOOL * _Nonnull stop) {
-        __weak typeof(&*self) wself = self;
+        __weak __typeof(&*self) wself = self;
         void ( ^ bk )(void);
         bk = ^(){
-            __strong typeof(&*self) sself = wself;
+            __strong __typeof(&*self) sself = wself;
             if (sself) {
                 if ([moduleInstance respondsToSelector:@selector(modInit:)]) {
                     [moduleInstance modInit:context];

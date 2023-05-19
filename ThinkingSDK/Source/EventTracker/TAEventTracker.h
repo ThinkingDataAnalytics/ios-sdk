@@ -2,7 +2,7 @@
 //  TAEventTracker.h
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/19.
+//  Created by Yangxiongon 2022/6/19.
 //
 
 #import <Foundation/Foundation.h>
@@ -34,7 +34,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)_asyncWithCompletion:(void(^)(void))completion;
 
-/// 同步把网络队列中的数据发送完毕
 - (void)syncSendAllData;
 
 #pragma mark - UNAVAILABLE

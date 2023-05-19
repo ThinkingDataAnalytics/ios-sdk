@@ -15,6 +15,8 @@
 		012FB2F02873E539009A2716 /* TAInitinalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 012FB2EE2873E539009A2716 /* TAInitinalViewController.m */; };
 		012FB2F12873E539009A2716 /* TAInitinalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 012FB2EF2873E539009A2716 /* TAInitinalViewController.xib */; };
 		36B9278C74A617E12A2F30B6 /* Pods_ThinkingSDKMac.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB99E30FD01DE7288F5237F8 /* Pods_ThinkingSDKMac.framework */; };
+		56A73FEE29A70D4D008B79A6 /* TAInputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A73FEC29A70D4D008B79A6 /* TAInputViewController.m */; };
+		56A73FEF29A70D4D008B79A6 /* TAInputViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56A73FED29A70D4D008B79A6 /* TAInputViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +33,9 @@
 		012FB2EE2873E539009A2716 /* TAInitinalViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TAInitinalViewController.m; sourceTree = "<group>"; };
 		012FB2EF2873E539009A2716 /* TAInitinalViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TAInitinalViewController.xib; sourceTree = "<group>"; };
 		0174F74B286CE6D10030AAB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		56A73FEB29A70D4D008B79A6 /* TAInputViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TAInputViewController.h; sourceTree = "<group>"; };
+		56A73FEC29A70D4D008B79A6 /* TAInputViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TAInputViewController.m; sourceTree = "<group>"; };
+		56A73FED29A70D4D008B79A6 /* TAInputViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TAInputViewController.xib; sourceTree = "<group>"; };
 		6660D38683DE112DD43D8537 /* Pods-ThinkingSDKMac.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKMac.release.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKMac/Pods-ThinkingSDKMac.release.xcconfig"; sourceTree = "<group>"; };
 		CE17B4CBD1A5563645BA5474 /* Pods-ThinkingSDKMac.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKMac.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKMac/Pods-ThinkingSDKMac.debug.xcconfig"; sourceTree = "<group>"; };
 		DB99E30FD01DE7288F5237F8 /* Pods_ThinkingSDKMac.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThinkingSDKMac.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,6 +86,9 @@
 				0116B5DD2861B76D00716E8B /* Main.storyboard */,
 				0116B5E02861B76D00716E8B /* main.m */,
 				0116B5E22861B76D00716E8B /* ThinkingSDKMac.entitlements */,
+				56A73FEB29A70D4D008B79A6 /* TAInputViewController.h */,
+				56A73FEC29A70D4D008B79A6 /* TAInputViewController.m */,
+				56A73FED29A70D4D008B79A6 /* TAInputViewController.xib */,
 			);
 			path = ThinkingSDKMac;
 			sourceTree = "<group>";
@@ -163,6 +171,7 @@
 			files = (
 				0116B5DC2861B76D00716E8B /* Assets.xcassets in Resources */,
 				0116B5DF2861B76D00716E8B /* Main.storyboard in Resources */,
+				56A73FEF29A70D4D008B79A6 /* TAInputViewController.xib in Resources */,
 				012FB2F12873E539009A2716 /* TAInitinalViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -217,6 +226,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				012FB2F02873E539009A2716 /* TAInitinalViewController.m in Sources */,
+				56A73FEE29A70D4D008B79A6 /* TAInputViewController.m in Sources */,
 				0116B5DA2861B76C00716E8B /* ViewController.m in Sources */,
 				0116B5E12861B76D00716E8B /* main.m in Sources */,
 				0116B5D72861B76C00716E8B /* AppDelegate.m in Sources */,
@@ -368,6 +378,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.yxiong.ThinkingSDKMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -397,6 +408,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.yxiong.ThinkingSDKMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";

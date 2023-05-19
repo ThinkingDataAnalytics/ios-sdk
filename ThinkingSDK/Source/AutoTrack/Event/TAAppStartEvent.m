@@ -2,7 +2,7 @@
 //  TAAppStartEvent.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/17.
+//  Created by Yangxiongon 2022/6/17.
 //
 
 #import "TAAppStartEvent.h"

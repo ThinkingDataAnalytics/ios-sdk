@@ -30,21 +30,21 @@
 #define kTDY(y)  (y+kTDNavBarAndStatusBarHeight)
 
  
-/*状态栏高度*/
+
 #define kTDStatusBarHeight (CGFloat)(kTDIsiPhoneX?(44.0):(20.0))
-/*导航栏高度*/
+
 #define kTDNavBarHeight (44)
-/*状态栏和导航栏总高度*/
+
 #define kTDNavBarAndStatusBarHeight (CGFloat)(kTDIsiPhoneX?(88.0):(64.0))
-/*TabBar高度*/
+
 #define kTDTabBarHeight (CGFloat)(kTDIsiPhoneX?(49.0 + 34.0):(49.0))
-/*顶部安全区域远离高度*/
+
 #define kTDTopBarSafeHeight (CGFloat)(kTDIsiPhoneX?(44.0):(0))
-/*底部安全区域远离高度*/
+
 #define kTDBottomSafeHeight (CGFloat)(kTDIsiPhoneX?(34.0):(0))
-/*iPhoneX的状态栏高度差值*/
+
 #define kTDTopBarDifHeight (CGFloat)(kTDIsiPhoneX?(24.0):(0))
-/*导航条和Tabbar总高度*/
+
 #define kTDNavAndTabHeight (kNavBarAndStatusBarHeight + kTabBarHeight)
 
 

@@ -2,7 +2,7 @@
 //  TAReachability.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/1.
+//  Created by Yangxiongon 2022/6/1.
 //
 
 #import "TAReachability.h"
@@ -28,7 +28,6 @@
 @implementation TAReachability
 
 #if TARGET_OS_IOS
-/// 网络状态监听的回调方法
 static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void *info) {
     TAReachability *instance = (__bridge TAReachability *)info;
     if (instance && [instance isKindOfClass:[TAReachability class]]) {

@@ -10,7 +10,7 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 
 @interface TDAutoTracker ()
-/// 采集SDK实例对象的token的映射关系：key: 唯一标识。value: 事件可以执行的次数
+
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSNumber *> *trackCounts;
 
 @end

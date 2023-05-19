@@ -49,7 +49,7 @@
 }
 - (NSString*)rightTitle
 {
-    return @"用户属性设置功能";
+    return @"user property";
 }
 
 

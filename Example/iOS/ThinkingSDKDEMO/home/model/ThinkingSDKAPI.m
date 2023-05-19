@@ -3,7 +3,7 @@
 //  ThinkingSDKDEMO
 //
 //  Created by syj on 2019/6/24.
-//  Copyright © 2019年 thinking. All rights reserved.
+//  Copyright © 2019 thinking. All rights reserved.
 //
 
 #import "ThinkingSDKAPI.h"
@@ -96,7 +96,7 @@ ThinkingAnalyticsSDK* _instance;
 + (void)testUserAdd {
     [_instance user_add:@{@"key1":[NSNumber numberWithInt:6]}];
     
-    // 错误用例
+    
 //    [_instance user_add:@{@"key1":@"name"}];
 
 //    [_instance user_add:@{@"key1":[NSNumber numberWithInt:6]} withTime:[NSDate date]];
@@ -118,7 +118,7 @@ ThinkingAnalyticsSDK* _instance;
 }
 
 + (void)testSetsuper {
-    [_instance setSuperProperties:@{@"superkey":@"supervalue1",@"superkey2":@"数数科技👍",@"superkey3":@(YES),@"level":@"level-3"}];
+    [_instance setSuperProperties:@{@"superkey":@"supervalue1",@"superkey2":@"shushu👍",@"superkey3":@(YES),@"level":@"level-3"}];
 }
 
 + (void)testUnsetsuper {
@@ -176,8 +176,7 @@ ThinkingAnalyticsSDK* _instance;
     [_instance setTrackStatus:TATrackStatusSaveOnly];
 }
 
-// H5 打通 jsSDK 需要配置 useAppTrack: true,
-// UIWebView 具体查看 WEBViewController.m 文件
+
 + (void)testAgent {
     [_instance addWebViewUserAgent];
 }

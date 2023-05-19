@@ -2,7 +2,7 @@
 //  TAEventTracker.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/19.
+//  Created by Yangxiongon 2022/6/19.
 //
 
 #import "TAEventTracker.h"
@@ -10,7 +10,7 @@
 #import "TAReachability.h"
 #import "TDEventRecord.h"
 
-static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进行
+static dispatch_queue_t td_networkQueue;
 
 @interface TAEventTracker ()
 @property (atomic, strong) TANetwork *network;
@@ -62,7 +62,7 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
     ThinkingAnalyticsDebugMode debugMode = self.config.debugMode;
     NSInteger count = 0;
     if (debugMode == ThinkingAnalyticsDebugOnly || debugMode == ThinkingAnalyticsDebug) {
-        // 是否暂停上报，只存储
+        
         if (isSaveOnly) {
             return;
         }
@@ -72,13 +72,13 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
                 [self flushDebugEvent:event];
             });
         });
-        // ThinkingAnalyticsDebug 模式下发送数据后仍然会存储到本地，所以需要查询数据库数据，判断条数是否满足上传
+        // ThinkingAnalyticsDebug Mode After the data is sent, it will still be stored locally, so it is necessary to query the database data to determine whether the number of records is sufficient for uploading
         @synchronized (TDSqliteDataQueue.class) {
             count = [self.dataQueue sqliteCountForAppid:[self.config getMapInstanceToken]];
         }
     } else {
         if (immediately) {
-            // 是否暂停上报，只存储
+            
             if (isSaveOnly) {
                 return;
             }
@@ -94,7 +94,7 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
         }
     }
     if (count >= [self.config.uploadSize integerValue]) {
-        // 是否暂停上报，只存储
+        
         if (isSaveOnly) {
             return;
         }
@@ -111,7 +111,7 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
     NSMutableDictionary *event = [[NSMutableDictionary alloc] initWithDictionary:data];
     NSInteger count = 0;
     @synchronized (TDSqliteDataQueue.class) {
-        // 加密数据
+        
         if (_config.enableEncrypt) {
 #if TARGET_OS_IOS
             NSDictionary *encryptData = [[ThinkingAnalyticsSDK sharedInstanceWithAppid:self.config.appid].encryptManager encryptJSONObject:event];
@@ -133,7 +133,7 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
     if (self.config.debugMode == ThinkingAnalyticsDebug || self.config.debugMode == ThinkingAnalyticsDebugOnly) {
         int debugResult = [self.network flushDebugEvents:event withAppid:self.config.appid];
         if (debugResult == -1) {
-            // 降级处理
+            // Downgrade
             if (self.config.debugMode == ThinkingAnalyticsDebug) {
                 dispatch_async(self.queue, ^{
                     [self saveEventsData:event];
@@ -148,14 +148,14 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
         else if (debugResult == -2) {
             TDLogDebug(@"Exception occurred when sending message to Server:%@", event);
             if (self.config.debugMode == ThinkingAnalyticsDebug) {
-                // 网络异常
+                
                 dispatch_async(self.queue, ^{
                     [self saveEventsData:event];
                 });
             }
         }
     } else {
-        //防止并发事件未降级
+        
         NSInteger count = [self saveEventsData:event];
         if (count >= [self.config.uploadSize integerValue]) {
             [self flush];
@@ -167,11 +167,11 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
     [self _asyncWithCompletion:^{}];
 }
 
-/// 异步同步数据（将本地数据库中的数据同步到TA）
-/// 需要将此事件加到serialQueue队列中进行哦
-/// 有些场景是事件入库和发送网络请求是同时发生的。事件入库是在serialQueue中进行，上报数据是在networkQueue中进行。如要确保事件入库在先，则需要将上报数据操作添加到serialQueue
+/// Synchronize data asynchronously (synchronize data in the local database to TA)
+/// Need to add this event to the serialQueue queue
+/// In some scenarios, event warehousing and sending network requests happen at the same time. Event storage is performed in serialQueue, and data reporting is performed in networkQueue. To ensure that events are stored first, you need to add the reported data operation to serialQueue
 - (void)_asyncWithCompletion:(void(^)(void))completion {
-    // 在任务队列中异步执行，需要判断当前是否已经在任务队列中，避免重复包装
+    
     void(^block)(void) = ^{
         dispatch_async(td_networkQueue, ^{
             [self _syncWithSize:kBatchSize completion:completion];
@@ -184,13 +184,13 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
     }    
 }
 
-/// 同步数据（将本地数据库中的数据同步到TA）
-/// @param size 每次从数据库中获取的最大条数，默认50条
-/// @param completion 同步回调
-/// 该方法需要在networkQueue中进行，会持续的发送网络请求直到数据库的数据被发送完
+/// Synchronize data (synchronize the data in the local database to TA)
+/// @param size The maximum number of items obtained from the database each time, the default is 50
+/// @param completion synchronous callback
+/// This method needs to be performed in networkQueue, and will continue to send network requests until the data in the database is sent
 - (void)_syncWithSize:(NSUInteger)size completion:(void(^)(void))completion {
     
-    // 判断是否满足发送条件
+    
     NSString *networkType = [[TAReachability shareInstance] networkState];
     if (!([TAReachability convertNetworkType:networkType] & self.config.networkTypePolicy)) {
         if (completion) {
@@ -199,13 +199,11 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
         return;
     }
     
-    // 获取数据库数据，取前五十条数据，并更新这五十条数据的uuid
-    // uuid的作用是数据库待删除数据的标识
     NSArray<NSDictionary *> *recordArray;
     NSArray *recodIds;
     NSArray *uuids;
     @synchronized (TDSqliteDataQueue.class) {
-        // 数据库里获取前kBatchSize条数据
+        
         NSArray<TDEventRecord *> *records = [self.dataQueue getFirstRecords:kBatchSize withAppid:[self.config getMapInstanceToken]];
         NSArray<TDEventRecord *> *encryptRecords = [self encryptEventRecords:records];
         NSMutableArray *indexs = [[NSMutableArray alloc] initWithCapacity:encryptRecords.count];
@@ -217,11 +215,11 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
         recodIds = indexs;
         recordArray = recordContents;
         
-        // 更新uuid
+        
         uuids = [self.dataQueue upadteRecordIds:recodIds];
     }
      
-    // 数据库没有数据了
+    
     if (recordArray.count == 0 || uuids.count == 0) {
         if (completion) {
             completion();
@@ -229,8 +227,8 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
         return;
     }
     
-    // 网络情况较好，会在此处持续的将数据库中的数据发送完
-    // 1，保证end事件发送成功
+    
+    
     BOOL flushSucc = YES;
     while (recordArray.count > 0 && uuids.count > 0 && flushSucc) {
         flushSucc = [self.network flushEvents:recordArray];
@@ -240,7 +238,7 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
                 if (!ret) {
                     break;
                 }
-                // 数据库里获取前50条数据
+                
                 NSArray<TDEventRecord *> *records = [self.dataQueue getFirstRecords:kBatchSize withAppid:[self.config getMapInstanceToken]];
                 NSArray<TDEventRecord *> *encryptRecords = [self encryptEventRecords:records];
                 NSMutableArray *indexs = [[NSMutableArray alloc] initWithCapacity:encryptRecords.count];
@@ -252,7 +250,7 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
                 recodIds = indexs;
                 recordArray = recordContents;
                 
-                // 更新uuid
+                
                 uuids = [self.dataQueue upadteRecordIds:recodIds];
             }
         } else {
@@ -264,22 +262,20 @@ static dispatch_queue_t td_networkQueue;// 网络请求在td_networkQueue中进�
     }
 }
 
-/// 开启加密后，上报的数据都需要是加密数据
-/// 关闭加密后，上报数据既包含加密数据 也包含非加密数据
 - (NSArray<TDEventRecord *> *)encryptEventRecords:(NSArray<TDEventRecord *> *)records {
 #if TARGET_OS_IOS
     NSMutableArray *encryptRecords = [NSMutableArray arrayWithCapacity:records.count];
-    // 加密工具
+    
     TDEncryptManager *encryptManager = [ThinkingAnalyticsSDK sharedInstanceWithAppid:[self.config getMapInstanceToken]].encryptManager;
     
     if (self.config.enableEncrypt && encryptManager.isValid) {
         for (TDEventRecord *record in records) {
             
             if (record.encrypted) {
-                // 数据已经加密
+                
                 [encryptRecords addObject:record];
             } else {
-                // 缓存数据未加密，再加密
+                
                 NSDictionary *obj = [encryptManager encryptJSONObject:record.event];
                 if (obj) {
                     [record setSecretObject:obj];

@@ -2,7 +2,7 @@
 //  TABaseEvent.m
 //  ThinkingSDK
 //
-//  Created by 杨雄 on 2022/6/12.
+//  Created by Yangxiongon 2022/6/12.
 //
 
 #import "TABaseEvent.h"
@@ -38,7 +38,7 @@ kTAEventType const kTAEventTypeUserUniqueAppend = @"user_uniq_append";
 {
     self = [super init];
     if (self) {
-        // 只能直接访问变量，不要触发 setter 方法。默认记录当前事件发生的时间
+        
         _time = [NSDate date];
         self.timeValueType = TAEventTimeValueTypeNone;
         self.uuid = [NSUUID UUID].UUIDString;
@@ -54,7 +54,7 @@ kTAEventType const kTAEventTypeUserUniqueAppend = @"user_uniq_append";
 }
 
 - (void)validateWithError:(NSError *__autoreleasing  _Nullable *)error {
-    // 子类实现
+    
 }
 
 - (NSMutableDictionary *)jsonObject {
@@ -103,7 +103,7 @@ kTAEventType const kTAEventTypeUserUniqueAppend = @"user_uniq_append";
             return TD_EVENT_TYPE_TRACK;
         } break;
         case TAEventTypeTrackFirst: {
-            // 首次事件的类型仍然是track
+            
             return TD_EVENT_TYPE_TRACK;
         } break;
         case TAEventTypeTrackUpdate: {
@@ -187,7 +187,7 @@ kTAEventType const kTAEventTypeUserUniqueAppend = @"user_uniq_append";
 -  (void)setTimeZone:(NSTimeZone *)timeZone {
     _timeZone = timeZone;
     
-    // 更新时区信息
+    
     self.timeFormatter.timeZone = timeZone ?: [NSTimeZone localTimeZone];
 }
 
@@ -197,14 +197,14 @@ kTAEventType const kTAEventTypeUserUniqueAppend = @"user_uniq_append";
         _timeFormatter.dateFormat = kDefaultTimeFormat;
         _timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         _timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-        // 默认时区
+        
         _timeFormatter.timeZone = [NSTimeZone localTimeZone];
     }
     return _timeFormatter;
 }
 
 - (void)setTime:(NSDate *)time {
-    // 过滤time为nil
+    
     if (time) {
         [self willChangeValueForKey:@"time"];
         _time = time;

@@ -26,7 +26,7 @@
     dispatch_once(&onceToken, ^{
         NSString *filepath = [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"TDData-data.plist"];
         sharedInstance = [[self alloc] initWithPath:filepath withAppid:appid];
-        TDLogDebug(@"数据库路径：%@", filepath);
+        TDLogDebug(@"sqlite path：%@", filepath);
     });
     return sharedInstance;
 }
@@ -253,7 +253,7 @@
 }
 
 
-#pragma mark - 生成随机的13位数字
+
 -(NSString *)rand13NumString
 {
     int NUMBER_OF_CHARS = 13;

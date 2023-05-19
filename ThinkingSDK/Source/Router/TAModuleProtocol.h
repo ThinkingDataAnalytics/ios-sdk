@@ -20,11 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
-//如果不去设置Level默认是Normal
-//basicModuleLevel不去实现默认Normal
 - (void)basicModuleLevel;
 
-//越大越优先
 - (NSInteger)modulePriority;
 
 - (BOOL)async;
