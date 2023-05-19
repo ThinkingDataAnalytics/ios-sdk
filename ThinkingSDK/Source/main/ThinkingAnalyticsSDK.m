@@ -3,6 +3,7 @@
 #if TARGET_OS_IOS
 #import "TDAutoTrackManager.h"
 //#import "TARouter.h"
+#import "TDAppLaunchReason.h"
 #endif
 
 #import "TDCalibratedTimeWithNTP.h"
@@ -18,7 +19,6 @@
 #import "TAAppExtensionAnalytic.h"
 #import "TAReachability.h"
 #import "TAAppLifeCycle.h"
-#import "TDAppLaunchReason.h"
 //#import "TASessionIdPropertyPlugin.h"
 //#import "TASessionIdManager.h"
 
@@ -232,12 +232,13 @@ static dispatch_queue_t td_trackQueue;
         
         [self registerAppLifeCycleListener];
         
-    
+#if TARGET_OS_IOS
         NSDictionary* ops = [TDAppLaunchReason getAppPushDic];
         if(ops != nil){
             [self track:@"ops_push_click" properties:ops];
         }
         [TDAppLaunchReason clearAppPushParams];
+#endif
         
         if ([self ableMapInstanceTag]) {
             TDLogInfo(@"Thinking Analytics %@ SDK %@ instance initialized successfully with mode: %@, Instance Name: %@,  APP ID: %@, server url: %@, device ID: %@", [[TDDeviceInfo sharedManager] libName] ,[TDDeviceInfo libVersion], [self modeEnumToString:_config.debugMode], _config.name, appid, serverURL, [self getDeviceId]);
