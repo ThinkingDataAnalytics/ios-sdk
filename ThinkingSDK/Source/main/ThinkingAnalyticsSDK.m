@@ -590,6 +590,8 @@ static dispatch_queue_t td_trackQueue;
     event.isOptOut = self.isOptOut;
     event.accountId = self.accountId;
     event.distinctId = self.identifyId;
+    
+    [self configEventTimeValueWithEvent:event time:event.time timeZone:event.timeZone];
         
     dispatch_async(td_trackQueue, ^{
         [self trackUserEvent:event properties:properties isH5:NO];
@@ -606,7 +608,14 @@ static dispatch_queue_t td_trackQueue;
             event.timeValueType = TAEventTimeValueTypeTimeAndZone;
         }
     } else {
-        event.timeValueType = TAEventTimeValueTypeNone;
+        if (calibratedTime && !calibratedTime.stopCalibrate) {
+            NSTimeInterval outTime = [TDDeviceInfo uptime] - calibratedTime.systemUptime;
+            NSDate *serverDate = [NSDate dateWithTimeIntervalSince1970:(calibratedTime.serverTime + outTime)];
+            event.time = serverDate;
+            event.timeValueType = TAEventTimeValueTypeTimeAndZone;
+        }else{
+            event.timeValueType = TAEventTimeValueTypeNone;
+        }
     }
 }
 
@@ -1130,6 +1139,7 @@ static dispatch_queue_t td_trackQueue;
 
 - (void)autoTrackWithEvent:(TAAutoTrackEvent *)event properties:(NSDictionary *)properties {
     TDLogDebug(@"##### autoTrackWithEvent: %@", event.eventName);
+    [self configEventTimeValueWithEvent:event time:nil timeZone:nil];
     [self handleTimeEvent:event];
     [self asyncAutoTrackEventObject:event properties:properties];
 }
