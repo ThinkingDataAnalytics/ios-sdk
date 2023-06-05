@@ -1,0 +1,77 @@
+{
+  "mantle": {
+    "mantleColor": "#CC000000",
+    "mantleCloseEnabled": true
+  },
+  "template": {
+    "viewType": "container",
+    "flexDirection": "column",
+    "alignSelf":"center",
+    "subviews": [
+        {
+            "viewType": "image",
+            "width": "25px",
+            "height": "25px",
+            "localImage": "ta_focus_close",
+            "alignSelf":"flex-end",
+            "action":{
+              "type":"close"
+            }
+        },
+        {
+            "viewType": "container",
+            "flexDirection": "column",
+            "width":"478px",
+            "height":"316px",
+            "marginTop":"10px",
+            "localImage": "bg",
+            "subviews":[
+                {
+                    "viewType": "text",
+                    "fontSize":"20px",
+                    "marginTop":"20px",
+                    "textColor": "#DC143C",
+                    "text":"倒计时 6:00:00",
+                    "alignSelf":"flex-start",
+                    "marginLeft":"20px",
+                },
+                {
+                    "viewType": "image",
+                    "width": "80px",
+                    "height": "80px",
+                    "url": "https://images.669pic.com/element_pic/65/59/52/30/1c0e8156c3c74d1596ca9204279c70b6.jpg",
+                    "alignSelf":"center",
+                    "marginTop":"30px"
+                },
+                {
+                    "viewType": "text",
+                    "fontSize":"16px",
+                    "textColor": "#4169E1",
+                    "text":"数量 * 1",
+                    "alignSelf":"center",
+                    "marginTop":"10px"
+                },
+                {
+                  "viewType": "button",
+                  "width": "300px",
+                  "height": "45px",
+                  "marginTop":"20px",
+                  "marginBottom":"20px",
+                  "text": "领取礼包",
+                  "fontSize": "16px",
+                  "textColor": "#FFFFFF",
+                  "backgroundColor": "#DC143C",
+                  "alignSelf":"center",
+                  "textAlign":"center",
+                  "corner": "5px",
+                  "action": {
+                    "type": "close",
+                    "value": "领取礼包"
+                  }
+                }
+            ]
+        },
+        
+    ]
+  }
+}

@@ -749,6 +749,10 @@ static dispatch_queue_t td_trackQueue;
     }
 }
 
+- (void)registerErrorCallback:(void (^)(NSInteger, NSString * _Nullable, NSString * _Nullable))errorCallback {
+    self.errorCallback = errorCallback;
+}
+
 - (void)setSuperProperties:(NSDictionary *)properties {
     if ([self hasDisabled]) {
         return;

@@ -1,0 +1,6 @@
+framework module TAThirdParty {
+  umbrella header "TAThirdParty.h"
+
+  export *
+  module * { export * }
+}

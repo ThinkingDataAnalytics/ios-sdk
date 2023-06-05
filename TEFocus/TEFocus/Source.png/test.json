@@ -1,0 +1,46 @@
+{
+  "mantle": {
+    "mantleColor": "#CC000000",
+    "mantleCloseEnabled": true
+  },
+  "template": {
+    "viewType": "container",
+    "flexDirection": "column",
+    "width": "300px",
+    "height": "300px",
+    "alignSelf":"center",
+    "subviews": [
+        {
+            "viewType": "image",
+            "width": "200px",
+            "height": "200px",
+            "url": "https://sf-static.sensorsdata.cn/sftest_64ec152085b3334687c4b97c16555e2838debab0.png",
+            "alignSelf":"center",
+        },
+        {
+            "viewType": "text",
+            "fontSize":"20px",
+            "textColor": "#DC143C",
+            "text":"倒计时 6:00:00",
+            "alignSelf":"center"
+        },
+        {
+          "viewType": "button",
+          "width": "200px",
+          "height": "45px",
+          "marginTop":"0px",
+          "text": "领取礼包",
+          "fontSize": "16px",
+          "textColor": "#FFFFFF",
+          "backgroundColor": "#DC143C",
+          "alignSelf":"center",
+          "textAlign":"center",
+          "corner": "5px",
+          "action": {
+            "type": "close",
+            "value": "领取礼包"
+          }
+        }
+    ]
+  }
+}

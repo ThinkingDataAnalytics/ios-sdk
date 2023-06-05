@@ -148,7 +148,7 @@
 
 - (void)test_autoTrack {
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-    NSString *appid = @"22e445595b0f42bd8c5fe35bc44b88d6";
+    NSString *appid = @"appid";
     NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
     TDConfig *config = [TDConfig new];
     config.appid = appid;
@@ -172,7 +172,7 @@
     
     __index++;
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-    NSString *appid = @"1b1c1fef65e3482bad5c9d0e6a823356";
+    NSString *appid = @"appid";
     NSString *url = @"https://receiver.ta.thinkingdata.cn/";
     TDConfig *config = [TDConfig new];
     config.appid = appid;
@@ -210,7 +210,7 @@
 
 - (void)test_AppCrash {
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-    NSString *appid = @"cf918051b394495ca85d1b7787ad7243";
+    NSString *appid = @"appid";
     NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
     TDConfig *config = [TDConfig new];
     config.appid = appid;
@@ -234,7 +234,7 @@
 
 - (void)test_trackStatus {
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-    NSString *appid = @"cf918051b394495ca85d1b7787ad7243";
+    NSString *appid = @"appid";
     NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
     TDConfig *config = [TDConfig new];
     config.appid = appid;
@@ -245,7 +245,7 @@
     [instance login:@"shpyoucan"];
  
     
-    NSString *appid2 = @"22e445595b0f42bd8c5fe35bc44b88d6";
+    NSString *appid2 = @"appid_2";
     NSString *url2 = @"https://receiver-ta-dev.thinkingdata.cn";
     TDConfig *config2 = [TDConfig new];
     config2.appid = appid2;
@@ -270,13 +270,13 @@
 
 - (void)test_SecretKey  {
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-    NSString *appid = @"cf918051b394495ca85d1b7787ad7243";
+    NSString *appid = @"appid";
     NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
     TDConfig *config = [TDConfig new];
     config.appid = appid;
     config.configureURL = url;
     config.enableEncrypt = YES;
-//    config.secretKey = [[TDSecretKey alloc] initWithVersion:1 publicKey:@"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh4AUF0aQaJ4HE3zihwu4Vmrq2trw0Mjfef0STWipkU//tVn/v4rR74woWJWwwYpz14u48P2mgpmMa1nQ3BFLy/nzzKejDT/wQLNs+U71dOEJL/fytIqNph7qib4xxmdh9kQtaec0+0TDjgTkyoSr39BOON1Rv4koq+cRAYVyR2WBqGyjIXEXrKqz78po9cIgMHwADzZZTq65aeYMy42g0jIIzK7SGpRne4hC20BpBtJWSvxBiJvcbUXtbc4QJ1zkErYq5YgiGM7u7EDIMOBxkxtNAXHLhiz/7FWjlm2OFfqh/RR34F7k0XZ4G9YYWwotDsf7f7dQTjpLB3Svm5GfdQIDAQAB"];
+//    config.secretKey = [[TDSecretKey alloc] initWithVersion:1 publicKey:@""];
     [ThinkingAnalyticsSDK startWithConfig:config];
     [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll];
     
@@ -289,7 +289,7 @@
     
     
 //    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-//    NSString *appid1 = @"22e445595b0f42bd8c5fe35bc44b88d6";
+//    NSString *appid1 = @"appid";
 //    NSString *url1 = @"https://receiver-ta-dev.thinkingdata.cn";
 //    TDConfig *config1 = [TDConfig new];
 //    config1.appid = appid1;
@@ -304,7 +304,7 @@
 
 - (void)testAPPPush:(UIApplication *)application launchOptions:(NSDictionary *)launchOptions {
 //    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-//    NSString *appid = @"1b1c1fef65e3482bad5c9d0e6a823356";
+//    NSString *appid = @"appid";
 //    NSString *url = @"http://receiver.ta.thinkingdqata.cn121/";
 //    TDConfig *config = [TDConfig new];
 //    config.appid = appid;
@@ -322,7 +322,7 @@
 
 - (void)test1:(UIApplication *)application launchOptions:(NSDictionary *)launchOptions {
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-    NSString *appid = @"1b1c1fef65e3482bad5c9d0e6a823356";
+    NSString *appid = @"appid";
     NSString *url = @"http://receiver.ta.thinkingdqata.cn121/";
     TDConfig *config = [TDConfig new];
     config.appid = appid;
@@ -362,7 +362,7 @@
 - (void)appLaunchAction:(UIApplication *)application launchOptions:(NSDictionary *)launchOptions {
     
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-    NSString *appid = @"d265efeedb2d469ca275fc3bfe569631";
+    NSString *appid = @"appid";
     NSString *url = @"https://receiver-ta-demo.thinkingdata.cn";
     TDConfig *config = [TDConfig new];
     config.appid = appid;
@@ -505,26 +505,26 @@
     
     TDConfig *config2 = [[TDConfig alloc] init];
     config2.name = @"instanceName2";
-    [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
+    [ThinkingAnalyticsSDK startWithAppId:@"appid"
                                  withUrl:@"http://receiver.ta.thinkingdata.cn/"
                               withConfig:config2];
     
     TDConfig *config3 = [[TDConfig alloc] init];
     config3.name = @"instanceName3";
-    [ThinkingAnalyticsSDK startWithAppId:@"1b1c1fef65e3482bad5c9d0e6a823356"
+    [ThinkingAnalyticsSDK startWithAppId:@"appid"
                                  withUrl:@"https://receiver-ta-dev.thinkingdata.cn"
                               withConfig:config3];
 
     TDConfig *config4 = [[TDConfig alloc] init];
-    [ThinkingAnalyticsSDK startWithAppId:@"22e445595b0f42bd8c5fe35bc44b88d6"
+    [ThinkingAnalyticsSDK startWithAppId:@"appid_1"
                                  withUrl:@"https://receiver-ta-dev.thinkingdata.cn"
                               withConfig:config4];
     
     _instance1 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"instanceName1"];
     _instance2 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"instanceName2"];
     _instance3 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"instanceName3"];
-    _instance4 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"22e445595b0f42bd8c5fe35bc44b88d6"];
-    _instance5 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"1b1c1fef65e3482bad5c9d0e6a823356"];
+    _instance4 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"appid"];
+    _instance5 = [ThinkingAnalyticsSDK sharedInstanceWithAppid: @"appid_1"];
     
     
 //    [_instance1 enableAutoTrack:ThinkingAnalyticsEventTypeAll];
