@@ -4,6 +4,7 @@
 #import "TDAutoTrackManager.h"
 //#import "TARouter.h"
 #import "TDAppLaunchReason.h"
+#import "TAPushClickEvent.h"
 #endif
 
 #import "TDCalibratedTimeWithNTP.h"
@@ -19,7 +20,6 @@
 #import "TAAppExtensionAnalytic.h"
 #import "TAReachability.h"
 #import "TAAppLifeCycle.h"
-#import "TAPushClickEvent.h"
 //#import "TASessionIdPropertyPlugin.h"
 //#import "TASessionIdManager.h"
 
