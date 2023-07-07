@@ -1,11 +1,11 @@
 PODS:
   - MJExtension (3.4.1)
-  - ThinkingSDK (2.8.4-beta.1):
-    - ThinkingSDK/Main (= 2.8.4-beta.1)
-  - ThinkingSDK/Main (2.8.4-beta.1):
+  - ThinkingSDK (2.8.4-beta.5):
+    - ThinkingSDK/Main (= 2.8.4-beta.5)
+  - ThinkingSDK/Main (2.8.4-beta.5):
     - ThinkingSDK/iOS
     - ThinkingSDK/OSX
-  - ThinkingSDK/OSX (2.8.4-beta.1)
+  - ThinkingSDK/OSX (2.8.4-beta.5)
 
 DEPENDENCIES:
   - MJExtension
@@ -21,8 +21,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   MJExtension: 21c5f6f8c4d5d8844b7ae8fbae08fed0b501f961
-  ThinkingSDK: 7411c7eec8708529b1ebd922411fd4ec0ef8920c
+  ThinkingSDK: 15a16b90f0a7cbd880ab407cac0e40460f904c58
 
 PODFILE CHECKSUM: 43f3ad08aa4cbdca74f067a65222230a82661270
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.1

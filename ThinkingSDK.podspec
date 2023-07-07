@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'OSX' do |s|
     path = "ThinkingSDK/Source"
-    s.osx.deployment_target = '10.10'
+    s.osx.deployment_target = '10.11'
     s.source_files = path + '/EventTracker/**/*.{h,m}', path + '/TDRuntime/**/*.{h,m}', path + '/Config/**/*.{h,m}', path + '/DeviceInfo/**/*.{h,m}', path + '/main/**/*.{h,m}',  path + '/Store/*.{h,m}', path + '/Network/**/*.{h,m}','ThinkingSDK/Source/Core/**/*.{h,m,c}', 'ThinkingSDK/Source/AppLifeCycle/**/*.{h,m}', 'ThinkingSDK/Source/Util/**/*.{h,m}', 'ThinkingSDK/Source/Extension/**/*.{h,m}'
     s.osx.exclude_files = path + '/DeviceInfo/TDFPSMonitor.{h,m}', path + '/DeviceInfo/TDPerformance.{h,m}', 'ThinkingSDK/Source/Util/Toast/*.{h,m}'
 
