@@ -57,6 +57,6 @@ static TDPublicConfig* config;
 }
 + (NSString*)version
 {
-    return @"2.8.4-ks";
+    return @"2.8.4-beta.5";
 }
 @end

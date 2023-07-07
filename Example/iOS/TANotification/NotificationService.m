@@ -20,10 +20,21 @@
 - (void)didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
     self.contentHandler = contentHandler;
     self.bestAttemptContent = [request.content mutableCopy];
-    NSLog(@"########-didReceiveNotificationRequest");
     
     // Modify the notification content here...
-    self.bestAttemptContent.title = [NSString stringWithFormat:@"%@ [modified]", self.bestAttemptContent.title];
+    NSLog(@"title: %@", self.bestAttemptContent.title);
+    NSLog(@"subtitle: %@", self.bestAttemptContent.subtitle);
+    NSLog(@"body: %@", self.bestAttemptContent.body);
+    NSLog(@"userInfo: %@", self.bestAttemptContent.userInfo);
+    
+    if ([self.bestAttemptContent.userInfo valueForKeyPath:@"aps.alert.shushuPushTag"]) {
+        NSString *appid = @"22e445595b0f42bd8c5fe35bc44b88d6";
+        NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
+//        [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+//        [ThinkingAnalyticsSDK startWithAppId:appid withUrl:url];
+//        [[ThinkingAnalyticsSDK sharedInstance] track:@"push_info" properties:self.bestAttemptContent.userInfo];
+//        [[ThinkingAnalyticsSDK sharedInstance] flush];
+    }
     
     self.contentHandler(self.bestAttemptContent);
 }

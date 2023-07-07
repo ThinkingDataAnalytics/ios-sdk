@@ -493,9 +493,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = random_app/random_app.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TXK3J8QHU9;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = TXK3J8QHU9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = random_app/Info.plist;
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = aaa;
@@ -513,6 +515,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = cn.thinkingdata.random;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = random_development;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -526,9 +529,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = random_app/random_app.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TXK3J8QHU9;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = TXK3J8QHU9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = random_app/Info.plist;
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = aaa;
@@ -546,6 +551,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = cn.thinkingdata.random;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = random_appstore_distribution;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -556,9 +562,11 @@
 			baseConfigurationReference = BF384C31384E6EDD49F9C244 /* Pods-notification.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TXK3J8QHU9;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = TXK3J8QHU9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = notification/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = notification;
@@ -573,6 +581,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = cn.thinkingdata.random.notification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "random app notification development";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -584,9 +593,11 @@
 			baseConfigurationReference = 08D0FB03AA0D19278CCAF91A /* Pods-notification.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TXK3J8QHU9;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = TXK3J8QHU9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = notification/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = notification;
@@ -601,6 +612,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = cn.thinkingdata.random.notification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "random app notification product";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";

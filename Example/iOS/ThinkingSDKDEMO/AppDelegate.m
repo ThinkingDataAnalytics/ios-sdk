@@ -50,70 +50,12 @@
     
     NSLog(@" [THINKING]  %@", launchOptions);
     
-    
-    [ThinkingAnalyticsSDK calibrateTime:1680600003000];
-    //[ThinkingAnalyticsSDK calibrateTimeWithNtp:@"ntp.aliyun.com"];
-    
-//    [self test_eventTime];
-        
-//    _group = dispatch_group_create();
-//    _queue1 = dispatch_queue_create("queue1", DISPATCH_QUEUE_SERIAL);
-//    _queue2 = dispatch_queue_create("queue2", DISPATCH_QUEUE_SERIAL);
-//    _queue3 = dispatch_queue_create("queue3", DISPATCH_QUEUE_SERIAL);
-//    _queue4 = dispatch_queue_create("queue4", DISPATCH_QUEUE_SERIAL);
-//
-//
-//    dispatch_group_async(_group, _queue1, ^{
-////        NSLog(@"#####_queue1-currnet_thread: %@", [NSThread currentThread]);
-//        for (int i=0; i<100; i++) {
-//            [self test_eventTime];
-//        }
-//
-//    });
-
-
-//    dispatch_group_async(_group, _queue2, ^{
-////        NSLog(@"#####_queue2-currnet_thread: %@", [NSThread currentThread]);
-//        for (int i=0; i<100; i++) {
-//            [self test_eventTime];
-//        }
-//    });
-//
-//    dispatch_group_async(_group, _queue3, ^{
-////        NSLog(@"#####_queue3-currnet_thread: %@", [NSThread currentThread]);
-//        for (int i=0; i<100; i++) {
-//            [self test_eventTime];
-//        }
-//    });
-//
-//    dispatch_group_async(_group, _queue4, ^{
-////        NSLog(@"#####_queue4-currnet_thread: %@", [NSThread currentThread]);
-//        for (int i=0; i<100; i++) {
-//            [self test_eventTime];
-//        }
-//    });
-//
-//    dispatch_group_notify(_group, dispatch_get_main_queue(), ^{
-//        NSLog(@"######### ---%d", __index);
-//        [[ThinkingAnalyticsSDK sharedInstance] track:@""];
-//        NSLog(@"#########");
-//    });
-
-//    [self test_AppCrash];
-    
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        raise(SIGABRT);
-////        raise(SIGPIPE);
-//    });
-    
     [self testAPPPush:application launchOptions:launchOptions];
     
-//    [self test_trackStatus];
-
-//    [self test_SecretKey];
-
     return YES;
 }
+
+//MARK: - test
 
 - (void)test_multipleInstance {
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
@@ -303,6 +245,9 @@
 }
 
 - (void)testAPPPush:(UIApplication *)application launchOptions:(NSDictionary *)launchOptions {
+    
+    [ThinkingAnalyticsSDK setCustomerLibInfoWithLibName:@"a" libVersion:@"1"];
+    
 //    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
 //    NSString *appid = @"appid";
 //    NSString *url = @"http://receiver.ta.thinkingdqata.cn121/";
@@ -343,7 +288,6 @@
     }];
     [[ThinkingAnalyticsSDK sharedInstance] flush];
     [ThinkingAnalyticsSDK calibrateTimeWithNtp:@"ntp.aliyun.com"];
-    [self appLaunchAction:application launchOptions:launchOptions];
     
     [[ThinkingAnalyticsSDK sharedInstance] timeEvent:@"timeEvent"];
     
@@ -578,6 +522,8 @@
 //    [self.instance1 optInTracking];
 }
 
+//MARK: -
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
@@ -642,21 +588,20 @@
 //- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
 //    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
 //}
-
-// ios(10.0)
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
-    completionHandler(UNNotificationPresentationOptionBadge|UNNotificationPresentationOptionAlert|UNNotificationPresentationOptionSound);
-}
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
-    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-    completionHandler();
-}
-
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
-
-    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-}
+//
+//// ios(10.0)
+//- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
+//    completionHandler(UNNotificationPresentationOptionBadge|UNNotificationPresentationOptionAlert|UNNotificationPresentationOptionSound);
+//}
+//- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
+//    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+//    completionHandler();
+//}
+//
+//
+//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+//    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+//}
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     NSString *token;

@@ -101,9 +101,6 @@
 		2EA56A3928E44E8D007ABF9F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2EBE2CA02750D0CF005B3F09 /* AppDelegate+WW.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+WW.h"; sourceTree = "<group>"; };
 		2EBE2CA12750D0CF005B3F09 /* AppDelegate+WW.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+WW.m"; sourceTree = "<group>"; };
-		2EC93099288693D000FB0A45 /* NotificationService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationService.h; sourceTree = "<group>"; };
-		2EC9309A288693D000FB0A45 /* NotificationService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationService.m; sourceTree = "<group>"; };
-		2EC9309C288693D000FB0A45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2EF3A5DA27A0182D007D5F44 /* TDTrackAPIListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDTrackAPIListCell.h; sourceTree = "<group>"; };
 		2EF3A5DB27A0182D007D5F44 /* TDTrackAPIListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDTrackAPIListCell.m; sourceTree = "<group>"; };
 		3A301C839CD51A77CF9211F8 /* Pods-ThinkingSDKDEMO-NotificationServer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO-NotificationServer.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO-NotificationServer/Pods-ThinkingSDKDEMO-NotificationServer.debug.xcconfig"; sourceTree = "<group>"; };
@@ -287,16 +284,6 @@
 			path = launch;
 			sourceTree = "<group>";
 		};
-		2EC93098288693D000FB0A45 /* NotificationCenter */ = {
-			isa = PBXGroup;
-			children = (
-				2EC93099288693D000FB0A45 /* NotificationService.h */,
-				2EC9309A288693D000FB0A45 /* NotificationService.m */,
-				2EC9309C288693D000FB0A45 /* Info.plist */,
-			);
-			path = NotificationCenter;
-			sourceTree = "<group>";
-		};
 		2EF3A5D927A0182D007D5F44 /* view */ = {
 			isa = PBXGroup;
 			children = (
@@ -466,7 +453,6 @@
 			children = (
 				F380B2A722C0E8BB00955FC5 /* ThinkingSDKDEMO */,
 				01D3383F283FDA60002B1CAF /* ThinkingShare */,
-				2EC93098288693D000FB0A45 /* NotificationCenter */,
 				5689774629B5BCB2002CD885 /* TANotification */,
 				F380B2A622C0E8BB00955FC5 /* Products */,
 				F3BA589F2301388D00D6D7DE /* Frameworks */,

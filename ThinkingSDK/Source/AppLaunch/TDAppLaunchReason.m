@@ -13,7 +13,7 @@
 #import "TDAppState.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "TDAppDelegateProxyManager.h"
-
+#import "TAPushClickEvent.h"
 
 @implementation TDAppLaunchReason
 
@@ -33,20 +33,21 @@
             NSData *jsonData = [userInfo[@"te_extras"] dataUsingEncoding:NSUTF8StringEncoding];
             NSError *err;
             NSDictionary *responseDic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&err];
-            NSDictionary *opsReceiptProperties = responseDic[@"ops_receipt_properties"];
+            NSDictionary *opsReceiptProperties = responseDic[@"#ops_receipt_properties"];
             if ([opsReceiptProperties isKindOfClass:[NSString class]]) {
                             NSString *opsStr = (NSString *)opsReceiptProperties;
                             opsReceiptProperties = [NSJSONSerialization JSONObjectWithData:[opsStr dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:&err];
                         }
             if (opsReceiptProperties && [opsReceiptProperties isKindOfClass:[NSDictionary class]]) {
                 NSMutableDictionary *dic = [ThinkingAnalyticsSDK _getAllInstances];
-                NSDictionary *ops = @{@"ops_receipt_properties":opsReceiptProperties};
                 if(dic == nil || dic.count == 0){
-                    appPushClickDic = ops;
+                    appPushClickDic = opsReceiptProperties;
                 }else{
                     for (NSString *instanceToken in dic.allKeys) {
                         ThinkingAnalyticsSDK *instance = dic[instanceToken];
-                        [instance track:@"ops_push_click" properties:ops];
+                        TAPushClickEvent *pushEvent = [[TAPushClickEvent alloc]initWithName: @"ops_push_click"];
+                        pushEvent.ops = opsReceiptProperties;
+                        [instance autoTrackWithEvent:pushEvent properties:@{}];
                         [instance flush];
                     }
                 }

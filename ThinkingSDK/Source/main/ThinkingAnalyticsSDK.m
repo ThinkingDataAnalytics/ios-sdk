@@ -19,6 +19,7 @@
 #import "TAAppExtensionAnalytic.h"
 #import "TAReachability.h"
 #import "TAAppLifeCycle.h"
+#import "TAPushClickEvent.h"
 //#import "TASessionIdPropertyPlugin.h"
 //#import "TASessionIdManager.h"
 
@@ -235,7 +236,10 @@ static dispatch_queue_t td_trackQueue;
 #if TARGET_OS_IOS
         NSDictionary* ops = [TDAppLaunchReason getAppPushDic];
         if(ops != nil){
-            [self track:@"ops_push_click" properties:ops];
+            TAPushClickEvent *pushEvent = [[TAPushClickEvent alloc]initWithName: @"ops_push_click"];
+            pushEvent.ops = ops;
+            [self autoTrackWithEvent:pushEvent properties:@{}];
+            [self flush];
         }
         [TDAppLaunchReason clearAppPushParams];
 #endif
@@ -917,7 +921,7 @@ static dispatch_queue_t td_trackQueue;
         return;
     }
     
-    if ([TDAppState shareInstance].relaunchInBackground && !self.config.trackRelaunchedInBackgroundEvents) {
+    if ([TDAppState shareInstance].relaunchInBackground && !self.config.trackRelaunchedInBackgroundEvents && [event.eventName isEqualToString:TD_APP_START_BACKGROUND_EVENT]) {
         return;
     }
     
