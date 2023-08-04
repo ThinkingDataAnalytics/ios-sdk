@@ -1,9 +1,9 @@
 PODS:
   - Masonry (1.1.0)
-  - ThinkingSDK (2.8.4-beta.5):
-    - ThinkingSDK/Main (= 2.8.4-beta.5)
-  - ThinkingSDK/iOS (2.8.4-beta.5)
-  - ThinkingSDK/Main (2.8.4-beta.5):
+  - ThinkingSDK (2.8.4-beta.6):
+    - ThinkingSDK/Main (= 2.8.4-beta.6)
+  - ThinkingSDK/iOS (2.8.4-beta.6)
+  - ThinkingSDK/Main (2.8.4-beta.6):
     - ThinkingSDK/iOS
     - ThinkingSDK/OSX
 
@@ -21,8 +21,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
-  ThinkingSDK: b799da977170d63822cd057fdb98be7fb4f79fb3
+  ThinkingSDK: c99e168101cce7bea960a1c4ed1e4d5b9f98b093
 
 PODFILE CHECKSUM: 354992ed81dea3bbc207c3b4e786273c94343c91
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.11.3
