@@ -20,7 +20,7 @@
     return manager;
 }
 
-- (void)proxyNotifications {
+- (void)proxyNotifications NS_EXTENSION_UNAVAILABLE_IOS(""){
 
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
