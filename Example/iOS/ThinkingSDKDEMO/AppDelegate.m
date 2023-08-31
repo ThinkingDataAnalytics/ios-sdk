@@ -8,8 +8,7 @@
 
 #import "AppDelegate.h"
 #import "AppDelegate+TDUI.h"
-#import <ThinkingSDK/ThinkingAnalyticsSDK.h>
-#import <ThinkingSDK/TDLogging.h>
+#import <ThinkingSDK/ThinkingSDK.h>
 #import "TDDemoLocation.h"
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
@@ -42,14 +41,10 @@
  NSInteger __index = 0;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
-    NSLog(@" [THINKING] home: %@", NSHomeDirectory());
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = [self createRootViewController];
     [self.window makeKeyAndVisible];
-    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-    
-    NSLog(@" [THINKING]  %@", launchOptions);
-    
+                    
     [self testAPPPush:application launchOptions:launchOptions];
     
     return YES;
@@ -177,7 +172,7 @@
 - (void)test_trackStatus {
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     NSString *appid = @"appid";
-    NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
+    NSString *url = @"";
     TDConfig *config = [TDConfig new];
     config.appid = appid;
     config.configureURL = url;
@@ -188,7 +183,7 @@
  
     
     NSString *appid2 = @"appid_2";
-    NSString *url2 = @"https://receiver-ta-dev.thinkingdata.cn";
+    NSString *url2 = @"";
     TDConfig *config2 = [TDConfig new];
     config2.appid = appid2;
     config2.configureURL = url2;
@@ -213,12 +208,14 @@
 - (void)test_SecretKey  {
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
     NSString *appid = @"appid";
-    NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
+    NSString *url = @"";
     TDConfig *config = [TDConfig new];
     config.appid = appid;
     config.configureURL = url;
     config.enableEncrypt = YES;
-//    config.secretKey = [[TDSecretKey alloc] initWithVersion:1 publicKey:@""];
+    
+    config.secretKey = [[TDSecretKey alloc] initWithVersion:1 publicKey:@""];
+    
     [ThinkingAnalyticsSDK startWithConfig:config];
     [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll];
     
@@ -232,7 +229,7 @@
     
 //    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
 //    NSString *appid1 = @"appid";
-//    NSString *url1 = @"https://receiver-ta-dev.thinkingdata.cn";
+//    NSString *url1 = @"";
 //    TDConfig *config1 = [TDConfig new];
 //    config1.appid = appid1;
 //    config1.configureURL = url1;
@@ -245,22 +242,34 @@
 }
 
 - (void)testAPPPush:(UIApplication *)application launchOptions:(NSDictionary *)launchOptions {
-    
-    [ThinkingAnalyticsSDK setCustomerLibInfoWithLibName:@"a" libVersion:@"1"];
-    
-//    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
-//    NSString *appid = @"appid";
-//    NSString *url = @"http://receiver.ta.thinkingdqata.cn121/";
-//    TDConfig *config = [TDConfig new];
-//    config.appid = appid;
-//    config.configureURL = url;
-//    config.debugMode = ThinkingAnalyticsDebug;
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    NSString *appid = @"77d89eb6d38a4df5958af993c7ee3330";
+    NSString *url = @"https://receiver-ta-preview.thinkingdata.cn";
+    TDConfig *config = [TDConfig new];
+    config.appid = appid;
+    config.configureURL = url;
+    config.debugMode = ThinkingAnalyticsDebug;
 //    config.launchOptions = launchOptions;
-//    [ThinkingAnalyticsSDK startWithConfig:config];
-//    [[ThinkingAnalyticsSDK sharedInstance] setSuperProperties:@{@"wangdaji#123":@"2342#aa"}];
-//    
-//    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+//    config.appGroupName = @"group.cn.thinking.thinkingdata";
+//    config.enableReceiptPush = NO;
+    
+//    config.secretKey = [[TDSecretKey alloc] initWithVersion:1 publicKey:@"123"];
 
+    config.defaultTimeZone = [NSTimeZone timeZoneWithName:@"Asia/Kolkata"];
+    
+    [ThinkingAnalyticsSDK startWithConfig:config];
+
+    
+//    [[ThinkingAnalyticsSDK sharedInstance] addWebViewUserAgent];
+
+//    [[ThinkingAnalyticsSDK sharedInstance] track:@"hello"];
+    
+//    [[ThinkingAnalyticsSDK sharedInstance] login:@"yxiong_test"];
+    
+//    [[ThinkingAnalyticsSDK sharedInstance] setSuperProperties:@{@"wangdaji#123":@"2342#aa"}];
+    
+    [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll];
+    
 //    [self registerLocalNotice];
     [self registerRemoteNotifications:application];
 }
@@ -372,30 +381,22 @@
 }
 
 - (void)registerRemoteNotifications:(UIApplication *)application {
-
     if (@available(iOS 10, *)) {
         UNUserNotificationCenter *notificationCenter = [UNUserNotificationCenter currentNotificationCenter];
         notificationCenter.delegate = self;
         [notificationCenter requestAuthorizationWithOptions:UNAuthorizationOptionAlert | UNAuthorizationOptionBadge | UNAuthorizationOptionSound completionHandler:^(BOOL granted, NSError * _Nullable error) {
 
             if (!error && granted) {
-                
+
             } else {
-                
+
             }
         }];
 
         [notificationCenter getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-            NSLog(@" [THINKING] settings = %@", settings);
+            NSLog(@" [Example] settings = %@", settings);
         }];
-
-    } else if (@available(iOS 8.0, *)) {
-        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeSound | UIUserNotificationTypeBadge categories:nil]];
     }
-    
-    
-    [[UIApplication sharedApplication] registerForRemoteNotifications];
-    
 }
 
 - (void)registerLocalNotice {
@@ -409,7 +410,7 @@
         content.body = @"local push content";
         content.sound = [UNNotificationSound defaultSound];
         content.badge = @1;
-        NSTimeInterval time = [[NSDate dateWithTimeIntervalSinceNow:10] timeIntervalSinceNow];
+        NSTimeInterval time = [[NSDate dateWithTimeIntervalSinceNow:3] timeIntervalSinceNow];
 
         UNTimeIntervalNotificationTrigger *trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:time repeats:NO];
 
@@ -526,32 +527,35 @@
 
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+    NSLog(@" [Example] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+    NSLog(@" [Example] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+    NSLog(@" [Example] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
     // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
 }
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+
+    NSLog(@" [Example] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+//    [[ThinkingAnalyticsSDK sharedInstance] track:@"applicationWillTerminate"];
+
+    NSLog(@" [Example] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
@@ -559,49 +563,55 @@
 
 // ios(8.0)
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler {
-    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+    NSLog(@" [Example] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
 //    [ThinkingAnalyticsSDK application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
     return YES;
 }
 
 // ios(9.0)
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+    NSLog(@" [Example] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
     return YES;
 }
 
 // ios(2.0, 9.0)
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+    NSLog(@" [Example] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
     return YES;
 }
 
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(id)annotation {
-    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+    NSLog(@" [Example] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
     return YES;
 }
 
 #pragma mark push
 
 // ios(4.0, 10.0)
-//- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-//    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-//}
-//
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    NSLog(@" [Example] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+        
+}
+
 //// ios(10.0)
+//// 前台收到推送
 //- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
 //    completionHandler(UNNotificationPresentationOptionBadge|UNNotificationPresentationOptionAlert|UNNotificationPresentationOptionSound);
 //}
+//
+//// 点击推送
 //- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
-//    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+//    NSLog(@" [Example] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
 //    completionHandler();
 //}
-//
-//
-//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
-//    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
-//}
+
+// 如果不使用 UserNotification 框架，那么这个方法的调用时机为：前台收到推送（无通知栏界面），点击通知栏推送消息
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+    NSLog(@" [Example] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+
+    completionHandler(UIBackgroundFetchResultNoData);
+}
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     NSString *token;
@@ -617,18 +627,17 @@
         token = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
     }
     
-    NSLog(@" [THINKING] @@@@@@deviceToken==%@",token);
-
+    NSLog(@" [Example] 系统方法收到了推送token： deviceToken==%@",token);
 }
 
--(void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-    NSLog(@" [THINKING] 1234 %@_%@_%@",@"DEMO_",NSStringFromSelector(_cmd), error.userInfo);
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    NSLog(@" [Example] 系统方法获取推送token失败：%@", error.localizedDescription);
 }
 
 #pragma mark 3d touch
 // ios(9.0)
 - (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler  API_AVAILABLE(ios(9.0)){
-    NSLog(@" [THINKING] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
+    NSLog(@" [Example] %@_%@",@"DEMO_",NSStringFromSelector(_cmd));
 }
 
 

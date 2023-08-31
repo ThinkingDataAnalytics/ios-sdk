@@ -1,229 +1,88 @@
+### v3.0.0-beta.1
+**Date:** 2023/08/31
 
-**v2.8.4-beta.2** (2023-05-19)
+**Notes:**
 
-- 优化通知回调方法
+* The public API is changed to static access
 
-**v2.8.3.2** (2023-04-03)
+### v2.8.4
+**Date:** 2023/08/28
 
-- 优化代码，提升 SDK 稳定性
+**Notes:**
 
-**v2.8.3.1** (2022-12-30)
+* Release the official version
 
-- 优化代码，提升 SDK 稳定性
+### v2.8.4-beta.6
+**Date:** 2023/08/04
 
-**v2.8.3** (2022-11-08)
+**Notes:** 
 
-- 优化代码，提高SDK稳定性
-- 移除三方数据集成代码
+* Improve the accuracy of time zone
 
-**v2.8.2** (2022-09-27)
+### v2.8.4-beta.5
+**Date:** 2023/07/07
 
-- 代码优化，提升SDK稳定性
-- 新增预置属性#device_type
-- 新增获取手机region信息接口
+**Notes:** 
 
-**v2.8.1.1** (2022-06-27)
+* Supports more comprehensive app start event collection
 
-- 优化代码，提升 SDK 稳定性
+### v2.8.4-beta.1
+**Date:** 2023/04/13
 
-**v2.8.1** (2022-06-13)
+**Notes:**
 
-- 提供AppExtension数据采集模块
+* Updated how to get the phone boot time
 
-**v2.8.0.1** (2022-05-23)
+### v2.8.3.2
+**Date:** 2023/04/03
 
-- 修复获取推送启动原因时导致的系统回调无法执行
+**Notes:** 
 
-**v2.8.0** (2022-04-20)
+* Compatible with xcode 14.3
 
-* 新增user_uniqAppend接口
-* 支持数据传输加密
-* 支持数据上报的暂停&开始，优化数据停止上报接口 
+### v2.8.3
+**Date:** 2022/11/08
 
-**v2.7.3** (2021-10-20)
+**Notes:** 
 
-- 支持复杂数据类型传输
-- 自动采集事件支持自定义属性
+* Optimize code and improve SDK stability
+* Remove third-party dataset code
 
-**v2.7.2** (2021-08-18)
+### v2.8.2
+**Date:** 2022/09/27
 
-- 修复极低概率下出现的闪退问题
+**Notes:** 
 
-**v2.7.1** (2021-07-21)
+* Code optimization to improve SDK stability
+* Added preset property #device_type
+* Added an interface for getting mobile phone region information
 
-- 修复进入后台阻塞主线程的问题
+### v2.8.1.1
+**Date:** 2022/06/27
 
-**v2.7.0** (2021-06-16)
+**Notes:** 
 
-- 新增预置属性获取接口
-- 优化异常捕获，新增两种信号量 SIGPIPE, SIGTRAP
-- 优化 OC 枚举值，兼容 Swift
-- 修复 PRODUCT_NAME 为中文时，出现崩溃栈信息乱码问题
-- TDConfig 添加初始化方法
+* Code optimization to improve SDK stability
 
-**v2.6.5** (2021-03-26)
+### v2.8.1
+**Date:** 2022/06/13
 
-- 优化网络类型采集
-- 规范事件属性、公共属性、预置属性的设置优先级
-- 增加本地文件记录访客 id
-- 校正 ServerUrl
-- 优化 Log 打印格式
-- 优化开启 AutoTrack 时的数据上报
+**Notes:** 
 
-**v2.6.4** (2021-03-15)
+* Provide AppExtension data acquisition module
 
-- 修复 iOS 14 场景下，偶尔出现获取网络类型导致崩溃
-- 修复无网络情况下，Debug 模式下运行，偶尔出现崩溃
-- 新增预置属性`#bundle_id`(应用包名)
+### v2.8.0.1
+**Date:** 2022/05/23
 
-**v2.6.3** (2021-01-18)
+**Notes:** 
 
-- 修复极低概率出现的闪退问题
+* Fixed that the system callback could not be executed when getting the start reason for Push
 
-**v2.6.2** (2020-10-29)
+### v2.8.0
+**Date:** 2022/04/18
 
-- 适配 5G 网络
-- 优化 install,start 事件上报逻辑
-- 优化数据传输格式
-- 默认网络上报策略调整为 2G/3G/4G/5G/WIFI
+**Notes:** 
 
-**v2.6.1** (2020-08-25)
-
-- 修复特殊事件不设置timeZone上报了错误的#zone_offset问题.
-
-**v2.6.0** (2020-08-24)
-
-- 增加新的API. 现在可以提交特殊事件:
-    - 首次事件: 带有 `#first_check_id` 字段
-    - 更新/重写事件: eventType为`track_update`或`track_overwrite`
-- 对部分功能进行了优化.
-
-**v2.5.6** (2020-08-11)
-
-- 优化时间校准API, 现在可以多次调用.
-
-**v2.5.5** (2020-06-23)
-
-- 修复部分机型 #system_language 异常
-
-**v2.5.4** (2020-06-22)
-
-- 修复 v2.5.3 undeclared selector 'applicationWillTerminateNotification:' [-Wundeclared-selector]
-
-**v2.5.3** (2020-06-22)
-
-- 新增预置属性 #system_language
-- 固定预置属性 #os 为 "iOS"
-- 优化代码
-
-**v2.5.2** (2020-05-15)
-
-- 修复 v2.5.1 引入的bug，在 DEBUG 模式，有异常数据时无法 debug 的bug
-
-**v2.5.1** (2020-05-14)
-
-- 适配TA 后台 2.7 版本屏蔽事件配置接口
-- 调整 DEBUG 模式，去除客户端抛异常逻辑
-
-**v2.5.0** (2020-04-03)
-
-- 支持客户端 SDK 的时间校准功能
-- 新增指定时间的用户属性设置接口
-- 代码优化
-
-**v2.4.3** (2020-03-11)
-
-- 去除 UIWebView 相关代码
-
-**v2.4.2** (2020-03-09)
-
-- 延迟初始化时正常按间隔上报数据
-- 代码优化
-
-**v2.4.1** (2020-02-21)
-
-- 修复 v2.3.0、v2.3.1、v2.4.0 引入的 bug
-
-**v2.4.0** (2020-02-10)
-
-- 支持 NSArray 类型
-- 新增 user_append 接口
-- 去除客户端的属性格式检查
-
-**v2.3.1** (2020/01/07)
-
-- 支持配置默认时区
-
-**v2.3.0** (2019/12/31)
-
-- 支持 Debug 模式: 需配合后台 Debug 设备白名单一起开启
-- H5 与原生 SDK 打通支持多实例
-- 优化 SDK 配置: 增加全局设置;上报策略允许针对不同项目配置
-- 支持配置HTTPS证书校验
-
-**v2.2.2** (2019/12/01)
-
-- 修复 EnableSceneSupport 时，APP启动事件 resume_from_background 会异常的问题
-
-**v2.2.1** (2019/11/22)
-
-- 依据Appstore ITMS-90809 默认去除 UIWebView 相关内容
-
-**v2.2.0** (2019/10/18)
-
-- 支持重置用户属性
-- 事件预置属性新增时间偏移，适配多时区需求
-- 新增接口，支持按照指定时区上传事件数据
-
-**v2.1.1** (2019/10/11)
-
-- 优化上报逻辑，解决缓存数据库异常导致的重复上报
-
-**v2.1.0** (2019/08/30)
-
-- 支持轻量级实例, 便于上报被动事件等需求
-- 新增 enableTracking 接口, 可以打开或关闭实例上报功能
-- 新增 optOutTracking/optInTracking 接口
-- 其他代码优化
-
-**v2.0.1** (2019/07/15)
-
-- 优化自动采集事件的时间序列
-
-**v2.0.0** (2019/07/10)
-
-- 支持重复事件监测功能
-- 自动采集事件新增 APP 安装事件
-- 自动采集事件新增后台自启事件，默认不采集
-- 自动采集新增 UIControl 类的点击事件
-
-**v1.2.0** (2019/06/15)
-
-- 支持动态公共属性
-- 支持 APP 崩溃信息自动采集
-- 支持多项目采集 （多 APP ID）
-- 新增获取公共属性接口
-- 新增 flush 接口，支持主动上报数据
-
-**v1.1.3** (2019/06/10)
-
-- APP 版本数据跟随每个事件发送
-
-**v1.1.2** (2019/06/04)
-
-- 修复 iOS 10 嵌入H5 通过原生SDK 发送的异常
-- 修复 distinct_id 不兼容老版本的问题
-
-**v1.1.1** (2019/05/03)
-
-- 支持 bitcode
-- 支持 H5 与原生 SDK 打通
-
-**v1.0.12** (2018/12/07)
-
-- 修复时间格式问题: 不使用公历的国家的时间格式不符合要求
-
-**v1.0.11** (2018/11/22)
-
-- 新增 setNetworkType接口，可设置允许上报数据的网络环境
-- 删除废弃的 isWifiForcedPush 接口
+* Code optimization
+* Add third-party data integration function
+* Add encryption function

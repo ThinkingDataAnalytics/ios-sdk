@@ -21,6 +21,8 @@
 #import "TDUserIDVC.h"
 #import "TDAutoTrackVC.h"
 #import "TDH5VC.h"
+#import "TDAPMViewController.h"
+
 static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
 
 @interface TDHomeVC ()<UITableViewDelegate,UITableViewDataSource,TDScreenAutoTracker>
@@ -37,9 +39,7 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
 - (void)viewDidLoad {
     [super viewDidLoad];
     NSString *homePath = NSHomeDirectory();
-    
-    NSLog(@"Home Directory：%@",homePath);
-    
+        
 //    dispatch_async(dispatch_get_global_queue(0, 0), ^{
 //        NSLog(@"##########2222");
 //        [[ThinkingAnalyticsSDK sharedInstance] enableAutoTrack:ThinkingAnalyticsEventTypeAll];
@@ -92,6 +92,11 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
         [[TDUtil jsd_findVisibleViewController].navigationController pushViewController:VC animated:YES];
     }];
     
+    ActionModel *apmModel =[[ActionModel alloc] initWithName:@"APM of Page" action:^{
+        TDAPMViewController *VC = [TDAPMViewController new];
+        [[TDUtil jsd_findVisibleViewController].navigationController pushViewController:VC animated:YES];
+    }];
+    
     __weak typeof(self) weakSelf = self;
     ActionModel *initModel = [[ActionModel alloc] initWithName:@"initialization" action:^{
         TDInitVC *VC = [TDInitVC new];
@@ -103,6 +108,7 @@ static NSString *const kTrackAPIListCellID = @"kTrackAPIListCellID";
             [weakSelf.commands addObject:autoModel];
             [weakSelf.commands addObject:h5Model];
             [weakSelf.commands addObject:otherModel];
+            [weakSelf.commands addObject:apmModel];
             [weakSelf.tableView reloadData];
         };
         [TDUtil.currentVC.navigationController pushViewController:VC animated:YES];

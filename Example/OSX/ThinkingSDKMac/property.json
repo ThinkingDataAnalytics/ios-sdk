@@ -1,0 +1,133 @@
+{
+    "event_name": "test_event01",
+    "event_id":"123",
+    "properties": {
+        "country":"韩国",
+        "country_code":"JP",
+        "micro_decimal": -0.2482,
+        "device_id": "hlEYEb31BXPWhZNbmXDf69aDh7A8l4cGwaku9vQnjtpKIJnJ9S",
+        "level": 71,
+        "object_list": [
+            {
+                "skin_name": "远游之枪|激情绿茵|逐梦之星",
+                "new_type": 0,
+                "ename": 132,
+                "skins_name": [
+                    "远游之枪",
+                    "激情绿茵",
+                    "逐梦之星"
+                ],
+                "cname": "马可波罗",
+                "is_on": true,
+                "begin_time": "2021-05-08 23:55:54",
+                "hero_type": 5,
+                "hero_new": "new",
+                "title": "远游之枪"
+            },
+            {
+                "skin_name": "半神之弓|精灵王|阿尔法小队|辉光之辰|黄金射手座",
+                "new_type": 0,
+                "ename": 169,
+                "skins_name": [
+                    "半神之弓",
+                    "精灵王",
+                    "阿尔法小队",
+                    "辉光之辰",
+                    "黄金射手座"
+                ],
+                "cname": "后羿",
+                "is_on": true,
+                "begin_time": "2021-08-30 18:34:48",
+                "hero_type": 5,
+                "title": "半神之弓",
+                "new_name": "月亮"
+            },
+            {
+                "skin_name": "炼金大师|圆桌骑士|饕餮|华丽摇滚",
+                "new_type": 0,
+                "ename": 186,
+                "hero_type2": 3,
+                "cname": "太乙真人",
+                "skins_name": [
+                    "炼金大师",
+                    "圆桌骑士",
+                    "饕餮",
+                    "华丽摇滚"
+                ],
+                "is_on": true,
+                "begin_time": "2021-04-19 03:09:32",
+                "hero_type": 6,
+                "title": "炼金大师"
+            },
+            {
+                "skin_name": "冰雪之华|精灵公主|偶像歌手|凤凰于飞|幻想奇妙夜",
+                "new_type": 0,
+                "ename": 152,
+                "cname": "王昭君",
+                "skins_name": [
+                    "冰雪之华",
+                    "精灵公主",
+                    "偶像歌手",
+                    "凤凰于飞",
+                    "幻想奇妙夜"
+                ],
+                "is_on": false,
+                "begin_time": "2021-02-16 14:41:29",
+                "hero_type": 2,
+                "title": "冰雪之华"
+            }
+        ],
+        "zone_offset": -5,
+        "draw_type": "7连抽",
+        "data_source": "Import_Tools",
+        "diamond_amount": 119,
+        "card_list": [
+            "2003",
+            "1003",
+            "2001",
+            "1003",
+            "1001",
+            "1001",
+            "2007"
+        ],
+        "platform": "Android",
+        "luky_day": "2027-08-16 08:18:54.000",
+        "lib": "Python SDK",
+        "interest": [
+            "运动",
+            "跳舞",
+            "唱歌",
+            "唱歌"
+        ],
+        "temperature": -220.29,
+        "inteset_arrray_string": [
+            "运动",
+            "跳舞",
+            "唱歌",
+            "唱歌"
+        ],
+        "is_fine": true,
+        "app_version": "V1.1",
+        "object": {
+            "skin_name": "齐天大圣|地狱火|西部大镖客|美猴王|至尊宝|全息碎影|大圣娶亲",
+            "new_type": 0,
+            "ename": 167,
+            "hero_type2": 1,
+            "cname": "孙悟空",
+            "skins_name": [
+                "齐天大圣",
+                "地狱火",
+                "西部大镖客",
+                "美猴王",
+                "至尊宝",
+                "全息碎影",
+                "大圣娶亲"
+            ],
+            "begin_time": "2021-09-16 14:54:50",
+            "is_on": true,
+            "hero_type": 4,
+            "title": "齐天大圣",
+            "new_name": "太阳"
+        }
+    }
+}

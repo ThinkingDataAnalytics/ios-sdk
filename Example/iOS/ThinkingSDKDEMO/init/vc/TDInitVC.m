@@ -141,7 +141,6 @@
             config.name = _instanceNameTF.text;
         }
 //        config.name = @"123";
-//        config.autoTrackEventType = ThinkingAnalyticsEventTypeAppViewScreen;
 //        config.enableEncrypt = YES;
 //        config.debugMode = ThinkingAnalyticsDebug;
 //        config.localSecretKey = ^TDSecretKey * _Nonnull{
@@ -153,7 +152,9 @@
         [ThinkingAnalyticsSDK startWithConfig:config];
         ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:config.appid];
         
-//        [ThinkingAnalyticsSDK calibrateTimeWithNtp:@"time.apple.com"];
+        [ThinkingSDKAPI setInstance:instance];
+        
+        [ThinkingAnalyticsSDK calibrateTimeWithNtp:@"time.apple.com"];
         
         
         ThinkingAnalyticsAutoTrackEventType autoTrackEventType = ThinkingAnalyticsEventTypeAll;
@@ -177,7 +178,7 @@
         [ThinkingSDKAPI setInstance:instance];
 //        [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
         
-        [[ThinkingAnalyticsSDK sharedInstance] track:@"yxiong" properties:nil time:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
+//        [[ThinkingAnalyticsSDK sharedInstance] track:@"yxiong" properties:nil time:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
         
         if(_callback != nil)
         {

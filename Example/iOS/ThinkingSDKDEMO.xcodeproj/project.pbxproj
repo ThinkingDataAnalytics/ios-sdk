@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -25,7 +25,8 @@
 		5207C9DE27EDFF23007DF5F3 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9DD27EDFF23007DF5F3 /* WebKit.framework */; };
 		528FC1E427E850B300A68370 /* Pods_ThinkingSDKDEMO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 528FC1E327E850B300A68370 /* Pods_ThinkingSDKDEMO.framework */; };
 		5689774929B5BCB2002CD885 /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 5689774829B5BCB2002CD885 /* NotificationService.m */; };
-		5689774D29B5BCB2002CD885 /* TANotification.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5689774529B5BCB2002CD885 /* TANotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5689774D29B5BCB2002CD885 /* TANotification.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5689774529B5BCB2002CD885 /* TANotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		56B6409929909EA600E19AED /* TDAPMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56B6409729909EA600E19AED /* TDAPMViewController.m */; };
 		6E3B49E8250603520021B467 /* ActionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3B49E7250603520021B467 /* ActionModel.m */; };
 		6E3B49EB250603CC0021B467 /* TDUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3B49EA250603CC0021B467 /* TDUtil.m */; };
 		6E4936242514CBD800F27296 /* TDUserIDVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4936232514CBD800F27296 /* TDUserIDVC.m */; };
@@ -69,20 +70,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		01437923283E215900371DEE /* Embed App Extensions */ = {
+		01437923283E215900371DEE /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				5689774D29B5BCB2002CD885 /* TANotification.appex in Embed App Extensions */,
+				5689774D29B5BCB2002CD885 /* TANotification.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		013D70892A406BB7000AD85C /* TANotification.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TANotification.entitlements; sourceTree = "<group>"; };
 		01437913283E215800371DEE /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		01437915283E215800371DEE /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		01D33840283FDA60002B1CAF /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
@@ -130,6 +132,8 @@
 		5689774729B5BCB2002CD885 /* NotificationService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationService.h; sourceTree = "<group>"; };
 		5689774829B5BCB2002CD885 /* NotificationService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationService.m; sourceTree = "<group>"; };
 		5689774A29B5BCB2002CD885 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		56B6409629909EA600E19AED /* TDAPMViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDAPMViewController.h; sourceTree = "<group>"; };
+		56B6409729909EA600E19AED /* TDAPMViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDAPMViewController.m; sourceTree = "<group>"; };
 		6E3B49E6250603520021B467 /* ActionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionModel.h; sourceTree = "<group>"; };
 		6E3B49E7250603520021B467 /* ActionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionModel.m; sourceTree = "<group>"; };
 		6E3B49E9250603CC0021B467 /* TDUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDUtil.h; sourceTree = "<group>"; };
@@ -296,6 +300,7 @@
 		5689774629B5BCB2002CD885 /* TANotification */ = {
 			isa = PBXGroup;
 			children = (
+				013D70892A406BB7000AD85C /* TANotification.entitlements */,
 				5689774729B5BCB2002CD885 /* NotificationService.h */,
 				5689774829B5BCB2002CD885 /* NotificationService.m */,
 				5689774A29B5BCB2002CD885 /* Info.plist */,
@@ -319,6 +324,8 @@
 			children = (
 				F380B2E022C0EA0100955FC5 /* TDHomeVC.h */,
 				F380B2E122C0EA0100955FC5 /* TDHomeVC.m */,
+				56B6409629909EA600E19AED /* TDAPMViewController.h */,
+				56B6409729909EA600E19AED /* TDAPMViewController.m */,
 			);
 			path = vc;
 			sourceTree = "<group>";
@@ -563,7 +570,7 @@
 				F380B2A222C0E8BB00955FC5 /* Frameworks */,
 				F380B2A322C0E8BB00955FC5 /* Resources */,
 				57952CBA88818CBDC6713E49 /* [CP] Embed Pods Frameworks */,
-				01437923283E215900371DEE /* Embed App Extensions */,
+				01437923283E215900371DEE /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -581,8 +588,9 @@
 		F380B29D22C0E8BB00955FC5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1330;
-				LastUpgradeCheck = 1310;
+				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = thinking;
 				TargetAttributes = {
 					5689774429B5BCB2002CD885 = {
@@ -698,6 +706,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6ED61FB82514862000F0E41D /* TDInitVC.m in Sources */,
+				56B6409929909EA600E19AED /* TDAPMViewController.m in Sources */,
 				F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */,
 				6E4936242514CBD800F27296 /* TDUserIDVC.m in Sources */,
 				2EF3A5DC27A0182D007D5F44 /* TDTrackAPIListCell.m in Sources */,
@@ -753,7 +762,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
+				CODE_SIGN_ENTITLEMENTS = TANotification/TANotification.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -764,7 +774,7 @@
 				INFOPLIST_FILE = TANotification/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TANotification;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 thinking. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -785,7 +795,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
+				CODE_SIGN_ENTITLEMENTS = TANotification/TANotification.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
@@ -796,7 +807,7 @@
 				INFOPLIST_FILE = TANotification/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TANotification;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 thinking. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -840,6 +851,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -867,7 +879,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -902,6 +914,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -923,7 +936,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -957,15 +970,12 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/ThinkingSDK/ThinkingSDK.framework/Headers\"",
 				);
 				INFOPLIST_FILE = ThinkingSDKDEMO/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/ThinkingSDKDEMO/Vendors/ReYun",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -978,7 +988,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = "${SRCROOT}/**";
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Debug;
@@ -1009,15 +1019,12 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/ThinkingSDK/ThinkingSDK.framework/Headers\"",
 				);
 				INFOPLIST_FILE = ThinkingSDKDEMO/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/ThinkingSDKDEMO/Vendors/ReYun",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1029,7 +1036,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = "${SRCROOT}/**";
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Release;

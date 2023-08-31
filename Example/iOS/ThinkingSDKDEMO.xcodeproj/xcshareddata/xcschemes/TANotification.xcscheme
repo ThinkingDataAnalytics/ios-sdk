@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1420"
+   LastUpgradeVersion = "1430"
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
@@ -59,8 +59,8 @@
       launchAutomaticallySubstyle = "2">
       <RemoteRunnable
          runnableDebuggingMode = "0"
-         BundleIdentifier = "cn.thinkingdata.random"
-         RemotePath = "/var/containers/Bundle/Application/5456B950-219B-4E5B-9AB6-C2EF5C18A3F0/ThinkingSDKDEMO.app">
+         BundleIdentifier = "cn.thinkingdata.ios.sdk"
+         RemotePath = "/var/containers/Bundle/Application/327447EC-2138-469E-BB94-CB5FEFEE3844/TDNotificationDemo.app">
       </RemoteRunnable>
       <MacroExpansion>
          <BuildableReference

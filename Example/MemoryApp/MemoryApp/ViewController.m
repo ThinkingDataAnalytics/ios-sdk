@@ -24,12 +24,6 @@ NSMutableArray *performenceDataArray;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    NSMutableArray *arr1 = [NSMutableArray array];
-      NSMutableArray *arr2 = [NSMutableArray array];
-      [arr1 addObject:arr2];
-      [arr2 addObject:arr1];
-    
     NSError *error;
     dic = [[NSFileManager defaultManager] attributesOfFileSystemForPath:NSHomeDirectory() error:&error];
     performenceDataArray = [[NSMutableArray alloc]init];
