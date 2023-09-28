@@ -234,8 +234,6 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<false/>
 	<key>NSAdvertisingAttributionReportEndpoint</key>
 	<string>https://postbacks-app.com</string>
 	<key>NSAppTransportSecurity</key>
@@ -256,7 +254,6 @@
 	<key>TDDisPresetProperties</key>
 	<array>
 		<string>#zone_offset</string>
-		<string>#os_version</string>
 	</array>
 	<key>UIAppFonts</key>
 	<array>

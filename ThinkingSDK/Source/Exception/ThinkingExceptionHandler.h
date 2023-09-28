@@ -6,9 +6,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ThinkingExceptionHandler : NSObject
 
-+ (void)start;
+@property (nonatomic, strong) NSHashTable *thinkingAnalyticsSDKInstances;
 
-+ (void)trackCrashWithMessage:(NSString *)message;
+@property (nonatomic) NSUncaughtExceptionHandler *td_lastExceptionHandler;
+
+@property (nonatomic, unsafe_unretained) struct sigaction *td_signalHandlers;
+
++ (instancetype)sharedHandler;
+
+- (void)addThinkingInstance:(ThinkingAnalyticsSDK *)instance;
 
 @end
 

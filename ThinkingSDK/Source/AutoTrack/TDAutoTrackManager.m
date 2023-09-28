@@ -1,26 +1,25 @@
 #import "TDAutoTrackManager.h"
 
+#import "TDSwizzler.h"
 #import "UIViewController+AutoTrack.h"
+#import "NSObject+TDSwizzle.h"
+#import "TDJSONUtil.h"
 #import "UIApplication+AutoTrack.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "TDPublicConfig.h"
-#import "TDAutoClickEvent.h"
-#import "TDAutoPageViewEvent.h"
-#import "TDAppLifeCycle.h"
+#import "TAAutoClickEvent.h"
+#import "TAAutoPageViewEvent.h"
+#import "TAAppLifeCycle.h"
 #import "TDAppState.h"
 #import "TDRunTime.h"
 #import "TDPresetProperties+TDDisProperties.h"
 
-#import "TDAppStartEvent.h"
-#import "TDAppEndEvent.h"
+#import "TAAppStartEvent.h"
+#import "TAAppEndEvent.h"
 #import "TDAppEndTracker.h"
 #import "TDColdStartTracker.h"
 #import "TDInstallTracker.h"
 #import "TDAppState.h"
-
-#import <ThinkingDataCore/TDJSONUtil.h>
-#import <ThinkingDataCore/NSObject+TDSwizzle.h>
-#import <ThinkingDataCore/TDSwizzler.h>
 
 #ifndef TD_LOCK
 #define TD_LOCK(lock) dispatch_semaphore_wait(lock, DISPATCH_TIME_FOREVER);
@@ -82,7 +81,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     NSString *elementPosition = nil;
     NSString *elementPageTitle = nil;
     NSString *elementScreenName = nil;
-    NSMutableDictionary *customProperties = [NSMutableDictionary dictionary];
+    NSMutableDictionary *yx_customProperties = [NSMutableDictionary dictionary];
 
     
     elementId = view.thinkingAnalyticsViewID;
@@ -112,7 +111,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     if ([propDict isKindOfClass:[NSDictionary class]]) {
         [properties addEntriesFromDictionary:propDict];
 
-        [customProperties addEntriesFromDictionary:propDict];
+        [yx_customProperties addEntriesFromDictionary:propDict];
     }
     
     UIView *contentView;
@@ -135,7 +134,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
                     if ([dic isKindOfClass:[NSDictionary class]]) {
                         [properties addEntriesFromDictionary:dic];
                      
-                        [customProperties addEntriesFromDictionary:dic];
+                        [yx_customProperties addEntriesFromDictionary:dic];
 
                     }
                 }
@@ -161,7 +160,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
                     if ([dic isKindOfClass:[NSDictionary class]]) {
                         [properties addEntriesFromDictionary:dic];
                         
-                        [customProperties addEntriesFromDictionary:dic];
+                        [yx_customProperties addEntriesFromDictionary:dic];
 
                     }
                 }
@@ -191,19 +190,19 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     NSDate *trackDate = [NSDate date];
     for (NSString *appid in self.autoTrackOptions) {
 
-        TDAutoTrackEventType type = (TDAutoTrackEventType)[self.autoTrackOptions[appid] integerValue];
+        ThinkingAnalyticsAutoTrackEventType type = (ThinkingAnalyticsAutoTrackEventType)[self.autoTrackOptions[appid] integerValue];
         
         if (type & ThinkingAnalyticsEventTypeAppClick) {
     
             
             
             
-            ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK instanceWithAppid:appid];
+            ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:appid];
             NSMutableDictionary *trackProperties = [properties mutableCopy];
             
-            NSMutableDictionary *finalProperties = [customProperties mutableCopy];
+            NSMutableDictionary *yx_trackProperties = [yx_customProperties mutableCopy];
 
-            if ([instance innerIsViewTypeIgnored:[view class]]) {
+            if ([instance isViewTypeIgnored:[view class]]) {
                 continue;
             }
             NSDictionary *ignoreViews = view.thinkingAnalyticsIgnoreViewWithAppid;
@@ -231,7 +230,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
                 if ([properties isKindOfClass:[NSDictionary class]]) {
                     [trackProperties addEntriesFromDictionary:properties];
 
-                    [finalProperties addEntriesFromDictionary:properties];
+                    [yx_trackProperties addEntriesFromDictionary:properties];
                 }
             }
             
@@ -240,25 +239,25 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
                 if ([autoTrackproperties isKindOfClass:[NSDictionary class]]) {
                     [trackProperties addEntriesFromDictionary:autoTrackproperties];
                     
-                    [finalProperties addEntriesFromDictionary:autoTrackproperties];
+                    [yx_trackProperties addEntriesFromDictionary:autoTrackproperties];
                 }
             }
             
-            TDAutoClickEvent *clickEvent = [[TDAutoClickEvent alloc] initWithName:TD_APP_CLICK_EVENT];
-            clickEvent.time = trackDate;
-            clickEvent.elementId = elementId;
-            clickEvent.elementType = elementType;
-            clickEvent.elementContent = elementContent;
-            clickEvent.elementPosition = elementPosition;
-            clickEvent.pageTitle = elementPageTitle;
-            clickEvent.screenName = elementScreenName;
+            TAAutoClickEvent *yx_event = [[TAAutoClickEvent alloc] initWithName:TD_APP_CLICK_EVENT];
+            yx_event.time = trackDate;
+            yx_event.elementId = elementId;
+            yx_event.elementType = elementType;
+            yx_event.elementContent = elementContent;
+            yx_event.elementPosition = elementPosition;
+            yx_event.pageTitle = elementPageTitle;
+            yx_event.screenName = elementScreenName;
             
-            [instance autoTrackWithEvent:clickEvent properties:finalProperties];
+            [instance autoTrackWithEvent:yx_event properties:yx_trackProperties];
         }
     }
 }
 
-- (void)trackWithAppid:(NSString *)appid withOption:(TDAutoTrackEventType)type {
+- (void)trackWithAppid:(NSString *)appid withOption:(ThinkingAnalyticsAutoTrackEventType)type {
     TD_LOCK(self.trackOptionLock);
     self.autoTrackOptions[appid] = @(type);
     TD_UNLOCK(self.trackOptionLock);
@@ -268,20 +267,20 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     }
     
     if (type & ThinkingAnalyticsEventTypeAppInstall) {
-        TDAutoTrackEvent *event = [[TDAutoTrackEvent alloc] initWithName:TD_APP_INSTALL_EVENT];
+        TAAutoTrackEvent *event = [[TAAutoTrackEvent alloc] initWithName:TD_APP_INSTALL_EVENT];
         event.time = [[NSDate date] dateByAddingTimeInterval: -1];
         [self.appInstallTracker trackWithInstanceTag:appid event:event params:nil];
     }
     
     if (type & ThinkingAnalyticsEventTypeAppEnd) {
-        ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK instanceWithAppid:appid];
-        [instance innerTimeEvent:TD_APP_END_EVENT];
+        ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:appid];
+        [instance timeEvent:TD_APP_END_EVENT];
     }
 
     if (type & ThinkingAnalyticsEventTypeAppStart) {
         dispatch_block_t mainThreadBlock = ^(){
             NSString *eventName = [TDAppState shareInstance].relaunchInBackground ? TD_APP_START_BACKGROUND_EVENT : TD_APP_START_EVENT;
-            TDAppStartEvent *event = [[TDAppStartEvent alloc] initWithName:eventName];
+            TAAppStartEvent *event = [[TAAppStartEvent alloc] initWithName:eventName];
             event.resumeFromBackground = NO;
             if (![TDPresetProperties disableStartReason]) {
                 NSString *reason = [TDRunTime getAppLaunchReason];
@@ -295,17 +294,8 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     }
 
     if (type & ThinkingAnalyticsEventTypeAppViewCrash) {
-        [ThinkingExceptionHandler start];
-    }
-}
-
-- (void)trackWithEvent:(TDAutoTrackEvent *)event withProperties:(NSDictionary *)properties {
-    for (NSString *appid in self.autoTrackOptions.allKeys) {
-        TDAutoTrackEventType type = (TDAutoTrackEventType)[self.autoTrackOptions[appid] integerValue];
-        if (type & event.autoTrackEventType) {
-            ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK instanceWithAppid:appid];
-            [instance autoTrackWithEvent:event properties:properties];
-        }
+        ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:appid];
+        [[ThinkingExceptionHandler sharedHandler] addThinkingInstance:instance];
     }
 }
 
@@ -331,10 +321,10 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
 
 #pragma mark - Private
 
-- (BOOL)isAutoTrackEventType:(TDAutoTrackEventType)eventType {
+- (BOOL)isAutoTrackEventType:(ThinkingAnalyticsAutoTrackEventType)eventType {
     BOOL isIgnored = YES;
     for (NSString *appid in self.autoTrackOptions) {
-        TDAutoTrackEventType type = (TDAutoTrackEventType)[self.autoTrackOptions[appid] integerValue];
+        ThinkingAnalyticsAutoTrackEventType type = (ThinkingAnalyticsAutoTrackEventType)[self.autoTrackOptions[appid] integerValue];
         isIgnored = !(type & eventType);
         if (isIgnored == NO)
             break;
@@ -369,7 +359,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     NSString *pageReferrer = nil;
     NSString *pageTitle = nil;
     NSString *pageScreenName = nil;
-    NSMutableDictionary *customProperties = [NSMutableDictionary dictionary];
+    NSMutableDictionary *yx_customProperties = [NSMutableDictionary dictionary];
     
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
     [properties setValue:NSStringFromClass([controller class]) forKey:TD_EVENT_PROPERTY_SCREEN_NAME];
@@ -395,7 +385,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
         if ([autoTrackerDic isKindOfClass:[NSDictionary class]]) {
             [properties addEntriesFromDictionary:autoTrackerDic];
             
-            [customProperties addEntriesFromDictionary:autoTrackerDic];
+            [yx_customProperties addEntriesFromDictionary:autoTrackerDic];
         }
     }
     
@@ -420,18 +410,18 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     
     NSDate *trackDate = [NSDate date];
     for (NSString *appid in self.autoTrackOptions) {
-        TDAutoTrackEventType type = [self.autoTrackOptions[appid] integerValue];
+        ThinkingAnalyticsAutoTrackEventType type = [self.autoTrackOptions[appid] integerValue];
         if (type & ThinkingAnalyticsEventTypeAppViewScreen) {
             
             
             
-            ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK instanceWithAppid:appid];
+            ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:appid];
             NSMutableDictionary *trackProperties = [properties mutableCopy];
             
-            NSMutableDictionary *finalProperties = [customProperties mutableCopy];
+            NSMutableDictionary *yx_trackProperties = [yx_customProperties mutableCopy];
 
             if ([instance isViewControllerIgnored:controller]
-                || [instance innerIsViewTypeIgnored:[controller class]]) {
+                || [instance isViewTypeIgnored:[controller class]]) {
                 continue;
             }
             
@@ -440,7 +430,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
                 if ([dic isKindOfClass:[NSDictionary class]]) {
                     [trackProperties addEntriesFromDictionary:dic];
                     
-                    [finalProperties addEntriesFromDictionary:dic];
+                    [yx_trackProperties addEntriesFromDictionary:dic];
                 }
             }
             
@@ -451,14 +441,14 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
                 pageUrl = screenUrl;
             }
             
-            TDAutoPageViewEvent *pageEvent = [[TDAutoPageViewEvent alloc] initWithName:TD_APP_VIEW_EVENT];
+            TAAutoPageViewEvent *pageEvent = [[TAAutoPageViewEvent alloc] initWithName:TD_APP_VIEW_EVENT];
             pageEvent.time = trackDate;
             pageEvent.pageUrl = pageUrl;
             pageEvent.pageTitle = pageTitle;
             pageEvent.referrer = pageReferrer;
             pageEvent.screenName = pageScreenName;
             
-            [instance autoTrackWithEvent:pageEvent properties:finalProperties];
+            [instance autoTrackWithEvent:pageEvent properties:yx_trackProperties];
         }
     }
 }
@@ -467,8 +457,8 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     return ![TDPublicConfig.controllers containsObject:NSStringFromClass(aClass)];
 }
 
-- (TDAutoTrackEventType)autoTrackOptionForAppid:(NSString *)appid {
-    return (TDAutoTrackEventType)[[self.autoTrackOptions objectForKey:appid] integerValue];
+- (ThinkingAnalyticsAutoTrackEventType)autoTrackOptionForAppid:(NSString *)appid {
+    return (ThinkingAnalyticsAutoTrackEventType)[[self.autoTrackOptions objectForKey:appid] integerValue];
 }
 
 - (void)swizzleSelected:(UIView *)view delegate:(id)delegate {
@@ -688,21 +678,21 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
 - (void)registerAppLifeCycleListener {
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 
-    [notificationCenter addObserver:self selector:@selector(appStateWillChangeNotification:) name:kTDAppLifeCycleStateWillChangeNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(appStateWillChangeNotification:) name:kTAAppLifeCycleStateWillChangeNotification object:nil];
 }
 
 - (void)appStateWillChangeNotification:(NSNotification *)notification {
-    TDAppLifeCycleState newState = [[notification.userInfo objectForKey:kTDAppLifeCycleNewStateKey] integerValue];
-    TDAppLifeCycleState oldState = [[notification.userInfo objectForKey:kTDAppLifeCycleOldStateKey] integerValue];
+    TAAppLifeCycleState newState = [[notification.userInfo objectForKey:kTAAppLifeCycleNewStateKey] integerValue];
+    TAAppLifeCycleState oldState = [[notification.userInfo objectForKey:kTAAppLifeCycleOldStateKey] integerValue];
 
-    if (newState == TDAppLifeCycleStateStart) {
-        for (NSString *appid in self.autoTrackOptions.allKeys) {
-            TDAutoTrackEventType type = (TDAutoTrackEventType)[self.autoTrackOptions[appid] integerValue];
+    if (newState == TAAppLifeCycleStateStart) {
+        for (NSString *appid in self.autoTrackOptions) {
+            ThinkingAnalyticsAutoTrackEventType type = (ThinkingAnalyticsAutoTrackEventType)[self.autoTrackOptions[appid] integerValue];
             
             // Only open the start event of collecting hot start. Cold start event, reported when automatic collection is turned on
-            if ((type & ThinkingAnalyticsEventTypeAppStart) && oldState != TDAppLifeCycleStateInit) {
+            if ((type & ThinkingAnalyticsEventTypeAppStart) && oldState != TAAppLifeCycleStateInit) {
                 NSString *eventName = [TDAppState shareInstance].relaunchInBackground ? TD_APP_START_BACKGROUND_EVENT : TD_APP_START_EVENT;
-                TDAppStartEvent *event = [[TDAppStartEvent alloc] initWithName:eventName];
+                TAAppStartEvent *event = [[TAAppStartEvent alloc] initWithName:eventName];
                 event.resumeFromBackground = YES;
     
                 if (![TDPresetProperties disableStartReason]) {
@@ -716,15 +706,15 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
             
             if (type & ThinkingAnalyticsEventTypeAppEnd) {
             
-                ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK instanceWithAppid:appid];
-                [instance innerTimeEvent:TD_APP_END_EVENT];
+                ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:appid];
+                [instance timeEvent:TD_APP_END_EVENT];
             }
         }
-    } else if (newState == TDAppLifeCycleStateEnd) {
+    } else if (newState == TAAppLifeCycleStateEnd) {
         for (NSString *appid in self.autoTrackOptions) {
-            TDAutoTrackEventType type = (TDAutoTrackEventType)[self.autoTrackOptions[appid] integerValue];
+            ThinkingAnalyticsAutoTrackEventType type = (ThinkingAnalyticsAutoTrackEventType)[self.autoTrackOptions[appid] integerValue];
             if (type & ThinkingAnalyticsEventTypeAppEnd) {
-                TDAppEndEvent *event = [[TDAppEndEvent alloc] initWithName:TD_APP_END_EVENT];
+                TAAppEndEvent *event = [[TAAppEndEvent alloc] initWithName:TD_APP_END_EVENT];
                 td_dispatch_main_sync_safe(^{
      
                     NSString *screenName = NSStringFromClass([[TDAutoTrackManager topPresentedViewController] class]);
@@ -734,8 +724,8 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
             }
             
             if (type & ThinkingAnalyticsEventTypeAppStart) {
-                ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK instanceWithAppid:appid];
-                [instance innerTimeEvent:TD_APP_START_EVENT];
+                ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstanceWithAppid:appid];
+                [instance timeEvent:TD_APP_START_EVENT];
             }
         }
     }

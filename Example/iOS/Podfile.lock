@@ -1,16 +1,9 @@
 PODS:
   - Masonry (1.1.0)
-  - ThinkingDataCore (1.0.0):
-    - ThinkingDataCore/Main (= 1.0.0)
-  - ThinkingDataCore/iOS (1.0.0)
-  - ThinkingDataCore/Main (1.0.0):
-    - ThinkingDataCore/iOS
-    - ThinkingDataCore/OSX
-  - ThinkingSDK (3.0.0-beta.1):
-    - ThinkingSDK/Main (= 3.0.0-beta.1)
-  - ThinkingSDK/iOS (3.0.0-beta.1)
-  - ThinkingSDK/Main (3.0.0-beta.1):
-    - ThinkingDataCore (= 1.0.0)
+  - ThinkingSDK (2.8.4):
+    - ThinkingSDK/Main (= 2.8.4)
+  - ThinkingSDK/iOS (2.8.4)
+  - ThinkingSDK/Main (2.8.4):
     - ThinkingSDK/iOS
     - ThinkingSDK/OSX
 
@@ -21,7 +14,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Masonry
-    - ThinkingDataCore
 
 EXTERNAL SOURCES:
   ThinkingSDK:
@@ -29,9 +21,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
-  ThinkingDataCore: bbddbbb34d9fcee5ba6d92886a11c91f2f25cdfa
-  ThinkingSDK: 4e9b6bcb62e7f04bb956e8da087c6f8ab80e8a43
+  ThinkingSDK: 80007570f9b3402afe3421c8cbca85b5551021de
 
-PODFILE CHECKSUM: edb20f71575ef49017c0c71a311726a4290d75eb
+PODFILE CHECKSUM: 354992ed81dea3bbc207c3b4e786273c94343c91
 
 COCOAPODS: 1.12.1

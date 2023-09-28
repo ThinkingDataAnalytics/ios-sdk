@@ -2,7 +2,7 @@
 #import <sqlite3.h>
 
 #import "TDLogging.h"
-#import <ThinkingDataCore/TDJSONUtil.h>
+#import "TDJSONUtil.h"
 #import "TDConfig.h"
 #import "TDEventRecord.h"
 
@@ -26,6 +26,7 @@
     dispatch_once(&onceToken, ^{
         NSString *filepath = [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"TDData-data.plist"];
         sharedInstance = [[self alloc] initWithPath:filepath withAppid:appid];
+        TDLogDebug(@"sqlite path：%@", filepath);
     });
     return sharedInstance;
 }
@@ -109,23 +110,13 @@
 
 - (void)delExpiredData {
     NSTimeInterval oneDay = 24*60*60*1;
-    
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     NSDate *date = [[NSDate alloc] initWithTimeIntervalSinceNow: -oneDay * [TDConfig expirationDays]];
-#pragma clang diagnostic pop
-
     int expirationDate = [date timeIntervalSince1970];
     [self removeOldRecords:expirationDate];
 }
 
 - (NSInteger)addObject:(id)obj withAppid:(NSString *)appid {
-    
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     NSUInteger maxCacheSize = [TDConfig maxNumEvents];
-#pragma clang diagnostic pop
-
     if (_allmessageCount >= maxCacheSize) {
         [self removeFirstRecords:100 withAppid:nil];
     }

@@ -1,12 +1,10 @@
 #import "TDConfig.h"
 
-#import "TDNetwork.h"
+#import "TANetwork.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "TDSecurityPolicy.h"
 #import "TDFile.h"
 #import "NSString+TDString.h"
-
-#import "TDConfigPrivate.h"
 
 #define TDSDKSETTINGS_PLIST_SETTING_IMPL(TYPE, PLIST_KEY, GETTER, SETTER, DEFAULT_VALUE, ENABLE_CACHE) \
 static TYPE *g_##PLIST_KEY = nil; \
@@ -34,24 +32,27 @@ static TYPE *g_##PLIST_KEY = nil; \
 
 #define kTAConfigInfo @"TAConfigInfo"
 
+
+static TDConfig * _defaultTDConfig;
 static NSDictionary *configInfo;
-
-@interface TDConfig ()
-@property (nonatomic, assign) ThinkingNetworkType innerNetworkType;
-
-@end
 
 @implementation TDConfig
 
 TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKMaxCacheSize, _maxNumEventsNumber, _setMaxNumEventsNumber, @10000, NO);
 TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expirationDaysNumber, _setExpirationDaysNumber, @10, NO);
 
++ (TDConfig *)defaultTDConfig {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _defaultTDConfig = [TDConfig new];
+        
+    });
+    return _defaultTDConfig;
+}
+
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.reportingNetworkType = TDReportingNetworkTypeALL;
-        self.mode = TDModeNormal;
-        
         _trackRelaunchedInBackgroundEvents = NO;
         _autoTrackEventType = ThinkingAnalyticsEventTypeNone;
         _networkTypePolicy = ThinkingNetworkTypeWIFI | ThinkingNetworkType3G  | ThinkingNetworkType4G | ThinkingNetworkType2G | ThinkingNetworkType5G;
@@ -86,67 +87,14 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
     return self;
 }
 
-- (void)enableEncryptWithVersion:(NSUInteger)version publicKey:(NSString *)publicKey {
-#if TARGET_OS_IOS
-    if ([publicKey isKindOfClass:NSString.class] && publicKey.length > 0) {
-        self.innerEnableEncrypt = YES;
-        self.innerSecretKey = [[TDSecretKey alloc] initWithVersion:version publicKey:publicKey];
-    } else {
-        self.innerEnableEncrypt = NO;
-    }
-#endif
-}
 
 - (void)setName:(NSString *)name {
     _name = name.td_trim;
 }
 
-#pragma mark - NSCopying
-- (id)copyWithZone:(NSZone *)zone {
-    TDConfig *config = [[[self class] allocWithZone:zone] init];
-    config.trackRelaunchedInBackgroundEvents = self.trackRelaunchedInBackgroundEvents;
-    config.innerNetworkType = self.innerNetworkType;
-    config.launchOptions = [self.launchOptions copyWithZone:zone];
-    config.mode = self.mode;
-    config.reportingNetworkType = self.reportingNetworkType;
-    config.securityPolicy = [self.securityPolicy copyWithZone:zone];
-    config.defaultTimeZone = [self.defaultTimeZone copyWithZone:zone];
-    config.name = [self.name copy];
-    config.appGroupName = [self.appGroupName copy];
-    config.enableReceiptPush = self.enableReceiptPush;
-#if TARGET_OS_IOS
-    config.innerSecretKey = [self.innerSecretKey copyWithZone:zone];
-    config.innerEnableEncrypt = self.innerEnableEncrypt;
-#endif
-    
-    return config;
-}
-
-#pragma mark - SETTINGS
-
-- (void)setReportingNetworkType:(TDReportingNetworkType)reportingNetworkType {
-    switch (reportingNetworkType) {
-        case TDReportingNetworkTypeWIFI: {
-            self.innerNetworkType = ThinkingNetworkTypeWIFI;
-        } break;
-        case TDReportingNetworkTypeALL: {
-            self.innerNetworkType = ThinkingNetworkTypeALL;
-        } break;
-        default: {
-            self.innerNetworkType = ThinkingNetworkTypeALL;
-        } break;
-    }
-}
-
-//MARK: - private
-
-- (ThinkingNetworkType)getNetworkType {
-    return self.innerNetworkType;
-}
-
-- (void)innerUpdateConfig:(void (^)(NSDictionary *))block {
+- (void)updateConfig:(void(^)(NSDictionary *secretKey))block {
     NSString *serverUrlStr = [NSString stringWithFormat:@"%@/config",self.configureURL];
-    TDNetwork *network = [[TDNetwork alloc] init];
+    TANetwork *network = [[TANetwork alloc] init];
     network.serverURL = [NSURL URLWithString:serverUrlStr];
     network.securityPolicy = _securityPolicy;
     
@@ -160,7 +108,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
                     self.uploadInterval = [NSNumber numberWithInteger:uploadInterval];
                     [file archiveUploadInterval:self.uploadInterval];
                     NSString *name = self.getInstanceName ? self.getInstanceName() : self.appid;
-                    [[ThinkingAnalyticsSDK instanceWithAppid:name] startFlushTimer];
+                    [[ThinkingAnalyticsSDK sharedInstanceWithAppid:name] startFlushTimer];
                 }
                 if (uploadSize > 0) {
                     self.uploadSize = [NSNumber numberWithInteger:uploadSize];
@@ -176,73 +124,37 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
     }];
 }
 
-- (NSString *)innerGetMapInstanceToken {
-    if (self.name && [self.name isKindOfClass:[NSString class]] && self.name.length) {
-        return self.name;
-    } else {
-        return self.appid;
+- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type {
+    if (type == TDNetworkTypeDefault) {
+        _networkTypePolicy = ThinkingNetworkTypeWIFI | ThinkingNetworkType3G | ThinkingNetworkType4G | ThinkingNetworkType2G | ThinkingNetworkType5G;
+    } else if (type == TDNetworkTypeOnlyWIFI) {
+        _networkTypePolicy = ThinkingNetworkTypeWIFI;
+    } else if (type == TDNetworkTypeALL) {
+        _networkTypePolicy = ThinkingNetworkTypeWIFI | ThinkingNetworkType3G | ThinkingNetworkType4G | ThinkingNetworkType2G | ThinkingNetworkType5G;
     }
 }
 
-//MARK: - Deprecated: public
-
-+ (TDConfig *)defaultTDConfig DEPRECATED_MSG_ATTRIBUTE("Deprecated"){
-    static dispatch_once_t onceToken;
-    static TDConfig * _defaultTDConfig;
-    dispatch_once(&onceToken, ^{
-        _defaultTDConfig = [TDConfig new];
-    });
-    return _defaultTDConfig;
-}
-
-- (NSString *)getMapInstanceToken DEPRECATED_MSG_ATTRIBUTE("Deprecated"){
-    return [self innerGetMapInstanceToken];
-}
-
-- (void)updateConfig:(void (^)(NSDictionary *))block DEPRECATED_MSG_ATTRIBUTE("Deprecated"){
-    [self innerUpdateConfig:block];
-}
-
-- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type DEPRECATED_MSG_ATTRIBUTE("Deprecated"){
-    switch (type) {
-        case TDNetworkTypeOnlyWIFI: {
-            self.reportingNetworkType = TDReportingNetworkTypeWIFI;
-        } break;
-        case TDNetworkTypeALL: {
-            self.reportingNetworkType = TDReportingNetworkTypeALL;
-        } break;
-        default: {
-            self.innerNetworkType = ThinkingNetworkTypeALL;
-        } break;
-    }
-}
-
-//MARK: - Deprecated: setter & geter
-
+#pragma mark - NSCopying
+- (id)copyWithZone:(NSZone *)zone {
+    TDConfig *config = [[[self class] allocWithZone:zone] init];
+    config.trackRelaunchedInBackgroundEvents = self.trackRelaunchedInBackgroundEvents;
+    config.autoTrackEventType = self.autoTrackEventType;
+    config.networkTypePolicy = self.networkTypePolicy;
+    config.launchOptions = [self.launchOptions copyWithZone:zone];
+    config.debugMode = self.debugMode;
+    config.securityPolicy = [self.securityPolicy copyWithZone:zone];
+    config.defaultTimeZone = [self.defaultTimeZone copyWithZone:zone];
+    config.name = [self.name copy];
+    config.enableEncrypt = self.enableEncrypt;
 #if TARGET_OS_IOS
-- (void)setSecretKey:(TDSecretKey *)secretKey {
-    _secretKey = secretKey;
-    
-    [self enableEncryptWithVersion:secretKey.version publicKey:secretKey.publicKey];
-}
-
-- (void)setEnableEncrypt:(BOOL)enableEncrypt {
-    _enableEncrypt = enableEncrypt;
-    self.innerEnableEncrypt = enableEncrypt;
-}
+    config.secretKey = [self.secretKey copyWithZone:zone];
 #endif
-
-- (void)setNetworkTypePolicy:(ThinkingNetworkType)networkTypePolicy DEPRECATED_MSG_ATTRIBUTE("Deprecated"){
-    _networkTypePolicy = networkTypePolicy;
-    self.innerNetworkType = networkTypePolicy;
+    
+    return config;
 }
 
-- (void)setDebugMode:(ThinkingAnalyticsDebugMode)debugMode DEPRECATED_MSG_ATTRIBUTE("Deprecated"){
-    _debugMode = debugMode;
-    self.mode = (TDMode)debugMode;
-}
-
-+ (NSInteger)maxNumEvents DEPRECATED_MSG_ATTRIBUTE("Deprecated"){
+#pragma mark - SETTINGS
++ (NSInteger)maxNumEvents {
     NSInteger maxNumEvents = [self _maxNumEventsNumber].integerValue;
     if (maxNumEvents < 5000) {
         maxNumEvents = 5000;
@@ -250,17 +162,26 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
     return maxNumEvents;
 }
 
-+ (void)setMaxNumEvents:(NSInteger)maxNumEventsNumber DEPRECATED_MSG_ATTRIBUTE("Deprecated"){
++ (void)setMaxNumEvents:(NSInteger)maxNumEventsNumber {
     [self _setMaxNumEventsNumber:@(maxNumEventsNumber)];
 }
 
-+ (NSInteger)expirationDays DEPRECATED_MSG_ATTRIBUTE("Deprecated"){
++ (NSInteger)expirationDays {
     NSInteger maxNumEvents = [self _expirationDaysNumber].integerValue;
     return maxNumEvents >= 0 ? maxNumEvents : 10;
 }
 
-+ (void)setExpirationDays:(NSInteger)expirationDays DEPRECATED_MSG_ATTRIBUTE("Deprecated"){
++ (void)setExpirationDays:(NSInteger)expirationDays {
     [self _setExpirationDaysNumber:@(expirationDays)];
+}
+
+
+- (NSString *)getMapInstanceToken {
+    if (self.name && [self.name isKindOfClass:[NSString class]] && self.name.length) {
+        return self.name;
+    } else {
+        return self.appid;
+    }
 }
 
 @end

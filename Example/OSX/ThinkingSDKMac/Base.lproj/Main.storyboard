@@ -980,7 +980,7 @@
                                                     <font key="font" size="12" name="STSongti-SC-Regular"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <action selector="distincidClick:" target="XfG-lQ-9wD" id="XGd-TY-uaf"/>
+                                                    <action selector="distinciddd:" target="XfG-lQ-9wD" id="zDC-YD-O2t"/>
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ck4-UQ-Ubg">

@@ -20,75 +20,33 @@
 #endif
 #endif
 
+
+
 NS_ASSUME_NONNULL_BEGIN
 
+
+
 @interface TDConfig:NSObject <NSCopying>
-
-/// app id
-@property (atomic, copy) NSString *appid;
-
-/// server url
-@property (atomic, copy) NSString *configureURL;
-
-/// SDK mode
-@property (nonatomic, assign) TDMode mode;
-
-/// Set default time zone.
-/// You can use this time zone to compare the offset of the current time zone and the default time zone
-@property (nonatomic, strong) NSTimeZone *defaultTimeZone;
-
-/// SDK instance name
-@property (nonatomic, copy) NSString *name;
-
-/// Set the network environment for reporting data
-@property (nonatomic, assign) TDReportingNetworkType reportingNetworkType;
-
-/// Data upload interval
-@property (nonatomic, strong) NSNumber *uploadInterval;
-
-/// When there is data to upload, when the number of data cache reaches the uploadsize, upload the data immediately
-@property (nonatomic, strong) NSNumber *uploadSize;
-
-/// Event blacklist, event names that are not counted are added here
-@property (strong, nonatomic) NSArray *disableEvents;
-
-/// instance Token
-@property (atomic, copy) NSString *(^getInstanceName)(void);
-
-/// Initialize and configure background self-starting events
-/// YES: Collect background self-starting events
-/// NO: Do not collect background self-starting events
-@property (nonatomic, assign) BOOL trackRelaunchedInBackgroundEvents;
-
-/// app launchOptions
-@property (nonatomic, copy) NSDictionary *launchOptions;
-
-/// Initialize and configure the certificate verification policy
-@property (nonatomic, strong) TDSecurityPolicy *securityPolicy;
-
-/// share data with App Extension
-@property (nonatomic, copy) NSString *appGroupName;
-
-@property (nonatomic, assign) BOOL enableReceiptPush;
-
-#if TARGET_OS_IOS
-/// enable encryption
-@property (nonatomic, assign) BOOL enableEncrypt DEPRECATED_MSG_ATTRIBUTE("Deprecated. replace with: -enableEncryptWithVersion:publicKey:");
-/// Get local key configuration
-@property (nonatomic, strong) TDSecretKey *secretKey DEPRECATED_MSG_ATTRIBUTE("Deprecated. replace with: -enableEncryptWithVersion:publicKey:");
-#endif
-/**
- Debug Mode
-*/
-@property (nonatomic, assign) ThinkingAnalyticsDebugMode debugMode DEPRECATED_MSG_ATTRIBUTE("Deprecated. replace with property: mode");
-/**
- Network environment for data transmission
- */
-@property (assign, nonatomic) ThinkingNetworkType networkTypePolicy DEPRECATED_MSG_ATTRIBUTE("Deprecated. don't need this property");
 /**
  Set automatic burying type
  */
-@property (assign, nonatomic) ThinkingAnalyticsAutoTrackEventType autoTrackEventType DEPRECATED_MSG_ATTRIBUTE("Deprecated. don't need this property");
+@property (assign, nonatomic) ThinkingAnalyticsAutoTrackEventType autoTrackEventType;
+/**
+ Network environment for data transmission
+ */
+@property (assign, nonatomic) ThinkingNetworkType networkTypePolicy;
+/**
+ Data upload interval
+ */
+@property (nonatomic, strong) NSNumber *uploadInterval;
+/**
+ When there is data to upload, when the number of data cache reaches the uploadsize, upload the data immediately
+ */
+@property (nonatomic, strong) NSNumber *uploadSize;
+/**
+ Event blacklist, event names that are not counted are added here
+ */
+@property (strong, nonatomic) NSArray *disableEvents;
 /**
  The maximum number of cached events, the default is 10000, the minimum is 5000
  */
@@ -97,21 +55,67 @@ NS_ASSUME_NONNULL_BEGIN
  Data cache expiration time, the default is 10 days, the longest is 10 days
  */
 @property (class,  nonatomic) NSInteger expirationDays DEPRECATED_MSG_ATTRIBUTE("Please config TAConfigInfo in main info.plist");
+/**
+ appid
+ */
+@property (atomic, copy) NSString *appid;
+/**
+ instance Token
+ */
+@property (atomic, copy) NSString *(^getInstanceName)(void);
+/**
+ Server URL
+ */
+@property (atomic, copy) NSString *configureURL;
 
-- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type DEPRECATED_MSG_ATTRIBUTE("Deprecated. replace with: -setUploadNetworkType:");
-- (void)updateConfig:(void(^)(NSDictionary *dict))block DEPRECATED_MSG_ATTRIBUTE("Deprecated");
-- (NSString *)getMapInstanceToken DEPRECATED_MSG_ATTRIBUTE("Deprecated");
-+ (TDConfig *)defaultTDConfig DEPRECATED_MSG_ATTRIBUTE("Deprecated");
+/**
+ Initialize and configure background self-starting events
+ YES: Collect background self-starting events
+ NO: Do not collect background self-starting events
+ */
+@property (nonatomic, assign) BOOL trackRelaunchedInBackgroundEvents;
+/**
+ Debug Mode
+*/
+@property (nonatomic, assign) ThinkingAnalyticsDebugMode debugMode;
 
-/// Initialize the SDK config file
-/// @param appId  project app Id
-/// @param serverUrl Thinking Engine receiver url
+/**
+app launchOptions
+*/
+@property (nonatomic, copy) NSDictionary *launchOptions;
+
+/**
+ Initialize and configure the certificate verification policy
+*/
+@property (nonatomic, strong) TDSecurityPolicy *securityPolicy;
+
+/**
+ Set default time zone
+  You can use this time zone to compare the offset of the current time zone and the default time zone
+*/
+@property (nonatomic, strong) NSTimeZone *defaultTimeZone;
+
+/**
+ instance name
+*/
+@property (nonatomic, copy) NSString *name;
+
++ (TDConfig *)defaultTDConfig;
 - (instancetype)initWithAppId:(NSString *)appId serverUrl:(NSString *)serverUrl;
+- (void)updateConfig:(void(^)(NSDictionary *secretKey))block;
+- (void)setNetworkType:(ThinkingAnalyticsNetworkType)type;
 
-/// enable encrypt
-/// @param version version of the encryption configuration file
-/// @param publicKey public key
-- (void)enableEncryptWithVersion:(NSUInteger)version publicKey:(NSString *)publicKey;
+
+/// enable encryption
+@property (nonatomic, assign) BOOL enableEncrypt;
+
+#if TARGET_OS_IOS
+/// Get local key configuration
+@property (nonatomic, strong) TDSecretKey *secretKey;
+#endif
+
+/// instance token
+- (NSString *)getMapInstanceToken;
 
 @end
 NS_ASSUME_NONNULL_END

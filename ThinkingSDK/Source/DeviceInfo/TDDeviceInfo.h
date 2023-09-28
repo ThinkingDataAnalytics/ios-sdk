@@ -28,6 +28,8 @@ FOUNDATION_EXTERN NSString *const VERSION;
 
 + (NSString *)currentRadio;
 
++ (NSTimeInterval)uptime;
+
 @end
 
 NS_ASSUME_NONNULL_END

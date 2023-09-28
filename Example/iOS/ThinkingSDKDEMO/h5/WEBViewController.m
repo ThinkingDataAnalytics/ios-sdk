@@ -17,34 +17,25 @@
 
 @implementation WEBViewController
 
-- (instancetype)init
+
+- (void)setView
 {
-    self = [super init];
-    if (self) {
-        
-    }
-    return self;
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
+    [super setView];
+    [[ThinkingAnalyticsSDK sharedInstance] addWebViewUserAgent];
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    self.webView.delegate = self;
-
+    
     NSString *filePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"index.html"];
     NSString *htmlstring=[[NSString alloc] initWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
     [_webView loadHTMLString:htmlstring baseURL:[NSURL fileURLWithPath: [[NSBundle mainBundle] bundlePath]]];
+    _webView.delegate = self;
     [self.view addSubview:_webView];
 }
-
 - (NSString*)rightTitle
 {
     return @"UIWebview Test";
 }
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    if ([[ThinkingAnalyticsSDK sharedInstance] showUpWebView:webView WithRequest:request]
-        || [[ThinkingAnalyticsSDK sharedInstanceWithAppid:@"aaaa"] showUpWebView:webView WithRequest:request]) {
+    if ([[ThinkingSDKAPI getInstance] showUpWebView:webView WithRequest:request]) {
         return NO;
     }
     /*

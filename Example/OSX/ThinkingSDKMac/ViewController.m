@@ -7,25 +7,18 @@
 
 #import "ViewController.h"
 #import "TAInitinalViewController.h"
+#import "TAInputViewController.h"
 #import <ThinkingSDK/ThinkingSDK.h>
+#import <MJExtension/MJExtension.h>
 
 @interface ViewController ()
+
 @property (nonatomic, strong) NSWindowController *childWindowController;
+@property (nonatomic, copy) NSString *____String_you_;
 
 @end
 
 @implementation ViewController
-
-// 读取本地JSON文件
-+ (NSDictionary *)readLocalFile {
-    NSString *name = @"property";
-    // 获取文件路径
-    NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:@"json"];
-    // 将文件数据化
-    NSData *data = [[NSData alloc] initWithContentsOfFile:path];
-    // 对数据进行JSON格式化并返回字典形式
-    return [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -52,31 +45,41 @@
 
 
 - (IBAction)thinkingAnalysticsSDKInit:(NSButton *)sender {
-    ThinkingAnalyticsSDK *instance = [ThinkingAnalyticsSDK sharedInstance];
-    if (!instance) {
-        TAInitinalViewController *initVC = [[TAInitinalViewController alloc] init];
-        [self presentViewControllerAsSheet:initVC];
-    } else {
-        NSLog(@"[ThinkingData]: has been initialized successfully SDK");
-    }
+    
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
+    NSString *appid = json[@"appId"];
+    NSString *url = json[@"serverUrl"];
+    NSString *timeZone = json[@"timeZone"];
+    TDConfig *config = [TDConfig new];
+    config.appid = appid;
+    config.configureURL = url;
+    if (timeZone && timeZone.length>0)
+        config.defaultTimeZone = [NSTimeZone timeZoneWithName:timeZone];
+    [ThinkingAnalyticsSDK startWithConfig:config];
+    
 }
 
+
+- (IBAction)thinkingAnalysticsInput:(NSButton *)sender {
+    TAInputViewController *initVC = [[TAInputViewController alloc] init];
+    initVC.txtView.string = @"";
+    __weak __typeof(self)weakSelf = self;
+    initVC.backText = ^(NSString *txt) {
+        weakSelf.____String_you_ = txt;
+    };
+    [self presentViewControllerAsSheet:initVC];
+}
 
 - (IBAction)calibratedTime:(NSButton *)sender {
     [ThinkingAnalyticsSDK calibrateTimeWithNtp:@"ntp.aliyun.com"];
 }
 
-
 - (IBAction)trackNormal:(NSButton *)sender {
-    NSDictionary *dic = [ViewController readLocalFile];
-//
-//    NSTimeInterval timer1 = [NSProcessInfo processInfo].systemUptime;
-//    [[self getInstance] track:@"a" properties:dic];
-//    NSTimeInterval timer2 = [NSProcessInfo processInfo].systemUptime;
-//    NSLog(@"@@@@@@@@@trackNormal: %f", (timer2 - timer1)/1000.);
     
     [[self getInstance] track:@"asdas" properties:@{}];
     
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
     
 //    if (json[@"time"] && json[@"timeZone"]) {
 //        NSDate *date=[NSDate dateWithTimeIntervalSince1970:([json[@"time"] doubleValue])];
@@ -89,42 +92,70 @@
     
 }
 
-
 - (IBAction)trackWithCustomProperties:(NSButton *)sender {
-    [[self getInstance] track:@"testProperty" properties:@{@"properKey":@"properValue",@"number":@123.2, @"arrKey":@[@1, @2],@"event_time":@"2020-10-20 18:00:51.125",@"xx":@NO,@"level":@"level-1"}];
+    
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    
+    if (json[@"time"] && json[@"timeZone"]) {
+        NSDate *date=[NSDate dateWithTimeIntervalSince1970:([json[@"time"] doubleValue])];
+        NSTimeZone *zone = [NSTimeZone timeZoneWithName:json[@"timeZone"]];
+        [[self getInstance] track:json[@"event_name"] properties:json[@"properties"] time:date timeZone:zone];
+    } else {
+        [[self getInstance] track:json[@"event_name"] properties:json[@"properties"]];
+    }
 }
 
 
 - (IBAction)trackWithCustomTime:(NSButton *)sender {
-    [[self getInstance] track:@"test" properties:nil time:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
+    
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    
+    if (json[@"time"] && json[@"timeZone"]) {
+        NSDate *date=[NSDate dateWithTimeIntervalSince1970:([json[@"time"] doubleValue])];
+        NSTimeZone *zone = [NSTimeZone timeZoneWithName:json[@"timeZone"]];
+        [[self getInstance] track:json[@"event_name"] properties:json[@"properties"] time:date timeZone:zone];
+    } else {
+        [[self getInstance] track:json[@"event_name"] properties:json[@"properties"]];
+    }
+    
 }
 
 
 - (IBAction)trackWithEventTimeTracker:(NSButton *)sender {
-    [[self getInstance] timeEvent:@"ta_time_event"];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [[self getInstance] track:@"ta_time_event"];
-    });
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    
+    [[self getInstance] timeEvent:json[@"event_name"]];
+
 }
 
 
 - (IBAction)trackFirst:(NSButton *)sender {
-    TDFirstEventModel *uniqueModel = [[TDFirstEventModel alloc] initWithEventName:@"eventName_unique" firstCheckID:@""];
-    uniqueModel.properties = @{ @"TestProKey": @"TestProValue"};
+    
+    
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    
+    TDFirstEventModel *uniqueModel = [[TDFirstEventModel alloc] initWithEventName:json[@"event_name"] firstCheckID:json[@"event_id"]];
+    uniqueModel.properties = json[@"properties"];
     [[self getInstance] trackWithEventModel:uniqueModel];
 }
 
 
 - (IBAction)trackUpdate:(NSButton *)sender {
-    TDUpdateEventModel *updateModel = [[TDUpdateEventModel alloc] initWithEventName:@"eventName_edit" eventID:@"eventIDxxx"];
-    updateModel.properties = @{ @"eventKeyEdit": @"eventKeyEdit_update", @"eventKeyEdit2": @"eventKeyEdit_update2", @"status":@5 };
+    
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    
+    TDUpdateEventModel *updateModel = [[TDUpdateEventModel alloc] initWithEventName:json[@"event_name"] eventID:json[@"event_id"]];
+    updateModel.properties = json[@"properties"];
     [[self getInstance] trackWithEventModel:updateModel];
 }
 
 
 - (IBAction)trackOverwrite:(NSButton *)sender {
-    TDOverwriteEventModel *overwriteModel = [[TDOverwriteEventModel alloc] initWithEventName:@"eventName_edit" eventID:@"eventIDxxx"];
-    overwriteModel.properties = @{ @"eventKeyEdit": @"eventKeyEdit_overwrite" , @"price": @5};
+    
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    
+    TDOverwriteEventModel *overwriteModel = [[TDOverwriteEventModel alloc] initWithEventName:json[@"event_name"] eventID:json[@"event_id"]];
+    overwriteModel.properties =  json[@"properties"];
     [[self getInstance] trackWithEventModel:overwriteModel];
 }
 
@@ -151,18 +182,15 @@
 
 - (IBAction)setCommonDynamicProperties:(NSButton *)sender {
     [[self getInstance] registerDynamicSuperProperties:^NSDictionary<NSString *,id> * _Nonnull{
-        return @{@"dynamicsuperkey":@"dynamicsupervalue",@"level":@"level-2"};
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+        return json[@"properties"];
     }];
 }
 
 
 - (IBAction)setCommonStaticProperties:(NSButton *)sender {
-    NSDictionary *dic = [ViewController readLocalFile];
-    NSTimeInterval timer1 = [NSProcessInfo processInfo].systemUptime;
-    [[self getInstance] setSuperProperties:dic];
-    NSTimeInterval timer2 = [NSProcessInfo processInfo].systemUptime;
-    NSLog(@"@@@@@@@@@setSuperProperties: %f", (timer2 - timer1)/1000.);
-    
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    [[self getInstance] setSuperProperties:json[@"properties"]];
 }
 
 
@@ -175,20 +203,14 @@
     [[self getInstance] unsetSuperProperty:@"superkey"];
 }
 
-- (IBAction)distincidClick:(id)sender {
-    NSTimeInterval timer1 = [NSProcessInfo processInfo].systemUptime;
-    [[self getInstance] identify:@"user_distincid_id"];
-    NSTimeInterval timer2 = [NSProcessInfo processInfo].systemUptime;
-    NSLog(@"@@@@@@@@@identify: %f", (timer2 - timer1)/1000.);
-}
-
 
 - (IBAction)login:(NSButton *)sender {
-    NSTimeInterval timer1 = [NSProcessInfo processInfo].systemUptime;
-    [[self getInstance] login:@"user_login_id"];
-    NSTimeInterval timer2 = [NSProcessInfo processInfo].systemUptime;
-    NSLog(@"@@@@@@@@@login: %f", (timer2 - timer1)/1000.);
-   
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    [[self getInstance] login:json[@"name"]];
+}
+- (IBAction)distinciddd:(id)sender {
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    [[self getInstance] identify:json[@"name"]];
 }
 
 
@@ -198,12 +220,14 @@
 
 
 - (IBAction)userAdd:(NSButton *)sender {
-    NSTimeInterval timer1 = [NSProcessInfo processInfo].systemUptime;
-    [[self getInstance] user_add:@"key1" andPropertyValue:[NSNumber numberWithInt:6]];
-    NSTimeInterval timer2 = [NSProcessInfo processInfo].systemUptime;
-    NSLog(@"@@@@@@@@@userAdd: %f", (timer2 - timer1)/1000.);
-//    [[self getInstance] user_add:@"key1" andPropertyValue:[NSNumber numberWithInt:6]];
-//    [[self getInstance] user_add:@"key1" andPropertyValue:@(-100)];
+    
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    
+    for (NSString *key in json.allKeys) {
+        [[self getInstance] user_add:key andPropertyValue:@([json[key] doubleValue])];
+    }
+    
+    
 }
 
 
@@ -213,47 +237,34 @@
 
 
 - (IBAction)userUniqueAppend:(NSButton *)sender {
-    NSDictionary *dic = [ViewController readLocalFile];
-    NSTimeInterval timer1 = [NSProcessInfo processInfo].systemUptime;
-    [[self getInstance] user_uniqAppend:dic];
-    NSTimeInterval timer2 = [NSProcessInfo processInfo].systemUptime;
-    NSLog(@"@@@@@@@@@userUniqueAppend: %f", (timer2 - timer1)/1000.);
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    [[self getInstance] user_uniqAppend:json[@"properties"]];
 }
 
 
 - (IBAction)userAppend:(NSButton *)sender {
-    NSDictionary *dic = [ViewController readLocalFile];
-    NSTimeInterval timer1 = [NSProcessInfo processInfo].systemUptime;
-    [[self getInstance] user_append:dic];
-    NSTimeInterval timer2 = [NSProcessInfo processInfo].systemUptime;
-    NSLog(@"@@@@@@@@@userAppend: %f", (timer2 - timer1)/1000.);
-    
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    [[self getInstance] user_append:json[@"properties"]];
 }
 
 
 - (IBAction)userUnset:(NSButton *)sender {
-    [[self getInstance] user_unset:@"key1"];
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    
+    [[self getInstance] user_unset:json[@"properties"]];
 }
 
 
 - (IBAction)userSetOnce:(NSButton *)sender {
-    NSDictionary *dic = [ViewController readLocalFile];
-    NSTimeInterval timer1 = [NSProcessInfo processInfo].systemUptime;
-    [[self getInstance] user_setOnce:dic];
-    NSTimeInterval timer2 = [NSProcessInfo processInfo].systemUptime;
-    NSLog(@"@@@@@@@@@userSetOnce: %f", (timer2 - timer1)/1000.);
-   
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
+    [[self getInstance] user_setOnce:json[@"properties"]];
 }
 
 
 - (IBAction)userSet:(NSButton *)sender {
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[((NSString *)_____String_you_) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
     
-    NSDictionary *dic = [ViewController readLocalFile];
-    NSTimeInterval timer1 = [NSProcessInfo processInfo].systemUptime;
-    [[self getInstance] user_set:dic];
-    NSTimeInterval timer2 = [NSProcessInfo processInfo].systemUptime;
-    NSLog(@"@@@@@@@@@userSet: %f", (timer2 - timer1)/1000.);
-    
+    [[self getInstance] user_set:json[@"properties"]];
 }
 
 @end

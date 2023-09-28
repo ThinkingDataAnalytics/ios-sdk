@@ -29,7 +29,7 @@
     _webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:config];
     _webView.navigationDelegate = self;
     _webView.UIDelegate = self;
-//    _webView.customUserAgent = @" /td-sdk-ios";
+    _webView.customUserAgent = @" /td-sdk-ios";
     
     NSString *filePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"index.html"];
     NSString *htmlstring = [[NSString alloc] initWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];

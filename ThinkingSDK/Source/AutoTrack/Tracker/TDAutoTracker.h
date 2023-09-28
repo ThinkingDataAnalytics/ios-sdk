@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ThinkingAnalyticsSDK.h"
-#import "TDAutoTrackEvent.h"
+#import "TAAutoTrackEvent.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (atomic, assign) BOOL additionalCondition;
 
-- (void)trackWithInstanceTag:(NSString *)instanceName event:(TDAutoTrackEvent *)event params:(nullable NSDictionary *)params;
+- (void)trackWithInstanceTag:(NSString *)instanceName event:(TAAutoTrackEvent *)event params:(nullable NSDictionary *)params;
 
 
 @end

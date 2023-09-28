@@ -9,39 +9,43 @@
 #import "TDEncryptProtocol.h"
 #import "TDSecretKey.h"
 #import "TDRSAEncryptorPlugin.h"
-#import <ThinkingDataCore/NSData+TDGzip.h>
-#import <ThinkingDataCore/TDJSONUtil.h>
+#import "NSData+TDGzip.h"
+#import "TDJSONUtil.h"
+#import "TDEventRecord.h"
 #import "TDLogging.h"
 
+
 @interface TDEncryptManager ()
+
+@property (nonatomic, strong) TDConfig *config;
 @property (nonatomic, strong) id<TDEncryptProtocol> encryptor;
 @property (nonatomic, copy) NSArray<id<TDEncryptProtocol>> *encryptors;
 @property (nonatomic, copy) NSString *encryptedSymmetricKey;
 @property (nonatomic, strong) TDSecretKey *secretKey;
-@property (nonatomic, strong) TDSecretKey *customSecretKey;
 
 @end
 
 @implementation TDEncryptManager
 
-- (instancetype)initWithSecretKey:(TDSecretKey *)secretKey {
-    self = [self init];
+- (instancetype)initWithConfig:(TDConfig *)config
+{
+    self = [super init];
     if (self) {
-        self.customSecretKey = secretKey;
-        [self updateEncryptor:secretKey];
+        [self updateConfig:config];
     }
     return self;
 }
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        NSMutableArray *encryptors = [NSMutableArray array];
-        [encryptors addObject:[TDRSAEncryptorPlugin new]];
-        self.encryptors = encryptors;
-    }
-    return self;
+- (void)updateConfig:(TDConfig *)config {
+    self.config = config;
+    
+    
+    NSMutableArray *encryptors = [NSMutableArray array];
+    [encryptors addObject:[TDRSAEncryptorPlugin new]];
+    self.encryptors = encryptors;
+    
+    
+    [self updateEncryptor:[self loadCurrentSecretKey]];
 }
 
 - (void)handleEncryptWithConfig:(NSDictionary *)encryptConfig {
@@ -106,6 +110,11 @@
     } @catch (NSException *exception) {
         TDLogError(@"%@ error: %@", self, exception);
     }
+}
+
+- (TDSecretKey *)loadCurrentSecretKey {
+    TDSecretKey *secretKey = self.config.secretKey;
+    return secretKey;
 }
 
 - (BOOL)needUpdateSecretKey:(TDSecretKey *)oldSecretKey newSecretKey:(TDSecretKey *)newSecretKey {

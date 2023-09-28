@@ -7,7 +7,9 @@
 
 #import <Foundation/Foundation.h>
 
-@class TDSecretKey;
+#import "TDConfig.h"
+
+@class TDEventRecord;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,7 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign, getter=isValid) BOOL valid;
 
 
-- (instancetype)initWithSecretKey:(TDSecretKey *)secretKey;
+- (instancetype)initWithConfig:(TDConfig *)config;
+
 
 - (void)handleEncryptWithConfig:(NSDictionary *)encryptConfig;
 

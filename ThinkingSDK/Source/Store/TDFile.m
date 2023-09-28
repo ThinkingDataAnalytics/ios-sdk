@@ -8,7 +8,7 @@
 
 #import "TDFile.h"
 #import "TDLogging.h"
-#import <ThinkingDataCore/TDJSONUtil.h>
+#import "TDJSONUtil.h"
 
 @implementation TDFile
 

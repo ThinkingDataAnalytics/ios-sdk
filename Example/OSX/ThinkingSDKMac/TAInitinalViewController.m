@@ -50,7 +50,6 @@
     config.appid = appid;
     config.configureURL = url;
     [ThinkingAnalyticsSDK startWithConfig:config];
-    NSTimeInterval timer2 = [NSProcessInfo processInfo].systemUptime;
 }
 
 
