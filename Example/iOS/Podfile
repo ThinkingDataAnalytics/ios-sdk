@@ -1,20 +1,11 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '8.0'
+ platform :ios, '10.0'
 
 use_frameworks!
 
 target 'ThinkingSDKDEMO' do
   # Comment the next line if you don't want to use dynamic frameworks
-  
-  pod "ThinkingSDK", :path => "../../"
-  pod 'Masonry'
-  
-end
 
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
-    end
-  end
+  pod "ThinkingSDK", :path => "../../"
+  
 end

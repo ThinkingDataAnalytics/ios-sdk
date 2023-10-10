@@ -17,6 +17,7 @@
 		36B9278C74A617E12A2F30B6 /* Pods_ThinkingSDKMac.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB99E30FD01DE7288F5237F8 /* Pods_ThinkingSDKMac.framework */; };
 		56A73FEE29A70D4D008B79A6 /* TAInputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A73FEC29A70D4D008B79A6 /* TAInputViewController.m */; };
 		56A73FEF29A70D4D008B79A6 /* TAInputViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56A73FED29A70D4D008B79A6 /* TAInputViewController.xib */; };
+		56E4D66029AE152A00EF393B /* property.json in Resources */ = {isa = PBXBuildFile; fileRef = 56E4D65F29AE152A00EF393B /* property.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		56A73FEB29A70D4D008B79A6 /* TAInputViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TAInputViewController.h; sourceTree = "<group>"; };
 		56A73FEC29A70D4D008B79A6 /* TAInputViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TAInputViewController.m; sourceTree = "<group>"; };
 		56A73FED29A70D4D008B79A6 /* TAInputViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TAInputViewController.xib; sourceTree = "<group>"; };
+		56E4D65F29AE152A00EF393B /* property.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = property.json; sourceTree = "<group>"; };
 		6660D38683DE112DD43D8537 /* Pods-ThinkingSDKMac.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKMac.release.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKMac/Pods-ThinkingSDKMac.release.xcconfig"; sourceTree = "<group>"; };
 		CE17B4CBD1A5563645BA5474 /* Pods-ThinkingSDKMac.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKMac.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKMac/Pods-ThinkingSDKMac.debug.xcconfig"; sourceTree = "<group>"; };
 		DB99E30FD01DE7288F5237F8 /* Pods_ThinkingSDKMac.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThinkingSDKMac.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,6 +91,7 @@
 				56A73FEB29A70D4D008B79A6 /* TAInputViewController.h */,
 				56A73FEC29A70D4D008B79A6 /* TAInputViewController.m */,
 				56A73FED29A70D4D008B79A6 /* TAInputViewController.xib */,
+				56E4D65F29AE152A00EF393B /* property.json */,
 			);
 			path = ThinkingSDKMac;
 			sourceTree = "<group>";
@@ -173,6 +176,7 @@
 				0116B5DF2861B76D00716E8B /* Main.storyboard in Resources */,
 				56A73FEF29A70D4D008B79A6 /* TAInputViewController.xib in Resources */,
 				012FB2F12873E539009A2716 /* TAInitinalViewController.xib in Resources */,
+				56E4D66029AE152A00EF393B /* property.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
