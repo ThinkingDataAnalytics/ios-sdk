@@ -1,4 +1,4 @@
-### v3.0.0-beta.1
+### v3.0.0
 **Date:** 2023/08/31
 
 **Notes:**
@@ -6,31 +6,12 @@
 * The public API is changed to static access
 
 ### v2.8.4
-**Date:** 2023/08/28
-
-**Notes:**
-
-* Release the official version
-
-### v2.8.4-beta.6
-**Date:** 2023/08/04
-
-**Notes:** 
-
-* Improve the accuracy of time zone
-
-### v2.8.4-beta.5
-**Date:** 2023/07/07
-
-**Notes:** 
-
-* Supports more comprehensive app start event collection
-
-### v2.8.4-beta.1
 **Date:** 2023/04/13
 
 **Notes:**
 
+* Improve the accuracy of time zone
+* Supports more comprehensive app start event collection
 * Updated how to get the phone boot time
 
 ### v2.8.3.2
