@@ -1,3 +1,10 @@
+### v3.0.1-beta.1
+**Date:** 2023/11/07
+
+**Notes:**
+
+* Added automatic track push event
+
 ### v3.0.0
 **Date:** 2023/08/31
 

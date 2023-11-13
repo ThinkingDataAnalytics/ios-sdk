@@ -49,7 +49,7 @@ static BOOL _td_disableReferrer;
 
 
 // 推送事件名
-static const NSString *kTDPushInfo  = @"ops_push_click";
+static const NSString *kTDPushInfo  = @"te_ops_push_click";
 
 // - 禁用功能并过滤字段拼接
 static const NSString *kTDStartReason  = @"#start_reason";

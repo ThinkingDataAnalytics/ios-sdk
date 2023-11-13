@@ -47,7 +47,7 @@
         [TDAppLaunchReason sharedInstance].appLaunchParams = @{@"url": @"", @"data": [TDCommonUtil dictionary:properties]};
     }
     
-    if ([ThinkingAnalyticsSDK defaultInstance].config.enableReceiptPush) {
+    if ([ThinkingAnalyticsSDK defaultInstance].config.enableAutoPush) {
         @try {
             if ([response isKindOfClass:[NSClassFromString(@"UNNotificationResponse") class]]) {
                 NSDictionary *userInfo = [response valueForKeyPath:@"notification.request.content.userInfo"];

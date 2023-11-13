@@ -22,8 +22,8 @@
 
 @end
 
-static NSString * const APP_ID = @"";
-static NSString * const SERVER_URL = @"";
+static NSString * const APP_ID = @"debug-appid";
+static NSString * const SERVER_URL = @"https://receive-ta-dev.thinkingdata.cn";
 
 @implementation TDInitVC
 

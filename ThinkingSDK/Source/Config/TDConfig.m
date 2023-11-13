@@ -114,7 +114,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
     config.name = [self.name copy];
     config.appGroupName = [self.appGroupName copy];
     config.serverUrl = [self.serverUrl copy];
-    config.enableReceiptPush = self.enableReceiptPush;
+    config.enableAutoPush = self.enableAutoPush;
 #if TARGET_OS_IOS
     config.innerSecretKey = [self.innerSecretKey copyWithZone:zone];
     config.innerEnableEncrypt = self.innerEnableEncrypt;

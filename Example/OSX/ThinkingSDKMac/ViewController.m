@@ -34,7 +34,7 @@
 - (ThinkingAnalyticsSDK *)getInstance {
     
     NSString *appid = @"c636fb93fb854ffd961a6eed5316410b";
-    NSString *url = @"http://ta_test.receiver.thinkingdata.cn";
+    NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
 
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
 

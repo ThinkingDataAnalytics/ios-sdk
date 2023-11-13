@@ -69,7 +69,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// share data with App Extension
 @property (nonatomic, copy) NSString *appGroupName;
 
-@property (nonatomic, assign) BOOL enableReceiptPush;
+@property (nonatomic, assign) BOOL enableAutoPush;
 
 /// server url
 @property (nonatomic, copy) NSString *configureURL DEPRECATED_MSG_ATTRIBUTE("Deprecated. replace with property: serverUrl");

@@ -41,6 +41,10 @@
         [instance autoTrackWithEvent:event properties:params];
                 
         if (self.autoFlush) [instance innerFlush];
+        
+        if ([[self class] isEqual:NSClassFromString(@"TDInstallTracker")]) {
+            [[TAModuleManager sharedManager] triggerEvent:TAMDidCustomEvent withCustomParam:[TDAnalyticsRouterEventManager deviceActivationEvent]];
+        }
     }
 }
 

@@ -201,7 +201,7 @@ static dispatch_queue_t td_trackQueue;
 #if TARGET_OS_IOS
         NSDictionary *ops = [TDAppLaunchReason getAppPushDic];
         if(ops != nil){
-            TDPushClickEvent *pushEvent = [[TDPushClickEvent alloc]initWithName: @"ops_push_click"];
+            TDPushClickEvent *pushEvent = [[TDPushClickEvent alloc]initWithName: @"te_ops_push_click"];
             pushEvent.ops = ops;
             [self autoTrackWithEvent:pushEvent properties:@{}];
             [self innerFlush];
@@ -731,6 +731,8 @@ static dispatch_queue_t td_trackQueue;
     @synchronized (self.file) {
         [self.file archiveIdentifyId:distinctId];
     }
+    
+    [[TAModuleManager sharedManager] triggerEvent:TAMDidCustomEvent withCustomParam:[TDAnalyticsRouterEventManager sdkSetDistinctIdEvent]];
 }
 
 - (NSString *)innerDistinctId {

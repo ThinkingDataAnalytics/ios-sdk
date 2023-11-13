@@ -273,3 +273,4 @@ typedef NS_ENUM(NSInteger, TATrackStatus) {
     /// reset normal
     TATrackStatusNormal
 };
+

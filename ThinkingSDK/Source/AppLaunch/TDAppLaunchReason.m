@@ -45,7 +45,7 @@
                 }else{
                     for (NSString *instanceToken in dic.allKeys) {
                         ThinkingAnalyticsSDK *instance = dic[instanceToken];
-                        TDPushClickEvent *pushEvent = [[TDPushClickEvent alloc]initWithName: @"ops_push_click"];
+                        TDPushClickEvent *pushEvent = [[TDPushClickEvent alloc]initWithName: @"te_ops_push_click"];
                         pushEvent.ops = opsReceiptProperties;
                         [instance autoTrackWithEvent:pushEvent properties:@{}];
                         [instance innerFlush];
@@ -95,7 +95,7 @@
     NSDictionary *data = [self getInitData:launchOptions];
     
     // 发送推送事件
-    if ([ThinkingAnalyticsSDK defaultInstance].config.enableReceiptPush && launchOptions) {
+    if ([ThinkingAnalyticsSDK defaultInstance].config.enableAutoPush && launchOptions) {
         NSDictionary *remoteNotification = [launchOptions objectForKey:@"UIApplicationLaunchOptionsRemoteNotificationKey"];
         [TDAppLaunchReason td_ops_push_click:remoteNotification];
     }

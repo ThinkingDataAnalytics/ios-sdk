@@ -23,7 +23,7 @@
 
     
     NSString *appid = @"c636fb93fb854ffd961a6eed5316410b";
-    NSString *url = @"http://ta_test.receiver.thinkingdata.cn";
+    NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
     self.appidTextField.stringValue = appid;
     self.serverUrlTextField.stringValue = url;
     [self initThinkingAnalytics];
@@ -40,7 +40,7 @@
 
 - (void)initThinkingAnalytics {
     NSString *appid = @"c636fb93fb854ffd961a6eed5316410b";
-    NSString *url = @"http://ta_test.receiver.thinkingdata.cn";
+    NSString *url = @"https://receiver-ta-dev.thinkingdata.cn";
     self.appidTextField.stringValue = appid;
     self.serverUrlTextField.stringValue = url;
     [ThinkingAnalyticsSDK setLogLevel:TDLoggingLevelDebug];
