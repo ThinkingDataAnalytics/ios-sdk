@@ -16,7 +16,7 @@
 #import "TDPresetProperties+TDDisProperties.h"
 #import "TDAppState.h"
 #import "TDEventRecord.h"
-#import "TDReachability.h"
+#import "TDAnalyticsReachability.h"
 #import "TDAppLifeCycle.h"
 #import "TDAnalytics+Public.h"
 #import "TDConfigPrivate.h"
@@ -187,7 +187,7 @@ static dispatch_queue_t td_trackQueue;
         }
                 
         if (![TDPresetProperties disableNetworkType]) {
-            [[TDReachability shareInstance] startMonitoring];
+            [[TDAnalyticsReachability shareInstance] startMonitoring];
         }
         
         self.eventTracker = [[TDEventTracker alloc] initWithQueue:td_trackQueue instanceToken:instanceAliasName];
@@ -359,7 +359,7 @@ static dispatch_queue_t td_trackQueue;
 // MARK: -
 
 + (NSString *)getNetWorkStates {
-    return [[TDReachability shareInstance] networkState];
+    return [[TDAnalyticsReachability shareInstance] networkState];
 }
 
 #pragma mark - Private

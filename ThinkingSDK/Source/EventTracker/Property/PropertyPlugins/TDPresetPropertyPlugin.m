@@ -9,7 +9,7 @@
 #import "TDPresetProperties.h"
 #import "TDPresetProperties+TDDisProperties.h"
 #import "TDDeviceInfo.h"
-#import "TDReachability.h"
+#import "TDAnalyticsReachability.h"
 #import "NSDate+TDFormat.h"
 
 @interface TDPresetPropertyPlugin ()
@@ -50,7 +50,7 @@
     [mutableDict addEntriesFromDictionary:[[TDDeviceInfo sharedManager] getAutomaticData]];
     
     if (![TDPresetProperties disableNetworkType]) {
-        mutableDict[@"#network_type"] = [[TDReachability shareInstance] networkState];
+        mutableDict[@"#network_type"] = [[TDAnalyticsReachability shareInstance] networkState];
     }
     
     if (completion) {

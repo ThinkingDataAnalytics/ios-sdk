@@ -1,5 +1,5 @@
 //
-//  TDReachability.h
+//  TDAnalyticsReachability.h
 //  ThinkingSDK
 //
 //  Created by Yangxiongon 2022/6/1.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface TDReachability : NSObject
+@interface TDAnalyticsReachability : NSObject
 
 + (ThinkingNetworkType)convertNetworkType:(NSString *)networkType;
 

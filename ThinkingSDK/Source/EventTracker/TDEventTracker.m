@@ -7,7 +7,7 @@
 
 #import "TDEventTracker.h"
 #import "TDAnalyticsNetwork.h"
-#import "TDReachability.h"
+#import "TDAnalyticsReachability.h"
 #import "TDEventRecord.h"
 #import "TDConfigPrivate.h"
 
@@ -197,8 +197,8 @@ static NSURLSessionTask *g_currentTask = nil;
 /// @param completion synchronous callback
 /// This method needs to be performed in networkQueue, and will continue to send network requests until the data in the database is sent
 - (void)_syncWithSize:(NSUInteger)size completion:(void(^)(void))completion {
-    NSString *networkType = [[TDReachability shareInstance] networkState];
-    if (!([TDReachability convertNetworkType:networkType] & [self.config getNetworkType])) {
+    NSString *networkType = [[TDAnalyticsReachability shareInstance] networkState];
+    if (!([TDAnalyticsReachability convertNetworkType:networkType] & [self.config getNetworkType])) {
         if (completion) {
             completion();
         }

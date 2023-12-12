@@ -1,11 +1,11 @@
 //
-//  TDReachability.m
+//  TDAnalyticsReachability.m
 //  ThinkingSDK
 //
 //  Created by Yangxiongon 2022/6/1.
 //
 
-#import "TDReachability.h"
+#import "TDAnalyticsReachability.h"
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 
@@ -16,7 +16,7 @@
 #endif
 
 
-@interface TDReachability ()
+@interface TDAnalyticsReachability ()
 #if TARGET_OS_IOS
 @property (atomic, assign) SCNetworkReachabilityRef reachability;
 #endif
@@ -25,12 +25,12 @@
 
 @end
 
-@implementation TDReachability
+@implementation TDAnalyticsReachability
 
 #if TARGET_OS_IOS
 static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void *info) {
-    TDReachability *instance = (__bridge TDReachability *)info;
-    if (instance && [instance isKindOfClass:[TDReachability class]]) {
+    TDAnalyticsReachability *instance = (__bridge TDAnalyticsReachability *)info;
+    if (instance && [instance isKindOfClass:[TDAnalyticsReachability class]]) {
         [instance reachabilityChanged:flags];
     }
 }
@@ -40,9 +40,9 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
 + (instancetype)shareInstance {
     static dispatch_once_t onceToken;
-    static TDReachability *reachability = nil;
+    static TDAnalyticsReachability *reachability = nil;
     dispatch_once(&onceToken, ^{
-        reachability = [[TDReachability alloc] init];
+        reachability = [[TDAnalyticsReachability alloc] init];
     });
     return reachability;
 }
