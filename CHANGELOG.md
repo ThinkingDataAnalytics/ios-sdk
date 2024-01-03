@@ -1,3 +1,17 @@
+### v3.0.1
+**Date:** 2024/01/03
+
+**Notes:**
+
+* Release the official version
+
+### v3.0.1-beta.2
+**Date:** 2023/12/12
+
+**Notes:**
+
+* Change the name of network tools
+
 ### v3.0.1-beta.1
 **Date:** 2023/11/07
 
