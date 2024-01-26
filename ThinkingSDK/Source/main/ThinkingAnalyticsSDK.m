@@ -11,7 +11,11 @@
 #import "TDPublicConfig.h"
 #import "TDFile.h"
 #import "TDCheck.h"
+#if __has_include(<ThinkingDataCore/TDJSONUtil.h>)
 #import <ThinkingDataCore/TDJSONUtil.h>
+#else
+#import "TDJSONUtil.h"
+#endif
 #import "NSString+TDString.h"
 #import "TDPresetProperties+TDDisProperties.h"
 #import "TDAppState.h"
@@ -52,7 +56,8 @@
 
 @implementation ThinkingAnalyticsSDK
 
-static NSMutableDictionary *instances;
+static NSLock *g_lock;
+static NSMutableDictionary *g_instances;
 static NSString *defaultProjectAppid;
 static dispatch_queue_t td_trackQueue;
 
@@ -65,6 +70,7 @@ static dispatch_queue_t td_trackQueue;
     dispatch_once(&ThinkingOnceToken, ^{
         NSString *queuelabel = [NSString stringWithFormat:@"cn.thinkingdata.%p", (void *)self];
         td_trackQueue = dispatch_queue_create([queuelabel UTF8String], DISPATCH_QUEUE_SERIAL);
+        g_lock = [[NSLock alloc] init];
     });
 }
 
@@ -100,7 +106,9 @@ static dispatch_queue_t td_trackQueue;
             return nil;
         }
         
-        instances[instanceIdentify] = self;
+        [g_lock lock];
+        g_instances[instanceIdentify] = self;
+        [g_lock unlock];
         
         self.superProperty = [[TDSuperProperty alloc] initWithToken:instanceIdentify isLight:YES];
         
@@ -130,14 +138,16 @@ static dispatch_queue_t td_trackQueue;
 
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            instances = [NSMutableDictionary dictionary];
+            g_instances = [NSMutableDictionary dictionary];
             defaultProjectAppid = instanceAliasName;
         });
         
         [TDAnalyticsAppGroupManager shareInstance].appGroupName = self.config.appGroupName;
         [[TDAnalyticsAppGroupManager shareInstance] setReceiveUrl:self.config.serverUrl appId:self.config.appid];
         
-        instances[instanceAliasName] = self;
+        [g_lock lock];
+        g_instances[instanceAliasName] = self;
+        [g_lock unlock];
         
         self.file = [[TDFile alloc] initWithAppid:instanceAliasName];
         [self retrievePersistedData];
@@ -159,6 +169,15 @@ static dispatch_queue_t td_trackQueue;
         self.sessionidPlugin = sessionidPlugin;
         [self.propertyPluginManager registerPropertyPlugin:sessionidPlugin];
          */
+        
+        //TASensitivePropertyPlugin
+        Class c_Sensitive = NSClassFromString(@"TDSensitivePropertyPlugin");
+        if (c_Sensitive != nil) {
+            id s_Sensitive = [[c_Sensitive alloc] init];
+            [s_Sensitive setValue:instanceAliasName forKey:@"_instanceToken"];
+            [self.propertyPluginManager registerPropertyPlugin:s_Sensitive];
+        }
+        
 #if TARGET_OS_IOS
 
         if (self.config.innerEnableEncrypt) {
@@ -624,7 +643,11 @@ static dispatch_queue_t td_trackQueue;
 }
 
 + (NSMutableDictionary *)_getAllInstances {
-    return instances;
+    NSMutableDictionary *dict = nil;
+    [g_lock lock];
+    dict = [g_instances mutableCopy];
+    [g_lock unlock];
+    return dict;
 }
 
 + (void)track_crashEventWithMessage:(NSString *)msg {
@@ -642,7 +665,14 @@ static dispatch_queue_t td_trackQueue;
 
 + (nullable ThinkingAnalyticsSDK *)instanceWithAppid:(NSString *)appid {
     appid = appid.td_trim;
-    return instances[appid];
+    if (appid == nil || appid.length == 0) {
+        appid = [ThinkingAnalyticsSDK defaultAppId];
+    }
+    ThinkingAnalyticsSDK *sdk = nil;
+    [g_lock lock];
+    sdk = g_instances[appid];
+    [g_lock unlock];
+    return sdk;
 }
 
 //MARK: - track event
@@ -778,6 +808,7 @@ static dispatch_queue_t td_trackQueue;
         [self.file archiveAccountID:nil];
     }
     [[TDAnalyticsAppGroupManager shareInstance] setAccountId:nil appId:self.config.appid];
+    [[TAModuleManager sharedManager] triggerEvent:TAMDidCustomEvent withCustomParam:[TDAnalyticsRouterEventManager sdkLogoutEvent]];
 }
 
 //MARK: - user profile
@@ -899,9 +930,9 @@ static dispatch_queue_t td_trackQueue;
     if (presetProperties == nil) {
         presetProperties = [[TDPresetProperties alloc] initWithDictionary:presetDic];
     } else {
-        @synchronized (instances) {
-            [presetProperties updateValuesWithDictionary:presetDic];
-        }
+        [g_lock lock];
+        [presetProperties updateValuesWithDictionary:presetDic];
+        [g_lock unlock];
     }
     
     return presetProperties;

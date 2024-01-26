@@ -1,6 +1,10 @@
 
 #import "TDUNUserNotificationCenterDelegateProxy.h"
+#if __has_include(<ThinkingDataCore/TDClassHelper.h>)
 #import <ThinkingDataCore/TDClassHelper.h>
+#else
+#import "TDClassHelper.h"
+#endif
 #import "NSObject+TDDelegateProxy.h"
 #import <objc/message.h>
 #import "TDAPPPushParams.h"

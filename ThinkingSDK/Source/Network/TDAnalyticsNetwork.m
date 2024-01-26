@@ -1,7 +1,15 @@
 #import "TDAnalyticsNetwork.h"
 
+#if __has_include(<ThinkingDataCore/NSData+TDGzip.h>)
 #import <ThinkingDataCore/NSData+TDGzip.h>
+#else
+#import "NSData+TDGzip.h"
+#endif
+#if __has_include(<ThinkingDataCore/TDJSONUtil.h>)
 #import <ThinkingDataCore/TDJSONUtil.h>
+#else
+#import "TDJSONUtil.h"
+#endif
 #import "TDLogging.h"
 #import "TDSecurityPolicy.h"
 #import "TDAppState.h"

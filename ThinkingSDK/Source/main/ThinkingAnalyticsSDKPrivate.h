@@ -41,7 +41,11 @@
 #import "TDAppLifeCycle.h"
 
 //MARK: router
+#if __has_include(<ThinkingDataCore/TAModuleManager.h>)
 #import <ThinkingDataCore/TAModuleManager.h>
+#else
+#import "TAModuleManager.h"
+#endif
 #import "TDAnalyticsRouterEventManager.h"
 
 //MARK: app group

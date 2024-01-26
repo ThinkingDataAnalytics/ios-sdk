@@ -7,14 +7,30 @@
 
 #import "TDAutoTrackPush.h"
 #import <objc/runtime.h>
+#if __has_include(<ThinkingSDK/ThinkingSDK.h>)
 #import <ThinkingSDK/ThinkingSDK.h>
+#else
+#import "ThinkingSDK.h"
+#endif
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "TDLogging.h"
 
 //MARK: router
+#if __has_include(<ThinkingDataCore/TAAnnotation.h>)
 #import <ThinkingDataCore/TAAnnotation.h>
+#else
+#import "TAAnnotation.h"
+#endif
+#if __has_include(<ThinkingDataCore/TAModuleProtocol.h>)
 #import <ThinkingDataCore/TAModuleProtocol.h>
+#else
+#import "TAModuleProtocol.h"
+#endif
+#if __has_include(<ThinkingDataCore/TAContext.h>)
 #import <ThinkingDataCore/TAContext.h>
+#else
+#import "TAContext.h"
+#endif
 
 static NSString * _fcm_token = nil;
 static NSString * _jpush_token = nil;

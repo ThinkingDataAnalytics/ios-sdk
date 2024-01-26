@@ -18,9 +18,21 @@
 #import "TDInstallTracker.h"
 #import "TDAppState.h"
 
+#if __has_include(<ThinkingDataCore/TDJSONUtil.h>)
 #import <ThinkingDataCore/TDJSONUtil.h>
+#else
+#import "TDJSONUtil.h"
+#endif
+#if __has_include(<ThinkingDataCore/NSObject+TDSwizzle.h>)
 #import <ThinkingDataCore/NSObject+TDSwizzle.h>
+#else
+#import "NSObject+TDSwizzle.h"
+#endif
+#if __has_include(<ThinkingDataCore/TDSwizzler.h>)
 #import <ThinkingDataCore/TDSwizzler.h>
+#else
+#import "TDSwizzler.h"
+#endif
 
 #ifndef TD_LOCK
 #define TD_LOCK(lock) dispatch_semaphore_wait(lock, DISPATCH_TIME_FOREVER);

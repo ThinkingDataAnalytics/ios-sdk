@@ -101,7 +101,7 @@
     }
     
     ThinkingAnalyticsSDK *sdk = [[ThinkingAnalyticsSDK alloc] initWithConfig:config];
-    instances[[config innerGetMapInstanceToken]] = sdk;
+    TDLogInfo(@"instance token: %@", [sdk.config innerGetMapInstanceToken]);
 }
 
 + (NSString *)lightInstanceIdWithAppId:(NSString *)appId {

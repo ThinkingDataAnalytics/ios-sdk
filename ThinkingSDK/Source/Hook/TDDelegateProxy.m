@@ -1,7 +1,15 @@
 
 #import "TDDelegateProxy.h"
+#if __has_include(<ThinkingDataCore/TDClassHelper.h>)
 #import <ThinkingDataCore/TDClassHelper.h>
+#else
+#import "TDClassHelper.h"
+#endif
+#if __has_include(<ThinkingDataCore/TDMethodHelper.h>)
 #import <ThinkingDataCore/TDMethodHelper.h>
+#else
+#import "TDMethodHelper.h"
+#endif
 #import "NSObject+TDDelegateProxy.h"
 #import <objc/message.h>
 

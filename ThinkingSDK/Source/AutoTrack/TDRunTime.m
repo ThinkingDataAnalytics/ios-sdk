@@ -6,7 +6,11 @@
 //
 
 #import "TDRunTime.h"
+#if __has_include(<ThinkingDataCore/TDJSONUtil.h>)
 #import <ThinkingDataCore/TDJSONUtil.h>
+#else
+#import "TDJSONUtil.h"
+#endif
 #import "TDPresetProperties+TDDisProperties.h"
 
 @implementation TDRunTime

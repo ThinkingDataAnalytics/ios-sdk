@@ -15,6 +15,13 @@
 #import "TDLogging.h"
 #endif
 
+#if __has_include(<ThinkingDataCore/TAModuleManager.h>)
+#import <ThinkingDataCore/TAModuleManager.h>
+#else
+#import "TAModuleManager.h"
+#endif
+#import "TDAnalyticsRouterEventManager.h"
+
 
 @interface TDAnalyticsReachability ()
 #if TARGET_OS_IOS
@@ -32,6 +39,7 @@ static void ThinkingReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     TDAnalyticsReachability *instance = (__bridge TDAnalyticsReachability *)info;
     if (instance && [instance isKindOfClass:[TDAnalyticsReachability class]]) {
         [instance reachabilityChanged:flags];
+        [[TAModuleManager sharedManager] triggerEvent:TAMDidCustomEvent withCustomParam:[TDAnalyticsRouterEventManager netwokChangedEvent:[instance networkState]]];
     }
 }
 #endif

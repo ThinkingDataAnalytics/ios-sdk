@@ -1,3 +1,10 @@
+### v3.0.2-beta.1
+**Date:** 2024/01/26
+
+**Notes:**
+
+* Improved stability in multi-thread
+
 ### v3.0.1
 **Date:** 2024/01/03
 

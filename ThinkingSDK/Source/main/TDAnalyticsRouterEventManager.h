@@ -16,9 +16,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSDictionary *)sdkLoginEvent;
 
++ (NSDictionary *)sdkLogoutEvent;
+
 + (NSDictionary *)sdkSetDistinctIdEvent;
 
 + (NSDictionary *)deviceActivationEvent;
+
++ (NSDictionary *)netwokChangedEvent:(NSString *)network;
 
 @end
 

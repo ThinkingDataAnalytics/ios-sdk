@@ -7,7 +7,11 @@
 
 #import "TDEventRecord.h"
 
+#if __has_include(<ThinkingDataCore/TDJSONUtil.h>)
 #import <ThinkingDataCore/TDJSONUtil.h>
+#else
+#import "TDJSONUtil.h"
+#endif
 
 static NSString * const TDEncryptRecordKeyEKey = @"ekey";
 static NSString * const TDEncryptRecordKeyPayload = @"payload";

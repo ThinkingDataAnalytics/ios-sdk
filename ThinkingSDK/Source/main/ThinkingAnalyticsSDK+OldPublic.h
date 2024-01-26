@@ -5,7 +5,11 @@
 //  Created by 杨雄 on 2023/8/10.
 //
 
+#if __has_include(<ThinkingSDK/ThinkingAnalyticsSDK.h>)
 #import <ThinkingSDK/ThinkingAnalyticsSDK.h>
+#else
+#import "ThinkingAnalyticsSDK.h"
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 

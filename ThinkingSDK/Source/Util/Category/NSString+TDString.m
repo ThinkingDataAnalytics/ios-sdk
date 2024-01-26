@@ -24,11 +24,15 @@
     NSString *scheme = [url scheme];
     NSString *host = [url host];
     NSNumber *port = [url port];
+    NSString *path = [url path];
     
     if (scheme && scheme.length>0 && host && host.length>0) {
         urlString = [NSString stringWithFormat:@"%@://%@", scheme, host];
         if (port && [port stringValue]) {
             urlString = [urlString stringByAppendingFormat:@":%@", [port stringValue]];
+        }
+        if (path && path.length > 0) {
+            urlString = [urlString stringByAppendingFormat:@"%@", path];
         }
     }
     return urlString;

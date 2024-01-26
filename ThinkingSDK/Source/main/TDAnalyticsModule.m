@@ -16,9 +16,21 @@
 #import "TDUserEventSet.h"
 
 //MARK: router
+#if __has_include(<ThinkingDataCore/TAAnnotation.h>)
 #import <ThinkingDataCore/TAAnnotation.h>
+#else
+#import "TAAnnotation.h"
+#endif
+#if __has_include(<ThinkingDataCore/TAModuleProtocol.h>)
 #import <ThinkingDataCore/TAModuleProtocol.h>
+#else
+#import "TAModuleProtocol.h"
+#endif
+#if __has_include(<ThinkingDataCore/TAContext.h>)
 #import <ThinkingDataCore/TAContext.h>
+#else
+#import "TAContext.h"
+#endif
 
 static NSString * const kTDPushSDKName = @"ThinkingDataPush";
 static NSString * const kTDPushEventTypeTrackToken = @"deviceToken";
@@ -32,7 +44,7 @@ ThinkingMod(TDAnalyticsModule)
 
 @end
 
-static NSString *_cacheDeviceToken;
+static NSDictionary *_cacheDeviceToken;
 
 @implementation TDAnalyticsModule
 
@@ -43,7 +55,7 @@ static NSString *_cacheDeviceToken;
     if ([moduleName isEqualToString:kTDPushSDKName]) {
         NSString *eventType = pushSDKInfo[@"type"];
         if ([eventType isEqualToString:kTDPushEventTypeTrackToken]) {
-            NSString *deviceToken = pushSDKInfo[@"deviceToken"];
+            NSDictionary *deviceToken = pushSDKInfo[@"deviceToken"];
             [self trackDeviceToken:deviceToken];
         } else if ([eventType isEqualToString:kTDPushEventTypeClickNotification]) {
             NSDictionary *userInfo = pushSDKInfo[@"userInfo"];
@@ -63,18 +75,15 @@ static NSString *_cacheDeviceToken;
     }
 }
 
-- (void)trackDeviceToken:(NSString *)deviceToken {
-    if (!deviceToken) return;
+- (void)trackDeviceToken:(NSDictionary *)deviceToken {
+    if (deviceToken == nil || ![deviceToken isKindOfClass:[NSDictionary class]]) return;
     
     NSMutableDictionary *dic = [ThinkingAnalyticsSDK _getAllInstances];
     if (dic.count > 0) {
         for (NSString *instanceToken in dic.allKeys) {
             ThinkingAnalyticsSDK *instance = dic[instanceToken];
             
-            NSDictionary *params = @{
-                @"#apns_token": deviceToken,
-            };
-            [instance innerUserSet:params];
+            [instance innerUserSet:deviceToken];
             [instance innerFlush];
             
             _cacheDeviceToken = nil;

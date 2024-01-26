@@ -2,8 +2,16 @@
 #import "TDAppDelegateProxyManager.h"
 #import "TDApplicationDelegateProxy.h"
 #import "UIApplication+TDPushClick.h"
+#if __has_include(<ThinkingDataCore/TDMethodHelper.h>)
 #import <ThinkingDataCore/TDMethodHelper.h>
+#else
+#import "TDMethodHelper.h"
+#endif
+#if __has_include(<ThinkingDataCore/TDNewSwizzle.h>)
 #import <ThinkingDataCore/TDNewSwizzle.h>
+#else
+#import "TDNewSwizzle.h"
+#endif
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 #import "TDUNUserNotificationCenterDelegateProxy.h"

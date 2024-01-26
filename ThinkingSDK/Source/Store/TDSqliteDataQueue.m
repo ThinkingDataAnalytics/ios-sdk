@@ -2,7 +2,11 @@
 #import <sqlite3.h>
 
 #import "TDLogging.h"
+#if __has_include(<ThinkingDataCore/TDJSONUtil.h>)
 #import <ThinkingDataCore/TDJSONUtil.h>
+#else
+#import "TDJSONUtil.h"
+#endif
 #import "TDConfig.h"
 #import "TDEventRecord.h"
 
