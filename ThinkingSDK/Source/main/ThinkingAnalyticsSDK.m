@@ -190,6 +190,8 @@ static dispatch_queue_t td_trackQueue;
                 [weakSelf.encryptManager handleEncryptWithConfig:secretKey];
             }
         }];
+        
+        [self.config innerUpdateIPMap];
       
 #elif TARGET_OS_OSX
         [self.config innerUpdateConfig:^(NSDictionary * _Nonnull secretKey) {}];
@@ -592,8 +594,17 @@ static dispatch_queue_t td_trackQueue;
         
     [self calibratedTimeWithEvent:event];
     
+    NSDictionary *autoTrackDynamicProperties = [self.autoTrackSuperProperty obtainAutoTrackDynamicSuperProperties];
+    NSDictionary *dynamicProperties = [self.superProperty obtainDynamicSuperProperties];
+    NSMutableDictionary *unionProperties = [NSMutableDictionary dictionary];
+    if (dynamicProperties) {
+        [unionProperties addEntriesFromDictionary:dynamicProperties];
+    }
+    if (autoTrackDynamicProperties) {
+        [unionProperties addEntriesFromDictionary:autoTrackDynamicProperties];
+    }
+    event.dynamicSuperProperties = unionProperties;
     dispatch_async(td_trackQueue, ^{
-        event.dynamicSuperProperties = [self.superProperty obtainDynamicSuperProperties];
         [self trackEvent:event properties:[properties copy] isH5:NO];
     });
 }
@@ -609,6 +620,13 @@ static dispatch_queue_t td_trackQueue;
         }
     }
     return false;
+}
+
+- (TDAutoTrackSuperProperty *)autoTrackSuperProperty {
+    if (!_autoTrackSuperProperty) {
+        _autoTrackSuperProperty = [[TDAutoTrackSuperProperty alloc] init];
+    }
+    return _autoTrackSuperProperty;
 }
 
 #endif

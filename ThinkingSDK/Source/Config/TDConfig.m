@@ -97,6 +97,29 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
 #endif
 }
 
+- (void)enableDNSServcie:(NSArray<TDDNSService> *)services {
+    // check DNS service list
+    if (!services || services.count <= 0) {
+        TDLogDebug(@"Enable DNS service error: Service is empty");
+        return;
+    }
+    NSArray<TDDNSService> *dNSServices = @[TDDNSServiceCloudFlare, TDDNSServiceCloudALi, TDDNSServiceCloudGoogle];
+    
+    NSMutableArray *filterServices = [NSMutableArray array];
+    for (TDDNSService obj in services) {
+        if ([obj isKindOfClass:NSString.class] && [dNSServices containsObject:obj]) {
+            [filterServices addObject:obj];
+        }
+    }
+    if (filterServices.count > 0) {
+        TDLogDebug(@"Enable DNS service. Server url list is: %@", filterServices);
+        self.dnsServices = filterServices;
+        [TDAnalyticsNetwork enableDNSServcie:filterServices];
+    } else {
+        TDLogDebug(@"Enable DNS service error: Service url authentication failed");
+    }
+}
+
 - (void)setName:(NSString *)name {
     _name = name.td_trim;
 }
@@ -115,6 +138,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
     config.appGroupName = [self.appGroupName copy];
     config.serverUrl = [self.serverUrl copy];
     config.enableAutoPush = self.enableAutoPush;
+    config.dnsServices = self.dnsServices;
 #if TARGET_OS_IOS
     config.innerSecretKey = [self.innerSecretKey copyWithZone:zone];
     config.innerEnableEncrypt = self.innerEnableEncrypt;
@@ -175,6 +199,17 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
             }
         }
     }];
+}
+
+- (void)innerUpdateIPMap {
+    if (self.dnsServices.count <= 0) {
+        return;
+    }
+    NSString *serverUrlStr = [NSString stringWithFormat:@"%@/sync", self.serverUrl];
+    TDAnalyticsNetwork *network = [[TDAnalyticsNetwork alloc] init];
+    network.serverURL = [NSURL URLWithString:serverUrlStr];
+    network.securityPolicy = self.securityPolicy;
+    [network fetchIPMap];
 }
 
 - (NSString *)innerGetMapInstanceToken {

@@ -297,6 +297,11 @@
     [TDAnalytics setAutoTrackProperties:eventType properties:properties withAppId:appId];
 }
 
++ (void)setAutoTrackDynamicProperties:(NSDictionary<NSString *,id> * _Nonnull (^)(void))dynamicSuperProperties API_UNAVAILABLE(macos){
+    NSString *appId = [ThinkingAnalyticsSDK defaultAppId];
+    [TDAnalytics setAutoTrackDynamicProperties:dynamicSuperProperties withAppId:appId];
+}
+
 #endif
 
 @end

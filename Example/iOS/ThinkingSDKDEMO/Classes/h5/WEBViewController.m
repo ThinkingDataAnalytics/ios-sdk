@@ -9,12 +9,15 @@
 #import "WEBViewController.h"
 #import <ThinkingSDK/ThinkingAnalyticsSDK.h>
 #import "ThinkingSDKAPI.h"
+
+UIKIT_EXTERN API_DEPRECATED("No longer supported; please adopt WKWebView.", ios(2.0, 12.0)) API_UNAVAILABLE(visionos) API_UNAVAILABLE(tvos, macos, macCatalyst) NS_SWIFT_UI_ACTOR
 @interface WEBViewController () <UIWebViewDelegate>
 
-@property (strong) UIWebView *webView;
+@property (strong, nonatomic) UIWebView *webView;
 
 @end
 
+UIKIT_EXTERN API_DEPRECATED("No longer supported; please adopt WKWebView.", ios(2.0, 12.0)) API_UNAVAILABLE(visionos) API_UNAVAILABLE(tvos, macos, macCatalyst) NS_SWIFT_UI_ACTOR
 @implementation WEBViewController
 
 - (instancetype)init
@@ -42,6 +45,7 @@
 {
     return @"UIWebview Test";
 }
+
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     if ([TDAnalytics showUpWebView:webView withRequest:request]) {
         return NO;

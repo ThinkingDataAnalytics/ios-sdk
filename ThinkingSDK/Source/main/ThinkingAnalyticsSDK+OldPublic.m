@@ -255,6 +255,9 @@
 - (void)ignoreViewType:(Class)aClass {
     [TDAnalytics ignoreViewType:aClass withAppId:[self instanceAliasNameOrAppId]];
 }
+- (void)setAutoTrackDynamicProperties:(NSDictionary<NSString *,id> * _Nonnull (^)(void))dynamicSuperProperties {
+    [TDAnalytics setAutoTrackDynamicProperties:dynamicSuperProperties withAppId:[self instanceAliasNameOrAppId]];
+}
 #endif
 
 - (NSString *)getDeviceId {

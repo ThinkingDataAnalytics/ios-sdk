@@ -15,7 +15,9 @@
 #define TDConfigPrivate_h
 
 @interface TDConfig ()
-@property (nonatomic, assign) BOOL innerEnableEncrypt;
+@property (atomic, assign) BOOL innerEnableEncrypt;
+/// DNS service url for fetching ips
+@property (atomic, copy) NSArray<TDDNSService> *dnsServices;
 
 #if TARGET_OS_IOS
 @property (nonatomic, strong) TDSecretKey *innerSecretKey;
@@ -24,6 +26,7 @@
 - (ThinkingNetworkType)getNetworkType;
 - (void)innerUpdateConfig:(void(^)(NSDictionary *dict))block;
 - (NSString *)innerGetMapInstanceToken;
+- (void)innerUpdateIPMap;
 
 @end
 

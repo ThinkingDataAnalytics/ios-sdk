@@ -24,16 +24,26 @@ static NSString *kTAIntegrationCount = @"TA-Integration-Count";
 static NSString *kTAIntegrationExtra = @"TA-Integration-Extra";
 static NSString *kTADatasType = @"TA-Datas-Type";
 
+static NSTimeInterval g_lastQueryDNSTime = 0;
+static dispatch_queue_t g_queryDNSQueue = nil;
+static NSArray<TDDNSService> *g_dnsServices =  nil;
+static NSMutableDictionary<NSString *, NSString *> *g_dnsIpMap = nil;
+
+@interface TDAnalyticsNetwork ()
+
+@property (atomic, assign) BOOL dnsServiceDegrade;
+
+@end
+
 @implementation TDAnalyticsNetwork
 
 - (NSURLSession *)sharedURLSession {
+    static dispatch_once_t onceToken;
     static NSURLSession *sharedSession = nil;
-    @synchronized(self) {
-        if (sharedSession == nil) {
-            NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
-            sharedSession = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:nil];
-        }
-    }
+    dispatch_once(&onceToken, ^{
+        NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+        sharedSession = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:nil];
+    });
     return sharedSession;
 }
 
@@ -71,10 +81,13 @@ static NSString *kTADatasType = @"TA-Datas-Type";
             NSError *err;
             
             if (!data) {
+                dispatch_semaphore_signal(flushSem);
                 return;
             }
             
             NSDictionary *retDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
+            TDLogDebug(@"Send event, Response = %@", retDic);
+
             if (err) {
                 TDLogError(@"Debug data json error:%@", err);
                 debugResult = -2;
@@ -129,6 +142,9 @@ static NSString *kTADatasType = @"TA-Datas-Type";
                 
             }
         } else {
+            if ([TDAnalyticsNetwork isEnableDNS]) {
+                self.dnsServiceDegrade = YES;
+            }
             debugResult = -2;
             NSString *urlResponse = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             TDLogError(@"%@", [NSString stringWithFormat:@"Debug %@ network failed with response '%@'.", self, urlResponse]);
@@ -138,6 +154,7 @@ static NSString *kTADatasType = @"TA-Datas-Type";
     };
 
     NSURLSessionDataTask *task = [[self sharedURLSession] dataTaskWithRequest:request completionHandler:block];
+    TDLogDebug(@"Send event. %@\nRequest = %@", request.URL.absoluteString, recordDic);
     [task resume];
 
     dispatch_semaphore_wait(flushSem, DISPATCH_TIME_FOREVER);
@@ -187,12 +204,12 @@ static NSString *kTADatasType = @"TA-Datas-Type";
         NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
         if ([urlResponse statusCode] == 200) {
             flushSucc = YES;
-            TDLogDebug(@"flush success sendContent---->:%@",flushDic);
             if (!data) {
+                dispatch_semaphore_signal(flushSem);
                 return;
             }
             id result = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-            TDLogDebug(@"flush success responseData---->%@",result);
+            TDLogDebug(@"Send event, Response = %@", result);
             
             @try {
                 if ([result isKindOfClass:[NSDictionary class]]) {
@@ -208,6 +225,9 @@ static NSString *kTADatasType = @"TA-Datas-Type";
 
         } else {
             flushSucc = NO;
+            if ([TDAnalyticsNetwork isEnableDNS]) {
+                self.dnsServiceDegrade = YES;
+            }
             NSString *urlResponse = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             TDLogError(@"%@", [NSString stringWithFormat:@"%@ network failed with response '%@'.", self, urlResponse]);
             [self callbackNetworkErrorWithRequest:jsonString error:urlResponse];
@@ -217,9 +237,34 @@ static NSString *kTADatasType = @"TA-Datas-Type";
     };
 
     NSURLSessionDataTask *task = [[self sharedURLSession] dataTaskWithRequest:request completionHandler:block];
+    TDLogDebug(@"Send event. %@\nRequest = %@", request.URL.absoluteString, flushDic);
     [task resume];
     dispatch_semaphore_wait(flushSem, DISPATCH_TIME_FOREVER);
     return flushSucc;
+}
+
++ (void)enableDNSServcie:(NSArray<TDDNSService> *)services {
+    @synchronized (TDAnalyticsNetwork.class) {
+        g_dnsServices = [services copy];
+    }
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        g_queryDNSQueue = dispatch_queue_create("cn.thinkingdata.analytics.queryDNS", DISPATCH_QUEUE_SERIAL);
+    });
+}
+
++ (BOOL)isEnableDNS {
+    BOOL result = NO;
+    @synchronized (TDAnalyticsNetwork.class) {
+        if (g_dnsServices.count > 0) {
+            result = YES;
+        }
+    }
+    return result;
+}
+
+- (void)fetchIPMap {
+    [self getDNSIps];
 }
 
 - (void)callbackNetworkErrorWithRequest:(NSString *)request error:(NSString *)error {
@@ -235,11 +280,9 @@ static NSString *kTADatasType = @"TA-Datas-Type";
 }
 
 - (NSMutableURLRequest *)buildRequestWithJSONString:(NSString *)jsonString {
-    
     NSData *zippedData = [NSData td_gzipData:[jsonString dataUsingEncoding:NSUTF8StringEncoding]];
     NSString *postBody = [zippedData base64EncodedStringWithOptions:0];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.serverURL];
-//    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://192.168.20.23:8991/sync"]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[self formatURLWithOriginalUrl:self.serverURL]];
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:[postBody dataUsingEncoding:NSUTF8StringEncoding]];
     NSString *contentType = [NSString stringWithFormat:@"text/plain"];
@@ -248,11 +291,37 @@ static NSString *kTADatasType = @"TA-Datas-Type";
     return request;
 }
 
+- (NSURL *)formatURLWithOriginalUrl:(NSURL *)url {
+    if (!url) {
+        return nil;
+    }
+    @synchronized (TDAnalyticsNetwork.class) {
+        if (!g_dnsServices || g_dnsServices.count <= 0) {
+            return url;
+        }
+    }
+    if (self.dnsServiceDegrade) {
+        return url;
+    }
+    NSString *ipStr = nil;
+    @synchronized (TDAnalyticsNetwork.class) {
+        ipStr = [g_dnsIpMap objectForKey:url.host];
+    }
+    if ([ipStr isKindOfClass:NSString.class] && ipStr.length > 0) {
+        NSString *ipUrlString = [NSString stringWithFormat:@"%@://%@%@", url.scheme, ipStr, url.path];
+        NSURL *serverUrl = [NSURL URLWithString:ipUrlString] ?: url;
+        return serverUrl;
+    } else {
+        [self getDNSIps];
+        return url;
+    }
+}
+
 - (NSMutableURLRequest *)buildDebugRequestWithJSONString:(NSString *)jsonString withAppid:(NSString *)appid withDeviceId:(NSString *)deviceId {
     // dryRun=0, if the verification is passed, it will be put into storage. dryRun=1, no storage
     int dryRun = self.mode == TDModeDebugOnly ? 1 : 0;
     NSString *postData = [NSString stringWithFormat:@"appid=%@&source=client&dryRun=%d&deviceId=%@&data=%@", appid, dryRun, deviceId, [self URLEncode:jsonString]];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.serverDebugURL];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[self formatURLWithOriginalUrl:self.serverDebugURL]];
     [request setHTTPMethod:@"POST"];
     request.HTTPBody = [postData dataUsingEncoding:NSUTF8StringEncoding];
     return request;
@@ -290,11 +359,23 @@ static NSString *kTADatasType = @"TA-Datas-Type";
     NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
     NSURLCredential *credential = nil;
 
+    NSString *domain = challenge.protectionSpace.host;
+    
+    if ([TDAnalyticsNetwork isEnableDNS]) {
+        // is IP or not
+        if (![self.serverURL.host isEqualToString:domain] && ![self isDomainInDNSService:domain]) {
+            domain = [self getOriginHostWithIp:domain];
+            if (domain == nil) {
+                domain = self.serverURL.host;
+            }
+        }
+    }
+    
     if (self.sessionDidReceiveAuthenticationChallenge) {
         disposition = self.sessionDidReceiveAuthenticationChallenge(session, challenge, &credential);
     } else {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-            if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
+            if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:domain]) {
                 credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
                 if (credential) {
                     disposition = NSURLSessionAuthChallengeUseCredential;
@@ -312,6 +393,105 @@ static NSString *kTADatasType = @"TA-Datas-Type";
     if (completionHandler) {
         completionHandler(disposition, credential);
     }
+}
+
+- (void)getDNSIps {
+    NSArray<TDDNSService> *dnsServices = nil;
+    @synchronized (TDAnalyticsNetwork.class) {
+        if (!g_dnsServices || g_dnsServices.count <= 0) {
+            return;
+        }
+        dnsServices = [g_dnsServices copy];
+        // Throttle DNS network query. Period is 30s
+        NSTimeInterval nowTimeInterval = [[NSDate date] timeIntervalSince1970];
+        if (nowTimeInterval - g_lastQueryDNSTime <= 30) {
+            return;
+        } else {
+            g_lastQueryDNSTime = nowTimeInterval;
+        }
+    }
+    NSString *serverHost = [self.serverURL host];
+    dispatch_async(g_queryDNSQueue, ^{
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        TDLogDebug(@"Parse DNS request is begining ...");
+        for (TDDNSService dnsServiceUrl in dnsServices) {
+            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", dnsServiceUrl, serverHost]];
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+            [request setHTTPMethod:@"GET"];
+            [request addValue:@"application/dns-json" forHTTPHeaderField:@"accept"];
+            [request setTimeoutInterval:6];
+            __block BOOL result = NO;
+            NSURLSessionDataTask *task = [[self sharedURLSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                if (error == nil && data != nil && data.length > 0) {
+                    NSError *jsonError = nil;
+                    NSDictionary *dnsResult = nil;
+                    @try {
+                        dnsResult = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
+                    } @catch (NSException *exception) {
+                        
+                    }
+                    if (jsonError == nil && [dnsResult isKindOfClass:NSDictionary.class]) {
+                        NSString *ipStr = nil;
+                        NSArray *answer = [dnsResult objectForKey:@"Answer"];
+                        if (answer && [answer isKindOfClass:[NSArray class]]) {
+                            NSDictionary *dnsObj = [answer lastObject];
+                            if (dnsObj && [dnsObj isKindOfClass:[NSDictionary class]]) {
+                                ipStr = [dnsObj objectForKey:@"data"];
+                            }
+                        }
+                        if (ipStr && [ipStr isKindOfClass:[NSString class]]) {
+                            result = YES;
+                            @synchronized (TDAnalyticsNetwork.class) {
+                                if (g_dnsIpMap == nil) {
+                                    g_dnsIpMap = [NSMutableDictionary dictionary];
+                                }
+                                [g_dnsIpMap setObject:ipStr forKey:serverHost];
+                            }
+                        }
+                    }
+                } else {
+                    TDLogError(@"Parse DNS error: %@", error.localizedDescription);
+                }
+                dispatch_semaphore_signal(semaphore);
+            }];
+            TDLogDebug(@"Parse DNS request: %@", request.URL.absoluteString);
+            [task resume];
+            dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)));
+            TDLogDebug(@"Parse DNS response: %@. Service url: %@", result ? @"success" : @"failed", request.URL.absoluteString);
+            if (result) {
+                @synchronized (TDAnalyticsNetwork.class) {
+                    TDLogDebug(@"Parse DNS is end. %@", g_dnsIpMap);
+                }
+                break;
+            }
+        }
+    });
+}
+
+- (BOOL)isDomainInDNSService:(NSString *)domain {
+    NSArray<TDDNSService> *dNSServices = @[TDDNSServiceCloudFlare, TDDNSServiceCloudALi, TDDNSServiceCloudGoogle];
+    for (TDDNSService dnsServiceUrl in dNSServices) {
+        if ([dnsServiceUrl containsString:domain]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (NSString *)getOriginHostWithIp:(NSString *)ip {
+    if ([ip isKindOfClass:NSString.class] && ip.length <= 0) {
+        return nil;
+    }
+    __block NSString *originHost = nil;
+    @synchronized (TDAnalyticsNetwork.class) {
+        [g_dnsIpMap enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSString * _Nonnull obj, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[NSString class]] && [obj containsString:ip]) {
+                originHost = key;
+                *stop = YES;
+            }
+        }];
+    }
+    return originHost;
 }
 
 @end

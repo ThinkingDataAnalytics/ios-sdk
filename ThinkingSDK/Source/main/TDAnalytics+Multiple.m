@@ -234,6 +234,18 @@
 #endif
 }
 
++ (void)setAutoTrackDynamicProperties:(NSDictionary<NSString *,id> * _Nonnull (^)(void))dynamicSuperProperties withAppId:(NSString *)appId {
+#if TARGET_OS_IOS
+    ThinkingAnalyticsSDK *teSDK = [ThinkingAnalyticsSDK instanceWithAppid:appId];
+    if ([teSDK hasDisabled]) {
+        return;
+    }
+    @synchronized (teSDK.autoTrackSuperProperty) {
+        [teSDK.autoTrackSuperProperty registerAutoTrackDynamicProperties:dynamicSuperProperties];
+    }
+#endif
+}
+
 //MARK: -
 
 @end

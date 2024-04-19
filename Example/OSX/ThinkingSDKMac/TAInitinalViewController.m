@@ -40,6 +40,7 @@
     TDConfig *config = [TDConfig new];
     config.appid = self.appidTextField.stringValue;
     config.serverUrl = self.serverUrlTextField.stringValue;
+    [config enableDNSServcie:@[TDDNSServiceCloudALi]];
     [TDAnalytics startAnalyticsWithConfig:config];
 }
 

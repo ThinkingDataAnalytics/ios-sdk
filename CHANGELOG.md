@@ -1,3 +1,24 @@
+### v3.0.3-beta.1
+**Date:** 2024/04/19
+
+**Notes:**
+
+* Support DNS parse
+
+### v3.0.2
+**Date:** 2024/04/09
+
+**Notes:**
+
+* Release the official version
+
+### v3.0.2-beta.2
+**Date:** 2024/02/23
+
+**Notes:**
+
+* Add privacy manifest
+
 ### v3.0.2-beta.1
 **Date:** 2024/01/26
 

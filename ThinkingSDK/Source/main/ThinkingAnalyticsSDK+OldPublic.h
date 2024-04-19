@@ -404,6 +404,12 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)ignoreViewType:(Class)aClass DEPRECATED_MSG_ATTRIBUTE("Deprecated. replace with: [TDAnalytics ignoreViewType:]");
 
+/**
+ Dynamic super properties in  auto track  environment.
+ Set dynamic public properties for auto track event
+ */
+- (void)setAutoTrackDynamicProperties:(NSDictionary<NSString *, id> *(^)(void))dynamicSuperProperties DEPRECATED_MSG_ATTRIBUTE("Deprecated. replace with: [TDAnalytics setAutoTrackDynamicProperties:]");
+
 #endif
 
 //MARK: -

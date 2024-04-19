@@ -274,6 +274,12 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (void)ignoreViewType:(Class)aClass API_UNAVAILABLE(macos);
 
+/**
+ Dynamic super properties in  auto track  environment
+ Set dynamic public properties for auto track event
+ */
++ (void)setAutoTrackDynamicProperties:(NSDictionary<NSString *, id> *(^)(void))dynamicSuperProperties API_UNAVAILABLE(macos);
+
 #endif
 
 @end

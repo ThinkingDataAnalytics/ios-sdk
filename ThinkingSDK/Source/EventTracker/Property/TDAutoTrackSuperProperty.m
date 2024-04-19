@@ -11,6 +11,8 @@
 @interface TDAutoTrackSuperProperty ()
 @property (atomic, strong) NSMutableDictionary<NSString *, NSDictionary *> *eventProperties;
 @property (nonatomic, copy) NSDictionary *(^dynamicSuperProperties)(TDAutoTrackEventType type, NSDictionary *properties);
+/// Only used for auto track in Unity3D environment
+@property (nonatomic, copy) NSDictionary<NSString *, id> *(^autoTrackDynamicSuperProperties)(void);
 
 @end
 
@@ -84,6 +86,24 @@
             NSDictionary *result = self.dynamicSuperProperties(type, properties);
             
             NSDictionary *validProperties = [TDPropertyValidator validateProperties:[result copy]];
+            return validProperties;
+        }
+        return nil;
+    }
+}
+
+- (void)registerAutoTrackDynamicProperties:(NSDictionary<NSString *,id> * _Nonnull (^)(void))dynamicSuperProperties {
+    @synchronized (self) {
+        self.autoTrackDynamicSuperProperties = dynamicSuperProperties;
+    }
+}
+
+- (NSDictionary *)obtainAutoTrackDynamicSuperProperties {
+    @synchronized (self) {
+        if (self.autoTrackDynamicSuperProperties) {
+            NSDictionary *properties = self.autoTrackDynamicSuperProperties();
+            
+            NSDictionary *validProperties = [TDPropertyValidator validateProperties:[properties copy]];
             return validProperties;
         }
         return nil;

@@ -22,6 +22,10 @@ typedef void (^TDFlushConfigBlock)(NSDictionary *result, NSError * _Nullable err
 - (void)fetchRemoteConfig:(NSString *)appid handler:(TDFlushConfigBlock)handler;
 - (int)flushDebugEvents:(NSDictionary *)record withAppid:(NSString *)appid;
 
+- (void)fetchIPMap;
+
++ (void)enableDNSServcie:(NSArray<TDDNSService> *)services;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -116,5 +116,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param publicKey public key
 - (void)enableEncryptWithVersion:(NSUInteger)version publicKey:(NSString *)publicKey;
 
+/// enable DNS parse. Must close ATS in info.plist.
+/// @param services DNS service list
+- (void)enableDNSServcie:(NSArray<TDDNSService> *)services;
+
 @end
 NS_ASSUME_NONNULL_END
