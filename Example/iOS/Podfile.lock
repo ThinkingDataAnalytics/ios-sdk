@@ -5,11 +5,11 @@ PODS:
   - ThinkingDataCore/Main (1.0.2):
     - ThinkingDataCore/iOS
     - ThinkingDataCore/OSX
-  - ThinkingSDK (3.0.2):
-    - ThinkingSDK/Main (= 3.0.2)
-  - ThinkingSDK/iOS (3.0.2):
+  - ThinkingSDK (3.0.3):
+    - ThinkingSDK/Main (= 3.0.3)
+  - ThinkingSDK/iOS (3.0.3):
     - ThinkingDataCore (>= 1.0.2)
-  - ThinkingSDK/Main (3.0.2):
+  - ThinkingSDK/Main (3.0.3):
     - ThinkingSDK/iOS
     - ThinkingSDK/OSX
 
@@ -26,7 +26,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   ThinkingDataCore: 381f642f0c17b5d75621bb068fffb78882569e9e
-  ThinkingSDK: 798d57d7ec0d2c5ff5aa7e852bbcf9e34e695297
+  ThinkingSDK: e598cc66c279615fe40d9a18f8aa43ddc3795652
 
 PODFILE CHECKSUM: 3876d2590dc832f00e9d4e33688fc85a9cffd110
 

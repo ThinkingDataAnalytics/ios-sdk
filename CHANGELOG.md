@@ -1,3 +1,10 @@
+### v3.0.3
+**Date:** 2024/05/17
+
+**Notes:**
+
+* Release the official version
+
 ### v3.0.3-beta.1
 **Date:** 2024/04/19
 
