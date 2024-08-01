@@ -24,6 +24,12 @@
     if ([self thinkingdata_respondsToSelector:aSelector]) {
         return YES;
     }
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 18.0) {
+        char startOfHeader = (char)sel_getName(aSelector);
+        if (startOfHeader == '\x01') {
+            return NO;
+        }
+    }
     if ([self.thinkingdata_optionalSelectors containsObject:NSStringFromSelector(aSelector)]) {
         return YES;
     }

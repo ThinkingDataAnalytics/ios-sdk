@@ -1,3 +1,10 @@
+### v3.0.4
+**Date:** 2024/08/01
+
+**Notes:**
+
+* Compatible with iOS 18
+
 ### v3.0.4-beta.1
 **Date:** 2024/05/28
 
