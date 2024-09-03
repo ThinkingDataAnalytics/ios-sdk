@@ -247,7 +247,57 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     return platform;
 }
 
+#if TARGET_OS_OSX
 
+- (nullable NSString *)getSystemSerialNumber {
+    io_service_t platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"));
+    if (platformExpert) {
+        CFTypeRef serialNumberAsCFString = IORegistryEntryCreateCFProperty(platformExpert, CFSTR(kIOPlatformSerialNumberKey), kCFAllocatorDefault, 0);
+        IOObjectRelease(platformExpert);
+        if (serialNumberAsCFString) {
+            NSString *serialNumber = (__bridge_transfer NSString *)serialNumberAsCFString;
+            return serialNumber;
+        }
+    }
+    return nil;
+}
+
+- (NSDictionary *)getDeviceUniqueId {
+    NSString *keyExistFirstRecord = @"thinking_isfirst";
+    BOOL isExistFirstRecord = [[[NSUserDefaults standardUserDefaults] objectForKey:keyExistFirstRecord] boolValue];
+    if (!isExistFirstRecord) {
+        self.isFirstOpen = YES;
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:keyExistFirstRecord];
+    } else {
+        self.isFirstOpen = NO;
+    }
+    
+    NSString *keyDeviceId = @"thinking_data_device_id";
+    NSString *deviceId = [[NSUserDefaults standardUserDefaults] stringForKey:keyDeviceId];
+    if (!deviceId) {
+        deviceId = [self getSystemSerialNumber];
+        if (deviceId == nil) {
+            deviceId = [self getIdentifier];
+        }
+        [[NSUserDefaults standardUserDefaults] setObject:deviceId forKey:keyDeviceId];
+    }
+    
+    NSString *keyDefaultDistinctId = @"thinking_data_default_distinct_id";
+    NSString *defaultDistinctId = [[NSUserDefaults standardUserDefaults] stringForKey:keyDefaultDistinctId];
+    if (!defaultDistinctId) {
+        defaultDistinctId = [[NSUUID UUID] UUIDString];
+        [[NSUserDefaults standardUserDefaults] setObject:defaultDistinctId forKey:keyDefaultDistinctId];
+    }
+    
+    return @{
+        @"uniqueId":defaultDistinctId,
+        @"deviceId":deviceId
+    };
+}
+
+#endif
+
+#if TARGET_OS_IOS
 
 - (NSDictionary *)getDeviceUniqueId {
 
@@ -306,6 +356,8 @@ static CTTelephonyNetworkInfo *__td_TelephonyNetworkInfo;
     [file archiveInstallTimes:installTimesKeychain];
     return @{@"uniqueId":uniqueId, @"deviceId":deviceId};
 }
+
+#endif
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"

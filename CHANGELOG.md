@@ -1,3 +1,10 @@
+### v3.0.5-beta.1
+**Date:** 2024/09/03
+
+**Notes:**
+
+* Improve SDK compatibility on the osx platform
+
 ### v3.0.4
 **Date:** 2024/08/01
 
