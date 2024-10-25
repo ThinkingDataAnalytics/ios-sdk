@@ -1,3 +1,10 @@
+### v3.0.5-beta.2
+**Date:** 2024/10/25
+
+**Notes:**
+
+* Fix hook issue
+
 ### v3.0.5-beta.1
 **Date:** 2024/09/03
 
