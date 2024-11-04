@@ -1,3 +1,10 @@
+### v3.1.0-beta.1
+**Date:** 2024/11/04
+
+**Notes:**
+
+* Improve SDK compatibility
+
 ### v3.0.5-beta.2
 **Date:** 2024/10/25
 
