@@ -8,16 +8,11 @@
 
 #import "TDTrackTimer.h"
 #import "TDTrackTimerItem.h"
-#import "TDLogging.h"
-
-#if __has_include(<ThinkingDataCore/TDCoreDeviceInfo.h>)
-#import <ThinkingDataCore/TDCoreDeviceInfo.h>
-#else
-#import "TDCoreDeviceInfo.h"
-#endif
+#import "TDThreadSafeDictionary.h"
+#import "TDCommonUtil.h"
 
 @interface TDTrackTimer ()
-@property (nonatomic, strong) NSMutableDictionary *events;
+@property (nonatomic, strong) TDThreadSafeDictionary *events;
 
 @end
 
@@ -27,7 +22,7 @@
 {
     self = [super init];
     if (self) {
-        self.events = [NSMutableDictionary dictionary];
+        self.events = [TDThreadSafeDictionary dictionary];
     }
     return self;
 }
@@ -37,36 +32,29 @@
         return;
     }
     TDTrackTimerItem *item = [[TDTrackTimerItem alloc] init];
-    item.beginTime = systemUptime ?: [TDCoreDeviceInfo bootTime];
-    @synchronized (self) {
-        self.events[eventName] = item;
-    }
-    TDLogInfo(@"time event success");
+    item.beginTime = systemUptime ?: [TDCommonUtil uptime];
+    self.events[eventName] = item;
 }
 
 - (void)enterForegroundWithSystemUptime:(NSTimeInterval)systemUptime {
-    @synchronized (self) {
-        NSArray *keys = [self.events allKeys];
-        for (NSString *key in keys) {
-            TDTrackTimerItem *item = self.events[key];
-            item.beginTime = systemUptime;
-            if (item.enterBackgroundTime == 0) {
-                item.backgroundDuration = 0;
-            } else {
-                item.backgroundDuration = systemUptime - item.enterBackgroundTime + item.backgroundDuration;
-            }
+    NSArray *keys = [self.events allKeys];
+    for (NSString *key in keys) {
+        TDTrackTimerItem *item = self.events[key];
+        item.beginTime = systemUptime;
+        if (item.enterBackgroundTime == 0) {
+            item.backgroundDuration = 0;
+        } else {
+            item.backgroundDuration = systemUptime - item.enterBackgroundTime + item.backgroundDuration;
         }
     }
 }
 
 - (void)enterBackgroundWithSystemUptime:(NSTimeInterval)systemUptime {
-    @synchronized (self) {
-        NSArray *keys = [self.events allKeys];
-        for (NSString *key in keys) {
-            TDTrackTimerItem *item = self.events[key];
-            item.enterBackgroundTime = systemUptime;
-            item.foregroundDuration = systemUptime - item.beginTime + item.foregroundDuration;
-        }
+    NSArray *keys = [self.events allKeys];
+    for (NSString *key in keys) {
+        TDTrackTimerItem *item = self.events[key];
+        item.enterBackgroundTime = systemUptime;
+        item.foregroundDuration = systemUptime - item.beginTime + item.foregroundDuration;
     }
 }
 
@@ -74,10 +62,7 @@
     if (!eventName.length) {
         return 0;
     }
-    TDTrackTimerItem *item = nil;
-    @synchronized (self) {
-        item = self.events[eventName];
-    }
+    TDTrackTimerItem *item = self.events[eventName];
     if (!item) {
         return 0;
     }
@@ -95,10 +80,7 @@
     if (!eventName.length) {
         return 0;
     }
-    TDTrackTimerItem *item = nil;
-    @synchronized (self) {
-        item = self.events[eventName];
-    }
+    TDTrackTimerItem *item = self.events[eventName];
     if (!item) {
         return 0;
     }
@@ -116,23 +98,15 @@
 }
 
 - (void)removeEvent:(NSString *)eventName {
-    @synchronized (self) {
-        [self.events removeObjectForKey:eventName];
-    }
+    [self.events removeObjectForKey:eventName];
 }
 
 - (BOOL)isExistEvent:(NSString *)eventName {
-    BOOL result = NO;
-    @synchronized (self) {
-        result = self.events[eventName] != nil;
-    }
-    return result;
+    return self.events[eventName] != nil;
 }
 
 - (void)clear {
-    @synchronized (self) {
-        [self.events removeAllObjects];
-    }
+    [self.events removeAllObjects];
 }
 
 //MARK: - Private Methods
@@ -142,6 +116,7 @@
     if (duration >= max) {
         return max;
     }
+    
     return duration;
 }
 

@@ -33,7 +33,9 @@
         return;
     }
     if (self.eventId.length <= 0) {
-        TDLogError(@"property 'eventId' cannot be empty which in OverwriteEvent");
+        NSString *errorMsg = @"property 'eventId' cannot be empty which in OverwriteEvent";
+        *error = TAPropertyError(100011, errorMsg);
+        return;
     }
 }
 

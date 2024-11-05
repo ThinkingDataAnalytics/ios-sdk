@@ -1,14 +1,10 @@
 #import "ThinkingExceptionHandler.h"
+
 #include <libkern/OSAtomic.h>
 #include <stdatomic.h>
 #import "TDLogging.h"
+#import "TDPresetProperties+TDDisProperties.h"
 #import "TDAutoTrackManager.h"
-
-#if __has_include(<ThinkingDataCore/TDCorePresetDisableConfig.h>)
-#import <ThinkingDataCore/TDCorePresetDisableConfig.h>
-#else
-#import "TDCorePresetDisableConfig.h"
-#endif
 
 static NSString * const TD_CRASH_REASON = @"#app_crashed_reason";
 static NSUInteger const TD_PROPERTY_CRASH_LENGTH_LIMIT = 8191*2;
@@ -147,7 +143,7 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
 + (NSMutableDictionary *)crashInfoWithMessage:(NSString *)message {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
     
-    if ([TDCorePresetDisableConfig disableAppCrashedReason]) {
+    if ([TDPresetProperties disableAppCrashedReason]) {
         return properties;
     }
     
@@ -172,7 +168,7 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
     
     
-    if ([TDCorePresetDisableConfig disableAppCrashedReason]) {
+    if ([TDPresetProperties disableAppCrashedReason]) {
         return properties;
     }
     

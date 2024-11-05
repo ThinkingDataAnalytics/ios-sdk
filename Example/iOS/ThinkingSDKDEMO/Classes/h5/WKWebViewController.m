@@ -25,7 +25,7 @@
     
     WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
     config.applicationNameForUserAgent = [NSString stringWithFormat:@"%@ %@", config.applicationNameForUserAgent ?: @"", @"/td-sdk-ios"];
-
+    
     WKPreferences *preference = [[WKPreferences alloc]init];
     preference.minimumFontSize = 40;
     config.preferences = preference;
@@ -38,6 +38,10 @@
     NSString *htmlstring = [[NSString alloc] initWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
     [_webView loadHTMLString:htmlstring baseURL:[NSURL fileURLWithPath: [[NSBundle mainBundle] bundlePath]]];
     [self.view addSubview:_webView];
+    
+    [_webView evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id __nullable userAgent, NSError * __nullable error) {
+        NSLog(@"[ThinkingSDK] UserAgent: %@", userAgent);
+    }];
 }
 - (NSString*)rightTitle
 {

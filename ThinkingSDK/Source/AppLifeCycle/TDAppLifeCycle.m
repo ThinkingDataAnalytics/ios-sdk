@@ -10,8 +10,6 @@
 
 #if TARGET_OS_IOS
 #import <UIKit/UIKit.h>
-#elif TARGET_OS_OSX
-#import <AppKit/AppKit.h>
 #endif
 
 #if __has_include(<ThinkingSDK/TDLogging.h>)

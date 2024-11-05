@@ -9,12 +9,6 @@
 #import "TDAutoTracker.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 
-#if __has_include(<ThinkingDataCore/ThinkingDataCore.h>)
-#import <ThinkingDataCore/ThinkingDataCore.h>
-#else
-#import "ThinkingDataCore.h"
-#endif
-
 @interface TDAutoTracker ()
 
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSNumber *> *trackCounts;
@@ -49,7 +43,7 @@
         if (self.autoFlush) [instance innerFlush];
         
         if ([[self class] isEqual:NSClassFromString(@"TDInstallTracker")]) {
-            [TDNotificationManager postAnalyticsAppInstallEventWithAppId:instanceName];
+            [[TAModuleManager sharedManager] triggerEvent:TAMDidCustomEvent withCustomParam:[TDAnalyticsRouterEventManager deviceActivationEvent]];
         }
     }
 }

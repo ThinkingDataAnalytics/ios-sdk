@@ -1,9 +1,9 @@
-### v3.1.0-beta.1
-**Date:** 2024/11/04
+### v3.0.5
+**Date:** 2024/11/05
 
 **Notes:**
 
-* Improve SDK compatibility
+* Release the official version
 
 ### v3.0.5-beta.2
 **Date:** 2024/10/25

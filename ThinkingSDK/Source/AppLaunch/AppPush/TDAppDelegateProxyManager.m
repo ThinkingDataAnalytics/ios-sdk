@@ -2,14 +2,11 @@
 #import "TDAppDelegateProxyManager.h"
 #import "TDApplicationDelegateProxy.h"
 #import "UIApplication+TDPushClick.h"
-#import "TDLogging.h"
-
 #if __has_include(<ThinkingDataCore/TDMethodHelper.h>)
 #import <ThinkingDataCore/TDMethodHelper.h>
 #else
 #import "TDMethodHelper.h"
 #endif
-
 #if __has_include(<ThinkingDataCore/TDNewSwizzle.h>)
 #import <ThinkingDataCore/TDNewSwizzle.h>
 #else
@@ -52,7 +49,7 @@
             NSError *error = NULL;
             [UNUserNotificationCenter td_new_swizzleMethod:@selector(setDelegate:) withMethod:@selector(thinkingdata_setDelegate:) error:&error];
             if (error) {
-                TDLogInfo(@"proxy notification delegate error: %@", error);
+                NSLog(@"proxy notification delegate error: %@", error);
             }
         }
     });

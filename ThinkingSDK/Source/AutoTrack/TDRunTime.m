@@ -6,18 +6,12 @@
 //
 
 #import "TDRunTime.h"
-
 #if __has_include(<ThinkingDataCore/TDJSONUtil.h>)
 #import <ThinkingDataCore/TDJSONUtil.h>
 #else
 #import "TDJSONUtil.h"
 #endif
-
-#if __has_include(<ThinkingDataCore/TDCorePresetDisableConfig.h>)
-#import <ThinkingDataCore/TDCorePresetDisableConfig.h>
-#else
-#import "TDCorePresetDisableConfig.h"
-#endif
+#import "TDPresetProperties+TDDisProperties.h"
 
 @implementation TDRunTime
 
@@ -29,7 +23,10 @@
     Class cls = NSClassFromString(@"TDAppLaunchReason");
     id appLaunch = [cls performSelector:@selector(sharedInstance)];
     
-    if (appLaunch && [appLaunch respondsToSelector:@selector(appLaunchParams)] && ![TDCorePresetDisableConfig disableStartReason]) {
+    if (appLaunch &&
+        [appLaunch respondsToSelector:@selector(appLaunchParams)] &&
+        !TDPresetProperties.disableStartReason)
+    {
         NSDictionary *startReason = [appLaunch performSelector:@selector(appLaunchParams)];
         NSString *url = startReason[@"url"];
         NSDictionary *data = startReason[@"data"];

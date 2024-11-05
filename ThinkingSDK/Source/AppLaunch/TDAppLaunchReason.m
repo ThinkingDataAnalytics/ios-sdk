@@ -9,20 +9,19 @@
 #import "TDAppLaunchReason.h"
 #import <objc/runtime.h>
 #import "TDCommonUtil.h"
+#import "TDPresetProperties+TDDisProperties.h"
 #import "TDAppState.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
 #import "TDAppDelegateProxyManager.h"
 #import "TDPushClickEvent.h"
 
-#if __has_include(<ThinkingDataCore/TDCorePresetDisableConfig.h>)
-#import <ThinkingDataCore/TDCorePresetDisableConfig.h>
-#else
-#import "TDCorePresetDisableConfig.h"
-#endif
-
 @implementation TDAppLaunchReason
 
+
 + (void)load {
+    
+    [TDPresetProperties disPresetProperties];
+
     [[NSNotificationCenter defaultCenter] addObserver:[TDAppLaunchReason sharedInstance] selector:@selector(_applicationDidFinishLaunchingNotification:) name:UIApplicationDidFinishLaunchingNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:[TDAppLaunchReason sharedInstance] selector:@selector(_applicationDidEnterBackgroundNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
@@ -102,7 +101,7 @@
     }
     
     // 记录冷启动启动原因
-    if (![TDCorePresetDisableConfig disableStartReason]) {
+    if (![TDPresetProperties disableStartReason]) {
         
         if (!launchOptions) {
             [weakSelf clearAppLaunchParams];
@@ -122,11 +121,11 @@
         return;
     }
     
-    if (![TDCorePresetDisableConfig disableStartReason]) {
+    if (![TDPresetProperties disableStartReason]) {
         [[TDAppDelegateProxyManager defaultManager] proxyNotifications];
     }
 
-    if (![TDCorePresetDisableConfig disableOpsReceiptProperties]) {
+    if (![TDPresetProperties disableOpsReceiptProperties]) {
         [[TDAppDelegateProxyManager defaultManager] proxyNotifications];
     }
 }

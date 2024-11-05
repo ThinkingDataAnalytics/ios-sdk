@@ -6,19 +6,11 @@
 //
 
 #import "TDPresetPropertyPlugin.h"
-#import "TDAnalyticsPresetProperty.h"
-
-#if __has_include(<ThinkingDataCore/TDCorePresetDisableConfig.h>)
-#import <ThinkingDataCore/TDCorePresetDisableConfig.h>
-#else
-#import "TDCorePresetDisableConfig.h"
-#endif
-
-#if __has_include(<ThinkingDataCore/TDCorePresetProperty.h>)
-#import <ThinkingDataCore/TDCorePresetProperty.h>
-#else
-#import "TDCorePresetProperty.h"
-#endif
+#import "TDPresetProperties.h"
+#import "TDPresetProperties+TDDisProperties.h"
+#import "TDDeviceInfo.h"
+#import "TDAnalyticsReachability.h"
+#import "NSDate+TDFormat.h"
 
 @interface TDPresetPropertyPlugin ()
 @property (nonatomic, strong) NSMutableDictionary<NSString *, id> *properties;
@@ -37,20 +29,29 @@
 }
 
 - (void)start {
-    NSDictionary *staticProperties = [TDCorePresetProperty staticProperties];
-    [self.properties addEntriesFromDictionary:staticProperties];
+    if (![TDPresetProperties disableAppVersion]) {
+        self.properties[@"#app_version"] = [TDDeviceInfo sharedManager].appVersion;
+    }
+    if (![TDPresetProperties disableBundleId]) {
+        self.properties[@"#bundle_id"] = [TDDeviceInfo bundleId];
+    }
+        
+    if (![TDPresetProperties disableInstallTime]) {
+        NSString *timeString = [[TDDeviceInfo td_getInstallTime] ta_formatWithTimeZone:self.defaultTimeZone formatString: @"yyyy-MM-dd HH:mm:ss.SSS"];
+        if (timeString && [timeString isKindOfClass:[NSString class]] && timeString.length){
+            self.properties[@"#install_time"] = timeString;
+        }
+    }
 }
 
-/// The properties here are dynamically updated
-///
 - (void)asyncGetPropertyCompletion:(TDPropertyPluginCompletion)completion {
     NSMutableDictionary *mutableDict = [NSMutableDictionary dictionary];
     
-    NSDictionary *dynamicProperties = [TDCorePresetProperty dynamicProperties];
-    [mutableDict addEntriesFromDictionary:dynamicProperties];
+    [mutableDict addEntriesFromDictionary:[[TDDeviceInfo sharedManager] getAutomaticData]];
     
-    NSDictionary *analyticsProperties = [TDAnalyticsPresetProperty propertiesWithAppId:self.instanceToken];
-    [mutableDict addEntriesFromDictionary:analyticsProperties];
+    if (![TDPresetProperties disableNetworkType]) {
+        mutableDict[@"#network_type"] = [[TDAnalyticsReachability shareInstance] networkState];
+    }
     
     if (completion) {
         completion(mutableDict);

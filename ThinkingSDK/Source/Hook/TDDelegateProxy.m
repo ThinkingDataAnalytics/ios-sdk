@@ -1,7 +1,5 @@
 
 #import "TDDelegateProxy.h"
-#import "TDLogging.h"
-
 #if __has_include(<ThinkingDataCore/TDClassHelper.h>)
 #import <ThinkingDataCore/TDClassHelper.h>
 #else
@@ -95,7 +93,7 @@ static NSString * const kTDNSObjectClassSelector = @"class";
     @try {
         returnValue = ((BOOL (*)(struct objc_super *, SEL, id, id, id))objc_msgSendSuper)(&targetSuper, selector, arg1, arg2, arg3);
     } @catch (NSException *exception) {
-        TDLogInfo(@"msgSendSuper with exception: %@", exception);
+        NSLog(@"msgSendSuper with exception: %@", exception);
     } @finally {
       
     }
@@ -114,7 +112,7 @@ static NSString * const kTDNSObjectClassSelector = @"class";
     @try {
         returnValue = ((BOOL (*)(struct objc_super *, SEL, id, id))objc_msgSendSuper)(&targetSuper, selector, arg1, arg2);
     } @catch (NSException *exception) {
-        TDLogInfo(@"msgSendSuper with exception: %@", exception);
+        NSLog(@"msgSendSuper with exception: %@", exception);
     } @finally {
       
     }
@@ -143,7 +141,7 @@ static NSString * const kTDNSObjectClassSelector = @"class";
         void (*func)(struct objc_super *, SEL, id, id, id, id) = (void *)&objc_msgSendSuper;
         func(&targetSuper, selector, arg1, arg2, arg3, arg4);
     } @catch (NSException *exception) {
-        TDLogInfo(@"msgSendSuper with exception: %@", exception);
+        NSLog(@"msgSendSuper with exception: %@", exception);
     } @finally {
         va_end(args);
     }

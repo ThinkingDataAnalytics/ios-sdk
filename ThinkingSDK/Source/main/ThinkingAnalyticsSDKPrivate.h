@@ -36,14 +36,20 @@
 #import "TDPropertyPluginManager.h"
 #import "TDPresetPropertyPlugin.h"
 #import "TDBaseEvent+H5.h"
+#import "NSDate+TDFormat.h"
 #import "TDEventTracker.h"
 #import "TDAppLifeCycle.h"
 
-#if __has_include(<ThinkingDataCore/NSDate+TDCore.h>)
-#import <ThinkingDataCore/NSDate+TDCore.h>
+//MARK: router
+#if __has_include(<ThinkingDataCore/TAModuleManager.h>)
+#import <ThinkingDataCore/TAModuleManager.h>
 #else
-#import "NSDate+TDCore.h"
+#import "TAModuleManager.h"
 #endif
+#import "TDAnalyticsRouterEventManager.h"
+
+//MARK: app group
+#import "TDAnalyticsAppGroupManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -99,9 +105,8 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 
 - (void)innerTrack:(NSString *)event;
 - (void)innerTrack:(NSString *)event properties:(NSDictionary * _Nullable)propertieDict;
-- (void)innerTrack:(NSString *)event properties:(NSDictionary * _Nullable)propertieDict time:(NSDate * _Nullable)time timeZone:(NSTimeZone * _Nullable)timeZone;
+- (void)innerTrack:(NSString *)event properties:(NSDictionary * _Nullable)propertieDict time:(NSDate *)time timeZone:(NSTimeZone *)timeZone;
 - (void)innerTrackWithEventModel:(TDEventModel *)eventModel;
-- (void)innerTrackDebug:(NSString *)event properties:(NSDictionary * _Nullable)propertieDict;
 - (void)innerTimeEvent:(NSString *)event;
 - (NSString *)innerAccountId;
 - (NSString *)innerDistinctId;
