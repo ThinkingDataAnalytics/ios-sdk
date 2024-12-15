@@ -1,3 +1,10 @@
+### v3.1.0-beta.2
+**Date:** 2024/12/16
+
+**Notes:**
+
+* Supports intelligent operation
+
 ### v3.0.5
 **Date:** 2024/11/05
 
