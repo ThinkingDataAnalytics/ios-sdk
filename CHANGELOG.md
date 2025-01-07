@@ -1,9 +1,9 @@
-### v3.1.0-beta.2
-**Date:** 2024/12/16
+### v3.0.6-beta.1
+**Date:** 2025/01/07
 
 **Notes:**
 
-* Supports intelligent operation
+* Improve SDK stability
 
 ### v3.0.5
 **Date:** 2024/11/05

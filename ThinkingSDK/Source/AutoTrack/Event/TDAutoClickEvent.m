@@ -6,34 +6,29 @@
 //
 
 #import "TDAutoClickEvent.h"
-
-#if __has_include(<ThinkingDataCore/TDCorePresetDisableConfig.h>)
-#import <ThinkingDataCore/TDCorePresetDisableConfig.h>
-#else
-#import "TDCorePresetDisableConfig.h"
-#endif
+#import "TDPresetProperties+TDDisProperties.h"
 
 @implementation TDAutoClickEvent
 
 - (NSMutableDictionary *)jsonObject {
     NSMutableDictionary *dict = [super jsonObject];
     
-    if (![TDCorePresetDisableConfig disableScreenName]) {
+    if (![TDPresetProperties disableScreenName]) {
         self.properties[@"#screen_name"] = self.screenName;
     }
-    if (![TDCorePresetDisableConfig disableElementId]) {
+    if (![TDPresetProperties disableElementId]) {
         self.properties[@"#element_id"] = self.elementId;
     }
-    if (![TDCorePresetDisableConfig disableElementType]) {
+    if (![TDPresetProperties disableElementType]) {
         self.properties[@"#element_type"] = self.elementType;
     }
-    if (![TDCorePresetDisableConfig disableElementContent]) {
+    if (![TDPresetProperties disableElementContent]) {
         self.properties[@"#element_content"] = self.elementContent;
     }
-    if (![TDCorePresetDisableConfig disableElementPosition]) {
+    if (![TDPresetProperties disableElementPosition]) {
         self.properties[@"#element_position"] = self.elementPosition;
     }
-    if (![TDCorePresetDisableConfig disableTitle]) {
+    if (![TDPresetProperties disableTitle]) {
         self.properties[@"#title"] = self.pageTitle;
     }
     

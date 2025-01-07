@@ -30,8 +30,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)track:(NSDictionary *)event immediately:(BOOL)immediately saveOnly:(BOOL)isSaveOnly;
 
-- (void)trackDebugEvent:(NSDictionary *)event;
-
 - (NSInteger)saveEventsData:(NSDictionary *)data;
 
 - (void)_asyncWithCompletion:(void(^)(void))completion;

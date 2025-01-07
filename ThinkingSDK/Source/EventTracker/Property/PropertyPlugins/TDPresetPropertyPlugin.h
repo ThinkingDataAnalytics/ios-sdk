@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, copy)NSString *instanceToken;
 
+@property (nonatomic, strong) NSTimeZone *defaultTimeZone;
+
 @end
 
 NS_ASSUME_NONNULL_END

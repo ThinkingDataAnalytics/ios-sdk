@@ -157,11 +157,6 @@
     [teSDK innerLogout];
 }
 
-+ (NSString *)getAccountIdWithAppId:(NSString *)appId {
-    ThinkingAnalyticsSDK *teSDK = [ThinkingAnalyticsSDK instanceWithAppid:appId];
-    return [teSDK innerAccountId];
-}
-
 + (void)setUploadingNetworkType:(TDReportingNetworkType)type withAppId:(NSString * _Nullable)appId {
     ThinkingAnalyticsSDK *teSDK = [ThinkingAnalyticsSDK instanceWithAppid:appId];
     [teSDK innerSetNetworkType:type];

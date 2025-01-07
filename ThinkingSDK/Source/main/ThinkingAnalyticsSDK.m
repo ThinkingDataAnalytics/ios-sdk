@@ -1,57 +1,26 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 
 #if TARGET_OS_IOS
-
 #import "TDAutoTrackManager.h"
 #import "TDAppLaunchReason.h"
 #import "TDPushClickEvent.h"
-
 #endif
 
+#import "TDCalibratedTime.h"
+#import "TDConfig.h"
+#import "TDPublicConfig.h"
+#import "TDFile.h"
+#import "TDCheck.h"
 #if __has_include(<ThinkingDataCore/TDJSONUtil.h>)
 #import <ThinkingDataCore/TDJSONUtil.h>
 #else
 #import "TDJSONUtil.h"
 #endif
-#if __has_include(<ThinkingDataCore/TDNotificationManager+Analytics.h>)
-#import <ThinkingDataCore/TDNotificationManager+Analytics.h>
-#else
-#import "TDNotificationManager+Analytics.h"
-#endif
-#if __has_include(<ThinkingDataCore/TDCalibratedTime.h>)
-#import <ThinkingDataCore/TDCalibratedTime.h>
-#else
-#import "TDCalibratedTime.h"
-#endif
-#if __has_include(<ThinkingDataCore/TDCoreDeviceInfo.h>)
-#import <ThinkingDataCore/TDCoreDeviceInfo.h>
-#else
-#import "TDCoreDeviceInfo.h"
-#endif
-#if __has_include(<ThinkingDataCore/NSString+TDCore.h>)
-#import <ThinkingDataCore/NSString+TDCore.h>
-#else
-#import "NSString+TDCore.h"
-#endif
-
-#if __has_include(<ThinkingDataCore/TDNotificationManager+Networking.h>)
-#import <ThinkingDataCore/TDNotificationManager+Networking.h>
-#else
-#import "TDNotificationManager+Networking.h"
-#endif
-
-#if __has_include(<ThinkingDataCore/TDMediator+Analytics.h>)
-#import <ThinkingDataCore/TDMediator+Analytics.h>
-#else
-#import "TDMediator+Analytics.h"
-#endif
-
-#import "TDConfig.h"
-#import "TDPublicConfig.h"
-#import "TDFile.h"
-#import "TDCheck.h"
+#import "NSString+TDString.h"
+#import "TDPresetProperties+TDDisProperties.h"
 #import "TDAppState.h"
 #import "TDEventRecord.h"
+#import "TDAnalyticsReachability.h"
 #import "TDAppLifeCycle.h"
 #import "TDAnalytics+Public.h"
 #import "TDConfigPrivate.h"
@@ -70,6 +39,11 @@
 @interface ThinkingAnalyticsSDK ()
 @property (nonatomic, strong) TDEventTracker *eventTracker;
 @property (nonatomic, strong) TDFile *file;
+
+#if TARGET_OS_IOS
+@property (strong,nonatomic) id thirdPartyManager;
+#endif
+
 @property (nonatomic, strong) TDSuperProperty *superProperty;
 @property (nonatomic, strong) TDPropertyPluginManager *propertyPluginManager;
 @property (nonatomic, strong) TDAppLifeCycle *appLifeCycle;
@@ -94,7 +68,8 @@ static dispatch_queue_t td_trackQueue;
 + (void)initialize {
     static dispatch_once_t ThinkingOnceToken;
     dispatch_once(&ThinkingOnceToken, ^{
-        td_trackQueue = dispatch_queue_create("cn.thinkingdata.analytics.track", DISPATCH_QUEUE_SERIAL);
+        NSString *queuelabel = [NSString stringWithFormat:@"cn.thinkingdata.%p", (void *)self];
+        td_trackQueue = dispatch_queue_create([queuelabel UTF8String], DISPATCH_QUEUE_SERIAL);
         g_lock = [[NSLock alloc] init];
     });
 }
@@ -155,17 +130,20 @@ static dispatch_queue_t td_trackQueue;
             return nil;
         }
         self.config = config;
-        
+
         NSString *instanceAliasName = [self instanceAliasNameOrAppId];
         if (!instanceAliasName) {
             return nil;
         }
-        
+
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             g_instances = [NSMutableDictionary dictionary];
             defaultProjectAppid = instanceAliasName;
         });
+        
+        [TDAnalyticsAppGroupManager shareInstance].appGroupName = self.config.appGroupName;
+        [[TDAnalyticsAppGroupManager shareInstance] setReceiveUrl:self.config.serverUrl appId:self.config.appid];
         
         [g_lock lock];
         g_instances[instanceAliasName] = self;
@@ -174,37 +152,47 @@ static dispatch_queue_t td_trackQueue;
         self.file = [[TDFile alloc] initWithAppid:instanceAliasName];
         [self retrievePersistedData];
         
-        dispatch_async(td_trackQueue, ^{
-            self.dataQueue = [TDSqliteDataQueue sharedInstanceWithAppid:instanceAliasName];
-            if (self.dataQueue == nil) {
-                TDLogError(@"SqliteException: init SqliteDataQueue failed");
-            }
-            
-            self.superProperty = [[TDSuperProperty alloc] initWithToken:instanceAliasName isLight:NO];
-            
-            self.propertyPluginManager = [[TDPropertyPluginManager alloc] init];
-            TDPresetPropertyPlugin *presetPlugin = [[TDPresetPropertyPlugin alloc] init];
-            presetPlugin.instanceToken = [self instanceAliasNameOrAppId];
-            [self.propertyPluginManager registerPropertyPlugin:presetPlugin];
-        });
+        self.superProperty = [[TDSuperProperty alloc] initWithToken:instanceAliasName isLight:NO];
         
+        self.propertyPluginManager = [[TDPropertyPluginManager alloc] init];
+        TDPresetPropertyPlugin *presetPlugin = [[TDPresetPropertyPlugin alloc] init];
+        presetPlugin.defaultTimeZone = config.defaultTimeZone;
+        [self.propertyPluginManager registerPropertyPlugin:presetPlugin];
+                
         self.config.getInstanceName = ^NSString * _Nonnull{
             return instanceAliasName;
         };
         
+        /* remove session plugin
+        TASessionIdPropertyPlugin *sessionidPlugin = [[TASessionIdPropertyPlugin alloc] init];
+        sessionidPlugin.instanceToken = instanceName;
+        self.sessionidPlugin = sessionidPlugin;
+        [self.propertyPluginManager registerPropertyPlugin:sessionidPlugin];
+         */
+        
+        //TASensitivePropertyPlugin
+        Class c_Sensitive = NSClassFromString(@"TDSensitivePropertyPlugin");
+        if (c_Sensitive != nil) {
+            id s_Sensitive = [[c_Sensitive alloc] init];
+            [s_Sensitive setValue:instanceAliasName forKey:@"_instanceToken"];
+            [self.propertyPluginManager registerPropertyPlugin:s_Sensitive];
+        }
+        
 #if TARGET_OS_IOS
-        dispatch_async(td_trackQueue, ^{
-            if (self.config.innerEnableEncrypt) {
-                self.encryptManager = [[TDEncryptManager alloc] initWithSecretKey:self.config.innerSecretKey];
+
+        if (self.config.innerEnableEncrypt) {
+            self.encryptManager = [[TDEncryptManager alloc] initWithSecretKey:self.config.innerSecretKey];
+        }
+        
+        __weak __typeof(self)weakSelf = self;
+        [self.config innerUpdateConfig:^(NSDictionary * _Nonnull secretKey) {
+            if (weakSelf.config.innerEnableEncrypt && secretKey) {
+                [weakSelf.encryptManager handleEncryptWithConfig:secretKey];
             }
-            __weak __typeof(self)weakSelf = self;
-            [self.config innerUpdateConfig:^(NSDictionary * _Nonnull secretKey) {
-                if (weakSelf.config.innerEnableEncrypt && secretKey) {
-                    [weakSelf.encryptManager handleEncryptWithConfig:secretKey];
-                }
-            }];
-            [self.config innerUpdateIPMap];
-        });
+        }];
+        
+        [self.config innerUpdateIPMap];
+      
 #elif TARGET_OS_OSX
         [self.config innerUpdateConfig:^(NSDictionary * _Nonnull secretKey) {}];
 #endif
@@ -214,14 +202,22 @@ static dispatch_queue_t td_trackQueue;
         self.ignoredViewControllers = [[NSMutableSet alloc] init];
         self.ignoredViewTypeList = [[NSMutableSet alloc] init];
         
-        self.eventTracker = [[TDEventTracker alloc] initWithQueue:td_trackQueue instanceToken:instanceAliasName];
+        self.dataQueue = [TDSqliteDataQueue sharedInstanceWithAppid:instanceAliasName];
+        if (self.dataQueue == nil) {
+            TDLogError(@"SqliteException: init SqliteDataQueue failed");
+        }
+                
+        if (![TDPresetProperties disableNetworkType]) {
+            [[TDAnalyticsReachability shareInstance] startMonitoring];
+        }
         
+        self.eventTracker = [[TDEventTracker alloc] initWithQueue:td_trackQueue instanceToken:instanceAliasName];
+
         [self startFlushTimer];
         
         [TDAppLifeCycle startMonitor];
         
         [self registerAppLifeCycleListener];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkStatusChangedNotification:) name:kNetworkNotificationNameStatusChange object:nil];
         
 #if TARGET_OS_IOS
         NSDictionary *ops = [TDAppLaunchReason getAppPushDic];
@@ -234,11 +230,19 @@ static dispatch_queue_t td_trackQueue;
         [TDAppLaunchReason clearAppPushParams];
 #endif
         
-        TDLogInfo(@"initialize success. Mode: %@\n AppID: %@\n ServerUrl: %@\n TimeZone: %@\n DeviceID: %@\n Lib: %@\n LibVersion: %@", [self modeEnumToString:self.config.mode], self.config.appid, self.config.serverUrl, self.config.defaultTimeZone ?: [NSTimeZone localTimeZone], [TDAnalytics getDeviceId], [[TDDeviceInfo sharedManager] libName] ,[[TDDeviceInfo sharedManager] libVersion]);
-    
-        [TDNotificationManager postAnalyticsInitEventWithAppId:instanceAliasName serverUrl:self.config.serverUrl];
+        [[TAModuleManager sharedManager] triggerEvent:TAMDidCustomEvent withCustomParam:[TDAnalyticsRouterEventManager sdkInitEvent]];
         
-        [[TDMediator sharedInstance] registerSuccessWithTargetName:kTDMediatorTargetAnalytics];
+        TDLogInfo(@"initialized successfully!\n AppID: %@ \n ServerUrl: %@ \n Mode: %@ \n TimeZone: %@ \n DeviceID: %@ \n Lib: %@ \n LibVersion: %@", self.config.appid, self.config.serverUrl, [self modeEnumToString:self.config.mode], self.config.defaultTimeZone, [TDAnalytics getDeviceId], [[TDDeviceInfo sharedManager] libName] ,[TDDeviceInfo libVersion]);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSArray<NSDictionary *> *eventCache = [[TDAnalyticsAppGroupManager shareInstance] getExtensionEventCacheWithAppId:self.config.appid];
+            if (eventCache.count) {
+                for (NSDictionary *event in eventCache) {
+                    [self.eventTracker track:event immediately:NO saveOnly:NO];
+                }
+                [[TDAnalyticsAppGroupManager shareInstance] clearEventCacheWithAppId:self.config.appid];
+            }
+        });
     }
     return self;
 }
@@ -248,13 +252,6 @@ static dispatch_queue_t td_trackQueue;
 
     [notificationCenter addObserver:self selector:@selector(appStateWillChangeNotification:) name:kTDAppLifeCycleStateWillChangeNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(appStateDidChangeNotification:) name:kTDAppLifeCycleStateDidChangeNotification object:nil];
-}
-
-- (void)networkStatusChangedNotification:(NSNotification *)notification {
-    NSString *status = [notification.userInfo objectForKey:kNetworkNotificationParamsNetworkType];
-    if (![status isEqualToString:@"NULL"]) {
-        [self innerFlush];
-    }
 }
 
 - (NSString*)modeEnumToString:(TDMode)enumVal {
@@ -267,7 +264,7 @@ static dispatch_queue_t td_trackQueue;
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"[ThinkingAnalyticsSDK] AppID: %@, ServerUrl: %@, Mode: %@, TimeZone: %@, DeviceID: %@, Lib: %@, LibVersion: %@", self.config.appid, self.config.serverUrl, [self modeEnumToString:self.config.mode], self.config.defaultTimeZone, [TDAnalytics getDeviceId], [[TDDeviceInfo sharedManager] libName] ,[[TDDeviceInfo sharedManager] libVersion]];
+    return [NSString stringWithFormat:@"[ThinkingAnalyticsSDK] AppID: %@, ServerUrl: %@, Mode: %@, TimeZone: %@, DeviceID: %@, Lib: %@, LibVersion: %@", self.config.appid, self.config.serverUrl, [self modeEnumToString:self.config.mode], self.config.defaultTimeZone, [TDAnalytics getDeviceId], [[TDDeviceInfo sharedManager] libName] ,[TDDeviceInfo libVersion]];
 }
 
 - (BOOL)hasDisabled {
@@ -319,6 +316,10 @@ static dispatch_queue_t td_trackQueue;
     if (self.accountId.length == 0) {
         [self.file deleteOldLoginId];
     }
+    
+    [[TDAnalyticsAppGroupManager shareInstance] setAccountId:self.accountId appId:self.config.appid];
+    [[TDAnalyticsAppGroupManager shareInstance] setDistinctId:self.identifyId appId:self.config.appid];
+    [[TDAnalyticsAppGroupManager shareInstance] setDeviceId:[TDDeviceInfo sharedManager].deviceId appId:self.config.appid];
 }
 
 - (void)deleteAll {
@@ -344,10 +345,10 @@ static dispatch_queue_t td_trackQueue;
 
     if (newState == TDAppLifeCycleStateStart) {
         [self startFlushTimer];
-        NSTimeInterval systemUpTime = [TDCoreDeviceInfo bootTime];
+        NSTimeInterval systemUpTime = [TDCommonUtil uptime];
         [self.trackTimer enterForegroundWithSystemUptime:systemUpTime];
     } else if (newState == TDAppLifeCycleStateEnd) {
-        NSTimeInterval systemUpTime = [TDCoreDeviceInfo bootTime];
+        NSTimeInterval systemUpTime = [TDCommonUtil uptime];
         [self.trackTimer enterBackgroundWithSystemUptime:systemUpTime];
         
 #if TARGET_OS_IOS
@@ -366,24 +367,20 @@ static dispatch_queue_t td_trackQueue;
         
     } else if (newState == TDAppLifeCycleStateTerminate) {
         dispatch_sync(td_trackQueue, ^{});
-        
+        [self.eventTracker flush];
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.eventTracker syncSendAllData];
+        dispatch_queue_t networkQueue = [TDEventTracker td_networkQueue];
+        dispatch_async(networkQueue, ^{
             dispatch_semaphore_signal(semaphore);
         });
-        dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)));
+        dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)));
     }
 }
 
 // MARK: -
 
 + (NSString *)getNetWorkStates {
-#if TARGET_OS_IOS
-    return [TDCoreDeviceInfo networkType];
-#else
-    return @"--";
-#endif
+    return [[TDAnalyticsReachability shareInstance] networkState];
 }
 
 #pragma mark - Private
@@ -396,7 +393,6 @@ static dispatch_queue_t td_trackQueue;
     event.accountId = self.accountId;
     event.distinctId = self.identifyId;
     
-    [self handleTimeEvent:event];
     [self calibratedTimeWithEvent:event];
     
     dispatch_async(td_trackQueue, ^{
@@ -426,7 +422,12 @@ static dispatch_queue_t td_trackQueue;
 
 - (void)calibratedTimeWithEvent:(TDBaseEvent *)event {
     if (event.timeValueType == TDEventTimeValueTypeNone) {
-        event.time = [TDCalibratedTime now];
+        TDCalibratedTime *calibratedTime = [TDCalibratedTime sharedInstance];
+        if (calibratedTime && !calibratedTime.stopCalibrate) {
+            NSTimeInterval outTime = [TDCommonUtil uptime] - calibratedTime.systemUptime;
+            NSDate *serverDate = [NSDate dateWithTimeIntervalSince1970:(calibratedTime.serverTime + outTime)];
+            event.time = serverDate;
+        }
     }
 }
 
@@ -459,7 +460,6 @@ static dispatch_queue_t td_trackQueue;
     NSDictionary *jsonObj = [event formatDateWithDict:event.jsonObject];
     
     [self.eventTracker track:jsonObj immediately:event.immediately saveOnly:event.isTrackPause];
-    TDLogInfo(@"user event success");
 }
 
 - (void)trackEvent:(TDTrackEvent *)event properties:(NSDictionary *)properties isH5:(BOOL)isH5 {
@@ -488,7 +488,9 @@ static dispatch_queue_t td_trackQueue;
     }
     
     NSMutableDictionary *pluginProperties = [self.propertyPluginManager propertiesWithEventType:event.eventType];
-        
+    
+    [TDPresetProperties handleFilterDisPresetProperties:pluginProperties];
+    
     NSDictionary *superProperties = [TDPropertyValidator validateProperties:self.superProperty.currentSuperProperties validator:event];
     
     NSDictionary *dynamicSuperProperties = [TDPropertyValidator validateProperties:event.dynamicSuperProperties validator:event];
@@ -515,46 +517,26 @@ static dispatch_queue_t td_trackQueue;
         }
     } else {
         [event.properties addEntriesFromDictionary:pluginProperties];
-
-        jsonObj = event.jsonObject;
         [event.properties addEntriesFromDictionary:superProperties];
-        [event.properties addEntriesFromDictionary:dynamicSuperProperties];
 #if TARGET_OS_IOS
         if ([event isKindOfClass:[TDAutoTrackEvent class]]) {
             TDAutoTrackEvent *autoEvent = (TDAutoTrackEvent *)event;
-
             NSDictionary *autoSuperProperties = [self.autoTrackSuperProperty currentSuperPropertiesWithEventName:event.eventName];
-
             autoSuperProperties = [TDPropertyValidator validateProperties:autoSuperProperties validator:autoEvent];
-
             [event.properties addEntriesFromDictionary:autoSuperProperties];
-
-            dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSDictionary *autoDynamicSuperProperties = [self.autoTrackSuperProperty obtainDynamicSuperPropertiesWithType:autoEvent.autoTrackEventType currentProperties:event.properties];
-                autoDynamicSuperProperties = [TDPropertyValidator validateProperties:autoDynamicSuperProperties validator:autoEvent];
-                [event.properties addEntriesFromDictionary:autoDynamicSuperProperties];
-
-                dispatch_semaphore_signal(semaphore);
-            });
-
-            dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)));
         }
 #endif
+        [event.properties addEntriesFromDictionary:dynamicSuperProperties];
+
         properties = [TDPropertyValidator validateProperties:properties validator:event];
         [event.properties addEntriesFromDictionary:properties];
+        
+        jsonObj = event.jsonObject;
     }
 
     jsonObj = [event formatDateWithDict:jsonObj];
 
-    [TDNotificationManager postAnalyticsTrackWithAppId:self.config.appid event:jsonObj];
-
-    if (event.isDebug) {
-        [self.eventTracker trackDebugEvent:jsonObj];
-    } else {
-        [self.eventTracker track:jsonObj immediately:event.immediately saveOnly:event.isTrackPause];
-    }
-    TDLogInfo(@"track success");
+    [self.eventTracker track:jsonObj immediately:event.immediately saveOnly:event.isTrackPause];
 }
 
 #pragma mark - innerFlush control
@@ -599,8 +581,12 @@ static dispatch_queue_t td_trackQueue;
         
     [self calibratedTimeWithEvent:event];
     
-    NSDictionary *autoTrackDynamicProperties = [self.autoTrackSuperProperty obtainAutoTrackDynamicSuperProperties];
     NSDictionary *dynamicProperties = [self.superProperty obtainDynamicSuperProperties];
+
+    NSMutableDictionary *autoTrackDynamicProperties = [NSMutableDictionary dictionary];
+    [autoTrackDynamicProperties addEntriesFromDictionary:[self.autoTrackSuperProperty obtainAutoTrackDynamicSuperProperties]];
+    [autoTrackDynamicProperties addEntriesFromDictionary:[self.autoTrackSuperProperty obtainDynamicSuperPropertiesWithType:event.autoTrackEventType currentProperties:event.properties]];
+    
     NSMutableDictionary *unionProperties = [NSMutableDictionary dictionary];
     if (dynamicProperties) {
         [unionProperties addEntriesFromDictionary:dynamicProperties];
@@ -701,18 +687,18 @@ static dispatch_queue_t td_trackQueue;
 //MARK: - track event
 
 - (void)innerTrack:(NSString *)event {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     [self innerTrack:event properties:nil time:nil timeZone:nil];
+#pragma clang diagnostic pop
 }
 - (void)innerTrack:(NSString *)event properties:(NSDictionary *)propertieDict {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     [self innerTrack:event properties:propertieDict time:nil timeZone:nil];
+#pragma clang diagnostic pop
 }
-- (void)innerTrackDebug:(NSString *)event properties:(NSDictionary *)propertieDict {
-    TDTrackEvent *trackEvent = [[TDTrackEvent alloc] initWithName:event];
-    trackEvent.isDebug = YES;
-    [self handleTimeEvent:trackEvent];
-    [self asyncTrackEventObject:trackEvent properties:propertieDict isH5:NO];
-}
-- (void)innerTrack:(NSString *)event properties:(NSDictionary * _Nullable)propertieDict time:(NSDate * _Nullable)time timeZone:(NSTimeZone * _Nullable)timeZone {
+- (void)innerTrack:(NSString *)event properties:(NSDictionary * _Nullable)propertieDict time:(nonnull NSDate *)time timeZone:(nonnull NSTimeZone *)timeZone {
     TDTrackEvent *trackEvent = [[TDTrackEvent alloc] initWithName:event];
     if (time) {
         trackEvent.time = time;
@@ -722,7 +708,7 @@ static dispatch_queue_t td_trackQueue;
             trackEvent.timeValueType = TDEventTimeValueTypeTimeAndZone;
         }
     }
-    
+    [self handleTimeEvent:trackEvent];
     [self asyncTrackEventObject:trackEvent properties:propertieDict isH5:NO];
 }
 - (void)innerTrackWithEventModel:(TDEventModel *)eventModel {
@@ -752,7 +738,7 @@ static dispatch_queue_t td_trackQueue;
             baseEvent.timeValueType = TDEventTimeValueTypeTimeAndZone;
         }
     }
-
+    
     [self asyncTrackEventObject:baseEvent properties:eventModel.properties isH5:NO];
 }
 - (void)innerTimeEvent:(NSString *)event {
@@ -764,7 +750,7 @@ static dispatch_queue_t td_trackQueue;
     if (error) {
         return;
     }
-    [self.trackTimer trackEvent:event withSystemUptime:[TDCoreDeviceInfo bootTime]];
+    [self.trackTimer trackEvent:event withSystemUptime:[TDCommonUtil uptime]];
 }
 
 //MARK: - user id
@@ -773,23 +759,19 @@ static dispatch_queue_t td_trackQueue;
     if ([self hasDisabled]) {
         return;
     }
-    if (![distinctId isKindOfClass:[NSString class]]) {
-        TDLogError(@"identify cannot null", distinctId);
-        return;
-    }
-    NSString *trimmedId = [distinctId stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    if (trimmedId.length == 0) {
-        TDLogError(@"accountId invald", distinctId);
+    if (![distinctId isKindOfClass:[NSString class]] || distinctId.length == 0) {
+        TDLogError(@"identify cannot null");
         return;
     }
     
     TDLogInfo(@"Set distinct ID, Distinct Id = %@", distinctId);
     
+    self.identifyId = distinctId;
     @synchronized (self.file) {
-        self.identifyId = distinctId;
         [self.file archiveIdentifyId:distinctId];
-        [TDNotificationManager postAnalyticsSetDistinctIdEventWithAppId:self.config.appid accountId:self.accountId distinctId:self.identifyId];
     }
+    
+    [[TAModuleManager sharedManager] triggerEvent:TAMDidCustomEvent withCustomParam:[TDAnalyticsRouterEventManager sdkSetDistinctIdEvent]];
 }
 
 - (NSString *)innerDistinctId {
@@ -809,23 +791,19 @@ static dispatch_queue_t td_trackQueue;
     if ([self hasDisabled]) {
         return;
     }
-    if (![accountId isKindOfClass:[NSString class]]) {
-        TDLogError(@"accountId invald", accountId);
-        return;
-    }
-    NSString *trimmedId = [accountId stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    if (trimmedId.length == 0) {
+    if (![accountId isKindOfClass:[NSString class]] || accountId.length == 0) {
         TDLogError(@"accountId invald", accountId);
         return;
     }
     
     TDLogInfo(@"Login SDK, AccountId = %@", accountId);
     
+    self.accountId = accountId;
     @synchronized (self.file) {
-        self.accountId = accountId;
         [self.file archiveAccountID:accountId];
-        [TDNotificationManager postAnalyticsLoginEventWithAppId:self.config.appid accountId:self.accountId distinctId:self.identifyId];
     }
+    [[TDAnalyticsAppGroupManager shareInstance] setAccountId:self.accountId appId:self.config.appid];
+    [[TAModuleManager sharedManager] triggerEvent:TAMDidCustomEvent withCustomParam:[TDAnalyticsRouterEventManager sdkLoginEvent]];
 }
 - (void)innerLogout {
     if ([self hasDisabled]) {
@@ -834,11 +812,12 @@ static dispatch_queue_t td_trackQueue;
     
     TDLogInfo(@"Logout SDK.");
     
+    self.accountId = nil;
     @synchronized (self.file) {
-        self.accountId = nil;
         [self.file archiveAccountID:nil];
-        [TDNotificationManager postAnalyticsLogoutEventWithAppId:self.config.appid distinctId:self.identifyId];
     }
+    [[TDAnalyticsAppGroupManager shareInstance] setAccountId:nil appId:self.config.appid];
+    [[TAModuleManager sharedManager] triggerEvent:TAMDidCustomEvent withCustomParam:[TDAnalyticsRouterEventManager sdkLogoutEvent]];
 }
 
 //MARK: - user profile
@@ -928,10 +907,6 @@ static dispatch_queue_t td_trackQueue;
     if ([self hasDisabled]) {
         return;
     }
-    if (!dynamicSuperProperties) {
-        TDLogError(@"Ignoring empty");
-        return;
-    }
     @synchronized (self.superProperty) {
         [self.superProperty registerDynamicSuperProperties:dynamicSuperProperties];
     }
@@ -943,14 +918,33 @@ static dispatch_queue_t td_trackQueue;
     NSDictionary *pluginProperties = [self.propertyPluginManager currentPropertiesForPluginClasses:@[TDPresetPropertyPlugin.class]];
     [presetDic addEntriesFromDictionary:pluginProperties];
     
-    NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
-    timeFormatter.dateFormat = kDefaultTimeFormat;
-    timeFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    timeFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-    timeFormatter.timeZone = self.config.defaultTimeZone;
-    presetDic = [TDJSONUtil formatDateWithFormatter:timeFormatter dict:presetDic];
+    double offset = [[NSDate date] ta_timeZoneOffset:self.config.defaultTimeZone];
+    [presetDic setObject:@(offset) forKey:@"#zone_offset"];
     
-    return [[TDPresetProperties alloc] initWithDictionary:presetDic];
+    if (![TDPresetProperties disableNetworkType]) {
+        NSString *networkType = [self.class getNetWorkStates];
+        [presetDic setObject:networkType?:@"" forKey:@"#network_type"];
+    }
+    
+    if (![TDPresetProperties disableInstallTime]) {
+        if (presetDic[@"#install_time"] && [presetDic[@"#install_time"] isKindOfClass:[NSDate class]]) {
+            NSString *install_timeString = [(NSDate *)presetDic[@"#install_time"] ta_formatWithTimeZone:self.config.defaultTimeZone formatString:kDefaultTimeFormat];
+            if (install_timeString && install_timeString.length) {
+                [presetDic setObject:install_timeString forKey:@"#install_time"];
+            }
+        }
+    }
+    
+    static TDPresetProperties *presetProperties = nil;
+    if (presetProperties == nil) {
+        presetProperties = [[TDPresetProperties alloc] initWithDictionary:presetDic];
+    } else {
+        [g_lock lock];
+        [presetProperties updateValuesWithDictionary:presetDic];
+        [g_lock unlock];
+    }
+    
+    return presetProperties;
 }
 
 //MARK: - SDK error callback
@@ -976,7 +970,7 @@ static dispatch_queue_t td_trackQueue;
     if ([self hasDisabled] || self.isTrackPause) {
         return;
     }
-    TDLogInfo(@"flush success. By manual.");
+    TDLogInfo(@"flush data by manual.");
     [self.eventTracker flush];
 }
 
@@ -1033,7 +1027,7 @@ static dispatch_queue_t td_trackQueue;
 }
 
 - (NSString *)innetGetTimeString:(NSDate *)date {
-    return [date td_formatWithTimeZone:self.config.defaultTimeZone formatString:kDefaultTimeFormat];
+    return [date ta_formatWithTimeZone:self.config.defaultTimeZone formatString:kDefaultTimeFormat];
 }
 
 @end

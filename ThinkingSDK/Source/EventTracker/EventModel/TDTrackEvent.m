@@ -7,24 +7,9 @@
 
 #import "TDTrackEvent.h"
 #import "TDPresetProperties.h"
-
-#if __has_include(<ThinkingDataCore/NSDate+TDCore.h>)
-#import <ThinkingDataCore/NSDate+TDCore.h>
-#else
-#import "NSDate+TDCore.h"
-#endif
-
-#if __has_include(<ThinkingDataCore/TDCoreDeviceInfo.h>)
-#import <ThinkingDataCore/TDCoreDeviceInfo.h>
-#else
-#import "TDCoreDeviceInfo.h"
-#endif
-
-#if __has_include(<ThinkingDataCore/TDCorePresetDisableConfig.h>)
-#import <ThinkingDataCore/TDCorePresetDisableConfig.h>
-#else
-#import "TDCorePresetDisableConfig.h"
-#endif
+#import "TDPresetProperties+TDDisProperties.h"
+#import "NSDate+TDFormat.h"
+#import "TDCommonUtil.h"
 
 @implementation TDTrackEvent
 
@@ -40,7 +25,7 @@
     self = [super init];
     if (self) {
         self.eventType = TDEventTypeTrack;
-        self.systemUpTime = [TDCoreDeviceInfo bootTime];
+        self.systemUpTime = [TDCommonUtil uptime];
     }
     return self;
 }
@@ -55,26 +40,28 @@
     
     dict[@"#event_name"] = self.eventName;
     
-    if (![TDCorePresetDisableConfig disableDuration]) {
+    if (![TDPresetProperties disableDuration]) {
         if (self.foregroundDuration > 0) {
             self.properties[@"#duration"] = @([NSString stringWithFormat:@"%.3f", self.foregroundDuration].floatValue);
         }
     }
     
-    if (![TDCorePresetDisableConfig disableBackgroundDuration]) {
+    if (![TDPresetProperties disableBackgroundDuration]) {
         if (self.backgroundDuration > 0) {
             self.properties[TD_BACKGROUND_DURATION] = @([NSString stringWithFormat:@"%.3f", self.backgroundDuration].floatValue);
         }
     }
     
-    self.properties[@"#zone_offset"] = @([self timeZoneOffset]);
-
+    if (![TDPresetProperties disableZoneOffset]) {
+        self.properties[@"#zone_offset"] = @([self timeZoneOffset]);
+    }
+    
     return dict;
 }
 
 - (double)timeZoneOffset {
     NSTimeZone *tz = self.timeZone ?: [NSTimeZone localTimeZone];
-    return [[NSDate date] td_timeZoneOffset:tz];
+    return [[NSDate date] ta_timeZoneOffset:tz];
 }
 
 //MARK: - Delegate

@@ -40,6 +40,7 @@
 
 - (void)registerSuperProperties:(NSDictionary *)properties {
     properties = [properties copy];
+    
     properties = [TDPropertyValidator validateProperties:properties];
     if (properties.count <= 0) {
         TDLogError(@"%@ propertieDict error.", properties);
@@ -54,7 +55,6 @@
 
     
     [self.file archiveSuperProperties:self.superProperties];
-    TDLogInfo(@"set super properties success");
 }
 
 - (void)unregisterSuperProperty:(NSString *)property {
@@ -69,13 +69,11 @@
     self.superProperties = [NSDictionary dictionaryWithDictionary:tmp];
     
     [self.file archiveSuperProperties:self.superProperties];
-    TDLogInfo(@"unset super properties success");
 }
 
 - (void)clearSuperProperties {
     self.superProperties = @{};
     [self.file archiveSuperProperties:self.superProperties];
-    TDLogInfo(@"clear super properties success");
 }
 
 - (NSDictionary *)currentSuperProperties {
@@ -97,6 +95,7 @@
     @synchronized (self) {
         if (self.dynamicSuperProperties) {
             NSDictionary *properties = self.dynamicSuperProperties();
+            
             NSDictionary *validProperties = [TDPropertyValidator validateProperties:[properties copy]];
             return validProperties;
         }
