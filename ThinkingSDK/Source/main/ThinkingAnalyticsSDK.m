@@ -283,7 +283,9 @@ static dispatch_queue_t td_trackQueue;
     [self.superProperty registerDynamicSuperProperties:nil];
 
     void(^block)(void) = ^{
-        [self.dataQueue deleteAll:[self instanceAliasNameOrAppId]];
+        @synchronized (TDSqliteDataQueue.class) {
+            [self.dataQueue deleteAll:[self instanceAliasNameOrAppId]];
+        }
         [self.trackTimer clear];
         [self.superProperty clearSuperProperties];
         self.identifyId = [TDDeviceInfo sharedManager].uniqueId;
