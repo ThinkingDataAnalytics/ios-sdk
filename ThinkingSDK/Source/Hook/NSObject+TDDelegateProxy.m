@@ -2,6 +2,10 @@
 #import "NSObject+TDDelegateProxy.h"
 #import <objc/runtime.h>
 
+#if TARGET_OS_IOS
+#import <UIKit/UIKit.h>
+#endif
+
 @implementation NSObject (TDDelegateProxy)
 
 - (NSSet<NSString *> *)thinkingdata_optionalSelectors {

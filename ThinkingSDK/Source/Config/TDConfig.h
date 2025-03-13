@@ -71,6 +71,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL enableAutoPush;
 
+/// Enable the automatic time calibration function
+@property (nonatomic, assign) BOOL enableAutoCalibrated;
+
+/// Whether data is reported synchronously when the app terminates. If allowed, the main thread will be blocked for up to 0.5s. Default is YES
+@property (nonatomic, assign) BOOL flushBeforeTerminate;
+
 /// server url
 @property (nonatomic, copy) NSString *configureURL DEPRECATED_MSG_ATTRIBUTE("Deprecated. replace with property: serverUrl");
 

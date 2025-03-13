@@ -1,0 +1,1 @@
+../../ThinkingSDK/Source/EventTracker/Property/Validate/NSDictionary+TDProperty.h

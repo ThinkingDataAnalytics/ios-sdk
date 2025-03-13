@@ -60,12 +60,7 @@ typedef NS_OPTIONS(NSInteger, TDEventTimeValueType) {
 @property (nonatomic, strong) NSMutableDictionary *properties;
 
 @property (nonatomic, assign) BOOL immediately;
-
-@property (atomic, assign, getter=isTrackPause) BOOL trackPause;
-
-@property (nonatomic, assign) BOOL isEnabled;
-
-@property (atomic, assign) BOOL isOptOut;
+@property (nonatomic, assign) BOOL isDebug;
 
 - (instancetype)initWithType:(TDEventType)type;
 

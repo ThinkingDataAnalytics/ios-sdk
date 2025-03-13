@@ -1,10 +1,14 @@
 #import "ThinkingExceptionHandler.h"
-
 #include <libkern/OSAtomic.h>
 #include <stdatomic.h>
 #import "TDLogging.h"
-#import "TDPresetProperties+TDDisProperties.h"
 #import "TDAutoTrackManager.h"
+
+#if __has_include(<ThinkingDataCore/TDCorePresetDisableConfig.h>)
+#import <ThinkingDataCore/TDCorePresetDisableConfig.h>
+#else
+#import "TDCorePresetDisableConfig.h"
+#endif
 
 static NSString * const TD_CRASH_REASON = @"#app_crashed_reason";
 static NSUInteger const TD_PROPERTY_CRASH_LENGTH_LIMIT = 8191*2;
@@ -125,9 +129,16 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
     TDAutoTrackEvent *appEndEvent = [[TDAutoTrackEvent alloc] initWithName:TD_APP_END_EVENT];
     [[TDAutoTrackManager sharedManager] trackWithEvent:appEndEvent withProperties:nil];
     
+    [[TDAutoTrackManager sharedManager] flush];
     dispatch_sync([ThinkingAnalyticsSDK sharedTrackQueue], ^{});
-    dispatch_sync([ThinkingAnalyticsSDK sharedNetworkQueue], ^{});
-
+    
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    dispatch_queue_t networkQueue = [TDEventTracker td_networkQueue];
+    dispatch_async(networkQueue, ^{
+        dispatch_semaphore_signal(semaphore);
+    });
+    dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)));
+    
     NSSetUncaughtExceptionHandler(NULL);
     for (int i = 0; i < sizeof(TDSignals) / sizeof(int); i++) {
         signal(TDSignals[i], SIG_DFL);
@@ -143,7 +154,7 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
 + (NSMutableDictionary *)crashInfoWithMessage:(NSString *)message {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
     
-    if ([TDPresetProperties disableAppCrashedReason]) {
+    if ([TDCorePresetDisableConfig disableAppCrashedReason]) {
         return properties;
     }
     
@@ -168,7 +179,7 @@ static void TDSignalHandler(int signalNumber, struct __siginfo *info, void *cont
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
     
     
-    if ([TDPresetProperties disableAppCrashedReason]) {
+    if ([TDCorePresetDisableConfig disableAppCrashedReason]) {
         return properties;
     }
     

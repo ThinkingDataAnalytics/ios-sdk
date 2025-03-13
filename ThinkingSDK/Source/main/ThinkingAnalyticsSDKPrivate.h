@@ -36,20 +36,14 @@
 #import "TDPropertyPluginManager.h"
 #import "TDPresetPropertyPlugin.h"
 #import "TDBaseEvent+H5.h"
-#import "NSDate+TDFormat.h"
 #import "TDEventTracker.h"
 #import "TDAppLifeCycle.h"
 
-//MARK: router
-#if __has_include(<ThinkingDataCore/TAModuleManager.h>)
-#import <ThinkingDataCore/TAModuleManager.h>
+#if __has_include(<ThinkingDataCore/NSDate+TDCore.h>)
+#import <ThinkingDataCore/NSDate+TDCore.h>
 #else
-#import "TAModuleManager.h"
+#import "NSDate+TDCore.h"
 #endif
-#import "TDAnalyticsRouterEventManager.h"
-
-//MARK: app group
-#import "TDAnalyticsAppGroupManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -70,8 +64,9 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 @property (atomic, copy) NSString *identifyId;
 /// TD error callback
 @property (atomic, copy) void(^errorCallback)(NSInteger code, NSString * _Nullable errorMsg, NSString * _Nullable ext);
-@property (atomic, assign, getter=isTrackPause) BOOL trackPause;
-@property (atomic, assign) BOOL isEnabled;
+
+@property (atomic, assign) TDTrackStatus sdkStatus;
+
 @property (nonatomic, strong) TDConfig *config;
 @property (atomic, strong) NSMutableSet *ignoredViewControllers;
 @property (atomic, strong) NSMutableSet *ignoredViewTypeList;
@@ -105,8 +100,9 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 
 - (void)innerTrack:(NSString *)event;
 - (void)innerTrack:(NSString *)event properties:(NSDictionary * _Nullable)propertieDict;
-- (void)innerTrack:(NSString *)event properties:(NSDictionary * _Nullable)propertieDict time:(NSDate *)time timeZone:(NSTimeZone *)timeZone;
+- (void)innerTrack:(NSString *)event properties:(NSDictionary * _Nullable)propertieDict time:(NSDate * _Nullable)time timeZone:(NSTimeZone * _Nullable)timeZone;
 - (void)innerTrackWithEventModel:(TDEventModel *)eventModel;
+- (void)innerTrackDebug:(NSString *)event properties:(NSDictionary * _Nullable)propertieDict;
 - (void)innerTimeEvent:(NSString *)event;
 - (NSString *)innerAccountId;
 - (NSString *)innerDistinctId;

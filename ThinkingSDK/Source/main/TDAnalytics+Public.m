@@ -8,18 +8,48 @@
 #import "TDAnalytics+Public.h"
 #import "TDAnalytics+Multiple.h"
 #import "ThinkingAnalyticsSDKPrivate.h"
-#import "TDCalibratedTime.h"
 #import "TDLogging.h"
 #import "TDPublicConfig.h"
-#import "NSString+TDString.h"
 #import "TDConfigPrivate.h"
+
+#if __has_include(<ThinkingDataCore/TDCalibratedTime.h>)
+#import <ThinkingDataCore/TDCalibratedTime.h>
+#else
+#import "TDCalibratedTime.h"
+#endif
+
+#if __has_include(<ThinkingDataCore/TDCoreDeviceInfo.h>)
+#import <ThinkingDataCore/TDCoreDeviceInfo.h>
+#else
+#import "TDCoreDeviceInfo.h"
+#endif
+
+#if __has_include(<ThinkingDataCore/NSString+TDCore.h>)
+#import <ThinkingDataCore/NSString+TDCore.h>
+#else
+#import "NSString+TDCore.h"
+#endif
+
+#if __has_include(<ThinkingDataCore/NSURL+TDCore.h>)
+#import <ThinkingDataCore/NSURL+TDCore.h>
+#else
+#import "NSURL+TDCore.h"
+#endif
+
+#if TARGET_OS_IOS
+#if __has_include(<ThinkingDataCore/TDStorageEncryptPlugin.h>)
+#import <ThinkingDataCore/TDStorageEncryptPlugin.h>
+#else
+#import "TDStorageEncryptPlugin.h"
+#endif
+#endif
 
 @implementation TDAnalytics (Public)
 
 #pragma mark - Logging
 
 + (void)enableLog:(BOOL)enable {
-    [TDLogging sharedInstance].loggingLevel = enable ? TDLoggingLevelDebug : TDLoggingLevelNone;
+    [TDLogging sharedInstance].enableLog = enable;
 }
 
 #pragma mark - Calibrate time
@@ -48,7 +78,6 @@
     if (libVersion.length > 0) {
         [TDDeviceInfo sharedManager].libVersion = libVersion;
     }
-    [[TDDeviceInfo sharedManager] td_updateData];
 }
 
 + (NSString *)getSDKVersion {
@@ -56,7 +85,7 @@
 }
 
 + (NSString *)getDeviceId {
-    return [TDDeviceInfo sharedManager].deviceId;
+    return [TDCoreDeviceInfo deviceId];
 }
 
 + (NSString *)timeStringWithDate:(NSDate *)date {
@@ -77,29 +106,23 @@
     if (!config) {
         return;
     }
-    config.appid = [config.appid td_trim];
-    
-    NSString *appId = config.appid;
+    NSString *appId = [config.appid td_trim];
     if (appId.length == 0) {
         return;
     }
-    NSString *sdkName = config.name;
+    config.appid = appId;
     
     NSMutableDictionary *instances = [ThinkingAnalyticsSDK _getAllInstances];
-    
-    if (instances[sdkName]) {
-        return;
-    }
-    if (instances[appId]) {
+    if ([instances objectForKey:[config innerGetMapInstanceToken]]) {
         return;
     }
     
-    config.serverUrl = [config.serverUrl ta_formatUrlString];
-    NSString *url = config.serverUrl;
+    NSString *url = [NSURL td_baseUrlStringWithString:config.serverUrl];
     if (url.length == 0) {
         return;
     }
-    
+    config.serverUrl = url;
+
     ThinkingAnalyticsSDK *sdk = [[ThinkingAnalyticsSDK alloc] initWithConfig:config];
     TDLogInfo(@"instance token: %@", [sdk.config innerGetMapInstanceToken]);
 }
@@ -152,12 +175,12 @@
 
 //MARK: user property
 
-+ (void)userSet:(NSDictionary *)properties {
++ (void)userSet:(NSDictionary<NSString *, id> *)properties {
     NSString *appId = [ThinkingAnalyticsSDK defaultAppId];
     [TDAnalytics userSet:properties withAppId:appId];
 }
 
-+ (void)userSetOnce:(NSDictionary *)properties {
++ (void)userSetOnce:(NSDictionary<NSString *, id> *)properties {
     NSString *appId = [ThinkingAnalyticsSDK defaultAppId];
     [TDAnalytics userSetOnce:properties withAppId:appId];
 }
@@ -172,7 +195,7 @@
     [TDAnalytics userUnsets:propertyNames withAppId:appId];
 }
 
-+ (void)userAdd:(NSDictionary *)properties {
++ (void)userAdd:(NSDictionary<NSString *, id> *)properties {
     NSString *appId = [ThinkingAnalyticsSDK defaultAppId];
     [TDAnalytics userAdd:properties withAppId:appId];
 }
@@ -199,7 +222,7 @@
 
 //MARK: super property & preset property
 
-+ (void)setSuperProperties:(NSDictionary *)properties {
++ (void)setSuperProperties:(NSDictionary<NSString *, id> *)properties {
     NSString *appId = [ThinkingAnalyticsSDK defaultAppId];
     [TDAnalytics setSuperProperties:properties withAppId:appId];
 }
@@ -253,6 +276,11 @@
     [TDAnalytics login:accountId withAppId:appId];
 }
 
++ (NSString *)getAccountId {
+    NSString *appId = [ThinkingAnalyticsSDK defaultAppId];
+    return [TDAnalytics getAccountIdWithAppId:appId];
+}
+
 + (void)logout {
     NSString *appId = [ThinkingAnalyticsSDK defaultAppId];
     [TDAnalytics logoutWithAppId:appId];
@@ -263,9 +291,15 @@
     [TDAnalytics setUploadingNetworkType:type withAppId:appId];
 }
 
-// MARK: auto track
-
 #if TARGET_OS_IOS
+
+// MARK: - Local storage encrypt
+
++ (void)encryptLocalStorage {
+    [[TDStorageEncryptPlugin sharedInstance] enableEncrypt];
+}
+
+// MARK: - auto track
 
 + (void)enableAutoTrack:(TDAutoTrackEventType)eventType API_UNAVAILABLE(macos){
     NSString *appId = [ThinkingAnalyticsSDK defaultAppId];

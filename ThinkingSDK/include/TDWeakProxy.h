@@ -1,0 +1,1 @@
+../../ThinkingSDK/Source/Util/TDWeakProxy.h
