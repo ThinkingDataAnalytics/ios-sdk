@@ -1,1 +1,0 @@
-../../ThinkingSDK/Source/Util/TDCheck.h

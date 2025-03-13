@@ -46,12 +46,6 @@
 #import "TDMediator+Analytics.h"
 #endif
 
-#if __has_include(<ThinkingDataCore/NSDictionary+TDCore.h>)
-#import <ThinkingDataCore/NSDictionary+TDCore.h>
-#else
-#import "NSDictionary+TDCore.h"
-#endif
-
 #import "TDConfig.h"
 #import "TDPublicConfig.h"
 #import "TDFile.h"
@@ -79,6 +73,7 @@
 @property (nonatomic, strong) TDSuperProperty *superProperty;
 @property (nonatomic, strong) TDPropertyPluginManager *propertyPluginManager;
 @property (nonatomic, strong) TDAppLifeCycle *appLifeCycle;
+@property (atomic, assign) BOOL isOptOut;
 @property (nonatomic, strong, nullable) NSTimer *timer;
 @property (nonatomic, strong) TDTrackTimer *trackTimer;
 @property (atomic, strong) TDSqliteDataQueue *dataQueue;
@@ -121,7 +116,7 @@ static dispatch_queue_t td_trackQueue;
 
 - (instancetype)initLight:(NSString *)appid withServerURL:(NSString *)serverURL withConfig:(TDConfig *)config {
     if (self = [self init]) {
-        self.sdkStatus = TDTrackStatusNormal;
+        self.isEnabled = YES;
         self.config = [config copy];
         
         // random instance name
@@ -138,9 +133,9 @@ static dispatch_queue_t td_trackQueue;
         
         [g_lock lock];
         g_instances[instanceIdentify] = self;
-        self.superProperty = [[TDSuperProperty alloc] initWithToken:instanceIdentify isLight:YES];
         [g_lock unlock];
         
+        self.superProperty = [[TDSuperProperty alloc] initWithToken:instanceIdentify isLight:YES];
         
         self.trackTimer = [[TDTrackTimer alloc] init];
                 
@@ -160,22 +155,11 @@ static dispatch_queue_t td_trackQueue;
             return nil;
         }
         self.config = config;
-        self.sdkStatus = TDTrackStatusNormal;
+        
         NSString *instanceAliasName = [self instanceAliasNameOrAppId];
         if (!instanceAliasName) {
             return nil;
         }
-        
-        self.trackTimer = [[TDTrackTimer alloc] init];
-        self.ignoredViewControllers = [[NSMutableSet alloc] init];
-        self.ignoredViewTypeList = [[NSMutableSet alloc] init];
-        self.file = [[TDFile alloc] initWithAppid:instanceAliasName];
-        [TDAppLifeCycle startMonitor];
-        [self registerListener];
-
-        self.config.getInstanceName = ^NSString * _Nonnull {
-            return instanceAliasName;
-        };
         
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
@@ -187,26 +171,29 @@ static dispatch_queue_t td_trackQueue;
         g_instances[instanceAliasName] = self;
         [g_lock unlock];
         
+        self.file = [[TDFile alloc] initWithAppid:instanceAliasName];
+        [self retrievePersistedData];
+        
         dispatch_async(td_trackQueue, ^{
-            [self retrievePersistedData];
-            self.eventTracker = [[TDEventTracker alloc] initWithQueue:td_trackQueue instanceToken:instanceAliasName];
             self.dataQueue = [TDSqliteDataQueue sharedInstanceWithAppid:instanceAliasName];
             if (self.dataQueue == nil) {
                 TDLogError(@"SqliteException: init SqliteDataQueue failed");
             }
             
-            [g_lock lock];
             self.superProperty = [[TDSuperProperty alloc] initWithToken:instanceAliasName isLight:NO];
-            if (self.propertyPluginManager == nil) {
-                self.propertyPluginManager = [[TDPropertyPluginManager alloc] init];
-                TDPresetPropertyPlugin *presetPlugin = [[TDPresetPropertyPlugin alloc] init];
-                presetPlugin.instanceToken = [self instanceAliasNameOrAppId];
-                [self.propertyPluginManager registerPropertyPlugin:presetPlugin];
-            }
-            [g_lock unlock];
             
-            [self.config innerUpdateIPMap];
+            self.propertyPluginManager = [[TDPropertyPluginManager alloc] init];
+            TDPresetPropertyPlugin *presetPlugin = [[TDPresetPropertyPlugin alloc] init];
+            presetPlugin.instanceToken = [self instanceAliasNameOrAppId];
+            [self.propertyPluginManager registerPropertyPlugin:presetPlugin];
+        });
+        
+        self.config.getInstanceName = ^NSString * _Nonnull{
+            return instanceAliasName;
+        };
+        
 #if TARGET_OS_IOS
+        dispatch_async(td_trackQueue, ^{
             if (self.config.innerEnableEncrypt) {
                 self.encryptManager = [[TDEncryptManager alloc] initWithSecretKey:self.config.innerSecretKey];
             }
@@ -215,41 +202,52 @@ static dispatch_queue_t td_trackQueue;
                 if (weakSelf.config.innerEnableEncrypt && secretKey) {
                     [weakSelf.encryptManager handleEncryptWithConfig:secretKey];
                 }
-                [weakSelf startFlushTimer];
             }];
-#elif TARGET_OS_OSX
-            __weak __typeof(self)weakSelf = self;
-            [self.config innerUpdateConfig:^(NSDictionary * _Nonnull secretKey) {
-                [weakSelf startFlushTimer];
-            }];
-#endif
-            
-#if TARGET_OS_IOS
-            NSDictionary *ops = [TDAppLaunchReason getAppPushDic];
-            if(ops != nil){
-                TDPushClickEvent *pushEvent = [[TDPushClickEvent alloc]initWithName: @"te_ops_push_click"];
-                pushEvent.ops = ops;
-                [self autoTrackWithEvent:pushEvent properties:@{}];
-                [self innerFlush];
-            }
-            [TDAppLaunchReason clearAppPushParams];
-#endif
-            TDLogInfo(@"initialize success. Mode: %@\n AppID: %@\n ServerUrl: %@\n TimeZone: %@\n DeviceID: %@\n Lib: %@\n LibVersion: %@", [self modeEnumToString:self.config.mode], self.config.appid, self.config.serverUrl, self.config.defaultTimeZone ?: [NSTimeZone localTimeZone], [TDAnalytics getDeviceId], [[TDDeviceInfo sharedManager] libName] ,[[TDDeviceInfo sharedManager] libVersion]);
-            
-            [TDNotificationManager postAnalyticsInitEventWithAppId:instanceAliasName serverUrl:self.config.serverUrl];
-            [[TDMediator sharedInstance] registerSuccessWithTargetName:kTDMediatorTargetAnalytics];
+            [self.config innerUpdateIPMap];
         });
+#elif TARGET_OS_OSX
+        [self.config innerUpdateConfig:^(NSDictionary * _Nonnull secretKey) {}];
+#endif
+        
+        self.trackTimer = [[TDTrackTimer alloc] init];
+        
+        self.ignoredViewControllers = [[NSMutableSet alloc] init];
+        self.ignoredViewTypeList = [[NSMutableSet alloc] init];
+        
+        self.eventTracker = [[TDEventTracker alloc] initWithQueue:td_trackQueue instanceToken:instanceAliasName];
+        
+        [self startFlushTimer];
+        
+        [TDAppLifeCycle startMonitor];
+        
+        [self registerAppLifeCycleListener];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkStatusChangedNotification:) name:kNetworkNotificationNameStatusChange object:nil];
+        
+#if TARGET_OS_IOS
+        NSDictionary *ops = [TDAppLaunchReason getAppPushDic];
+        if(ops != nil){
+            TDPushClickEvent *pushEvent = [[TDPushClickEvent alloc]initWithName: @"te_ops_push_click"];
+            pushEvent.ops = ops;
+            [self autoTrackWithEvent:pushEvent properties:@{}];
+            [self innerFlush];
+        }
+        [TDAppLaunchReason clearAppPushParams];
+#endif
+        
+        TDLogInfo(@"initialize success. Mode: %@\n AppID: %@\n ServerUrl: %@\n TimeZone: %@\n DeviceID: %@\n Lib: %@\n LibVersion: %@", [self modeEnumToString:self.config.mode], self.config.appid, self.config.serverUrl, self.config.defaultTimeZone ?: [NSTimeZone localTimeZone], [TDAnalytics getDeviceId], [[TDDeviceInfo sharedManager] libName] ,[[TDDeviceInfo sharedManager] libVersion]);
+    
+        [TDNotificationManager postAnalyticsInitEventWithAppId:instanceAliasName serverUrl:self.config.serverUrl];
+        
+        [[TDMediator sharedInstance] registerSuccessWithTargetName:kTDMediatorTargetAnalytics];
     }
     return self;
 }
 
-- (void)registerListener {
+- (void)registerAppLifeCycleListener {
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    // app life cycle
+
     [notificationCenter addObserver:self selector:@selector(appStateWillChangeNotification:) name:kTDAppLifeCycleStateWillChangeNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(appStateDidChangeNotification:) name:kTDAppLifeCycleStateDidChangeNotification object:nil];
-    // network
-    [notificationCenter addObserver:self selector:@selector(networkStatusChangedNotification:) name:kNetworkNotificationNameStatusChange object:nil];
 }
 
 - (void)networkStatusChangedNotification:(NSNotification *)notification {
@@ -273,10 +271,12 @@ static dispatch_queue_t td_trackQueue;
 }
 
 - (BOOL)hasDisabled {
-    return self.sdkStatus == TDTrackStatusPause || self.sdkStatus == TDTrackStatusStop;
+    return !self.isEnabled || self.isOptOut;
 }
 
-- (void)closeAndResetSDK {
+- (void)doOptOutTracking {
+    self.isOptOut = YES;
+    
 #if TARGET_OS_IOS
     @synchronized (self.autoTrackSuperProperty) {
         [self.autoTrackSuperProperty clearSuperProperties];
@@ -284,67 +284,43 @@ static dispatch_queue_t td_trackQueue;
 #endif
 
     [self.superProperty registerDynamicSuperProperties:nil];
-    [self.trackTimer clear];
-    [self.superProperty clearSuperProperties];
-    self.identifyId = [TDDeviceInfo sharedManager].uniqueId;
-    self.accountId = nil;
-    @synchronized (TDSqliteDataQueue.class) {
-        [self.dataQueue deleteAll:[self instanceAliasNameOrAppId]];
-    }
+
+    void(^block)(void) = ^{
+        @synchronized (TDSqliteDataQueue.class) {
+            [self.dataQueue deleteAll:[self instanceAliasNameOrAppId]];
+        }
+        [self.trackTimer clear];
+        [self.superProperty clearSuperProperties];
+        self.identifyId = [TDDeviceInfo sharedManager].uniqueId;
+        self.accountId = nil;
     
-    [self.file archiveAccountID:nil];
-    [self.file archiveIdentifyId:nil];
-    [self.file archiveSuperProperties:nil];
+        [self.file archiveAccountID:nil];
+        [self.file archiveIdentifyId:nil];
+        [self.file archiveSuperProperties:nil];
+        [self.file archiveOptOut:YES];
+    };
+    if (dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL) == dispatch_queue_get_label(td_trackQueue)) {
+        block();
+    } else {
+        dispatch_async(td_trackQueue, block);
+    }
 }
 
 #pragma mark - Persistence
-- (void)retrievePersistedAccountId {
-    if (self.accountId.length == 0) {
-        NSString *accountId = [self.file unarchiveAccountID];
-        self.accountId = accountId;
-    }
-}
-
-- (void)retrievePersistedDistinctId {
-    if (self.identifyId.length == 0) {
-        NSString *identifyId = [self.file unarchiveIdentifyID];
-        self.identifyId = identifyId.length == 0 ? [TDDeviceInfo sharedManager].uniqueId : identifyId;
-    }
-}
-
-- (void)retrievePersistedTrackStatus {
-    // read new sdk status
-    NSNumber *trackStatusNumber = [self.file unarchiveTrackStatus];
-    if (trackStatusNumber != nil) {
-        self.sdkStatus = [trackStatusNumber integerValue];
-    } else {
-        // read old status.
-        BOOL trackPause = [self.file unarchiveTrackPause];
-        BOOL isEnabled = [self.file unarchiveEnabled];
-        BOOL isOptOut  = [self.file unarchiveOptOut];
-        
-        if (isEnabled) {
-            if (trackPause) {
-                self.sdkStatus = TDTrackStatusSaveOnly;
-            } else {
-                self.sdkStatus = TDTrackStatusNormal;
-            }
-        } else {
-            self.sdkStatus = TDTrackStatusPause;
-        }
-        if (isOptOut) {
-            self.sdkStatus = TDTrackStatusStop;
-        }
-    }
-}
-
 - (void)retrievePersistedData {
-    [self retrievePersistedAccountId];
-    [self retrievePersistedDistinctId];
-    [self retrievePersistedTrackStatus];
-    
+    self.accountId = [self.file unarchiveAccountID];
+    self.identifyId = [self.file unarchiveIdentifyID];
+    self.trackPause = [self.file unarchiveTrackPause];
+    self.isEnabled = [self.file unarchiveEnabled];
+    self.isOptOut  = [self.file unarchiveOptOut];
     self.config.uploadSize = [self.file unarchiveUploadSize];
     self.config.uploadInterval = [self.file unarchiveUploadInterval];
+    if (self.identifyId.length == 0) {
+        self.identifyId = [TDDeviceInfo sharedManager].uniqueId;
+    }
+    if (self.accountId.length == 0) {
+        [self.file deleteOldLoginId];
+    }
 }
 
 - (void)deleteAll {
@@ -376,10 +352,6 @@ static dispatch_queue_t td_trackQueue;
         NSTimeInterval systemUpTime = [TDCoreDeviceInfo bootTime];
         [self.trackTimer enterBackgroundWithSystemUptime:systemUpTime];
         
-        if (self.sdkStatus != TDTrackStatusNormal) {
-            TDLogInfo(@"Flush failed. SDK is unavailable, track status is: %d", self.sdkStatus)
-            return;
-        }
 #if TARGET_OS_IOS
         UIApplication *application = [TDAppState sharedApplication];;
         __block UIBackgroundTaskIdentifier backgroundTaskIdentifier = UIBackgroundTaskInvalid;
@@ -388,6 +360,7 @@ static dispatch_queue_t td_trackQueue;
             backgroundTaskIdentifier = UIBackgroundTaskInvalid;
         };
         backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:endBackgroundTask];
+        
         [self.eventTracker _asyncWithCompletion:endBackgroundTask];
 #else
         [self.eventTracker flush];
@@ -395,19 +368,13 @@ static dispatch_queue_t td_trackQueue;
         
     } else if (newState == TDAppLifeCycleStateTerminate) {
         dispatch_sync(td_trackQueue, ^{});
-        if (self.sdkStatus != TDTrackStatusNormal) {
-            TDLogInfo(@"Flush failed. SDK is unavailable, track status is: %d", self.sdkStatus)
-            return;
-        }
         [self.eventTracker flush];
-        if (self.config.flushBeforeTerminate) {
-            dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-            dispatch_queue_t networkQueue = [TDEventTracker td_networkQueue];
-            dispatch_async(networkQueue, ^{
-                dispatch_semaphore_signal(semaphore);
-            });
-            dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)));
-        }
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        dispatch_queue_t networkQueue = [TDEventTracker td_networkQueue];
+        dispatch_async(networkQueue, ^{
+            dispatch_semaphore_signal(semaphore);
+        });
+        dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)));
     }
 }
 
@@ -424,41 +391,39 @@ static dispatch_queue_t td_trackQueue;
 #pragma mark - Private
 
 - (void)asyncTrackEventObject:(TDTrackEvent *)event properties:(NSDictionary * _Nullable)properties isH5:(BOOL)isH5 {
+
+    event.isEnabled = self.isEnabled;
+    event.trackPause = self.isTrackPause;
+    event.isOptOut = self.isOptOut;
     event.accountId = self.accountId;
     event.distinctId = self.identifyId;
+    
     [self handleTimeEvent:event];
     [self calibratedTimeWithEvent:event];
     
-    if ([properties isKindOfClass:NSDictionary.class]) {
-        properties = [properties deepCopy];
-    } else {
-        properties = nil;
-    }
-    
-    [ThinkingAnalyticsSDK safeAsyncTask:^{
+    dispatch_async(td_trackQueue, ^{
         @autoreleasepool {
             event.dynamicSuperProperties = [self.superProperty obtainDynamicSuperProperties];
-            [self trackEvent:event properties:properties isH5:isH5];
+            [self trackEvent:event properties:[properties copy] isH5:isH5];
         }
-    } inQueue:[ThinkingAnalyticsSDK sharedTrackQueue]];
+    });
 }
 
 - (void)asyncUserEventObject:(TDUserEvent *)event properties:(NSDictionary * _Nullable)properties isH5:(BOOL)isH5 {
+
+    event.isEnabled = self.isEnabled;
+    event.trackPause = self.isTrackPause;
+    event.isOptOut = self.isOptOut;
     event.accountId = self.accountId;
     event.distinctId = self.identifyId;
+    
     [self calibratedTimeWithEvent:event];
-    
-    if ([properties isKindOfClass:NSDictionary.class]) {
-        properties = [properties deepCopy];
-    } else {
-        properties = nil;
-    }
-    
-    [ThinkingAnalyticsSDK safeAsyncTask:^{
+
+    dispatch_async(td_trackQueue, ^{
         @autoreleasepool {
-            [self trackUserEvent:event properties:properties isH5:NO];
+            [self trackUserEvent:event properties:[properties copy] isH5:NO];
         }
-    } inQueue:[ThinkingAnalyticsSDK sharedTrackQueue]];
+    });
 }
 
 - (void)calibratedTimeWithEvent:(TDBaseEvent *)event {
@@ -478,7 +443,8 @@ static dispatch_queue_t td_trackQueue;
 //MARK: -
 
 - (void)trackUserEvent:(TDUserEvent *)event properties:(NSDictionary *)properties isH5:(BOOL)isH5 {
-    if (self.sdkStatus == TDTrackStatusPause || self.sdkStatus == TDTrackStatusStop) {
+    
+    if (!event.isEnabled || event.isOptOut) {
         return;
     }
     
@@ -493,13 +459,14 @@ static dispatch_queue_t td_trackQueue;
     }
     
     NSDictionary *jsonObj = [event formatDateWithDict:event.jsonObject];
-    BOOL isSaveOnly = self.sdkStatus == TDTrackStatusSaveOnly;
-    [self.eventTracker track:jsonObj immediately:event.immediately saveOnly:isSaveOnly];
+    
+    [self.eventTracker track:jsonObj immediately:event.immediately saveOnly:event.isTrackPause];
     TDLogInfo(@"user event success");
 }
 
 - (void)trackEvent:(TDTrackEvent *)event properties:(NSDictionary *)properties isH5:(BOOL)isH5 {
-    if (self.sdkStatus == TDTrackStatusPause || self.sdkStatus == TDTrackStatusStop) {
+    
+    if (!event.isEnabled || event.isOptOut) {
         return;
     }
     
@@ -574,8 +541,7 @@ static dispatch_queue_t td_trackQueue;
     if (event.isDebug) {
         [self.eventTracker trackDebugEvent:jsonObj];
     } else {
-        BOOL isSaveOnly = self.sdkStatus == TDTrackStatusSaveOnly;
-        [self.eventTracker track:jsonObj immediately:event.immediately saveOnly:isSaveOnly];
+        [self.eventTracker track:jsonObj immediately:event.immediately saveOnly:event.isTrackPause];
     }
     TDLogInfo(@"track success");
 }
@@ -614,6 +580,9 @@ static dispatch_queue_t td_trackQueue;
 
 /// Add event to event queue
 - (void)asyncAutoTrackEventObject:(TDAutoTrackEvent *)event properties:(NSDictionary *)properties {
+    event.isEnabled = self.isEnabled;
+    event.trackPause = self.isTrackPause;
+    event.isOptOut = self.isOptOut;
     event.accountId = self.accountId;
     event.distinctId = self.identifyId;
         
@@ -633,15 +602,8 @@ static dispatch_queue_t td_trackQueue;
         [unionProperties addEntriesFromDictionary:autoTrackDynamicProperties];
     }
     event.dynamicSuperProperties = unionProperties;
-    
-    if ([properties isKindOfClass:NSDictionary.class]) {
-        properties = [properties deepCopy];
-    } else {
-        properties = nil;
-    }
-    
     dispatch_async(td_trackQueue, ^{
-        [self trackEvent:event properties:properties isH5:NO];
+        [self trackEvent:event properties:[properties copy] isH5:NO];
     });
 }
 
@@ -813,25 +775,21 @@ static dispatch_queue_t td_trackQueue;
         TDLogError(@"accountId invald", distinctId);
         return;
     }
+    
     TDLogInfo(@"Set distinct ID, Distinct Id = %@", distinctId);
-    self.identifyId = distinctId;
-    dispatch_async(td_trackQueue, ^{
-        [self.file archiveIdentifyId:self.identifyId];
+    
+    @synchronized (self.file) {
+        self.identifyId = distinctId;
+        [self.file archiveIdentifyId:distinctId];
         [TDNotificationManager postAnalyticsSetDistinctIdEventWithAppId:self.config.appid accountId:self.accountId distinctId:self.identifyId];
-    });
+    }
 }
 
 - (NSString *)innerDistinctId {
-    if (self.identifyId == nil) {
-        [self retrievePersistedDistinctId];
-    }
     return self.identifyId;
 }
 
 - (NSString *)innerAccountId {
-    if (self.accountId == nil) {
-        [self retrievePersistedAccountId];
-    }
     return self.accountId;
 }
 
@@ -853,24 +811,27 @@ static dispatch_queue_t td_trackQueue;
         TDLogError(@"accountId invald", accountId);
         return;
     }
+    
     TDLogInfo(@"Login SDK, AccountId = %@", accountId);
-    self.accountId = accountId;
-    dispatch_async(td_trackQueue, ^{
-        [self.file archiveAccountID:self.accountId];
+    
+    @synchronized (self.file) {
+        self.accountId = accountId;
+        [self.file archiveAccountID:accountId];
         [TDNotificationManager postAnalyticsLoginEventWithAppId:self.config.appid accountId:self.accountId distinctId:self.identifyId];
-    });
+    }
 }
-
 - (void)innerLogout {
     if ([self hasDisabled]) {
         return;
     }
+    
     TDLogInfo(@"Logout SDK.");
-    self.accountId = nil;
-    dispatch_async(td_trackQueue, ^{
+    
+    @synchronized (self.file) {
+        self.accountId = nil;
         [self.file archiveAccountID:nil];
         [TDNotificationManager postAnalyticsLogoutEventWithAppId:self.config.appid distinctId:self.identifyId];
-    });
+    }
 }
 
 //MARK: - user profile
@@ -931,11 +892,11 @@ static dispatch_queue_t td_trackQueue;
     if ([self hasDisabled]) {
         return;
     }
+    
     dispatch_async(td_trackQueue, ^{
         [self.superProperty registerSuperProperties:properties];
     });
 }
-
 - (void)innerUnsetSuperProperty:(NSString *)property {
     if ([self hasDisabled]) {
         return;
@@ -944,7 +905,6 @@ static dispatch_queue_t td_trackQueue;
         [self.superProperty unregisterSuperProperty:property];
     });
 }
-
 - (void)innerClearSuperProperties {
     if ([self hasDisabled]) {
         return;
@@ -953,45 +913,27 @@ static dispatch_queue_t td_trackQueue;
         [self.superProperty clearSuperProperties];
     });
 }
-
 - (NSDictionary *)innerCurrentSuperProperties {
-    [g_lock lock];
-    if (self.superProperty == nil) {
-        BOOL isLigthInstance = [self isKindOfClass:[LightThinkingAnalyticsSDK class]];
-        NSString *instanceAliasName = [self instanceAliasNameOrAppId];
-        self.superProperty = [[TDSuperProperty alloc] initWithToken:instanceAliasName isLight:isLigthInstance];
-    }
-    [g_lock unlock];
     return [self.superProperty currentSuperProperties];
 }
 
 - (void)innerRegisterDynamicSuperProperties:(NSDictionary<NSString *, id> *(^)(void))dynamicSuperProperties {
-    dispatch_async(td_trackQueue, ^{
-        if ([self hasDisabled]) {
-            return;
-        }
-        if (!dynamicSuperProperties) {
-            TDLogError(@"Ignoring empty");
-            return;
-        }
-        @synchronized (self.superProperty) {
-            [self.superProperty registerDynamicSuperProperties:dynamicSuperProperties];
-        }
-    });
+    if ([self hasDisabled]) {
+        return;
+    }
+    if (!dynamicSuperProperties) {
+        TDLogError(@"Ignoring empty");
+        return;
+    }
+    @synchronized (self.superProperty) {
+        [self.superProperty registerDynamicSuperProperties:dynamicSuperProperties];
+    }
 }
 
 - (TDPresetProperties *)innerGetPresetProperties {
-    [g_lock lock];
-    if (self.propertyPluginManager == nil) {
-        self.propertyPluginManager = [[TDPropertyPluginManager alloc] init];
-        TDPresetPropertyPlugin *presetPlugin = [[TDPresetPropertyPlugin alloc] init];
-        presetPlugin.instanceToken = [self instanceAliasNameOrAppId];
-        [self.propertyPluginManager registerPropertyPlugin:presetPlugin];
-    }
-    [g_lock unlock];
-    
-    NSDictionary *pluginProperties = [self.propertyPluginManager currentPropertiesForPluginClasses:@[TDPresetPropertyPlugin.class]];
     NSMutableDictionary *presetDic = [NSMutableDictionary dictionary];
+
+    NSDictionary *pluginProperties = [self.propertyPluginManager currentPropertiesForPluginClasses:@[TDPresetPropertyPlugin.class]];
     [presetDic addEntriesFromDictionary:pluginProperties];
     
     NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
@@ -1001,8 +943,7 @@ static dispatch_queue_t td_trackQueue;
     timeFormatter.timeZone = self.config.defaultTimeZone;
     presetDic = [TDJSONUtil formatDateWithFormatter:timeFormatter dict:presetDic];
     
-    TDPresetProperties *result = [[TDPresetProperties alloc] initWithDictionary:presetDic];
-    return result;
+    return [[TDPresetProperties alloc] initWithDictionary:presetDic];
 }
 
 //MARK: - SDK error callback
@@ -1018,74 +959,70 @@ static dispatch_queue_t td_trackQueue;
 }
 
 - (void)autoFlushWithTimer:(NSTimer *)timer {
-    TDLogInfo(@"Timer action");
-    [self innerFlush];
-}
-
-+ (void)safeAsyncTask:(void(^)(void))block inQueue:(dispatch_queue_t)queue {
-    if (queue == nil || block == nil) {
+    if ([self hasDisabled] || self.isTrackPause) {
         return;
     }
-    const char *currentQueueLabel = dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL);
-    const char *targetQueueLabel = dispatch_queue_get_label(queue);
-    if (currentQueueLabel == targetQueueLabel) {
-        block();
-    } else {
-        dispatch_async(queue, block);
-    }
+    [self.eventTracker flush];
 }
 
 - (void)innerFlush {
-    [ThinkingAnalyticsSDK safeAsyncTask:^{
-        if (self.sdkStatus != TDTrackStatusNormal) {
-            TDLogInfo(@"Flush failed. SDK is unavailable, track status is: %d", self.sdkStatus)
-            return;
-        }
-        TDLogInfo(@"flush success");
-        [self.eventTracker flush];
-    } inQueue:[ThinkingAnalyticsSDK sharedTrackQueue]];
+    if ([self hasDisabled] || self.isTrackPause) {
+        return;
+    }
+    TDLogInfo(@"flush success. By manual.");
+    [self.eventTracker flush];
 }
 
 - (void)innerSetNetworkType:(TDReportingNetworkType)type {
-    [ThinkingAnalyticsSDK safeAsyncTask:^{
-        if ([self hasDisabled]) {
-            return;
-        }
-        self.config.reportingNetworkType = type;
-    } inQueue:[ThinkingAnalyticsSDK sharedTrackQueue]];
+    if ([self hasDisabled]) {
+        return;
+    }
+    self.config.reportingNetworkType = type;
 }
 
 - (void)innerSetTrackStatus: (TDTrackStatus)status {
-    self.sdkStatus = status;
-    
-    [ThinkingAnalyticsSDK safeAsyncTask:^{
-        // Ensure that data is up to date and cannot be deleted
-        self.sdkStatus = status;
-        
-        [self.file archiveTrackStatus:status];
-        switch (status) {
-            case TDTrackStatusPause: {
-                TDLogInfo(@"Change status to Pause")
-                break;
-            }
-            case TDTrackStatusStop: {
-                TDLogInfo(@"Change status to Stop")
-                [self closeAndResetSDK];
-                break;
-            }
-            case TDTrackStatusSaveOnly: {
-                TDLogInfo(@"Change status to SaveOnly")
-                break;
-            }
-            case TDTrackStatusNormal: {
-                TDLogInfo(@"Change status to Normal")
-                [self innerFlush];
-                break;
-            }
-            default:
-                break;
+    switch (status) {
+        case TDTrackStatusPause: {
+            TDLogInfo(@"Change status to Pause")
+            self.isEnabled = NO;
+            dispatch_async(td_trackQueue, ^{
+                [self.file archiveIsEnabled:NO];
+            });
+            break;
         }
-    } inQueue:[ThinkingAnalyticsSDK sharedTrackQueue]];
+        case TDTrackStatusStop: {
+            TDLogInfo(@"Change status to Stop")
+            [self doOptOutTracking];
+            break;
+        }
+        case TDTrackStatusSaveOnly: {
+            TDLogInfo(@"Change status to SaveOnly")
+            self.trackPause = YES;
+            self.isEnabled = YES;
+            self.isOptOut = NO;
+            dispatch_async(td_trackQueue, ^{
+                [self.file archiveTrackPause:YES];
+                [self.file archiveIsEnabled:YES];
+                [self.file archiveOptOut:NO];
+            });
+            break;
+        }
+        case TDTrackStatusNormal: {
+            TDLogInfo(@"Change status to Normal")
+            self.trackPause = NO;
+            self.isEnabled = YES;
+            self.isOptOut = NO;
+            dispatch_async(td_trackQueue, ^{
+                [self.file archiveTrackPause:NO];
+                [self.file archiveIsEnabled:self.isEnabled];
+                [self.file archiveOptOut:NO];
+            });
+            [self innerFlush];
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 - (NSString *)innetGetTimeString:(NSDate *)date {

@@ -188,45 +188,39 @@
 
 + (void)ignoreAutoTrackViewControllers:(nonnull NSArray<NSString *> *)controllers withAppId:(NSString * _Nullable)appId API_UNAVAILABLE(macos){
     ThinkingAnalyticsSDK *teSDK = [ThinkingAnalyticsSDK instanceWithAppid:appId];
-    dispatch_async([ThinkingAnalyticsSDK sharedTrackQueue], ^{
-        if ([teSDK hasDisabled]) {
-            return;
-        }
-        if (controllers == nil || controllers.count == 0) {
-            return;
-        }
-        @synchronized (teSDK.ignoredViewControllers) {
-            [teSDK.ignoredViewControllers addObjectsFromArray:controllers];
-        }
-    });
+    if ([teSDK hasDisabled]) {
+        return;
+    }
+    if (controllers == nil || controllers.count == 0) {
+        return;
+    }
+    @synchronized (teSDK.ignoredViewControllers) {
+        [teSDK.ignoredViewControllers addObjectsFromArray:controllers];
+    }
 }
 
 + (void)ignoreViewType:(nonnull Class)aClass withAppId:(NSString * _Nullable)appId API_UNAVAILABLE(macos){
     ThinkingAnalyticsSDK *teSDK = [ThinkingAnalyticsSDK instanceWithAppid:appId];
-    dispatch_async([ThinkingAnalyticsSDK sharedTrackQueue], ^{
-        if ([teSDK hasDisabled]) {
-            return;
-        }
-        @synchronized (teSDK.ignoredViewTypeList) {
-            [teSDK.ignoredViewTypeList addObject:aClass];
-        }
-    });
+    if ([teSDK hasDisabled]) {
+        return;
+    }
+    @synchronized (teSDK.ignoredViewTypeList) {
+        [teSDK.ignoredViewTypeList addObject:aClass];
+    }
 }
 
 + (void)setAutoTrackProperties:(TDAutoTrackEventType)eventType properties:(NSDictionary * _Nullable)properties withAppId:(NSString * _Nullable)appId API_UNAVAILABLE(macos){
 #if TARGET_OS_IOS
     ThinkingAnalyticsSDK *teSDK = [ThinkingAnalyticsSDK instanceWithAppid:appId];
-    dispatch_async([ThinkingAnalyticsSDK sharedTrackQueue], ^{
-        if ([teSDK hasDisabled]) {
-            return;
-        }
-        if (properties == nil) {
-            return;
-        }
-        @synchronized (teSDK.autoTrackSuperProperty) {
-            [teSDK.autoTrackSuperProperty registerSuperProperties:[properties copy] withType:eventType];
-        }
-    });
+    if ([teSDK hasDisabled]) {
+        return;
+    }
+    if (properties == nil) {
+        return;
+    }
+    @synchronized (teSDK.autoTrackSuperProperty) {
+        [teSDK.autoTrackSuperProperty registerSuperProperties:[properties copy] withType:eventType];
+    }
 #endif
 }
 
@@ -248,14 +242,12 @@
 + (void)setAutoTrackDynamicProperties:(NSDictionary<NSString *,id> * _Nonnull (^)(void))dynamicSuperProperties withAppId:(NSString *)appId {
 #if TARGET_OS_IOS
     ThinkingAnalyticsSDK *teSDK = [ThinkingAnalyticsSDK instanceWithAppid:appId];
-    dispatch_async([ThinkingAnalyticsSDK sharedTrackQueue], ^{
-        if ([teSDK hasDisabled]) {
-            return;
-        }
-        @synchronized (teSDK.autoTrackSuperProperty) {
-            [teSDK.autoTrackSuperProperty registerAutoTrackDynamicProperties:dynamicSuperProperties];
-        }
-    });
+    if ([teSDK hasDisabled]) {
+        return;
+    }
+    @synchronized (teSDK.autoTrackSuperProperty) {
+        [teSDK.autoTrackSuperProperty registerAutoTrackDynamicProperties:dynamicSuperProperties];
+    }
 #endif
 }
 

@@ -9,11 +9,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 #define TDLogWithType(type, message, ...) \
 { \
+if ([TDLogging sharedInstance].loggingLevel != TDLoggingLevelNone && type <= [TDLogging sharedInstance].loggingLevel) \
+{ \
 [[TDLogging sharedInstance] logCallingFunction:type format:(message), ##__VA_ARGS__]; \
+} \
 }
 
 @interface TDLogging : NSObject
-@property (assign, nonatomic) BOOL enableLog;
+@property (assign, nonatomic) TDLoggingLevel loggingLevel;
 
 + (instancetype)sharedInstance;
 
