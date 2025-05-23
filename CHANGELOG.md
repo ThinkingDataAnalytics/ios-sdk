@@ -1,3 +1,10 @@
+### v3.1.1
+**Date:** 2025/05/22
+
+**Notes:**
+
+* Improve the compatibility of the SDK on the swift platform
+
 ### v3.1.0
 **Date:** 2025/03/13
 
