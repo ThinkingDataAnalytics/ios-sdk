@@ -1,0 +1,1 @@
+../../ThinkingSDK/Source/AutoTrack/TDAutoTrackProtocol.h

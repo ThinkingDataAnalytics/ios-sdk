@@ -699,11 +699,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ThinkingSDKDEMO/ThinkingSDKDEMO.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development: hale wang (LM2HSCYTU5)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: hale wang (LM2HSCYTU5)";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = SV8R54PUAN;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				EXCLUDED_ARCHS = "";
@@ -731,8 +729,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.thinkingdata.ios.sdk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "iOS sdk example program development";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "iOS sdk example program development";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -749,11 +746,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ThinkingSDKDEMO/ThinkingSDKDEMO.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Distribution: Thinking Data Infotech Ltd. (SV8R54PUAN)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Thinking Data Infotech Ltd. (SV8R54PUAN)";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SV8R54PUAN;
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = SV8R54PUAN;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				EXCLUDED_ARCHS = "";
@@ -781,8 +776,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.thinkingdata.ios.sdk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "iOS sdk example program Ad Hoc";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "iOS sdk example program Ad Hoc";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

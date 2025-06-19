@@ -1,23 +1,30 @@
-### v3.1.1
-**Date:** 2025/05/22
+### v3.2.0-beta.1
+**Date:** 2025/03/13
 
 **Notes:**
 
-* Improve the compatibility of the SDK on the swift platform
+* Improve SDK stability
 
-### v3.1.0
-**Date:** 2025/03/13
+### v3.0.6
+**Date:** 2025/02/25
 
 **Notes:**
 
 * Release the official version
 
 ### v3.1.0-beta.2
-**Date:** 2024/12/16
+**Date:** 2024/12/15
 
 **Notes:**
 
-* Supports intelligent operation
+* Supports client trigger
+
+### v3.0.6-beta.1
+**Date:** 2025/01/07
+
+**Notes:**
+
+* Improve SDK stability
 
 ### v3.0.5
 **Date:** 2024/11/05

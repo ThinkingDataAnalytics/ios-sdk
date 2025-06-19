@@ -8,6 +8,7 @@ use_frameworks!
 target 'ThinkingSDKDEMO' do
   # Comment the next line if you don't want to use dynamic frameworks
 
+  pod 'ThinkingDataCore', :path => '../../../thinkingdatacore-ios-sdk/'
   pod "ThinkingSDK", :path => "../../"
 
 end

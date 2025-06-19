@@ -1,0 +1,1 @@
+../../ThinkingSDK/Source/main/TDAnalytics+Private.h
