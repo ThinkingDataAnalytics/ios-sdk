@@ -60,13 +60,12 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 
 @interface ThinkingAnalyticsSDK ()
 
-@property (nonatomic, copy, nullable) NSString *accountId;
-@property (nonatomic, copy) NSString *identifyId;
+@property (atomic, copy, nullable) NSString *accountId;
+@property (atomic, copy) NSString *identifyId;
 /// TD error callback
 @property (atomic, copy) void(^errorCallback)(NSInteger code, NSString * _Nullable errorMsg, NSString * _Nullable ext);
-
-@property (atomic, assign) TDTrackStatus sdkStatus;
-
+@property (atomic, assign, getter=isTrackPause) BOOL trackPause;
+@property (atomic, assign) BOOL isEnabled;
 @property (nonatomic, strong) TDConfig *config;
 @property (atomic, strong) NSMutableSet *ignoredViewControllers;
 @property (atomic, strong) NSMutableSet *ignoredViewTypeList;

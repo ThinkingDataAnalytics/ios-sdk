@@ -6,14 +6,9 @@
 //
 
 #import "TDEncryptManager.h"
-#import "TDSecretKey.h"
-#if __has_include(<ThinkingDataCore/TDEncryptProtocol.h>)
-#import <ThinkingDataCore/TDEncryptProtocol.h>
-#import <ThinkingDataCore/TDRSAEncryptorPlugin.h>
-#else
 #import "TDEncryptProtocol.h"
+#import "TDSecretKey.h"
 #import "TDRSAEncryptorPlugin.h"
-#endif
 #if __has_include(<ThinkingDataCore/NSData+TDGzip.h>)
 #import <ThinkingDataCore/NSData+TDGzip.h>
 #else

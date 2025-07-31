@@ -1,1 +1,0 @@
-../../ThinkingSDK/Source/EventTracker/EventModel/TDEditableEventModel.h

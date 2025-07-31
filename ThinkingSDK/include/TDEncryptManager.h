@@ -1,1 +1,0 @@
-../../ThinkingSDK/Source/Encrypt/TDEncryptManager.h

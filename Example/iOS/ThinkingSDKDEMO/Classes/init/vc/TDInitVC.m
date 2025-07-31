@@ -22,8 +22,8 @@
 
 @end
 
-static NSString * const APP_ID = @"";
-static NSString * const SERVER_URL = @"";
+static NSString * const APP_ID = @"381f8bbad66c41a18923089321a1ba6f";
+static NSString * const SERVER_URL = @"https://receiver-ta-preview.thinkingdata.cn";
 
 @implementation TDInitVC
 
@@ -31,12 +31,10 @@ static NSString * const SERVER_URL = @"";
     [TDAnalytics enableLog:YES];
 
     TDConfig *config = [[TDConfig alloc] init];
-//    config.appid = self.appidTF.text;
-//    config.serverUrl = self.serverTF.text;
-//    config.name = self.instanceNameTF.text;
-//    config.mode = TDModeDebug;
-    config.appid = @"381f8bbad66c41a18923089321a1ba6f";
-    config.serverUrl = @"https://receiver-ta-preview.thinkingdata.cn";
+    config.appid = self.appidTF.text;
+    config.serverUrl = self.serverTF.text;
+    config.name = self.instanceNameTF.text;
+    config.mode = TDModeNormal;
     
     [TDAnalytics addWebViewUserAgent];
 

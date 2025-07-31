@@ -244,11 +244,6 @@ NS_ASSUME_NONNULL_BEGIN
 #if TARGET_OS_IOS
 
 /**
- Enable local encryption, note that this encryption operation is irreversible, be cautious when enabling it!
- */
-+ (void)encryptLocalStorage;
-
-/**
  Enable Auto-Tracking
  @param eventType Auto-Tracking type
  */

@@ -27,12 +27,18 @@
 
 @implementation TDPresetPropertyPlugin
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.properties = [NSMutableDictionary dictionary];
+    }
+    return self;
+}
+
 - (void)start {
     NSDictionary *staticProperties = [TDCorePresetProperty staticProperties];
-    
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    [dict addEntriesFromDictionary:staticProperties];
-    self.properties = dict;
+    [self.properties addEntriesFromDictionary:staticProperties];
 }
 
 /// The properties here are dynamically updated
