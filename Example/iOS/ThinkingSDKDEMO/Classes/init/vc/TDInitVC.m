@@ -35,10 +35,12 @@ static NSString * const SERVER_URL = @"https://receiver-ta-preview.thinkingdata.
     config.serverUrl = self.serverTF.text;
     config.name = self.instanceNameTF.text;
     config.mode = TDModeNormal;
+//    [config enableDNSServcie:@[TDDNSServiceCloudALi, TDDNSServiceCloudGoogle, TDDNSServiceCloudFlare]];
     
     [TDAnalytics addWebViewUserAgent];
 
     [TDAnalytics startAnalyticsWithConfig:config];
+    [TDAnalytics enableAutoTrack:TDAutoTrackEventTypeAppStart];
 }
 
 //MARK: private method

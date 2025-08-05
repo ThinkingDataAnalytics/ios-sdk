@@ -298,7 +298,8 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
 
     if (type & ThinkingAnalyticsEventTypeAppStart) {
         dispatch_block_t mainThreadBlock = ^(){
-            NSString *eventName = [TDAppState shareInstance].relaunchInBackground ? TD_APP_START_BACKGROUND_EVENT : TD_APP_START_EVENT;
+            BOOL isLaunchInBackground = [TDAppState shareInstance].relaunchInBackground;
+            NSString *eventName = isLaunchInBackground ? TD_APP_START_BACKGROUND_EVENT : TD_APP_START_EVENT;
             TDAppStartEvent *event = [[TDAppStartEvent alloc] initWithName:eventName];
             event.resumeFromBackground = NO;
             if (![TDCorePresetDisableConfig disableStartReason]) {
@@ -307,7 +308,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
                     event.startReason = reason;
                 }
             }
-            [self.appColdStartTracker trackWithInstanceTag:appid event:event params:nil];
+            [self.appColdStartTracker trackWithInstanceTag:appid event:event params: @{@"#relaunched_in_background": @(isLaunchInBackground)}];
         };
         dispatch_async(dispatch_get_main_queue(), mainThreadBlock);
     }
@@ -721,7 +722,8 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
             
             // Only open the start event of collecting hot start. Cold start event, reported when automatic collection is turned on
             if ((type & ThinkingAnalyticsEventTypeAppStart) && oldState != TDAppLifeCycleStateInit) {
-                NSString *eventName = [TDAppState shareInstance].relaunchInBackground ? TD_APP_START_BACKGROUND_EVENT : TD_APP_START_EVENT;
+                BOOL isLaunchInBackground = [TDAppState shareInstance].relaunchInBackground;
+                NSString *eventName = isLaunchInBackground ? TD_APP_START_BACKGROUND_EVENT : TD_APP_START_EVENT;
                 TDAppStartEvent *event = [[TDAppStartEvent alloc] initWithName:eventName];
                 event.resumeFromBackground = YES;
     
@@ -731,7 +733,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
                         event.startReason = reason;
                     }
                 }
-                [self.appHotStartTracker trackWithInstanceTag:appid event:event params:@{}];
+                [self.appHotStartTracker trackWithInstanceTag:appid event:event params:@{@"#relaunched_in_background": @(isLaunchInBackground)}];
             }
             
             if (type & ThinkingAnalyticsEventTypeAppEnd) {

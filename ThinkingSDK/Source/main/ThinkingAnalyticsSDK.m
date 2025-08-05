@@ -485,7 +485,7 @@ static dispatch_queue_t td_trackQueue;
     }
 
     
-    if ([TDAppState shareInstance].relaunchInBackground) {
+    if ([TDAppState shareInstance].relaunchInBackground && [event.properties objectForKey:@"#relaunched_in_background"] == nil) {
         event.properties[@"#relaunched_in_background"] = @YES;
     }
     
