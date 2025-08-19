@@ -110,7 +110,7 @@
         }
     
     }
-    return properties;
+    return [properties copy];
 }
 
 - (BOOL)isMatchedWithPlugin:(id<TDPropertyPluginProtocol>)plugin eventType:(TDEventType)type {
