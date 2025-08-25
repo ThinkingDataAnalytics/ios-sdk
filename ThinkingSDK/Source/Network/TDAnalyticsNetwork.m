@@ -324,7 +324,7 @@ static NSMutableDictionary<NSString *, NSString *> *g_dnsIpMap = nil;
     NSString *appendParams = [NSString stringWithFormat:@"appid=%@&source=client&dryRun=%d&deviceId=%@", appid, dryRun, deviceId];
     TDLogDebug(@"RequestAppendParams: %@", appendParams);
     NSString *postData = [NSString stringWithFormat:@"%@&data=%@", appendParams, [self URLEncode:jsonString]];
-    NSURL *requestUrl = [self formatURLWithOriginalUrl:self.serverURL];
+    NSURL *requestUrl = [self formatURLWithOriginalUrl:self.serverDebugURL];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestUrl];
     [request setHTTPMethod:@"POST"];
     if([TDAnalyticsNetwork isEnableDNS] && requestUrl.host){
