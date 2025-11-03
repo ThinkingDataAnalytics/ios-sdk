@@ -1,0 +1,1 @@
+../../ThinkingSDK/Source/Logger/TDLogging.h

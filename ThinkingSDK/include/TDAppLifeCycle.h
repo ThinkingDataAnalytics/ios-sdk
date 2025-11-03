@@ -1,0 +1,1 @@
+../../ThinkingSDK/Source/AppLifeCycle/TDAppLifeCycle.h

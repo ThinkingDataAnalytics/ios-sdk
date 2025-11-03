@@ -1,0 +1,1 @@
+../../ThinkingSDK/Source/EventTracker/Property/Validate/NSArray+TDProperty.h

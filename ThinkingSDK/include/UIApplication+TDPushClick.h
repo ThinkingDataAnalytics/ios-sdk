@@ -1,0 +1,1 @@
+../../ThinkingSDK/Source/AppLaunch/AppPush/UIApplication+TDPushClick.h

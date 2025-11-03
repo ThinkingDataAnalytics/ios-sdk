@@ -1,0 +1,1 @@
+../../ThinkingSDK/Source/DeviceInfo/TDDeviceInfo.h

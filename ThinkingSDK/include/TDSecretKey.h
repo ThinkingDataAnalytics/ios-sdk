@@ -1,0 +1,1 @@
+../../ThinkingSDK/Source/Encrypt/TDSecretKey.h

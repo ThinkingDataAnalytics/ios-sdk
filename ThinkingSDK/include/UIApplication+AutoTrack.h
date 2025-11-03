@@ -1,0 +1,1 @@
+../../ThinkingSDK/Source/AutoTrack/UIKit/UIApplication+AutoTrack.h
