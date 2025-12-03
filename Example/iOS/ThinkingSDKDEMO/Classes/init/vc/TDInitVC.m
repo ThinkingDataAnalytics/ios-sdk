@@ -31,8 +31,8 @@ static NSString * const SERVER_URL = @"https://receiver-ta-preview.thinkingdata.
     [TDAnalytics enableLog:YES];
 
     TDConfig *config = [[TDConfig alloc] init];
-//    config.appid = self.appidTF.text;
-//    config.serverUrl = self.serverTF.text;
+    config.appid = self.appidTF.text;
+    config.serverUrl = self.serverTF.text;
     config.name = self.instanceNameTF.text;
     config.mode = TDModeNormal;
 //    [config enableDNSServcie:@[TDDNSServiceCloudALi, TDDNSServiceCloudGoogle, TDDNSServiceCloudFlare]];
@@ -40,7 +40,7 @@ static NSString * const SERVER_URL = @"https://receiver-ta-preview.thinkingdata.
     [TDAnalytics addWebViewUserAgent];
 
     [TDAnalytics startAnalyticsWithConfig:config];
-    [TDAnalytics enableAutoTrack:TDAutoTrackEventTypeAppStart];
+    [TDAnalytics enableAutoTrack:TDAutoTrackEventTypeAll];
 }
 
 //MARK: private method
