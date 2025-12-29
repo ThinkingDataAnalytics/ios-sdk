@@ -40,7 +40,10 @@ static NSString * const SERVER_URL = @"https://receiver-ta-preview.thinkingdata.
     [TDAnalytics addWebViewUserAgent];
 
     [TDAnalytics startAnalyticsWithConfig:config];
-    [TDAnalytics enableAutoTrack:TDAutoTrackEventTypeAll];
+//    [TDAnalytics enableAutoTrack:TDAutoTrackEventTypeAll];
+//    [TDAnalytics login:@"llb"];
+//    [TDAnalytics track:@"iOS_001" properties:@{@"aaaa":@111334,@"name":@"002"}];
+    [TDAnalytics userDelete];
 }
 
 //MARK: private method
