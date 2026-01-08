@@ -43,7 +43,14 @@ static NSString * const SERVER_URL = @"https://receiver-ta-preview.thinkingdata.
 //    [TDAnalytics enableAutoTrack:TDAutoTrackEventTypeAll];
 //    [TDAnalytics login:@"llb"];
 //    [TDAnalytics track:@"iOS_001" properties:@{@"aaaa":@111334,@"name":@"002"}];
-    [TDAnalytics userDelete];
+//    [TDAnalytics userDelete];
+    NSDictionary *autoProperties = @{
+           @"autoProperties": @"xzy_ta",
+           @"autoProperties_num": @1,
+       };
+    [TDAnalytics setAutoTrackProperties:(TDAutoTrackEventTypeAppInstall | TDAutoTrackEventTypeAppStart | TDAutoTrackEventTypeAppEnd)
+                                properties:autoProperties withAppId:@""];
+    [TDAnalytics enableAutoTrack:TDAutoTrackEventTypeAppInstall | TDAutoTrackEventTypeAppStart | TDAutoTrackEventTypeAppEnd];
 }
 
 //MARK: private method
