@@ -216,7 +216,7 @@ static dispatch_queue_t td_trackQueue;
             }
             [g_lock unlock];
             
-            [self.config innerUpdateIPMap];
+//            [self.config innerUpdateIPMap];
 #if TARGET_OS_IOS
             if (self.config.innerEnableEncrypt) {
                 self.encryptManager = [[TDEncryptManager alloc] initWithSecretKey:self.config.innerSecretKey];

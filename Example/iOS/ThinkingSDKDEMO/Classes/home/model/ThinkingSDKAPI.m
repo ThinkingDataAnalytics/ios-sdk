@@ -12,6 +12,7 @@
 
 + (void)testTrack {
     [TDAnalytics track:@"a"];
+    [TDAnalytics flush];
 }
 
 + (void)testTrackWithProperty {

@@ -32,10 +32,12 @@ static NSString * const SERVER_URL = @"https://receiver-ta-preview.thinkingdata.
 
     TDConfig *config = [[TDConfig alloc] init];
     config.appid = self.appidTF.text;
-    config.serverUrl = self.serverTF.text;
+//    config.serverUrl = self.serverTF.text;
+    config.serverUrl = @"https://receiver-ta-preview.thinkingdata.cn1";
+    config.backupUrlList = @[@"https://receiver-ta-preview.thinkingdata.cn2", @"https://receiver-ta-preview.thinkingdata.cn"];
     config.name = self.instanceNameTF.text;
     config.mode = TDModeNormal;
-    config.enableAutoCalibrated = true;
+    config.disableRConfig = true;
 //    [config enableDNSServcie:@[TDDNSServiceCloudALi, TDDNSServiceCloudGoogle, TDDNSServiceCloudFlare]];
     
     [TDAnalytics addWebViewUserAgent];
@@ -45,17 +47,12 @@ static NSString * const SERVER_URL = @"https://receiver-ta-preview.thinkingdata.
 //    [TDAnalytics login:@"llb"];
 //    [TDAnalytics track:@"iOS_001" properties:@{@"aaaa":@111334,@"name":@"002"}];
 //    [TDAnalytics userDelete];
-    NSDictionary *autoProperties = @{
-           @"autoProperties": @"xzy_ta",
-           @"autoProperties_num": @1,
-       };
-    [TDAnalytics setAutoTrackProperties:(TDAutoTrackEventTypeAppInstall | TDAutoTrackEventTypeAppStart | TDAutoTrackEventTypeAppEnd)
-                                properties:autoProperties withAppId:@""];
-    NSDictionary *autoProperties1 = @{
-           @"autoProperties": @"xzy_ta1",
-           @"autoProperties_num": @2,
-       };
-    [TDAnalytics enableAutoTrack:TDAutoTrackEventTypeAppInstall | TDAutoTrackEventTypeAppStart | TDAutoTrackEventTypeAppEnd properties:autoProperties1];
+//    NSDictionary *autoProperties = @{
+//           @"autoProperties": @"xzy_ta",
+//           @"autoProperties_num": @1,
+//       };
+//    [TDAnalytics setAutoTrackProperties:(TDAutoTrackEventTypeAppInstall | TDAutoTrackEventTypeAppStart | TDAutoTrackEventTypeAppEnd)
+//                                properties:autoProperties withAppId:@""];
 //    [TDAnalytics enableAutoTrack:TDAutoTrackEventTypeAppInstall | TDAutoTrackEventTypeAppStart | TDAutoTrackEventTypeAppEnd];
 }
 

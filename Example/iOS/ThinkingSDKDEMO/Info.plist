@@ -256,7 +256,6 @@
 	<key>TDDisPresetProperties</key>
 	<array>
 		<string>#zone_offset</string>
-		<string>#os_version</string>
 	</array>
 	<key>UIAppFonts</key>
 	<array>
