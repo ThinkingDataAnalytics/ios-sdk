@@ -33,8 +33,8 @@ static NSString * const SERVER_URL = @"https://receiver-ta-preview.thinkingdata.
     TDConfig *config = [[TDConfig alloc] init];
     config.appid = self.appidTF.text;
 //    config.serverUrl = self.serverTF.text;
-    config.serverUrl = @"https://receiver-ta-preview.thinkingdata.cn1";
-    config.backupUrlList = @[@"https://receiver-ta-preview.thinkingdata.cn2", @"https://receiver-ta-preview.thinkingdata.cn"];
+    config.serverUrl = @"https://receiver-ta-preview.thinkingdata.cn";
+//    config.backupUrlList = @[@"https://receiver-ta-preview.thinkingdata.cn2", @"https://receiver-ta-preview.thinkingdata.cn"];
     config.name = self.instanceNameTF.text;
     config.mode = TDModeNormal;
     config.disableRConfig = true;
@@ -43,7 +43,7 @@ static NSString * const SERVER_URL = @"https://receiver-ta-preview.thinkingdata.
     [TDAnalytics addWebViewUserAgent];
 
     [TDAnalytics startAnalyticsWithConfig:config];
-//    [TDAnalytics enableAutoTrack:TDAutoTrackEventTypeAll];
+    [TDAnalytics enableAutoTrack:TDAutoTrackEventTypeAll];
 //    [TDAnalytics login:@"llb"];
 //    [TDAnalytics track:@"iOS_001" properties:@{@"aaaa":@111334,@"name":@"002"}];
 //    [TDAnalytics userDelete];

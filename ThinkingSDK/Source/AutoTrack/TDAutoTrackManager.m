@@ -344,30 +344,35 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     [self trackViewController:controller];
 }
 
-+ (UIViewController *)findTopmostControllerInContainer:(UIViewController *)controller {
++ (UIViewController *)findTopmostControllerInContainer:(UIViewController *)controller depth:(NSInteger)depth {
+    if (depth <= 0) return controller;
+
     if ([controller isKindOfClass:[UINavigationController class]]) {
         UINavigationController *nav = (UINavigationController *)controller;
-        return [self findTopmostControllerInContainer:nav.topViewController ?: nav];
+        UIViewController *top = nav.topViewController;
+        return top ? [self findTopmostControllerInContainer:top depth:depth - 1] : nav;
     }
     if ([controller isKindOfClass:[UITabBarController class]]) {
         UITabBarController *tab = (UITabBarController *)controller;
-        return [self findTopmostControllerInContainer:tab.selectedViewController ?: tab];
+        UIViewController *selected = tab.selectedViewController;
+        return selected ? [self findTopmostControllerInContainer:selected depth:depth - 1] : tab;
     }
-    
     if ([controller isKindOfClass:[UISplitViewController class]]) {
         UISplitViewController *split = (UISplitViewController *)controller;
         UIViewController *primary = split.viewControllers.firstObject;
-        return [self findTopmostControllerInContainer:primary ?: split];
+        return primary ? [self findTopmostControllerInContainer:primary depth:depth - 1] : split;
     }
-    
     if (controller.childViewControllers.count > 0) {
         UIViewController *lastChild = controller.childViewControllers.lastObject;
-        if (!lastChild.view.hidden && lastChild.view.superview) {
-            return [self findTopmostControllerInContainer:lastChild];
+        if (lastChild && lastChild != controller && !lastChild.view.hidden && lastChild.view.superview) {
+            return [self findTopmostControllerInContainer:lastChild depth:depth - 1];
         }
     }
-    
     return controller;
+}
+
++ (UIViewController *)findTopmostControllerInContainer:(UIViewController *)controller {
+    return [self findTopmostControllerInContainer:controller depth:10];
 }
 
 + (UIViewController *)topPresentedViewController {
@@ -380,8 +385,11 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     if (!topController) return nil;
         
     topController = [self findTopmostControllerInContainer:topController];
-        
+
+    NSMutableSet *visited = [NSMutableSet set];
     while (topController.presentedViewController) {
+        if ([visited containsObject:topController]) break;
+        [visited addObject:topController];
         topController = [self findTopmostControllerInContainer:topController.presentedViewController];
     }
     
