@@ -15,6 +15,8 @@
 #import "AutoTrackViewController.h"
 #import "AutoTableViewController.h"
 #import "AutoCollectionViewController.h"
+#import "TDSwiftUIVerifyViewController.h"
+#import "TDSwiftUIScreenFactory.h"
 #import <ThinkingSDK/ThinkingAnalyticsSDK.h>
 @interface TDAutoTrackVC ()<TDUIViewAutoTrackDelegate>
 
@@ -74,6 +76,14 @@
     [self.commands addObject:[[ActionModel alloc]initWithName:@"UICollectionView auto-tracking of view" action:^{
         AutoCollectionViewController *autoCollectionVC = [[AutoCollectionViewController alloc] init];
         [TDUtil.jsd_findVisibleViewController.navigationController pushViewController:autoCollectionVC animated:YES];
+    }]];
+    [self.commands addObject:[[ActionModel alloc]initWithName:@"SwiftUI #screen_name verify panel" action:^{
+        TDSwiftUIVerifyViewController *verifyVC = [[TDSwiftUIVerifyViewController alloc] init];
+        [TDUtil.jsd_findVisibleViewController.navigationController pushViewController:verifyVC animated:YES];
+    }]];
+    [self.commands addObject:[[ActionModel alloc]initWithName:@"SwiftUI UIHostingController auto track" action:^{
+        UIViewController *hostingVC = [TDSwiftUIScreenFactory makeVastRendererHostingController];
+        [TDUtil.jsd_findVisibleViewController.navigationController pushViewController:hostingVC animated:YES];
     }]];
     
     

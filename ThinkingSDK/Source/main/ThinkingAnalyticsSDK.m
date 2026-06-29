@@ -65,6 +65,7 @@
 #import "TDAppState.h"
 #import "TDEventRecord.h"
 #import "TDAppLifeCycle.h"
+#import "UIViewController+TDScreenName.h"
 #import "TDAnalytics+Public.h"
 #import "TDConfigPrivate.h"
 
@@ -665,9 +666,11 @@ static dispatch_queue_t td_trackQueue;
     if (viewController == nil) {
         return false;
     }
-    NSString *screenName = NSStringFromClass([viewController class]);
+    NSString *rawScreenName = NSStringFromClass([viewController class]);
+    NSString *screenName = [UIViewController td_screenNameForViewController:viewController];
     if (_ignoredViewControllers != nil && _ignoredViewControllers.count > 0) {
-        if ([_ignoredViewControllers containsObject:screenName]) {
+        if ([_ignoredViewControllers containsObject:rawScreenName] ||
+            [_ignoredViewControllers containsObject:screenName]) {
             return true;
         }
     }

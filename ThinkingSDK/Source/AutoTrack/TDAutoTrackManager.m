@@ -16,6 +16,7 @@
 #import "TDInstallTracker.h"
 #import "TDAppState.h"
 #import "ThinkingSDK.h"
+#import "UIViewController+TDScreenName.h"
 
 #if __has_include(<ThinkingDataCore/TDJSONUtil.h>)
 #import <ThinkingDataCore/TDJSONUtil.h>
@@ -113,7 +114,7 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     properties[TD_EVENT_PROPERTY_ELEMENT_TYPE] = NSStringFromClass([view class]);
     UIViewController *viewController = [self viewControllerForView:view];
     if (viewController != nil) {
-        NSString *screenName = NSStringFromClass([viewController class]);
+        NSString *screenName = [UIViewController td_screenNameForViewController:viewController];
         properties[TD_EVENT_PROPERTY_SCREEN_NAME] = screenName;
         
         elementScreenName = screenName;
@@ -439,9 +440,8 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     NSMutableDictionary *customProperties = [NSMutableDictionary dictionary];
     
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
-    [properties setValue:NSStringFromClass([controller class]) forKey:TD_EVENT_PROPERTY_SCREEN_NAME];
-    
-    pageScreenName = NSStringFromClass([controller class]);
+    pageScreenName = [UIViewController td_screenNameForViewController:controller];
+    [properties setValue:pageScreenName forKey:TD_EVENT_PROPERTY_SCREEN_NAME];
     
     NSString *controllerTitle = [self titleFromViewController:controller];
     if (controllerTitle) {
@@ -791,8 +791,8 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
             if (type & ThinkingAnalyticsEventTypeAppEnd) {
                 TDAppEndEvent *event = [[TDAppEndEvent alloc] initWithName:TD_APP_END_EVENT];
                 td_dispatch_main_sync_safe(^{
-                    NSString *screenName = NSStringFromClass([[TDAutoTrackManager topPresentedViewController] class]);
-                    event.screenName = screenName;
+                    UIViewController *topViewController = [TDAutoTrackManager topPresentedViewController];
+                    event.screenName = [UIViewController td_screenNameForViewController:topViewController];
                     [self.appEndTracker trackWithInstanceTag:appid event:event params:@{}];
                 });
             }

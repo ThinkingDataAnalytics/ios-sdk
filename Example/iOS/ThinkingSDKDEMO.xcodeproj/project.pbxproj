@@ -50,6 +50,9 @@
 		F380B3C922C23FA500955FC5 /* AutoTrackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */; };
 		F3ECE9F4230D55FD00670FBD /* AutoTrackSecViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F3ECE9F3230D55FD00670FBD /* AutoTrackSecViewController.m */; };
 		F3F45D9F2301785600218049 /* thinkingdata.min.js in Resources */ = {isa = PBXBuildFile; fileRef = F3F45D9E2301785600218049 /* thinkingdata.min.js */; };
+		A1B2C3D401234567890AB01 /* TDDemoSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB11 /* TDDemoSwiftUIView.swift */; };
+		A1B2C3D401234567890AB02 /* TDSwiftUIScreenFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB12 /* TDSwiftUIScreenFactory.swift */; };
+		A1B2C3D401234567890AB03 /* TDSwiftUIVerifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB14 /* TDSwiftUIVerifyViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -148,6 +151,11 @@
 		F3ECE9F2230D55FD00670FBD /* AutoTrackSecViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoTrackSecViewController.h; sourceTree = "<group>"; };
 		F3ECE9F3230D55FD00670FBD /* AutoTrackSecViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoTrackSecViewController.m; sourceTree = "<group>"; };
 		F3F45D9E2301785600218049 /* thinkingdata.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = thinkingdata.min.js; sourceTree = "<group>"; };
+		A1B2C3D401234567890AB11 /* TDDemoSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDDemoSwiftUIView.swift; sourceTree = "<group>"; };
+		A1B2C3D401234567890AB12 /* TDSwiftUIScreenFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDSwiftUIScreenFactory.swift; sourceTree = "<group>"; };
+		A1B2C3D401234567890AB15 /* TDSwiftUIScreenFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDSwiftUIScreenFactory.h; sourceTree = "<group>"; };
+		A1B2C3D401234567890AB13 /* TDSwiftUIVerifyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDSwiftUIVerifyViewController.h; sourceTree = "<group>"; };
+		A1B2C3D401234567890AB14 /* TDSwiftUIVerifyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDSwiftUIVerifyViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -314,6 +322,7 @@
 		F34CAAD622C5B91500A8FF82 /* autotrack */ = {
 			isa = PBXGroup;
 			children = (
+				A1B2C3D401234567890AB20 /* swiftui */,
 				6EEDD2C125063552001E07BC /* TDAutoTrackVC.h */,
 				6EEDD2C225063552001E07BC /* TDAutoTrackVC.m */,
 				F380B3C722C23FA500955FC5 /* AutoTrackViewController.h */,
@@ -328,6 +337,18 @@
 				6E493632251892B700F27296 /* TDColCell.m */,
 			);
 			path = autotrack;
+			sourceTree = "<group>";
+		};
+		A1B2C3D401234567890AB20 /* swiftui */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D401234567890AB11 /* TDDemoSwiftUIView.swift */,
+				A1B2C3D401234567890AB15 /* TDSwiftUIScreenFactory.h */,
+				A1B2C3D401234567890AB12 /* TDSwiftUIScreenFactory.swift */,
+				A1B2C3D401234567890AB13 /* TDSwiftUIVerifyViewController.h */,
+				A1B2C3D401234567890AB14 /* TDSwiftUIVerifyViewController.m */,
+			);
+			path = swiftui;
 			sourceTree = "<group>";
 		};
 		F34CAAD722C5B92200A8FF82 /* h5 */ = {
@@ -564,6 +585,9 @@
 				6EEDD2C0250630A8001E07BC /* TDEventVC.m in Sources */,
 				2E7E2EB927059D26002F26BC /* TDDemoLocation.m in Sources */,
 				6E493633251892B700F27296 /* TDColCell.m in Sources */,
+				A1B2C3D401234567890AB01 /* TDDemoSwiftUIView.swift in Sources */,
+				A1B2C3D401234567890AB02 /* TDSwiftUIScreenFactory.swift in Sources */,
+				A1B2C3D401234567890AB03 /* TDSwiftUIVerifyViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
