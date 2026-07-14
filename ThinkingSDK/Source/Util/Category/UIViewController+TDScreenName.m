@@ -144,7 +144,15 @@ static NSString *TDReadableNameFromDemangledTypeWithDepth(NSString *typeName, NS
         typeName :
         [typeName substringToIndex:genericRange.location];
     NSString *readableName = TDLastPathComponent(rootType);
-    if (readableName.length == 0 || TDIsSwiftUIWrapperTypeName(readableName)) {
+
+    // Treat as a transparent wrapper if:
+    // 1. Name is empty or a known SwiftUI wrapper (AnyView, NavigationView, etc.)
+    // 2. The fully-qualified root type is from the SwiftUI module (e.g. SwiftUI.RootView,
+    //    SwiftUI.NoStyleContext, SwiftUI.SidebarStyleContext, SwiftUI.NavigationColumnModifier).
+    //    These are SwiftUI-internal types; drill into their generic argument to find the
+    //    user-defined view (e.g. UIHostingController<SwiftUI.RootView<UserView>> → UserView).
+    BOOL isSwiftUIModuleType = [rootType hasPrefix:@"SwiftUI."];
+    if (readableName.length == 0 || TDIsSwiftUIWrapperTypeName(readableName) || isSwiftUIModuleType) {
         if (genericRange.location != NSNotFound) {
             NSString *nestedType = TDExtractBalancedGenericArgument(typeName, genericRange.location);
             return TDReadableNameFromDemangledTypeWithDepth(nestedType, depth + 1);
@@ -186,6 +194,12 @@ static NSString *TDScreenNameFromDemangledString(NSString *demangled) {
     NSRange hostingRange = [demangled rangeOfString:@"HostingController"];
     if (hostingRange.location != NSNotFound) {
         return @"UIHostingController";
+    }
+
+    // For non-HostingController VCs from the SwiftUI module (e.g. SwiftUI.SidebarStyleContext),
+    // return the demangled string as-is so callers can detect and skip SwiftUI internal types.
+    if ([demangled hasPrefix:@"SwiftUI."]) {
+        return demangled;
     }
 
     return TDLastPathComponent(demangled);

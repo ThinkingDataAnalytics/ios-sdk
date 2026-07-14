@@ -441,6 +441,20 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
     
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
     pageScreenName = [UIViewController td_screenNameForViewController:controller];
+
+    // Skip internal SwiftUI VCs whose screen names resolve to SwiftUI-internal types:
+    // (a) Non-HostingController SwiftUI VCs: screen name starts with "SwiftUI." (module prefix).
+    // (b) Swift-mangled HostingControllers wrapping only SwiftUI infrastructure: screen name
+    //     falls back to "UIHostingController" because no user-defined view was found.
+    //     (User-created hosting controllers always resolve to the actual root view type name.)
+    if ([pageScreenName hasPrefix:@"SwiftUI."]) {
+        return;
+    }
+    NSString *tdClassName = NSStringFromClass([controller class]);
+    if ([tdClassName hasPrefix:@"_Tt"] && [pageScreenName isEqualToString:@"UIHostingController"]) {
+        return;
+    }
+
     [properties setValue:pageScreenName forKey:TD_EVENT_PROPERTY_SCREEN_NAME];
     
     NSString *controllerTitle = [self titleFromViewController:controller];
@@ -531,7 +545,13 @@ NSString * const TD_EVENT_PROPERTY_ELEMENT_POSITION = @"#element_position";
 }
 
 - (BOOL)shouldTrackViewContrller:(Class)aClass {
-    return ![TDPublicConfig.controllers containsObject:NSStringFromClass(aClass)];
+    NSString *className = NSStringFromClass(aClass);
+    // Filter SwiftUI framework VCs exposed with module-qualified ObjC names,
+    // e.g. SwiftUI.NotifyingMulticolumnSplitViewController created by NavigationView on iOS 16+.
+    if ([className hasPrefix:@"SwiftUI."]) {
+        return NO;
+    }
+    return ![TDPublicConfig.controllers containsObject:className];
 }
 
 - (TDAutoTrackEventType)autoTrackOptionForAppid:(NSString *)appid {

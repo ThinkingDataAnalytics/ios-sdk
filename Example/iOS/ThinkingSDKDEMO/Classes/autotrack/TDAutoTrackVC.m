@@ -85,6 +85,10 @@
         UIViewController *hostingVC = [TDSwiftUIScreenFactory makeVastRendererHostingController];
         [TDUtil.jsd_findVisibleViewController.navigationController pushViewController:hostingVC animated:YES];
     }]];
+    [self.commands addObject:[[ActionModel alloc]initWithName:@"SwiftUI NavigationLink #screen_name test" action:^{
+        UIViewController *navVC = [TDSwiftUIScreenFactory makeNavLinkDemoHostingController];
+        [TDUtil.jsd_findVisibleViewController.navigationController pushViewController:navVC animated:YES];
+    }]];
     
     
 }

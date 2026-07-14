@@ -1,3 +1,10 @@
+### v3.4.5
+**Date:** 2026/07/13
+
+**Notes:**
+
+* Fix a crash on the track queue caused by FPS collection (requires ThinkingDataCore 1.3.4)
+
 ### v3.2.0-beta.1
 **Date:** 2025/03/13
 

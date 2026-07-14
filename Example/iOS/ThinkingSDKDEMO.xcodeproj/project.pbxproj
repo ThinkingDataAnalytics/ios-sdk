@@ -53,6 +53,7 @@
 		A1B2C3D401234567890AB01 /* TDDemoSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB11 /* TDDemoSwiftUIView.swift */; };
 		A1B2C3D401234567890AB02 /* TDSwiftUIScreenFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB12 /* TDSwiftUIScreenFactory.swift */; };
 		A1B2C3D401234567890AB03 /* TDSwiftUIVerifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB14 /* TDSwiftUIVerifyViewController.m */; };
+		A1B2C3D401234567890AB04 /* TDDemoNavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB16 /* TDDemoNavView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -152,6 +153,7 @@
 		F3ECE9F3230D55FD00670FBD /* AutoTrackSecViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoTrackSecViewController.m; sourceTree = "<group>"; };
 		F3F45D9E2301785600218049 /* thinkingdata.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = thinkingdata.min.js; sourceTree = "<group>"; };
 		A1B2C3D401234567890AB11 /* TDDemoSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDDemoSwiftUIView.swift; sourceTree = "<group>"; };
+		A1B2C3D401234567890AB16 /* TDDemoNavView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDDemoNavView.swift; sourceTree = "<group>"; };
 		A1B2C3D401234567890AB12 /* TDSwiftUIScreenFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDSwiftUIScreenFactory.swift; sourceTree = "<group>"; };
 		A1B2C3D401234567890AB15 /* TDSwiftUIScreenFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDSwiftUIScreenFactory.h; sourceTree = "<group>"; };
 		A1B2C3D401234567890AB13 /* TDSwiftUIVerifyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDSwiftUIVerifyViewController.h; sourceTree = "<group>"; };
@@ -343,6 +345,7 @@
 			isa = PBXGroup;
 			children = (
 				A1B2C3D401234567890AB11 /* TDDemoSwiftUIView.swift */,
+				A1B2C3D401234567890AB16 /* TDDemoNavView.swift */,
 				A1B2C3D401234567890AB15 /* TDSwiftUIScreenFactory.h */,
 				A1B2C3D401234567890AB12 /* TDSwiftUIScreenFactory.swift */,
 				A1B2C3D401234567890AB13 /* TDSwiftUIVerifyViewController.h */,
@@ -586,6 +589,7 @@
 				2E7E2EB927059D26002F26BC /* TDDemoLocation.m in Sources */,
 				6E493633251892B700F27296 /* TDColCell.m in Sources */,
 				A1B2C3D401234567890AB01 /* TDDemoSwiftUIView.swift in Sources */,
+				A1B2C3D401234567890AB04 /* TDDemoNavView.swift in Sources */,
 				A1B2C3D401234567890AB02 /* TDSwiftUIScreenFactory.swift in Sources */,
 				A1B2C3D401234567890AB03 /* TDSwiftUIVerifyViewController.m in Sources */,
 			);
