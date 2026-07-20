@@ -1,3 +1,10 @@
+### v3.4.6
+**Date:** 2026/07/20
+
+**Notes:**
+
+* Fix a crash in TDSignalHandler when the previously-registered handler for a signal (e.g. SIGPIPE under libdispatch) was SIG_IGN. The chain path now correctly returns instead of calling into address 0x1.
+
 ### v3.4.5
 **Date:** 2026/07/13
 

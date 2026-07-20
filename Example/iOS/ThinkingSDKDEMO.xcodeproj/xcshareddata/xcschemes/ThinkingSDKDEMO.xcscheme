@@ -32,27 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "649A36C329468795BC8DC7892DC56D22"
-               BuildableName = "ThinkingTest-Unit-Tests.xctest"
-               BlueprintName = "ThinkingTest-Unit-Tests"
-               ReferencedContainer = "container:Pods/Pods.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2E0BE5C9276740C5004F0D91"
-               BuildableName = "ThinkingSDKDEMOUITests.xctest"
-               BlueprintName = "ThinkingSDKDEMOUITests"
-               ReferencedContainer = "container:ThinkingSDKDEMO.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2E702BD827C8CF08003B16C2"
+               BlueprintIdentifier = "52248EAF15A58816F7594258"
                BuildableName = "ThinkingSDKDEMOTests.xctest"
                BlueprintName = "ThinkingSDKDEMOTests"
                ReferencedContainer = "container:ThinkingSDKDEMO.xcodeproj">

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		24747BF395403143453C58AB /* TDAnalyticsIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BFC1D8E8CC185A55ED3E56 /* TDAnalyticsIntegrationTests.m */; };
 		2E7E2EB927059D26002F26BC /* TDDemoLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7E2EB827059D26002F26BC /* TDDemoLocation.m */; };
 		2EF3A5DC27A0182D007D5F44 /* TDTrackAPIListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF3A5DB27A0182D007D5F44 /* TDTrackAPIListCell.m */; };
 		5207C9C227EDFE86007DF5F3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9C127EDFE86007DF5F3 /* Security.framework */; };
@@ -20,6 +21,7 @@
 		5207C9DC27EDFF17007DF5F3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9DB27EDFF17007DF5F3 /* CFNetwork.framework */; };
 		5207C9DE27EDFF23007DF5F3 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5207C9DD27EDFF23007DF5F3 /* WebKit.framework */; };
 		56B6409929909EA600E19AED /* TDAPMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56B6409729909EA600E19AED /* TDAPMViewController.m */; };
+		5E4A1CDCFA9752547F3D94C1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F4BAB06486B26157D577E71 /* Foundation.framework */; };
 		6E3B49E8250603520021B467 /* ActionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3B49E7250603520021B467 /* ActionModel.m */; };
 		6E3B49EB250603CC0021B467 /* TDUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3B49EA250603CC0021B467 /* TDUtil.m */; };
 		6E4936242514CBD800F27296 /* TDUserIDVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4936232514CBD800F27296 /* TDUserIDVC.m */; };
@@ -36,6 +38,11 @@
 		6EEDD2BD25063099001E07BC /* TDOtherVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEDD2BC25063099001E07BC /* TDOtherVC.m */; };
 		6EEDD2C0250630A8001E07BC /* TDEventVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEDD2BF250630A8001E07BC /* TDEventVC.m */; };
 		6EEDD2C325063552001E07BC /* TDAutoTrackVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEDD2C225063552001E07BC /* TDAutoTrackVC.m */; };
+		793B8784A8B32ED63E3F64B5 /* Pods_ThinkingSDKDEMOTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADE97AC2863B5D6EC91F0EDF /* Pods_ThinkingSDKDEMOTests.framework */; };
+		A1B2C3D401234567890AB01 /* TDDemoSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB11 /* TDDemoSwiftUIView.swift */; };
+		A1B2C3D401234567890AB02 /* TDSwiftUIScreenFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB12 /* TDSwiftUIScreenFactory.swift */; };
+		A1B2C3D401234567890AB03 /* TDSwiftUIVerifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB14 /* TDSwiftUIVerifyViewController.m */; };
+		A1B2C3D401234567890AB04 /* TDDemoNavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB16 /* TDDemoNavView.swift */; };
 		A855FB036641AA63209D2665 /* Pods_ThinkingSDKDEMO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D7A14F73905ECEF2387C2C /* Pods_ThinkingSDKDEMO.framework */; };
 		F34CAAD222C5B26C00A8FF82 /* WKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */; };
 		F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */; };
@@ -50,11 +57,17 @@
 		F380B3C922C23FA500955FC5 /* AutoTrackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F380B3C822C23FA500955FC5 /* AutoTrackViewController.m */; };
 		F3ECE9F4230D55FD00670FBD /* AutoTrackSecViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F3ECE9F3230D55FD00670FBD /* AutoTrackSecViewController.m */; };
 		F3F45D9F2301785600218049 /* thinkingdata.min.js in Resources */ = {isa = PBXBuildFile; fileRef = F3F45D9E2301785600218049 /* thinkingdata.min.js */; };
-		A1B2C3D401234567890AB01 /* TDDemoSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB11 /* TDDemoSwiftUIView.swift */; };
-		A1B2C3D401234567890AB02 /* TDSwiftUIScreenFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB12 /* TDSwiftUIScreenFactory.swift */; };
-		A1B2C3D401234567890AB03 /* TDSwiftUIVerifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB14 /* TDSwiftUIVerifyViewController.m */; };
-		A1B2C3D401234567890AB04 /* TDDemoNavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB16 /* TDDemoNavView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BB794F01611E8E23EBFE3B6A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F380B29D22C0E8BB00955FC5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F380B2A422C0E8BB00955FC5;
+			remoteInfo = ThinkingSDKDEMO;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		01437923283E215900371DEE /* Embed Foundation Extensions */ = {
@@ -126,7 +139,19 @@
 		6EEDD2BF250630A8001E07BC /* TDEventVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDEventVC.m; sourceTree = "<group>"; };
 		6EEDD2C125063552001E07BC /* TDAutoTrackVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDAutoTrackVC.h; sourceTree = "<group>"; };
 		6EEDD2C225063552001E07BC /* TDAutoTrackVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDAutoTrackVC.m; sourceTree = "<group>"; };
+		8066683F7F99CF7E19707152 /* ThinkingSDKDEMOTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ThinkingSDKDEMOTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		89009EB4787C00759CA0A52C /* Pods-ThinkingSDKDEMOTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMOTests.release.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMOTests/Pods-ThinkingSDKDEMOTests.release.xcconfig"; sourceTree = "<group>"; };
+		8F4BAB06486B26157D577E71 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		A1B2C3D401234567890AB11 /* TDDemoSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDDemoSwiftUIView.swift; sourceTree = "<group>"; };
+		A1B2C3D401234567890AB12 /* TDSwiftUIScreenFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDSwiftUIScreenFactory.swift; sourceTree = "<group>"; };
+		A1B2C3D401234567890AB13 /* TDSwiftUIVerifyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDSwiftUIVerifyViewController.h; sourceTree = "<group>"; };
+		A1B2C3D401234567890AB14 /* TDSwiftUIVerifyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDSwiftUIVerifyViewController.m; sourceTree = "<group>"; };
+		A1B2C3D401234567890AB15 /* TDSwiftUIScreenFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDSwiftUIScreenFactory.h; sourceTree = "<group>"; };
+		A1B2C3D401234567890AB16 /* TDDemoNavView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDDemoNavView.swift; sourceTree = "<group>"; };
+		A4BFC1D8E8CC185A55ED3E56 /* TDAnalyticsIntegrationTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = TDAnalyticsIntegrationTests.m; sourceTree = "<group>"; };
+		ADE97AC2863B5D6EC91F0EDF /* Pods_ThinkingSDKDEMOTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThinkingSDKDEMOTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD5C5B2CB9A3280F2AD94E33 /* Pods-ThinkingSDKDEMO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO/Pods-ThinkingSDKDEMO.debug.xcconfig"; sourceTree = "<group>"; };
+		C5B3EF74431814F372F37590 /* Pods-ThinkingSDKDEMOTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMOTests.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMOTests/Pods-ThinkingSDKDEMOTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F34CAAD022C5B26C00A8FF82 /* WKWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WKWebViewController.h; sourceTree = "<group>"; };
 		F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WKWebViewController.m; sourceTree = "<group>"; };
 		F34CAAD322C5B90F00A8FF82 /* AutoTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoTableViewController.h; sourceTree = "<group>"; };
@@ -152,15 +177,18 @@
 		F3ECE9F2230D55FD00670FBD /* AutoTrackSecViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoTrackSecViewController.h; sourceTree = "<group>"; };
 		F3ECE9F3230D55FD00670FBD /* AutoTrackSecViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoTrackSecViewController.m; sourceTree = "<group>"; };
 		F3F45D9E2301785600218049 /* thinkingdata.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = thinkingdata.min.js; sourceTree = "<group>"; };
-		A1B2C3D401234567890AB11 /* TDDemoSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDDemoSwiftUIView.swift; sourceTree = "<group>"; };
-		A1B2C3D401234567890AB16 /* TDDemoNavView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDDemoNavView.swift; sourceTree = "<group>"; };
-		A1B2C3D401234567890AB12 /* TDSwiftUIScreenFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDSwiftUIScreenFactory.swift; sourceTree = "<group>"; };
-		A1B2C3D401234567890AB15 /* TDSwiftUIScreenFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDSwiftUIScreenFactory.h; sourceTree = "<group>"; };
-		A1B2C3D401234567890AB13 /* TDSwiftUIVerifyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TDSwiftUIVerifyViewController.h; sourceTree = "<group>"; };
-		A1B2C3D401234567890AB14 /* TDSwiftUIVerifyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TDSwiftUIVerifyViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2CC52B7A31F7F56234F2B2C8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5E4A1CDCFA9752547F3D94C1 /* Foundation.framework in Frameworks */,
+				793B8784A8B32ED63E3F64B5 /* Pods_ThinkingSDKDEMOTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F380B2A222C0E8BB00955FC5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -202,6 +230,8 @@
 			children = (
 				BD5C5B2CB9A3280F2AD94E33 /* Pods-ThinkingSDKDEMO.debug.xcconfig */,
 				2E6CA86D4D6CB7CA3F4D519E /* Pods-ThinkingSDKDEMO.release.xcconfig */,
+				89009EB4787C00759CA0A52C /* Pods-ThinkingSDKDEMOTests.release.xcconfig */,
+				C5B3EF74431814F372F37590 /* Pods-ThinkingSDKDEMOTests.debug.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -321,6 +351,36 @@
 			path = other;
 			sourceTree = "<group>";
 		};
+		A1B2C3D401234567890AB20 /* swiftui */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D401234567890AB11 /* TDDemoSwiftUIView.swift */,
+				A1B2C3D401234567890AB16 /* TDDemoNavView.swift */,
+				A1B2C3D401234567890AB15 /* TDSwiftUIScreenFactory.h */,
+				A1B2C3D401234567890AB12 /* TDSwiftUIScreenFactory.swift */,
+				A1B2C3D401234567890AB13 /* TDSwiftUIVerifyViewController.h */,
+				A1B2C3D401234567890AB14 /* TDSwiftUIVerifyViewController.m */,
+			);
+			path = swiftui;
+			sourceTree = "<group>";
+		};
+		D05BF7237E051113918F9C49 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				8F4BAB06486B26157D577E71 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		E569A774169204D394B2EE8C /* ThinkingSDKDEMOTests */ = {
+			isa = PBXGroup;
+			children = (
+				A4BFC1D8E8CC185A55ED3E56 /* TDAnalyticsIntegrationTests.m */,
+			);
+			name = ThinkingSDKDEMOTests;
+			path = ThinkingSDKDEMOTests;
+			sourceTree = "<group>";
+		};
 		F34CAAD622C5B91500A8FF82 /* autotrack */ = {
 			isa = PBXGroup;
 			children = (
@@ -339,19 +399,6 @@
 				6E493632251892B700F27296 /* TDColCell.m */,
 			);
 			path = autotrack;
-			sourceTree = "<group>";
-		};
-		A1B2C3D401234567890AB20 /* swiftui */ = {
-			isa = PBXGroup;
-			children = (
-				A1B2C3D401234567890AB11 /* TDDemoSwiftUIView.swift */,
-				A1B2C3D401234567890AB16 /* TDDemoNavView.swift */,
-				A1B2C3D401234567890AB15 /* TDSwiftUIScreenFactory.h */,
-				A1B2C3D401234567890AB12 /* TDSwiftUIScreenFactory.swift */,
-				A1B2C3D401234567890AB13 /* TDSwiftUIVerifyViewController.h */,
-				A1B2C3D401234567890AB14 /* TDSwiftUIVerifyViewController.m */,
-			);
-			path = swiftui;
 			sourceTree = "<group>";
 		};
 		F34CAAD722C5B92200A8FF82 /* h5 */ = {
@@ -383,6 +430,7 @@
 				F380B2A622C0E8BB00955FC5 /* Products */,
 				F3BA589F2301388D00D6D7DE /* Frameworks */,
 				0C406E03CA4A89995D61A0F1 /* Pods */,
+				E569A774169204D394B2EE8C /* ThinkingSDKDEMOTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -390,6 +438,7 @@
 			isa = PBXGroup;
 			children = (
 				F380B2A522C0E8BB00955FC5 /* ThinkingSDKDEMO.app */,
+				8066683F7F99CF7E19707152 /* ThinkingSDKDEMOTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -432,6 +481,8 @@
 				01437913283E215800371DEE /* WidgetKit.framework */,
 				01437915283E215800371DEE /* SwiftUI.framework */,
 				10D7A14F73905ECEF2387C2C /* Pods_ThinkingSDKDEMO.framework */,
+				D05BF7237E051113918F9C49 /* iOS */,
+				ADE97AC2863B5D6EC91F0EDF /* Pods_ThinkingSDKDEMOTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -439,6 +490,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		52248EAF15A58816F7594258 /* ThinkingSDKDEMOTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E741BEFAAA39261B987A3174 /* Build configuration list for PBXNativeTarget "ThinkingSDKDEMOTests" */;
+			buildPhases = (
+				DE848EA2D63DCCE568BD201E /* [CP] Check Pods Manifest.lock */,
+				7006AD9DB3D5D2606331DF36 /* Sources */,
+				2CC52B7A31F7F56234F2B2C8 /* Frameworks */,
+				DEB0467B0929C726F34665D3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9065D6AA4E33B0F17071713B /* PBXTargetDependency */,
+			);
+			name = ThinkingSDKDEMOTests;
+			productName = ThinkingSDKDEMOTests;
+			productReference = 8066683F7F99CF7E19707152 /* ThinkingSDKDEMOTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		F380B2A422C0E8BB00955FC5 /* ThinkingSDKDEMO */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F380B2D122C0E8BC00955FC5 /* Build configuration list for PBXNativeTarget "ThinkingSDKDEMO" */;
@@ -478,6 +548,7 @@
 								enabled = 1;
 							};
 						};
+						TestTargetID = 52248EAF15A58816F7594258;
 					};
 				};
 			};
@@ -495,11 +566,19 @@
 			projectRoot = "";
 			targets = (
 				F380B2A422C0E8BB00955FC5 /* ThinkingSDKDEMO */,
+				52248EAF15A58816F7594258 /* ThinkingSDKDEMOTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		DEB0467B0929C726F34665D3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F380B2A322C0E8BB00955FC5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -555,9 +634,39 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ThinkingSDKDEMO/Pods-ThinkingSDKDEMO-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		DE848EA2D63DCCE568BD201E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ThinkingSDKDEMOTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		7006AD9DB3D5D2606331DF36 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24747BF395403143453C58AB /* TDAnalyticsIntegrationTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F380B2A122C0E8BB00955FC5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -597,7 +706,61 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		9065D6AA4E33B0F17071713B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ThinkingSDKDEMO;
+			target = F380B2A422C0E8BB00955FC5 /* ThinkingSDKDEMO */;
+			targetProxy = BB794F01611E8E23EBFE3B6A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		31245136081F939797D0255B /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 89009EB4787C00759CA0A52C /* Pods-ThinkingSDKDEMOTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = cn.thinkingdata.ios.sdk.Tests;
+				PRODUCT_NAME = ThinkingSDKDEMOTests;
+				SDKROOT = iphoneos;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ThinkingSDKDEMO.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ThinkingSDKDEMO";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		7DA92DF58FC574EA6DB827AE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C5B3EF74431814F372F37590 /* Pods-ThinkingSDKDEMOTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = cn.thinkingdata.ios.sdk.Tests;
+				PRODUCT_NAME = ThinkingSDKDEMOTests;
+				SDKROOT = iphoneos;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ThinkingSDKDEMO.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ThinkingSDKDEMO";
+			};
+			name = Debug;
+		};
 		F380B2CF22C0E8BC00955FC5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -816,6 +979,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		E741BEFAAA39261B987A3174 /* Build configuration list for PBXNativeTarget "ThinkingSDKDEMOTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31245136081F939797D0255B /* Release */,
+				7DA92DF58FC574EA6DB827AE /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F380B2A022C0E8BB00955FC5 /* Build configuration list for PBXProject "ThinkingSDKDEMO" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
