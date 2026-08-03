@@ -1,1 +1,0 @@
-../../ThinkingSDK/Source/AutoTrack/Event/TDAppStartEvent.h

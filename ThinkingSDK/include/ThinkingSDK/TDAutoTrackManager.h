@@ -1,0 +1,1 @@
+../../Source/AutoTrack/TDAutoTrackManager.h

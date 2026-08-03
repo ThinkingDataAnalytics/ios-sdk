@@ -18,12 +18,10 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/ThinkingDataAnalytics/thinkingdatacore-ios-sdk.git",
-            exact: "1.3.4"
+            exact: "1.3.5"
         )
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "ThinkingSDK",
             dependencies: [
@@ -31,6 +29,11 @@ let package = Package(
             ],
             path: "ThinkingSDK",
             resources: [.copy("Resources/PrivacyInfo.xcprivacy")],
+            // Keep quoted imports (`#import "Foo.h"`) working after nesting
+            // public headers under include/ThinkingSDK/.
+            cSettings: [
+                .headerSearchPath("include/ThinkingSDK")
+            ],
             linkerSettings: [
                 .linkedLibrary("sqlite3"),
                 .linkedLibrary("z"),
@@ -38,4 +41,3 @@ let package = Package(
         )
     ]
 )
-

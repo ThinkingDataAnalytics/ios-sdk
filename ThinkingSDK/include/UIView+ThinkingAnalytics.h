@@ -1,1 +1,0 @@
-../../ThinkingSDK/Source/AutoTrack/UIKit/UIView+ThinkingAnalytics.h

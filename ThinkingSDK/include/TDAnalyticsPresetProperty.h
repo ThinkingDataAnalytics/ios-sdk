@@ -1,1 +1,0 @@
-../../ThinkingSDK/Source/DeviceInfo/TDAnalyticsPresetProperty.h

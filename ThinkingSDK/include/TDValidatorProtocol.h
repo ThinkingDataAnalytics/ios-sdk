@@ -1,1 +1,0 @@
-../../ThinkingSDK/Source/EventTracker/Property/Validate/TDValidatorProtocol.h

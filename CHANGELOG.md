@@ -1,3 +1,11 @@
+### v3.4.8
+**Date:** 2026/08/03
+
+**Notes:**
+
+* Bump ThinkingDataCore dependency to 1.3.5.
+* Restructure SPM public headers under include/ThinkingSDK/ for `#import <ThinkingSDK/Header.h>`.
+
 ### v3.4.7
 **Date:** 2026/08/03
 

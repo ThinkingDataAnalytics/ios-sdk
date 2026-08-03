@@ -1,0 +1,1 @@
+../../Source/main/ThinkingAnalyticsSDK+OldPublic.h

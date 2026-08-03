@@ -1,1 +1,0 @@
-../../ThinkingSDK/Source/AppLaunch/AppPush/TDApplicationDelegateProxy.h
