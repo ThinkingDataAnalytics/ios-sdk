@@ -17,7 +17,7 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "http://10.27.249.150:8888/thinking-analytics/data-collector/client-sdk/thinkingdatacore-ios-sdk.git",
+            url: "https://gitlab.thinkingdata.cn/thinking-analytics/data-collector/client-sdk/thinkingdatacore-ios-sdk.git",
             branch: "dev"
         )
     ],
