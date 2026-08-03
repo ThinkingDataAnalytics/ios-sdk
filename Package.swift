@@ -17,8 +17,8 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://gitlab.thinkingdata.cn/thinking-analytics/data-collector/client-sdk/thinkingdatacore-ios-sdk.git",
-            branch: "dev"
+            url: "https://github.com/ThinkingDataAnalytics/thinkingdatacore-ios-sdk.git",
+            exact: "1.3.4"
         )
     ],
     targets: [
@@ -30,7 +30,11 @@ let package = Package(
                 .product(name: "ThinkingDataCore", package: "thinkingdatacore-ios-sdk")
             ],
             path: "ThinkingSDK",
-            resources: [.copy("Resources/PrivacyInfo.xcprivacy")]
+            resources: [.copy("Resources/PrivacyInfo.xcprivacy")],
+            linkerSettings: [
+                .linkedLibrary("sqlite3"),
+                .linkedLibrary("z"),
+            ]
         )
     ]
 )

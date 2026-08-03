@@ -1,3 +1,11 @@
+### v3.4.7
+**Date:** 2026/08/03
+
+**Notes:**
+
+* Fix Package.swift for public SPM release: use GitHub ThinkingDataCore dependency, pin exact 1.3.4, and add sqlite3/z linker settings.
+* Add run.sh for unified test, framework build, pod-install, and setup commands.
+
 ### v3.4.6
 **Date:** 2026/07/20
 
