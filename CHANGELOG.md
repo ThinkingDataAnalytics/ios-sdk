@@ -1,3 +1,12 @@
+### v3.5.0
+**Date:** 2026/08/03
+
+**Notes:**
+
+* Switch report-data encryption from AES-ECB to AES-GCM; encrypted upload envelopes now include `mode: "gcm"`.
+* Same flush batch can mix legacy ciphertext (no `mode`) with new GCM envelopes without conversion.
+* Bump ThinkingDataCore dependency to 1.3.6 (AES-GCM support).
+
 ### v3.4.8
 **Date:** 2026/08/03
 

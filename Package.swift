@@ -18,7 +18,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/ThinkingDataAnalytics/thinkingdatacore-ios-sdk.git",
-            exact: "1.3.5"
+            exact: "1.3.6"
         )
     ],
     targets: [

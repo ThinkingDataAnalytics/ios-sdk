@@ -44,6 +44,7 @@
 		A1B2C3D401234567890AB03 /* TDSwiftUIVerifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB14 /* TDSwiftUIVerifyViewController.m */; };
 		A1B2C3D401234567890AB04 /* TDDemoNavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567890AB16 /* TDDemoNavView.swift */; };
 		A855FB036641AA63209D2665 /* Pods_ThinkingSDKDEMO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D7A14F73905ECEF2387C2C /* Pods_ThinkingSDKDEMO.framework */; };
+		B7E1D4A02F2A000000000001 /* TDDataEncryptUploadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B7E1D4A02F2A000000000002 /* TDDataEncryptUploadTests.m */; };
 		F34CAAD222C5B26C00A8FF82 /* WKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD122C5B26C00A8FF82 /* WKWebViewController.m */; };
 		F34CAAD522C5B90F00A8FF82 /* AutoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAAD422C5B90F00A8FF82 /* AutoTableViewController.m */; };
 		F34CAB0122C730D400A8FF82 /* AutoCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F34CAB0022C730D400A8FF82 /* AutoCollectionViewController.m */; };
@@ -150,6 +151,7 @@
 		A1B2C3D401234567890AB16 /* TDDemoNavView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDDemoNavView.swift; sourceTree = "<group>"; };
 		A4BFC1D8E8CC185A55ED3E56 /* TDAnalyticsIntegrationTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = TDAnalyticsIntegrationTests.m; sourceTree = "<group>"; };
 		ADE97AC2863B5D6EC91F0EDF /* Pods_ThinkingSDKDEMOTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThinkingSDKDEMOTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7E1D4A02F2A000000000002 /* TDDataEncryptUploadTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = TDDataEncryptUploadTests.m; sourceTree = "<group>"; };
 		BD5C5B2CB9A3280F2AD94E33 /* Pods-ThinkingSDKDEMO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMO.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMO/Pods-ThinkingSDKDEMO.debug.xcconfig"; sourceTree = "<group>"; };
 		C5B3EF74431814F372F37590 /* Pods-ThinkingSDKDEMOTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThinkingSDKDEMOTests.debug.xcconfig"; path = "Target Support Files/Pods-ThinkingSDKDEMOTests/Pods-ThinkingSDKDEMOTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F34CAAD022C5B26C00A8FF82 /* WKWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WKWebViewController.h; sourceTree = "<group>"; };
@@ -376,6 +378,7 @@
 			isa = PBXGroup;
 			children = (
 				A4BFC1D8E8CC185A55ED3E56 /* TDAnalyticsIntegrationTests.m */,
+				B7E1D4A02F2A000000000002 /* TDDataEncryptUploadTests.m */,
 			);
 			name = ThinkingSDKDEMOTests;
 			path = ThinkingSDKDEMOTests;
@@ -664,6 +667,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				24747BF395403143453C58AB /* TDAnalyticsIntegrationTests.m in Sources */,
+				B7E1D4A02F2A000000000001 /* TDDataEncryptUploadTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

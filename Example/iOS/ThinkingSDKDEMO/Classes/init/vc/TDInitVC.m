@@ -22,8 +22,16 @@
 
 @end
 
-static NSString * const APP_ID = @"381f8bbad66c41a18923089321a1ba6f";
-static NSString * const SERVER_URL = @"https://receiver-ta-preview.thinkingdata.cn";
+static NSString * const APP_ID = @"8de3005299604ea1ba5541e564722d73";
+static NSString * const SERVER_URL = @"http://10.82.2.137:8991";
+static NSString * const ENCRYPT_PUBLIC_KEY =
+    @"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqOvk7QsPiVQ+ygNXdwBB"
+    @"InPs6+Cpgp7R4etlldsS0IlzUvWE9dEEWBCLMfuGmcPJf5b4vI9OaLjlUeiYt2tF"
+    @"+rLpwc1s/XOnIqzv4qBd5yKcfnh/y9i26r9+HYUfxkoVawncIEXm9Ge4WAswtXVA"
+    @"sHBEdJgy3LqCoBriLTJ1MWU7YlXQGyLAXzF/fMMWiU5rh2LRmc0q3sST5JLDtudO"
+    @"zg5uzwrqdlAsrvkZJzLwOiRAhtbETS5tZcNRjNS32POhmPcrtD+QQ3caFpLpDELl"
+    @"7y4e7qICjb8pKZqZoo1gA2xHgBC0okHOUT4eLrcLAYqJ/PCgByHCR5wkD6kGcdx0"
+    @"hQIDAQAB";
 
 @implementation TDInitVC
 
@@ -31,14 +39,12 @@ static NSString * const SERVER_URL = @"https://receiver-ta-preview.thinkingdata.
     [TDAnalytics enableLog:YES];
 
     TDConfig *config = [[TDConfig alloc] init];
-    config.appid = self.appidTF.text;
-//    config.serverUrl = self.serverTF.text;
-    config.serverUrl = @"https://receiver-ta-preview.thinkingdata.cn";
-//    config.backupUrlList = @[@"https://receiver-ta-preview.thinkingdata.cn2", @"https://receiver-ta-preview.thinkingdata.cn"];
+    config.appid = self.appidTF.text.length ? self.appidTF.text : APP_ID;
+    config.serverUrl = self.serverTF.text.length ? self.serverTF.text : SERVER_URL;
     config.name = self.instanceNameTF.text;
     config.mode = TDModeNormal;
-    config.disableRConfig = true;
-//    [config enableDNSServcie:@[TDDNSServiceCloudALi, TDDNSServiceCloudGoogle, TDDNSServiceCloudFlare]];
+//    config.disableRConfig = true;
+    [config enableEncryptWithVersion:0 publicKey:ENCRYPT_PUBLIC_KEY];
     
     [TDAnalytics addWebViewUserAgent];
 

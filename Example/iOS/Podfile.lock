@@ -1,18 +1,18 @@
 PODS:
-  - ThinkingDataCore (1.3.5):
-    - ThinkingDataCore/Main (= 1.3.5)
-  - ThinkingDataCore/iOS (1.3.5)
-  - ThinkingDataCore/Main (1.3.5):
+  - ThinkingDataCore (1.3.6):
+    - ThinkingDataCore/Main (= 1.3.6)
+  - ThinkingDataCore/iOS (1.3.6)
+  - ThinkingDataCore/Main (1.3.6):
     - ThinkingDataCore/iOS
     - ThinkingDataCore/OSX
     - ThinkingDataCore/tvOS
     - ThinkingDataCore/versionOS
     - ThinkingDataCore/watchOS
-  - ThinkingSDK (3.4.8):
-    - ThinkingSDK/Main (= 3.4.8)
-  - ThinkingSDK/iOS (3.4.8):
-    - ThinkingDataCore (= 1.3.5)
-  - ThinkingSDK/Main (3.4.8):
+  - ThinkingSDK (3.5.0):
+    - ThinkingSDK/Main (= 3.5.0)
+  - ThinkingSDK/iOS (3.5.0):
+    - ThinkingDataCore (= 1.3.6)
+  - ThinkingSDK/Main (3.5.0):
     - ThinkingSDK/iOS
     - ThinkingSDK/OSX
 
@@ -27,8 +27,8 @@ EXTERNAL SOURCES:
     :path: "../../"
 
 SPEC CHECKSUMS:
-  ThinkingDataCore: 0b46104eca253d1d922870eb2d9b70c9782effdc
-  ThinkingSDK: 3a26f05a2a2d2243d9027a9d4977c75d7bd6054e
+  ThinkingDataCore: 64de7e96f89b73e20c5fd33178816be0502b89c7
+  ThinkingSDK: c401ebc279c0d7bc54214b65d182745980b39d20
 
 PODFILE CHECKSUM: 1792231554de96ed865e11c7edbc2e9a4216e1f2
 
