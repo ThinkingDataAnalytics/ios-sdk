@@ -1,3 +1,10 @@
+### v3.5.1
+**Date:** 2026/08/20
+
+**Notes:**
+
+* Bump ThinkingDataCore dependency to 1.3.7, which reimplements AES-GCM using only public CommonCrypto APIs to remove non-public symbols flagged by App Store review (ITMS-90338). Encrypted upload format is unchanged.
+
 ### v3.5.0
 **Date:** 2026/08/03
 

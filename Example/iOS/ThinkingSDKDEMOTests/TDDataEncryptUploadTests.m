@@ -90,6 +90,17 @@ static NSString * const kLegacyEcbEnvelopePayload = @"LEGACY_AES_ECB_CIPHERTEXT_
     return [queue sqliteCountForAppid:self.instanceName] >= (NSInteger)minCount;
 }
 
+- (NSData *)td_dataFromHex:(NSString *)hex {
+    NSMutableData *data = [NSMutableData dataWithCapacity:hex.length / 2];
+    for (NSUInteger i = 0; i + 1 < hex.length; i += 2) {
+        unsigned int byte = 0;
+        [[NSScanner scannerWithString:[hex substringWithRange:NSMakeRange(i, 2)]] scanHexInt:&byte];
+        uint8_t b = (uint8_t)byte;
+        [data appendBytes:&b length:1];
+    }
+    return data;
+}
+
 #pragma mark - Tests
 
 - (void)testEncryptJSONObject_includesModeGcm {
@@ -123,6 +134,42 @@ static NSString * const kLegacyEcbEnvelopePayload = @"LEGACY_AES_ECB_CIPHERTEXT_
     // Random IV => non-deterministic ciphertext.
     NSData *combined2 = [aes encryptData:plain];
     XCTAssertNotEqualObjects(combined, combined2);
+}
+
+/// Byte-compatibility guard: decrypt an AES-128-GCM envelope produced by an
+/// independent implementation (OpenSSL). Proves the public-API GCM rewrite stays
+/// interoperable with the standard / the Android SDK / the previous ciphertext.
+/// key="0123456789abcdef", IV=000102030405060708090a0b, no AAD, 128-bit tag.
+- (void)testAESGCM_decryptsStandardOpenSSLVector {
+    TDAESEncryptor *aes = [[TDAESEncryptor alloc] init];
+    aes.key = @"0123456789abcdef";
+    NSData *blob = [self td_dataFromHex:
+        @"000102030405060708090a0b861de77868115542b7486677a5b98a0f70a2259"
+        @"96fd2392e5545c8d09bd2db097c2dbd9a828ffbac485a95866fbd64e0ca12e42"
+        @"dcfbaa0b58665"];
+    NSData *decrypted = [aes decryptData:blob];
+    NSString *plaintext = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
+    XCTAssertEqualObjects(plaintext, @"{\"#event_name\":\"purchase\",\"#type\":\"track\"}");
+}
+
+/// A flipped tag byte must fail authentication (GHASH tag verify).
+- (void)testAESGCM_tamperedTagRejected {
+    TDAESEncryptor *aes = [[TDAESEncryptor alloc] init];
+    aes.key = @"0123456789abcdef";
+    NSData *plain = [@"{\"k\":\"v\"}" dataUsingEncoding:NSUTF8StringEncoding];
+    NSMutableData *combined = [[aes encryptData:plain] mutableCopy];
+    XCTAssertNotNil(combined);
+    uint8_t *bytes = combined.mutableBytes;
+    bytes[combined.length - 1] ^= 0x01;
+    XCTAssertNil([aes decryptData:combined]);
+}
+
+/// Envelopes not longer than IV(12)+tag(16) cannot be valid and must return nil.
+- (void)testAESGCM_shortInputReturnsNil {
+    TDAESEncryptor *aes = [[TDAESEncryptor alloc] init];
+    aes.key = @"0123456789abcdef";
+    XCTAssertNil([aes decryptData:[NSMutableData dataWithLength:28]]);
+    XCTAssertNil([aes decryptData:[NSData data]]);
 }
 
 /**
