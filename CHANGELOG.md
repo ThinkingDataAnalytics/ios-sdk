@@ -1,3 +1,10 @@
+### v3.5.2
+**Date:** 2026/09/21
+
+**Notes:**
+
+* Fix a SIGBUS crash when delegate proxy selector checks receive an invalid selector during app termination.
+
 ### v3.5.1
 **Date:** 2026/08/20
 
