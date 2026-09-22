@@ -1,3 +1,10 @@
+### v3.5.3
+**Date:** 2026/09/22
+
+**Notes:**
+
+* Fix an NSGenericException crash in the auto-push plugin when a token callback enumerates pending app IDs while init, login, or distinct-id notifications mutate the set.
+
 ### v3.5.2
 **Date:** 2026/09/21
 
