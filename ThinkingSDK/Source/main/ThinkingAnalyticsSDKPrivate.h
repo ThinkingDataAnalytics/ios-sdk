@@ -109,6 +109,7 @@ dispatch_sync(dispatch_get_main_queue(), block);\
 - (void)innerSetIdentify:(NSString *)distinctId;
 - (void)innerLogin:(NSString *)accountId;
 - (void)innerLogout;
+- (void)startNewSessionForAccountChange;
 - (void)innerUserSet:(NSDictionary *)properties;
 - (void)innerUserUnset:(NSString *)propertyName;
 - (void)innerUserUnsets:(NSArray<NSString *> *)propertyNames;

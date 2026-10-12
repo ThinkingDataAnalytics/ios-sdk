@@ -79,6 +79,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Enable the automatic time calibration function
 @property (nonatomic, assign) BOOL enableAutoCalibrated;
 
+/// How long, in milliseconds, to keep the current `#session_id` after the last event
+/// or after the app enters the background. The next event or foreground entry starts
+/// a new id when the gap reaches this value. The default is 300000 (5 minutes).
+/// A value less than or equal to 0 falls back to the default.
+@property (nonatomic, assign) int64_t sessionTimeout;
+
 /// Whether data is reported synchronously when the app terminates. If allowed, the main thread will be blocked for up to 0.5s. Default is YES
 @property (nonatomic, assign) BOOL flushBeforeTerminate;
 

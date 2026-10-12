@@ -5,6 +5,7 @@
 #import "TDSecurityPolicy.h"
 #import "TDFile.h"
 #import "TDConfigPrivate.h"
+#import "TDSessionManager.h"
 
 #if __has_include(<ThinkingDataCore/TDCalibratedTime.h>)
 #import <ThinkingDataCore/TDCalibratedTime.h>
@@ -67,6 +68,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
         self.reportingNetworkType = TDReportingNetworkTypeALL;
         self.mode = TDModeNormal;
         self.flushBeforeTerminate = YES;
+        _sessionTimeout = TDAnalyticsSessionDefaultTimeoutMillis;
         
         _trackRelaunchedInBackgroundEvents = NO;
         _autoTrackEventType = ThinkingAnalyticsEventTypeNone;
@@ -141,6 +143,14 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
     _name = name.td_trim;
 }
 
+- (void)setSessionTimeout:(int64_t)sessionTimeout {
+    if (sessionTimeout <= 0) {
+        _sessionTimeout = TDAnalyticsSessionDefaultTimeoutMillis;
+    } else {
+        _sessionTimeout = sessionTimeout;
+    }
+}
+
 #pragma mark - NSCopying
 - (id)copyWithZone:(NSZone *)zone {
     TDConfig *config = [[[self class] allocWithZone:zone] init];
@@ -156,6 +166,7 @@ TDSDKSETTINGS_PLIST_SETTING_IMPL(NSNumber, ThinkingSDKExpirationDays, _expiratio
     config.serverUrl = [self.serverUrl copy];
     config.enableAutoPush = self.enableAutoPush;
     config.dnsServices = self.dnsServices;
+    config.sessionTimeout = self.sessionTimeout;
 #if TARGET_OS_IOS
     config.innerSecretKey = [self.innerSecretKey copyWithZone:zone];
     config.innerEnableEncrypt = self.innerEnableEncrypt;

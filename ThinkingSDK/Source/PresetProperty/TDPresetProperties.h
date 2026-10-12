@@ -69,6 +69,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// Device type
 @property (nonatomic, copy, readonly) NSString *deviceType;
 
+/// Current analytics session id. Nil until the first session starts.
+@property (nonatomic, copy, readonly, nullable) NSString *session_id;
+
 /**
  * The key of the returned event preset property starts with "#", and it is not recommended to use it directly as the property of the event
  */

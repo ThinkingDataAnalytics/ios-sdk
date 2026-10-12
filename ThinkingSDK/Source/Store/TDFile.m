@@ -184,6 +184,44 @@
     return [self unarchiveFromFile:[self installTimesFilePath] asClass:[NSString class]];
 }
 
+- (void)archiveAnalyticsSessionId:(NSString *)sessionId {
+    NSString *filePath = [self analyticsSessionIdFilePath];
+    if (sessionId.length == 0) {
+        [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+        return;
+    }
+    if (![self archiveObject:[sessionId copy] withFilePath:filePath]) {
+        TDLogError(@"%@ unable to archive analytics session id", self);
+    }
+}
+
+- (NSString *)unarchiveAnalyticsSessionId {
+    return [self unarchiveFromFile:[self analyticsSessionIdFilePath] asClass:[NSString class]];
+}
+
+- (void)archiveAnalyticsSessionLastEventTime:(NSNumber *)lastEventTime {
+    NSString *filePath = [self analyticsSessionLastEventTimeFilePath];
+    if (lastEventTime == nil) {
+        [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+        return;
+    }
+    if (![self archiveObject:lastEventTime withFilePath:filePath]) {
+        TDLogError(@"%@ unable to archive analytics session last event time", self);
+    }
+}
+
+- (NSNumber *)unarchiveAnalyticsSessionLastEventTime {
+    return [self unarchiveFromFile:[self analyticsSessionLastEventTimeFilePath] asClass:[NSNumber class]];
+}
+
+- (NSString *)analyticsSessionIdFilePath {
+    return [self persistenceFilePath:@"analyticsSessionId"];
+}
+
+- (NSString *)analyticsSessionLastEventTimeFilePath {
+    return [self persistenceFilePath:@"analyticsSessionLastEventTime"];
+}
+
 - (BOOL)archiveObject:(id)object withFilePath:(NSString *)filePath {
     @try {
         if (![NSKeyedArchiver archiveRootObject:object toFile:filePath]) {

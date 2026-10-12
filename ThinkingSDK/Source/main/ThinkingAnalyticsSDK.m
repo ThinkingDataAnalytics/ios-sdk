@@ -1,5 +1,7 @@
 #import "ThinkingAnalyticsSDKPrivate.h"
 
+#import <math.h>
+
 #if TARGET_OS_IOS
 
 #import "TDAutoTrackManager.h"
@@ -68,6 +70,7 @@
 #import "UIViewController+TDScreenName.h"
 #import "TDAnalytics+Public.h"
 #import "TDConfigPrivate.h"
+#import "TDSessionManager.h"
 
 #if !__has_feature(objc_arc)
 #error The ThinkingSDK library must be compiled with ARC enabled
@@ -92,8 +95,13 @@
 @property (nonatomic, strong, nullable) NSTimer *timer;
 @property (nonatomic, strong) TDTrackTimer *trackTimer;
 @property (atomic, strong) TDSqliteDataQueue *dataQueue;
+@property (nonatomic, strong) TDSessionManager *sessionManager;
 
 @end
+
+static int64_t TDCurrentTimeMillis(void) {
+    return (int64_t)llround([NSDate date].timeIntervalSince1970 * 1000.0);
+}
 
 @implementation ThinkingAnalyticsSDK
 
@@ -128,6 +136,7 @@ static dispatch_queue_t td_trackQueue;
     ThinkingAnalyticsSDK *lightInstance = [[LightThinkingAnalyticsSDK alloc] initWithAPPID:self.config.appid withServerURL:self.config.serverUrl withConfig:self.config];
     lightInstance.identifyId = [TDDeviceInfo sharedManager].uniqueId;
     lightInstance.propertyPluginManager = self.propertyPluginManager;
+    lightInstance.sessionManager = self.sessionManager;
     return lightInstance;
 }
 
@@ -182,6 +191,7 @@ static dispatch_queue_t td_trackQueue;
         self.ignoredViewControllers = [[NSMutableSet alloc] init];
         self.ignoredViewTypeList = [[NSMutableSet alloc] init];
         self.file = [[TDFile alloc] initWithAppid:instanceAliasName];
+        self.sessionManager = [TDSessionManager managerWithInstanceKey:instanceAliasName store:[[TDFileAnalyticsSessionStore alloc] initWithFile:self.file]];
         [TDAppLifeCycle startMonitor];
         [self registerListener];
 
@@ -375,7 +385,11 @@ static dispatch_queue_t td_trackQueue;
     TDAppLifeCycleState newState = [[notification.userInfo objectForKey:kTDAppLifeCycleNewStateKey] integerValue];
    
     if (newState == TDAppLifeCycleStateEnd) {
+        // Lifecycle transitions do not count as session activity.
+        [self.sessionManager onEnterBackgroundAtMillis:TDCurrentTimeMillis()];
         [self stopFlushTimer];
+    } else if (newState == TDAppLifeCycleStateStart) {
+        [self.sessionManager onEnterForegroundAtMillis:TDCurrentTimeMillis() timeoutMillis:self.config.sessionTimeout];
     }
 }
 
@@ -556,15 +570,6 @@ static dispatch_queue_t td_trackQueue;
         [event.properties addEntriesFromDictionary:properties];
         [event.properties addEntriesFromDictionary:pluginProperties];
         [event.properties addEntriesFromDictionary:sensitiveProperties];
-
-        jsonObj = event.jsonObject;
-
-        if (event.h5TimeString) {
-            jsonObj[@"#time"] = event.h5TimeString;
-        }
-        if (event.h5ZoneOffSet) {
-            jsonObj[@"#zone_offset"] = event.h5ZoneOffSet;
-        }
     } else {
         [event.properties addEntriesFromDictionary:pluginProperties];
         [event.properties addEntriesFromDictionary:superProperties];
@@ -581,10 +586,25 @@ static dispatch_queue_t td_trackQueue;
 
         properties = [TDPropertyValidator validateProperties:properties validator:event];
         [event.properties addEntriesFromDictionary:properties];
-        
-        jsonObj = event.jsonObject;
     }
 
+    NSString *h5SessionId = nil;
+    if (isH5) {
+        id sessionId = properties[TDAnalyticsSessionIdProperty];
+        if ([sessionId isKindOfClass:[NSString class]] && [sessionId length] > 0) {
+            h5SessionId = sessionId;
+        }
+    }
+    [self fillSessionIdForEvent:event h5SessionId:h5SessionId];
+    jsonObj = event.jsonObject;
+    if (isH5) {
+        if (event.h5TimeString) {
+            jsonObj[@"#time"] = event.h5TimeString;
+        }
+        if (event.h5ZoneOffSet) {
+            jsonObj[@"#zone_offset"] = event.h5ZoneOffSet;
+        }
+    }
     jsonObj = [event formatDateWithDict:jsonObj];
 
     [TDNotificationManager postAnalyticsTrackWithAppId:self.config.appid event:jsonObj];
@@ -596,6 +616,20 @@ static dispatch_queue_t td_trackQueue;
         [self.eventTracker track:jsonObj immediately:event.immediately saveOnly:isSaveOnly];
     }
     TDLogInfo(@"track success");
+}
+
+- (void)fillSessionIdForEvent:(TDTrackEvent *)event h5SessionId:(NSString *)h5SessionId {
+    if (h5SessionId.length > 0) {
+        event.properties[TDAnalyticsSessionIdProperty] = h5SessionId;
+        return;
+    }
+    if ([TDSessionManager isSessionIdDisabled] || self.sessionManager == nil) {
+        return;
+    }
+    NSString *sessionId = [self.sessionManager onEventAtMillis:TDCurrentTimeMillis() timeoutMillis:self.config.sessionTimeout];
+    if (sessionId.length > 0) {
+        event.properties[TDAnalyticsSessionIdProperty] = sessionId;
+    }
 }
 
 #pragma mark - innerFlush control
@@ -874,11 +908,17 @@ static dispatch_queue_t td_trackQueue;
         TDLogError(@"accountId invald", accountId);
         return;
     }
+    NSString *previousAccountId = [self innerAccountId];
+    BOOL accountChanged = ![previousAccountId isEqualToString:accountId];
     TDLogInfo(@"Login SDK, AccountId = %@", accountId);
     self.accountId = accountId;
+    if (accountChanged) {
+        [self startNewSessionForAccountChange];
+    }
+    NSString *loginAccountId = [accountId copy];
     dispatch_async(td_trackQueue, ^{
-        [self.file archiveAccountID:self.accountId];
-        [TDNotificationManager postAnalyticsLoginEventWithAppId:self.config.appid accountId:self.accountId distinctId:self.identifyId];
+        [self.file archiveAccountID:loginAccountId];
+        [TDNotificationManager postAnalyticsLoginEventWithAppId:self.config.appid accountId:loginAccountId distinctId:self.identifyId];
     });
 }
 
@@ -886,12 +926,25 @@ static dispatch_queue_t td_trackQueue;
     if ([self hasDisabled]) {
         return;
     }
+    NSString *previousAccountId = [self innerAccountId];
     TDLogInfo(@"Logout SDK.");
     self.accountId = nil;
+    if (previousAccountId.length > 0) {
+        [self startNewSessionForAccountChange];
+    }
     dispatch_async(td_trackQueue, ^{
         [self.file archiveAccountID:nil];
         [TDNotificationManager postAnalyticsLogoutEventWithAppId:self.config.appid distinctId:self.identifyId];
     });
+}
+
+- (void)startNewSessionForAccountChange {
+    if ([TDSessionManager isSessionIdDisabled] || self.sessionManager == nil) {
+        return;
+    }
+    [ThinkingAnalyticsSDK safeAsyncTask:^{
+        [self.sessionManager startNewSessionAtMillis:TDCurrentTimeMillis()];
+    } inQueue:[ThinkingAnalyticsSDK sharedTrackQueue]];
 }
 
 //MARK: - user profile
@@ -1014,6 +1067,12 @@ static dispatch_queue_t td_trackQueue;
     NSDictionary *pluginProperties = [self.propertyPluginManager currentPropertiesForPluginClasses:@[TDPresetPropertyPlugin.class]];
     NSMutableDictionary *presetDic = [NSMutableDictionary dictionary];
     [presetDic addEntriesFromDictionary:pluginProperties];
+    if (![TDSessionManager isSessionIdDisabled]) {
+        NSString *sessionId = self.sessionManager.sessionId;
+        if (sessionId.length > 0) {
+            presetDic[TDAnalyticsSessionIdProperty] = sessionId;
+        }
+    }
     
     NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
     timeFormatter.dateFormat = kDefaultTimeFormat;

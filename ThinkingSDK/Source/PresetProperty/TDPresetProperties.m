@@ -27,6 +27,7 @@ static const NSString *kTDPresetRam = @"#ram";
 static const NSString *kTDPresetDisk = @"#disk";
 static const NSString *kTDPresetFps  = @"#fps";
 static const NSString *kTDPresetDeviceType = @"#device_type";
+static const NSString *kTDPresetSessionId = @"#session_id";
 
 @interface TDPresetProperties ()
 
@@ -49,6 +50,7 @@ static const NSString *kTDPresetDeviceType = @"#device_type";
 @property (nonatomic, copy, readwrite) NSString *disk;
 @property (nonatomic, strong, readwrite) NSNumber *fps;
 @property (nonatomic, copy, readwrite) NSString *deviceType;
+@property (nonatomic, copy, readwrite, nullable) NSString *session_id;
 
 @end
 
@@ -76,6 +78,7 @@ static const NSString *kTDPresetDeviceType = @"#device_type";
         self.disk = dict[kTDPresetDisk];
         self.fps = dict[kTDPresetFps];
         self.deviceType = dict[kTDPresetDeviceType];
+        self.session_id = dict[kTDPresetSessionId];
     }
     return self;
 }
@@ -138,6 +141,9 @@ static const NSString *kTDPresetDeviceType = @"#device_type";
     }
     if (self.deviceType) {
         dict[kTDPresetDeviceType] = self.deviceType;
+    }
+    if (self.session_id) {
+        dict[kTDPresetSessionId] = self.session_id;
     }
 
     return dict;

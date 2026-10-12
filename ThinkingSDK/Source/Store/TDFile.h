@@ -48,6 +48,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)archiveInstallTimes:(NSString *)installTimes;
 - (NSString *)unarchiveInstallTimes;
 
+- (void)archiveAnalyticsSessionId:(nullable NSString *)sessionId;
+- (nullable NSString *)unarchiveAnalyticsSessionId;
+- (void)archiveAnalyticsSessionLastEventTime:(nullable NSNumber *)lastEventTime;
+- (nullable NSNumber *)unarchiveAnalyticsSessionLastEventTime;
+
 - (BOOL)archiveObject:(id)object withFilePath:(NSString *)filePath;
 
 - (BOOL)addSkipBackupAttributeToItemAtPath:(NSString *)filePathString;

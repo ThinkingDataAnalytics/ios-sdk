@@ -17,16 +17,24 @@
         TDLogError(@"accountId invald", accountId);
         return;
     }
+    NSString *previousAccountId = [self innerAccountId];
     TDLogInfo(@"light SDK login, SDK Name = %@, AccountId = %@", self.config.name, accountId);
     self.accountId = accountId;
+    if (![previousAccountId isEqualToString:accountId]) {
+        [self startNewSessionForAccountChange];
+    }
 }
 
 - (void)innerLogout {
     if ([self hasDisabled]) {
         return;
     }
+    NSString *previousAccountId = [self innerAccountId];
     TDLogInfo(@"light SDK logout.");
     self.accountId = nil;
+    if (previousAccountId.length > 0) {
+        [self startNewSessionForAccountChange];
+    }
 }
 
 - (void)innerSetIdentify:(NSString *)distinctId {

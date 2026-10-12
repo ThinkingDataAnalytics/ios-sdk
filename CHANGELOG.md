@@ -1,3 +1,11 @@
+### v3.6.0
+**Date:** 2026/09/22
+
+**Notes:**
+
+* Bump ThinkingDataCore dependency to 1.3.8 to fix the `NSURL+TDCore.h` header import casing for Swift Package Manager builds.
+* Add `#session_id` to tracked events. The id is a UUID v7 and starts a new session after 5 minutes without events. App lifecycle transitions do not refresh the event timeout. Set the gap with `TDConfig.sessionTimeout` in milliseconds. H5 events that already include `#session_id` keep that value.
+
 ### v3.5.3
 **Date:** 2026/09/22
 
