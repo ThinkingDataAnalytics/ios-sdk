@@ -1,3 +1,10 @@
+### v3.6.1
+**Date:** 2026/10/14
+
+**Notes:**
+
+* Fix Swift Package Manager builds by adding the missing `TDSessionManager.h` header link.
+
 ### v3.6.0
 **Date:** 2026/09/22
 
