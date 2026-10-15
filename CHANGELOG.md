@@ -1,3 +1,11 @@
+### v3.6.2
+**Date:** 2026/10/15
+
+**Notes:**
+
+* Reduce event queue disk writes with SQLite WAL mode, NORMAL synchronization, and batched UUID updates with rollback on failure.
+* Cache event counts by app ID and add an `(appid, id)` query index.
+
 ### v3.6.1
 **Date:** 2026/10/14
 

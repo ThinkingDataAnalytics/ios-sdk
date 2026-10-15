@@ -14,11 +14,12 @@
     sqlite3 *_database;
     NSInteger _allmessageCount;
     NSRecursiveLock *_dbLock;
+    // Filtered counts are accessed only while _dbLock is held. Total counts query SQLite directly.
+    NSMutableDictionary<NSString *, NSNumber *> *_appidCountCache;
 }
 
 - (void) closeDatabase {
     sqlite3_close(_database);
-    sqlite3_shutdown();
 }
 
 - (void) dealloc {
@@ -39,10 +40,12 @@
     self = [super init];
     _dbLock = [[NSRecursiveLock alloc] init];
     _dbLock.name = @"com.thinkingdata.sqlite.lock";
+    _appidCountCache = [[NSMutableDictionary alloc] init];
     if (sqlite3_initialize() != SQLITE_OK) {
         return nil;
     }
     if (sqlite3_open_v2([filePath UTF8String], &_database, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK ) {
+        [self enableWALMode];
         NSString *_sql = @"create table if not exists TDData (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT, appid TEXT, creatAt INTEGER)";
         char *errorMsg;
         if (sqlite3_exec(_database, [_sql UTF8String], NULL, NULL, &errorMsg)==SQLITE_OK) {
@@ -61,11 +64,43 @@
         if (![self isExistColumnInTable:@"uuid"]) {
             [self addColumnText:@"uuid"];
         }
+
+        // Build the index after legacy column migration, off the initialization thread.
+        __weak typeof(self) weakSelf = self;
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+            [weakSelf createIndexIfNeeded];
+        });
         
     } else {
         return nil;
     }
     return self;
+}
+
+- (void)enableWALMode {
+    sqlite3_stmt *statement = NULL;
+    int rc = sqlite3_prepare_v2(_database, "PRAGMA journal_mode=WAL;", -1, &statement, NULL);
+    const char *journalMode = NULL;
+    if (rc == SQLITE_OK) {
+        rc = sqlite3_step(statement);
+        if (rc == SQLITE_ROW) {
+            journalMode = (const char *)sqlite3_column_text(statement, 0);
+        }
+    }
+    BOOL enabled = journalMode && sqlite3_stricmp(journalMode, "wal") == 0;
+    if (!enabled) {
+        TDLogError(@"Enable WAL failed. Journal mode: %s, SQLite code: %d, error: %s",
+                   journalMode ?: "unknown", rc, sqlite3_errmsg(_database));
+    }
+    sqlite3_finalize(statement);
+    if (enabled) {
+        // WAL + NORMAL reduces per-transaction syncs; recent commits can be lost on power failure.
+        [self execUpdateSQL:@"PRAGMA synchronous=NORMAL;"];
+    }
+}
+
+- (void)createIndexIfNeeded {
+    [self execUpdateSQL:@"CREATE INDEX IF NOT EXISTS idx_TDData_appid_id ON TDData(appid, id);"];
 }
 
 - (void)addColumn:(NSString *)appid {
@@ -154,7 +189,7 @@
     }
     NSTimeInterval epochInterval = [[NSDate date] timeIntervalSince1970];
     NSString *query = @"INSERT INTO TDData(content, appid, creatAt) values(?, ?, ?)";
-    sqlite3_stmt *insertStatement;
+    sqlite3_stmt *insertStatement = NULL;
     int rc;
     rc = sqlite3_prepare_v2(_database, [query UTF8String],-1, &insertStatement, nil);
     if (rc == SQLITE_OK) {
@@ -165,6 +200,10 @@
         rc = sqlite3_step(insertStatement);
         if (rc == SQLITE_DONE) {
             _allmessageCount ++;
+            NSNumber *cached = appid ? _appidCountCache[appid] : nil;
+            if (cached) {
+                _appidCountCache[appid] = @(cached.integerValue + 1);
+            }
         }
     }
     
@@ -223,7 +262,7 @@
     
     [_dbLock lock];
     NSString *query = [NSString stringWithFormat:@"DELETE FROM TDData WHERE uuid IN (%@);", [uids componentsJoinedByString:@","]];
-    sqlite3_stmt *stmt;
+    sqlite3_stmt *stmt = NULL;
 
     if (sqlite3_prepare_v2(_database, query.UTF8String, -1, &stmt, NULL) != SQLITE_OK) {
         TDLogError(@"Delete records Error: %s", sqlite3_errmsg(_database));
@@ -233,11 +272,13 @@
     if (sqlite3_step(stmt) != SQLITE_DONE) {
         TDLogError(@"Delete records Error: %s", sqlite3_errmsg(_database));
         sqlite3_finalize(stmt);
+        [_appidCountCache removeAllObjects];
         _allmessageCount = [self sqliteCount];
         [_dbLock unlock];
         return NO;
     }
     sqlite3_finalize(stmt);
+    [_appidCountCache removeAllObjects];
     _allmessageCount = [self sqliteCount];
     [_dbLock unlock];
     return YES;
@@ -266,6 +307,8 @@
         rc = sqlite3_step(stmt);
         if (rc != SQLITE_DONE && rc != SQLITE_OK) {
             sqlite3_finalize(stmt);
+            [_appidCountCache removeAllObjects];
+            _allmessageCount = [self sqliteCount];
             [_dbLock unlock];
             return NO;
         }
@@ -275,6 +318,7 @@
         return NO;
     }
     sqlite3_finalize(stmt);
+    [_appidCountCache removeAllObjects];
     _allmessageCount = [self sqliteCount];
     [_dbLock unlock];
     return YES;
@@ -285,14 +329,32 @@
         return @[];
     }
     [_dbLock lock];
+    if (![self execUpdateSQL:@"BEGIN IMMEDIATE TRANSACTION;"]) {
+        [_dbLock unlock];
+        return @[];
+    }
+
     NSMutableArray *uids = [NSMutableArray arrayWithCapacity:recordIds.count];
-    [recordIds enumerateObjectsUsingBlock:^(NSNumber *recordId, NSUInteger idx, BOOL * _Nonnull stop) {
+    BOOL success = YES;
+    for (NSNumber *recordId in recordIds) {
         NSString *uuid = [self rand13NumString];
         NSString *query = [NSString stringWithFormat:@"UPDATE TDData SET uuid = '%@' WHERE id = %lld;", uuid, [recordId longLongValue]];
-        if ([self execUpdateSQL:query]) {
-            [uids addObject:uuid];
+        if (![self execUpdateSQL:query]) {
+            success = NO;
+            break;
         }
-    }];
+        [uids addObject:uuid];
+    }
+    if (success) {
+        success = [self execUpdateSQL:@"COMMIT;"];
+    }
+    if (!success) {
+        // Some SQLite errors already roll back the transaction automatically.
+        if (!sqlite3_get_autocommit(_database)) {
+            [self execUpdateSQL:@"ROLLBACK;"];
+        }
+        [uids removeAllObjects];
+    }
     [_dbLock unlock];
     return uids;
 }
@@ -315,7 +377,7 @@
 
 - (BOOL)execUpdateSQL:(NSString *)sql {
     [_dbLock lock];
-    sqlite3_stmt *stmt;
+    sqlite3_stmt *stmt = NULL;
     if (sqlite3_prepare_v2(_database, sql.UTF8String, -1, &stmt, NULL) != SQLITE_OK) {
         TDLogError(@"Update Records Error: %s", sqlite3_errmsg(_database));
         sqlite3_finalize(stmt);
@@ -344,6 +406,7 @@
         sqlite3_step(stmt);
     }
     sqlite3_finalize(stmt);
+    [_appidCountCache removeAllObjects];
     _allmessageCount = [self sqliteCount];
     [_dbLock unlock];
     return YES;
@@ -355,6 +418,11 @@
 
 - (NSInteger)sqliteCountForAppid:(NSString *)appid {
     [_dbLock lock];
+    NSNumber *cached = appid ? _appidCountCache[appid] : nil;
+    if (cached) {
+        [_dbLock unlock];
+        return cached.integerValue;
+    }
     NSString *query;
     NSInteger count = 0;
     if (appid == nil) {
@@ -367,11 +435,14 @@
     int rc = sqlite3_prepare_v2(_database, [query UTF8String], -1, &stmt, NULL);
     
     if (rc == SQLITE_OK) {
-        if (appid.length > 0) {
+        if (appid != nil) {
             sqlite3_bind_text(stmt, 1, [appid UTF8String], -1, SQLITE_TRANSIENT);
         }
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             count = sqlite3_column_int(stmt, 0);
+            if (appid != nil) {
+                _appidCountCache[appid] = @(count);
+            }
         }
     }
     
@@ -393,6 +464,7 @@
         }
         sqlite3_finalize(stmt);
         
+        [_appidCountCache removeAllObjects];
         _allmessageCount = [self sqliteCount];
         [_dbLock unlock];
     }
